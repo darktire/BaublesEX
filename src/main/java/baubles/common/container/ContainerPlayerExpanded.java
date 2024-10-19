@@ -136,7 +136,7 @@ public class ContainerPlayerExpanded extends BaublesContainer {
             ItemStack oldStack = slot.getStack();
             newStack = oldStack.copy();
             EntityEquipmentSlot entityequipmentslot = EntityLiving.getSlotForItemStack(newStack);
-            int slotShift = baubles.getSlots();
+            int slotShift = 7;
             boolean isMerge = false;
 
             // craftResult -> inv

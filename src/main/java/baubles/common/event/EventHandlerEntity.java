@@ -90,7 +90,7 @@ public class EventHandlerEntity {
                 }
             }
         }
-        if (!player.world.isRemote) {
+        if (!player.world.isRemote & player.world instanceof WorldServer) {
             syncBaubles(player, baubles);
         }
     }
