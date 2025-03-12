@@ -18,7 +18,7 @@ public class GuiBaublesButton extends GuiButton {
 
     private final GuiContainer parentGui;
 
-    public GuiBaublesButton(int buttonId, GuiContainer parentGui, int x, int y, String buttonText) {
+    public GuiBaublesButton(int buttonId, GuiContainer parentGui, int x, int y, int width, int height,  String buttonText) {
         super(buttonId, x, parentGui.getGuiTop() + y, 10, 10, buttonText);
         this.parentGui = parentGui;
     }
