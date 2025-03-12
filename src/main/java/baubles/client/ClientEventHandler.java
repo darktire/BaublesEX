@@ -60,7 +60,7 @@ public class ClientEventHandler {
             GuiContainer gui = (GuiContainer) event.getGui();
             if (event.getGui() instanceof GuiInventory || event.getGui() instanceof GuiPlayerExpanded) {
                 if (Config.baublesButton) {
-                    event.getButtonList().add(new GuiBaublesButton(55, gui, 64, 9, I18n.format((event.getGui() instanceof GuiInventory) ? "button.baubles" : "button.normal")));
+                    event.getButtonList().add(new GuiBaublesButton(55, gui, 64, 9, 10, 10, I18n.format((event.getGui() instanceof GuiInventory) ? "button.baubles" : "button.normal")));
                 }
                 if (Config.baublesTab) {
                     event.getButtonList().add(new GuiBaublesTabButton(60, gui, Config.invPosX, 0));

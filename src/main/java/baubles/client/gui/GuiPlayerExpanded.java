@@ -153,13 +153,6 @@ public class GuiPlayerExpanded extends InventoryEffectRendererEx {
         }
     }
 
-    @Override
-    protected void drawActivePotionEffects() {
-        super.guiLeft -= 27;
-        super.drawActivePotionEffects();
-        super.guiLeft += 27;
-    }
-
     private int getMaxY() {
         return 18 * Math.min(baubles.getSlots(), 7);
     }
