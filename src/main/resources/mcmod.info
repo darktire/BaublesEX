@@ -1,0 +1,17 @@
+[
+{
+  "modid": "baubles",
+  "name": "BaublesEX",
+  "description": "Adding a good deal of bling to Minecraft",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "logoFile": "BLogo.png",
+  "url": "https://github.com/darktire/BaublesEX",
+  "updateUrl": "",
+  "authorList": ["darktire","Azanor"],
+  "credits": "Originally made by Azanor.",
+  "parent": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
