@@ -4,7 +4,9 @@ import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
+import baubles.common.BaubleContent;
 import baubles.common.Baubles;
+import baubles.common.Config;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,22 +15,19 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @Mod.EventBusSubscriber
-public class ItemRing extends Item implements IBauble
-{
+public class ItemRing extends Item implements IBauble {
 	@GameRegistry.ObjectHolder(Baubles.MODID + ":ring")
-	public static final Item RING = null;
+	public static final Item ringModel = null;
 
 	public ItemRing()
 	{
@@ -39,9 +38,11 @@ public class ItemRing extends Item implements IBauble
 		this.setCreativeTab(CreativeTabs.TOOLS);
 	}
 
+	private static final Item ring = new ItemRing().setUnlocalizedName("Ring").setRegistryName("ring");
+
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event) {
-		event.getRegistry().register((new ItemRing()).setUnlocalizedName("Ring").setRegistryName("ring"));
+		event.getRegistry().register(ring);
 	}
 
 	@Override
@@ -56,11 +57,11 @@ public class ItemRing extends Item implements IBauble
 		return BaubleType.RING;
 	}
 
-	@Override
+/*	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-		if(!world.isRemote) { 
+		if(!world.isRemote) {
 			IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
-			for(int i = 0; i < baubles.getSlots(); i++) 
+			for(int i = 0; i < baubles.getSlots(); i++)
 				if((baubles.getStackInSlot(i) == null || baubles.getStackInSlot(i).isEmpty()) && baubles.isItemValidForSlot(i, player.getHeldItem(hand), player)) {
 					baubles.setStackInSlot(i, player.getHeldItem(hand).copy());
 					if(!player.capabilities.isCreativeMode){
@@ -71,14 +72,12 @@ public class ItemRing extends Item implements IBauble
 				}
 		}
 		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
-	}
+	}*/
 
 	@Override
 	public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
-		if (itemstack.getItemDamage()==0 && player.ticksExisted%39==0) {
-			player.addPotionEffect(new PotionEffect(MobEffects.HASTE,40,0,true,true));
-		}
-	}
+        IBauble.super.onWornTick(itemstack, player);
+    }
 
 	@Override
 	public boolean hasEffect(ItemStack par1ItemStack) {
@@ -91,18 +90,45 @@ public class ItemRing extends Item implements IBauble
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack par1ItemStack)
-	{
-		return super.getUnlocalizedName() + "." + par1ItemStack.getItemDamage();
+	public String getUnlocalizedName(ItemStack par1ItemStack) {
+		return super.getUnlocalizedName() + ".0";
 	}
 
 	@Override
 	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {
 		player.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 1.9f);
+		updatePotionStatus(player);
 	}
 
 	@Override
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {
 		player.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 2f);
+		updatePotionStatus(player);
 	}
+
+	public void updatePotionStatus(EntityLivingBase player) {
+
+        if (player instanceof EntityPlayer) {
+
+			int level = -1;
+			IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityPlayer) player);
+			Potion potion = Potion.REGISTRY.getObject(new ResourceLocation("haste"));
+
+			for (int i = 0; i < BaubleContent.getAmount(); i++) {
+				ItemStack ring1 = baubles.getStackInSlot(i);
+				if (ring1.getItem() == ring) level++;
+				if (level == Config.maxLevel - 1) break;
+			}
+
+            if (potion != null) {
+                PotionEffect currentEffect = player.getActivePotionEffect(potion);
+                int currentLevel = currentEffect != null ? currentEffect.getAmplifier() : -1;
+                if (currentLevel != level) {
+                    player.removeActivePotionEffect(potion);
+                    if (level != -1 && !player.world.isRemote)
+                        player.addPotionEffect(new PotionEffect(MobEffects.HASTE, Integer.MAX_VALUE, level, true, true));
+                }
+            }
+        }
+    }
 }

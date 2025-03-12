@@ -1,15 +1,15 @@
 [
 {
   "modid": "baubles",
-  "name": "Baubles",
-  "description": "Adding a touch of bling to Minecraft",
+  "name": "BaublesEX",
+  "description": "Adding a good deal of bling to Minecraft",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "logoFile": "BLogo.png",
-  "url": "http://www.minecraftforum.net/topic/2535073-baubles",
+  "url": "https://github.com/darktire/BaublesEX",
   "updateUrl": "",
-  "authorList": ["Azanor"],
-  "credits": "Special thanks to chicken_bones",
+  "authorList": ["darktire","Azanor"],
+  "credits": "Originally made by Azanor.",
   "parent": "",
   "screenshots": [],
   "dependencies": []

@@ -1,8 +1,5 @@
 package baubles.common.event;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
@@ -16,11 +13,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CommandBaubles extends CommandBase {
 	private List<String> aliases;
 
 	public CommandBaubles() {
-		this.aliases = new ArrayList<String>();
+		this.aliases = new ArrayList<>();
 		this.aliases.add("baub");
 		this.aliases.add("bau");
 	}
@@ -61,7 +61,7 @@ public class CommandBaubles extends CommandBase {
 		}
 		else if (args.length >= 2) {
 			EntityPlayerMP entityplayermp = getPlayer(server,sender,args[1]);
-			
+
 			if (entityplayermp==null) {
 				sender.sendMessage(new TextComponentTranslation("\u00a7c"+args[1]+" not found"));
 				return;
@@ -71,7 +71,7 @@ public class CommandBaubles extends CommandBase {
 
 			if (args[0].equalsIgnoreCase("view")) {
 				sender.sendMessage(new TextComponentTranslation("\u00a73Showing baubles for "+entityplayermp.getName()));
-				for (int a = 0; a<baubles.getSlots();a++) {
+				for (int a = 0; a < baubles.getSlots(); a++) {
 					ItemStack st = baubles.getStackInSlot(a);
 					if (!st.isEmpty() && st.hasCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null)) {
 						IBauble bauble = st.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
@@ -88,7 +88,7 @@ public class CommandBaubles extends CommandBase {
 						sender.sendMessage(new TextComponentTranslation("\u00a7cInvalid arguments"));
 						sender.sendMessage(new TextComponentTranslation("\u00a7cUse /baubles help to get help"));
 					} else {
-						baubles.setStackInSlot(slot, ItemStack.EMPTY); 
+						baubles.setStackInSlot(slot, ItemStack.EMPTY);
 						sender.sendMessage(new TextComponentTranslation("\u00a73Cleared baubles slot "+slot+" for "+entityplayermp.getName()));
 						entityplayermp.sendMessage(new TextComponentTranslation("\u00a74Your baubles slot "+slot+" has been cleared by admin "+sender.getName()));
 					}
