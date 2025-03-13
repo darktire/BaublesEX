@@ -2,9 +2,9 @@ package baubles.common.event;
 
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.BaublesCapProvider;
 import baubles.api.cap.BaublesCapabilities;
-import baubles.api.cap.BaublesItemHandler;
+import baubles.api.cap.BaublesContainer;
+import baubles.api.cap.BaublesContainerProvider;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.Baubles;
 import baubles.common.network.PacketHandler;
@@ -37,9 +37,9 @@ public class EventHandlerEntity {
     @SubscribeEvent
     public void cloneCapabilitiesEvent(PlayerEvent.Clone event) {
         try {
-            BaublesItemHandler bco = (BaublesItemHandler) BaublesApi.getBaublesHandler(event.getOriginal());
+            BaublesContainer bco = (BaublesContainer) BaublesApi.getBaublesHandler(event.getOriginal());
+            BaublesContainer bcn = (BaublesContainer) BaublesApi.getBaublesHandler(event.getEntityPlayer());
             NBTTagCompound nbt = bco.serializeNBT();
-            BaublesItemHandler bcn = (BaublesItemHandler) BaublesApi.getBaublesHandler(event.getEntityPlayer());
             bcn.deserializeNBT(nbt);
         } catch (Exception e) {
             Baubles.log.error("Could not clone player [" + event.getOriginal().getName() + "] baubles when changing dimensions");
@@ -49,7 +49,7 @@ public class EventHandlerEntity {
     @SubscribeEvent
     public void attachCapabilitiesPlayer(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof EntityPlayer) {
-            event.addCapability(new ResourceLocation(Baubles.MODID, "container"), new BaublesCapProvider(new BaublesItemHandler()));
+            event.addCapability(new ResourceLocation(Baubles.MODID, "container"), new BaublesContainerProvider(new BaublesContainer()));
         }
     }
 

@@ -1,6 +1,6 @@
 package baubles.client.gui;
 
-import baubles.api.cap.BaublesItemHandler;
+import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.BaubleContent;
 import baubles.common.Baubles;
@@ -80,7 +80,7 @@ public class GuiPlayerExpanded extends InventoryEffectRendererEx {
             int yLoc = this.guiTop + 14;
             if (mouseY >= yLoc && mouseY < yLoc + getMaxY()) {
                 int index = (mouseY - yLoc) / 18 - offset;
-                BaublesItemHandler container = ((BaublesItemHandler) baubles);
+                BaublesContainer container = ((BaublesContainer) baubles);
 
                 ItemStack stack = container.getStackInSlot(index);
                 if (!stack.isEmpty()) return;

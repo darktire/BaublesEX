@@ -3,7 +3,6 @@ package baubles.common.container;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilities;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.inv.BaublesContainer;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +13,7 @@ import net.minecraft.item.ItemStack;
 
 import static baubles.common.BaubleContent.getAmount;
 
-public class ContainerPlayerExpanded extends BaublesContainer {
+public class ContainerPlayerExpanded extends Container {
     public IBaublesItemHandler baubles;
     /**
      * The crafting matrix inventory.
@@ -108,6 +107,11 @@ public class ContainerPlayerExpanded extends BaublesContainer {
     @Override
     public void onCraftMatrixChanged(IInventory par1IInventory) {
         this.slotChangedCraftingGrid(this.player.getEntityWorld(), this.player, this.craftMatrix, this.craftResult);
+    }
+
+    @Override
+    public boolean canInteractWith(EntityPlayer playerIn) {
+        return true;
     }
 
     /**

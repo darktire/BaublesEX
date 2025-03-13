@@ -3,16 +3,16 @@ package baubles.common.container;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilities;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.inv.BaublesContainer;
 import baubles.common.BaubleContent;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerBaublesTab extends BaublesContainer {
+public class ContainerBaublesTab extends Container {
     private final IBaublesItemHandler baubles;
     private final EntityPlayer player;
 
@@ -60,6 +60,11 @@ public class ContainerBaublesTab extends BaublesContainer {
     @Override
     public void onContainerClosed(EntityPlayer playerIn) {
         super.onContainerClosed(playerIn);
+    }
+
+    @Override
+    public boolean canInteractWith(EntityPlayer playerIn) {
+        return true;
     }
 
     @Override
