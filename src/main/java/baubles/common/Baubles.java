@@ -5,7 +5,7 @@ import baubles.api.IBauble;
 import baubles.api.cap.BaubleItem;
 import baubles.api.cap.BaublesCapabilities;
 import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
-import baubles.api.cap.BaublesItemHandler;
+import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.event.CommandBaubles;
 import baubles.common.network.PacketHandler;
@@ -49,7 +49,7 @@ public class Baubles {
         CapabilityManager.INSTANCE.register(
                 IBaublesItemHandler.class,
                 new CapabilityBaubles<>(),
-                BaublesItemHandler::new);
+                BaublesContainer::new);
         CapabilityManager.INSTANCE.register(
                 IBauble.class,
                 new BaublesCapabilities.CapabilityItemBaubleStorage(),

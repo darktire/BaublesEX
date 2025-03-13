@@ -6,12 +6,12 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class BaublesCapProvider implements INBTSerializable<NBTTagCompound>, ICapabilityProvider {
+public class BaublesContainerProvider implements INBTSerializable<NBTTagCompound>, ICapabilityProvider {
 
-    private final BaublesItemHandler baubles;
+    private final BaublesContainer container;
 
-    public BaublesCapProvider(BaublesItemHandler baubles) {
-        this.baubles = baubles;
+    public BaublesContainerProvider(BaublesContainer container) {
+        this.container = container;
     }
 
     @Override
@@ -22,17 +22,17 @@ public class BaublesCapProvider implements INBTSerializable<NBTTagCompound>, ICa
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capability == BaublesCapabilities.CAPABILITY_BAUBLES) return (T) this.baubles;
+        if (capability == BaublesCapabilities.CAPABILITY_BAUBLES) return (T) this.container;
         return null;
     }
 
     @Override
     public NBTTagCompound serializeNBT() {
-        return this.baubles.serializeNBT();
+        return this.container.serializeNBT();
     }
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        this.baubles.deserializeNBT(nbt);
+        this.container.deserializeNBT(nbt);
     }
 }

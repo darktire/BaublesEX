@@ -9,7 +9,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 
 public class BaublesCapabilities {
     /**
-     * Access to the baubles' capability. 99% it's {@link BaublesItemHandler}
+     * Access to the baubles' capability. 99% it's {@link BaublesContainer}
      */
     @CapabilityInject(IBaublesItemHandler.class)
     public static final Capability<IBaublesItemHandler> CAPABILITY_BAUBLES = null;

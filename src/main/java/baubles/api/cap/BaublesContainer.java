@@ -3,20 +3,16 @@ package baubles.api.cap;
 import baubles.api.IBauble;
 import baubles.common.BaubleContent;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class BaublesItemHandler extends ItemStackHandler implements IBaublesItemHandler {
+public class BaublesContainer extends ItemStackHandler implements IBaublesItemHandler {
 
     private boolean[] changed;
     private boolean blockEvents = false;
     private EntityLivingBase player;
 
-    public BaublesItemHandler() {
+    public BaublesContainer() {
         super(BaubleContent.getAmount());
         this.changed = new boolean[stacks.size()];
     }
@@ -98,57 +94,8 @@ public class BaublesItemHandler extends ItemStackHandler implements IBaublesItem
         this.changed[slot] = change;
     }
 
-    @Override
-    public void setPlayer(EntityLivingBase player) {
-        this.player = player;
-    }
-
-    @Override
-    public boolean isItemValid(int slot, ItemStack stack) {
-        return super.isItemValid(slot, stack);
-    }
-
-    @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagList nbtTagList = new NBTTagList();
-        for (int i = 0; i < stacks.size(); i++)
-        {
-            if (!stacks.get(i).isEmpty())
-            {
-                NBTTagCompound itemTag = new NBTTagCompound();
-                itemTag.setInteger("Slot", i);
-                stacks.get(i).writeToNBT(itemTag);
-                nbtTagList.appendTag(itemTag);
-            }
-        }
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setTag("Items", nbtTagList);
-        nbt.setInteger("Size", stacks.size());
-        return nbt;
-    }
-
-    @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-//        if (!nbt.hasKey("Size", Constants.NBT.TAG_INT)) setSize(stacks.size());
-        NBTTagList tagList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < tagList.tagCount(); i++)
-        {
-            NBTTagCompound itemTags = tagList.getCompoundTagAt(i);
-            int slot = itemTags.getInteger("Slot");
-            ItemStack stack = new ItemStack(itemTags);
-
-            if (slot >= 0 && slot < stacks.size())
-            {
-                stacks.set(slot, stack);
-            }
-            else if (slot >= stacks.size()) {
-                ((EntityPlayer)player).addItemStackToInventory(stack);
-                IBauble bauble = stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
-                if (bauble != null) {
-                    bauble.onUnequipped(stack, player);
-                }
-            }
-        }
-        onLoad();
-    }
+	@Override
+	public void setPlayer(EntityLivingBase player) {
+		this.player = player;
+	}
 }
