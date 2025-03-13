@@ -2,7 +2,6 @@ package baubles.common.container;
 
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilities;
-import baubles.api.cap.BaublesItemHandler;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.inv.BaublesContainer;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -12,6 +11,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+
+import static baubles.common.BaubleContent.getAmount;
 
 public class ContainerPlayerExpanded extends BaublesContainer {
     public IBaublesItemHandler baubles;
@@ -70,7 +71,7 @@ public class ContainerPlayerExpanded extends BaublesContainer {
         }
 
         //add bauble slots (amount)
-        for (int i = 0; i < Math.min(7, baubles.getSlots()); i++) {
+        for (int i = 0; i < getAmount(); i++) {
             this.addSlotToContainer(new SlotBaubleHandler(player, baubles, i, -21, 15 + (i * 18)));
         }
 
@@ -98,7 +99,6 @@ public class ContainerPlayerExpanded extends BaublesContainer {
                 return "minecraft:items/empty_armor_slot_shield";
             }
         });
-
         this.onCraftMatrixChanged(this.craftMatrix);
     }
 
@@ -116,7 +116,6 @@ public class ContainerPlayerExpanded extends BaublesContainer {
     @Override
     public void onContainerClosed(EntityPlayer player) {
         super.onContainerClosed(player);
-        ((BaublesItemHandler)baubles).resetOffset();
         this.craftResult.clear();
 
         if (!player.world.isRemote) {
@@ -136,7 +135,7 @@ public class ContainerPlayerExpanded extends BaublesContainer {
             ItemStack oldStack = slot.getStack();
             newStack = oldStack.copy();
             EntityEquipmentSlot entityequipmentslot = EntityLiving.getSlotForItemStack(newStack);
-            int slotShift = 7;
+            int slotShift = getAmount();
             boolean isMerge = false;
 
             // craftResult -> inv
@@ -145,15 +144,15 @@ public class ContainerPlayerExpanded extends BaublesContainer {
                 if (!isMerge) slot.onSlotChange(oldStack, newStack);
             }
             // craftMatrix -> inv
-            else if (index >= 1 && index < 5) {
+            else if (index < 5) {
                 isMerge = this.mergeItemStack(oldStack, 9 + slotShift, 45 + slotShift, false);
             }
             // armor -> inv
-            else if (index >= 5 && index < 9) {
+            else if (index < 9) {
                 isMerge = this.mergeItemStack(oldStack, 9 + slotShift, 45 + slotShift, false);
             }
             // baubles -> inv
-            else if (index >= 9 && index < 9 + slotShift) {
+            else if (index < 9 + slotShift) {
                 isMerge = this.mergeItemStack(oldStack, 9 + slotShift, 45 + slotShift, false);
             }
             // inv -> armor

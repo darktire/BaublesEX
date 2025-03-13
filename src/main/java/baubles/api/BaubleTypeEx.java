@@ -34,7 +34,7 @@ public class BaubleTypeEx {
         return false;
     }
 
-    public int[] getValidSlots() {
+    public static int[] getValidSlots(String type) {
         int[] validSlots = new int[0];
         if (slots.contains(type)) {
             int min = slots.indexOf(type);
@@ -49,6 +49,10 @@ public class BaubleTypeEx {
         }
 
         return validSlots;
+    }
+
+    public int[] getValidSlots() {
+        return getValidSlots(type);
     }
 
     public static ArrayList<String> getSlots() {

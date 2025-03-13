@@ -5,6 +5,7 @@ import com.google.common.collect.Ordering;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,6 +25,10 @@ public abstract class InventoryEffectRendererEx extends GuiContainer {
     public void initGui() {
         super.initGui();
         this.updateActivePotionEffects();
+    }
+
+    public Slot getSlot(int i) {
+        return inventorySlots.inventorySlots.get(i);
     }
 
     protected void updateActivePotionEffects() {
@@ -65,7 +70,6 @@ public abstract class InventoryEffectRendererEx extends GuiContainer {
     protected void drawActivePotionEffects() {
         int i = this.guiLeft - 124;
         int j = this.guiTop;
-        int k = 166;
         Collection<PotionEffect> collection = this.mc.player.getActivePotionEffects();
 
         if (!collection.isEmpty()) {
@@ -83,6 +87,10 @@ public abstract class InventoryEffectRendererEx extends GuiContainer {
                     int i1 = potion.getStatusIconIndex();
                     this.drawTexturedModalRect(i + 3, j + 3, i1 % 8 * 18, 198 + i1 / 8 * 18, 18, 18);
                 }
+
+                potion.renderInventoryEffect(potioneffect, this, i, j, this.zLevel);
+
+                j += 25;
             }
         }
     }

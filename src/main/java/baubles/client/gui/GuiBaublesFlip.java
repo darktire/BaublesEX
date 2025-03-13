@@ -1,9 +1,5 @@
 package baubles.client.gui;
 
-import baubles.api.cap.BaublesCapabilities;
-import baubles.api.cap.BaublesItemHandler;
-import baubles.common.network.PacketHandler;
-import baubles.common.network.PacketIncrOffset;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -14,7 +10,6 @@ public class GuiBaublesFlip extends GuiButton {
     protected final GuiContainer parentGui;
     private final boolean direction;
     private int ticks;
-    private final BaublesItemHandler baubles;
 
     /**
      * Add PgDn and PgUp to Bauble slots.
@@ -24,7 +19,6 @@ public class GuiBaublesFlip extends GuiButton {
         super(id, x, y, 27, 14, "");
         this.parentGui = parentGui;
         this.direction = direction;
-        this.baubles = (BaublesItemHandler) parentGui.mc.player.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
     }
 
     @Override
@@ -33,8 +27,8 @@ public class GuiBaublesFlip extends GuiButton {
         if (pressed) {
             int value = direction ? 1 : -1;
             ticks = 10;
-            PacketHandler.INSTANCE.sendToServer(new PacketIncrOffset(value));
-            baubles.incrOffset(value);
+            GuiPlayerExpanded gui = (GuiPlayerExpanded) parentGui;
+            gui.moveBaubleSlots(value);
         }
         return pressed;
     }
