@@ -6,7 +6,6 @@ import baubles.api.cap.BaublesCapProvider;
 import baubles.api.cap.BaublesCapabilities;
 import baubles.api.cap.BaublesItemHandler;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.common.BaubleContent;
 import baubles.common.Baubles;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketSync;
@@ -57,41 +56,9 @@ public class EventHandlerEntity {
     @SubscribeEvent
     public void playerJoin(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof EntityPlayer) {
-            checkBaubles((EntityPlayer) entity);
-        }
         if (entity instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) entity;
             syncSlots(player, Collections.singletonList(player));
-        }
-    }
-
-    private void checkBaubles(EntityPlayer player) {
-        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
-        for (int i = 0; i < BaubleContent.getAmount(); ++i) {
-            ItemStack stack = baubles.getStackInSlot(i);
-            BaublesItemHandler container = (BaublesItemHandler) player.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
-            IBauble bauble = stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
-            if (container != null && bauble != null) {
-                if (!bauble.getBaubleType(stack).hasSlot(i)) {
-                    boolean flag = false;
-                    for (int j = 0; j < BaubleContent.getAmount(); ++j) {
-                        flag = container.isItemValidForSlot(j, stack, player);
-                        if (flag) {
-                            container.setStackInSlot(j, stack);
-                            break;
-                        }
-                    }
-                    if (!flag) {
-                        player.addItemStackToInventory(stack);
-                        baubles.setStackInSlot(i, ItemStack.EMPTY);
-                        bauble.onUnequipped(stack, player);
-                    }
-                }
-            }
-        }
-        if (!player.world.isRemote & player.world instanceof WorldServer) {
-            syncBaubles(player, baubles);
         }
     }
 

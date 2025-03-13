@@ -5,8 +5,7 @@ import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.BaubleContent;
 import baubles.common.Baubles;
 import baubles.common.container.ContainerPlayerExpanded;
-import baubles.common.network.PacketHandler;
-import baubles.common.network.PacketIncrOffset;
+import baubles.common.container.SlotBaubleHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -15,6 +14,7 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiUtils;
@@ -24,11 +24,14 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.Collections;
 
+import static baubles.common.BaubleContent.getAmount;
+
 public class GuiPlayerExpanded extends InventoryEffectRendererEx {
 
     public static final ResourceLocation background = new ResourceLocation(Baubles.MODID, "textures/gui/baubles_container.png");
     private final IBaublesItemHandler baubles = ((ContainerPlayerExpanded) this.inventorySlots).baubles;
     private float oldMouseX, oldMouseY;
+    private int offset = 0;
 
     public GuiPlayerExpanded(EntityPlayer player) {
         super(new ContainerPlayerExpanded(player.inventory, !player.getEntityWorld().isRemote, player));
@@ -37,6 +40,20 @@ public class GuiPlayerExpanded extends InventoryEffectRendererEx {
 
     private void resetGuiLeft() {
         this.guiLeft = (this.width - this.xSize) / 2;
+    }
+
+    public void moveBaubleSlots(int value) {
+        int baublesAmount = getAmount();
+        int offset1 = offset;
+        offset1 += value;
+        if (offset1 > 0) value = offset;
+        if (offset1 < -baublesAmount + 7) value = 7 - offset - baublesAmount;
+        offset += value;
+        for (int i = 9; i < 9 + baublesAmount; ++i) {
+            Slot slot1 = getSlot(i);
+            SlotBaubleHandler baubleSlots = ((SlotBaubleHandler) slot1);
+            baubleSlots.incrYPos(18 * value);
+        }
     }
 
 
@@ -62,7 +79,7 @@ public class GuiPlayerExpanded extends InventoryEffectRendererEx {
         if (mouseX > xLoc && mouseX < xLoc + 18) {
             int yLoc = this.guiTop + 14;
             if (mouseY >= yLoc && mouseY < yLoc + getMaxY()) {
-                int index = (mouseY - yLoc) / 18;
+                int index = (mouseY - yLoc) / 18 - offset;
                 BaublesItemHandler container = ((BaublesItemHandler) baubles);
 
                 ItemStack stack = container.getStackInSlot(index);
@@ -76,7 +93,7 @@ public class GuiPlayerExpanded extends InventoryEffectRendererEx {
 
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(0, 0, 200);
-                String str = I18n.format("name." + BaubleContent.getSlots().get(container.setSlot(index)).toUpperCase());
+                String str = I18n.format("name." + BaubleContent.getSlots().get(index).toUpperCase());
 
                 GuiUtils.drawHoveringText(Collections.singletonList(str), mouseX - this.guiLeft, mouseY - this.guiTop + 7, width, height, 300, renderer);
                 GlStateManager.popMatrix();
@@ -108,9 +125,8 @@ public class GuiPlayerExpanded extends InventoryEffectRendererEx {
             if (mouseY >= yLoc && mouseY < yLoc + getMaxY()) {
                 int dWheel = Mouse.getEventDWheel();
                 if (dWheel != 0) {
-                    int value = -(dWheel / 120);
-                    PacketHandler.INSTANCE.sendToServer(new PacketIncrOffset(value));
-                    ((BaublesItemHandler) baubles).incrOffset(value);
+                    int value = dWheel / 120;
+                    moveBaubleSlots(value);
                 }
             }
         }

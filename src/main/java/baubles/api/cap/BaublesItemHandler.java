@@ -12,8 +12,6 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public class BaublesItemHandler extends ItemStackHandler implements IBaublesItemHandler {
 
-    private final int amount = BaubleContent.getAmount();
-    private int offset = 0;
     private boolean[] changed;
     private boolean blockEvents = false;
     private EntityLivingBase player;
@@ -23,23 +21,7 @@ public class BaublesItemHandler extends ItemStackHandler implements IBaublesItem
         this.changed = new boolean[stacks.size()];
     }
 
-    public void resetOffset() {
-        offset = 0;
-    }
-    public int setSlot(int slot) {
-        int slotSet = offset + slot;
-        if (slotSet >= amount) slotSet %= amount;
-        return slotSet;
-    }
-
-    public void incrOffset(int incr) {
-        offset += incr;
-        offset %= amount;
-        if (offset < 0) offset += amount;
-    }
-
     protected void onContentsChanged(int slot) {
-        slot = setSlot(slot);
         setChanged(slot, true);
     }
 
@@ -49,7 +31,6 @@ public class BaublesItemHandler extends ItemStackHandler implements IBaublesItem
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack, EntityLivingBase player) {
-        slot = setSlot(slot);
         if (stack == null || stack.isEmpty()) return false;
         IBauble bauble = stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
         if (bauble != null) {
@@ -63,7 +44,6 @@ public class BaublesItemHandler extends ItemStackHandler implements IBaublesItem
     @Override
     public void setStackInSlot(int slot, ItemStack stack) {
         if (stack.isEmpty() || this.isItemValidForSlot(slot, stack, player)) {
-            slot = setSlot(slot);
             validateSlotIndex(slot);
             this.stacks.set(slot, stack);
             setChanged(slot, true);
@@ -72,7 +52,6 @@ public class BaublesItemHandler extends ItemStackHandler implements IBaublesItem
 
     @Override
     public ItemStack getStackInSlot(int slot) {
-        slot = setSlot(slot);
         validateSlotIndex(slot);
         return this.stacks.get(slot);
     }
@@ -80,19 +59,16 @@ public class BaublesItemHandler extends ItemStackHandler implements IBaublesItem
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         if (!this.isItemValidForSlot(slot, stack, player)) return stack;
-        slot = setSlot(slot);
         return super.insertItem(slot, stack, simulate);
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        slot = setSlot(slot);
         return super.extractItem(slot, amount, simulate);
     }
 
     @Override
     public int getSlotLimit(int slot) {
-        slot = setSlot(slot);
         return super.getSlotLimit(slot);
     }
 
@@ -108,7 +84,6 @@ public class BaublesItemHandler extends ItemStackHandler implements IBaublesItem
 
     @Override
     public boolean isChanged(int slot) {
-        slot = setSlot(slot);
         if (changed == null) {
             changed = new boolean[this.getSlots()];
         }
@@ -117,7 +92,6 @@ public class BaublesItemHandler extends ItemStackHandler implements IBaublesItem
 
     @Override
     public void setChanged(int slot, boolean change) {
-        slot = setSlot(slot);
         if (changed == null) {
             changed = new boolean[this.getSlots()];
         }
@@ -131,7 +105,6 @@ public class BaublesItemHandler extends ItemStackHandler implements IBaublesItem
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
-        slot = setSlot(slot);
         return super.isItemValid(slot, stack);
     }
 

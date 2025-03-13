@@ -2,12 +2,13 @@ package baubles.common.container;
 
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilities;
-import baubles.api.cap.BaublesItemHandler;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.BaubleContent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.SlotItemHandler;
@@ -18,13 +19,11 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     private int index;
     private final EntityPlayer player;
-    private final BaublesItemHandler baubles;
 
     public SlotBaubleHandler(EntityPlayer player, IBaublesItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);
         this.player = player;
         this.index = index;
-        this.baubles = (BaublesItemHandler)itemHandler;
     }
 
     @Override
@@ -67,9 +66,20 @@ public class SlotBaubleHandler extends SlotItemHandler {
         }
     }
 
+    public void incrYPos(int value) {
+        super.yPos += value;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean isEnabled()
+    {
+        return -3 < yPos & yPos <= 123;
+    }
+
     @Override
     public String getSlotTexture() {
-        return "baubles:gui/slots/"+ BaubleContent.getSlots().get(baubles.setSlot(index));
+        return "baubles:gui/slots/"+ BaubleContent.getSlots().get(index);
     }
 
     @Override
