@@ -1,24 +1,22 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven { url = 'http://files.minecraftforge.net/maven' }
+        maven { url = 'https://files.minecraftforge.net/maven' }
         maven { url = 'https://repo.spongepowered.org/maven' }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:6.+'
     }
 }
         
 apply plugin: 'net.minecraftforge.gradle'
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'idea'
-//apply plugin: 'maven-publish'
 
-version = "2.1.0"
-group = 'com.darktire.baublesEX' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = name
+version = "${version_major}.${version_minor}.${version_patch}"
+group = 'darktire.baubles'
+archivesBaseName = "${name}-${minecraft_version}"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
     mappings channel: 'snapshot', version: '20171003-1.12'
@@ -28,57 +26,75 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
         }
+
         client {
-            workingDirectory project.file('run')
+            workingDirectory file('run')
         }
 
         server {}
     }
 }
 
-dependencies {
-//    implementation ("net.minecraftforge:mergetool:0.2.3.3") { force = true }
-    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
+repositories {
+    maven {
+        name = "Curse Maven"
+        url = "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
-processResources {
-    // replace stuff in mcmod.info, nothing else
+dependencies {
+    minecraft([
+        group  : "${forge_group}",
+        name   : "forge",
+        version: "${minecraft_version}-${forge_version}"
+    ])
+
+//    implementation ("net.minecraftforge:mergetool:0.2.3.3") { force = true }
+    implementation fg.deobf("curse.maven:trinkets-and-baubles-279900:5717039")
+}
+
+tasks.register('replaceResources', Copy) {
+    outputs.upToDateWhen { false }
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-
-        // replace version and mcversion
-        expand version:version, mcversion:'1.12.2'
+        expand version:version, mcversion:minecraft_version
     }
-
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-        exclude "BLogo_test.png"
-    }
-}
-
-jar {
-    manifest {
-        attributes([
-            "Specification-Title": "baublesEX",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
-}
-
-jar.finalizedBy('reobfJar')
-
-compileJava.options.encoding = 'UTF-8'
-
-sourceSets {
-    main {
-        output.resourcesDir = java.outputDir
-    }
+    into 'build/classes/java/main'
 }
 
 tasks.register('copyResources', Copy) {
-    from 'src/main/resources'
+    outputs.upToDateWhen { false }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
     into 'build/classes/java/main'
+}
+
+processResources {}
+
+classes.configure {
+    dependsOn(replaceResources)
+    dependsOn(copyResources)
+}
+
+jar {
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    manifest {
+        attributes([
+            'Specification-Title'     : 'BaublesEX',
+            'Specification-Vendor'    : 'darktire',
+            'Specification-Version'   : "${version}",
+            'Implementation-Title'    : name,
+            'Implementation-Version'  : "${version}",
+            'Implementation-Vendor'   : 'darktire',
+            'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "Automatic-Module-Name": "${group}",
+        ])
+    }
+    finalizedBy('reobfJar')
 }
 
 tasks.register('apiJar', Jar) {
@@ -90,16 +106,4 @@ tasks.register('apiJar', Jar) {
 
 artifacts {
     archives apiJar
-}
-
-gradle.taskGraph.whenReady{
-    taskGraph ->
-        if(taskGraph.hasTask(":reobfJar")){
-            clearSourcesDir
-            sourceSets.main.output.resourcesDir(new File("build/resources"))
-        }
-}
-
-tasks.register('clearSourcesDir') {
-    delete(sourceSets.main.output.classesDirs)
 }
