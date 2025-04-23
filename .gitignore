@@ -8,6 +8,8 @@ bin
 
 # idea
 out
+run
+log
 *.ipr
 *.iws
 *.iml
@@ -19,8 +21,6 @@ build
 
 # other
 eclipse
-run
-baubles_container_*.*
 *test*
 
 # Files from Forge MDK
