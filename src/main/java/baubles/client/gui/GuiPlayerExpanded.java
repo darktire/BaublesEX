@@ -2,14 +2,16 @@ package baubles.client.gui;
 
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.common.BaubleContent;
+import baubles.client.ClientProxy;
 import baubles.common.Baubles;
+import baubles.common.BaublesContent;
 import baubles.common.container.ContainerPlayerExpanded;
 import baubles.common.container.SlotBaubleHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.achievement.GuiStats;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -24,9 +26,7 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.Collections;
 
-import static baubles.common.BaubleContent.getAmount;
-
-public class GuiPlayerExpanded extends InventoryEffectRendererEx {
+public class GuiPlayerExpanded extends GuiContainer {
 
     public static final ResourceLocation background = new ResourceLocation(Baubles.MODID, "textures/gui/baubles_container.png");
     private final IBaublesItemHandler baubles = ((ContainerPlayerExpanded) this.inventorySlots).baubles;
@@ -43,26 +43,31 @@ public class GuiPlayerExpanded extends InventoryEffectRendererEx {
     }
 
     public void moveBaubleSlots(int value) {
-        int baublesAmount = getAmount();
+        int baublesAmount = baubles.getSlots();
         int offset1 = offset;
         offset1 += value;
         if (offset1 > 0) value = offset;
-        if (offset1 < -baublesAmount + 7) value = 7 - offset - baublesAmount;
+        if (offset1 < 7 - baublesAmount) value = 7 - offset - baublesAmount;
         offset += value;
         for (int i = 9; i < 9 + baublesAmount; ++i) {
-            Slot slot1 = getSlot(i);
+            Slot slot1 = inventorySlots.inventorySlots.get(i);
             SlotBaubleHandler baubleSlots = ((SlotBaubleHandler) slot1);
             baubleSlots.incrYPos(18 * value);
         }
     }
 
-
+    /**
+     * Called from the main game loop to update the screen.
+     */
+    @Override
     public void updateScreen() {
-        ((ContainerPlayerExpanded) inventorySlots).baubles.setEventBlock(false);
-        updateActivePotionEffects();
+        this.baubles.setEventBlock(false);
         resetGuiLeft();
     }
 
+    /**
+     * Adds the buttons (and other controls) to the screen in question.
+     */
     @Override
     public void initGui() {
         this.buttonList.clear();
@@ -72,6 +77,9 @@ public class GuiPlayerExpanded extends InventoryEffectRendererEx {
         resetGuiLeft();
     }
 
+    /**
+     * Draw the foreground layer for the GuiContainer (everything in front of the items)
+     */
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         this.fontRenderer.drawString(I18n.format("container.crafting"), 97, 8, 4210752);
@@ -93,7 +101,7 @@ public class GuiPlayerExpanded extends InventoryEffectRendererEx {
 
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(0, 0, 200);
-                String str = I18n.format("name." + BaubleContent.getSlots().get(index).toUpperCase());
+                String str = I18n.format("name." + BaublesContent.getSlots().get(index).getTypeName().toUpperCase());
 
                 GuiUtils.drawHoveringText(Collections.singletonList(str), mouseX - this.guiLeft, mouseY - this.guiTop + 7, width, height, 300, renderer);
                 GlStateManager.popMatrix();
@@ -101,15 +109,18 @@ public class GuiPlayerExpanded extends InventoryEffectRendererEx {
         }
     }
 
+    /**
+     * Draws the screen and all the components in it.
+     */
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         this.oldMouseX = (float) mouseX;
         this.oldMouseY = (float) mouseY;
         super.drawScreen(mouseX, mouseY, partialTicks);
-        if (this.hasActivePotionEffects) {
-            this.drawActivePotionEffects();
-        }
+//        if (this.hasActivePotionEffects) {
+//            this.drawActivePotionEffects();
+//        }
         this.renderHoveredToolTip(mouseX, mouseY);
     }
 
@@ -137,6 +148,20 @@ public class GuiPlayerExpanded extends InventoryEffectRendererEx {
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
+    @Override
+    protected void keyTyped(char par1, int keyCode) throws IOException {
+        if (keyCode == ClientProxy.KEY_BAUBLES.getKeyCode()) {
+            this.mc.player.closeScreen();
+        }
+        else if (keyCode == ClientProxy.KEY_BAUBLES_TAB.getKeyCode()) {
+            this.mc.player.closeScreen();
+        }
+        else super.keyTyped(par1, keyCode);
+    }
+
+    /**
+     * Draws the GuiContainer.
+     */
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

@@ -53,7 +53,6 @@ dependencies {
     ])
 
 //    implementation ("net.minecraftforge:mergetool:0.2.3.3") { force = true }
-    implementation fg.deobf("curse.maven:trinkets-and-baubles-279900:5717039")
 }
 
 tasks.register('replaceResources', Copy) {

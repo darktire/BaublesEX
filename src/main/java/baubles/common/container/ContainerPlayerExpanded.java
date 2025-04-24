@@ -2,6 +2,7 @@ package baubles.common.container;
 
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilities;
+import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
@@ -11,10 +12,9 @@ import net.minecraft.inventory.*;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
-import static baubles.common.BaubleContent.getAmount;
-
 public class ContainerPlayerExpanded extends Container {
     public IBaublesItemHandler baubles;
+    private int slotsAmount;
     /**
      * The crafting matrix inventory.
      */
@@ -31,6 +31,8 @@ public class ContainerPlayerExpanded extends Container {
         this.isLocalWorld = world;
         this.player = player;
         baubles = player.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
+        ((BaublesContainer) baubles).updateSlots(player);
+        this.slotsAmount = baubles.getSlots();
 
         //add craftResult (1)
         this.addSlotToContainer(new SlotCrafting(player, this.craftMatrix, this.craftResult, 0, 154, 28));
@@ -70,7 +72,7 @@ public class ContainerPlayerExpanded extends Container {
         }
 
         //add bauble slots (amount)
-        for (int i = 0; i < getAmount(); i++) {
+        for (int i = 0; i < slotsAmount; i++) {
             this.addSlotToContainer(new SlotBaubleHandler(player, baubles, i, -21, 15 + (i * 18)));
         }
 
@@ -139,7 +141,7 @@ public class ContainerPlayerExpanded extends Container {
             ItemStack oldStack = slot.getStack();
             newStack = oldStack.copy();
             EntityEquipmentSlot entityequipmentslot = EntityLiving.getSlotForItemStack(newStack);
-            int slotShift = getAmount();
+            int slotShift = slotsAmount;
             boolean isMerge = false;
 
             // craftResult -> inv

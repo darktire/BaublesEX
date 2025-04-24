@@ -8,7 +8,7 @@ import baubles.client.gui.GuiBaublesTab;
 import baubles.client.gui.GuiBaublesTabButton;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.Baubles;
-import baubles.common.Config;
+import baubles.common.config.Config;
 import baubles.common.items.ItemRing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -52,7 +52,7 @@ public class ClientEventHandler {
     public void registerTextures(TextureStitchEvent.Pre event) {
         TextureMap map = event.getMap();
         for (BaubleType type : BaubleType.values()) {
-            map.registerSprite(new ResourceLocation(Baubles.MODID, "gui/slots/" + type.name));
+            map.registerSprite(new ResourceLocation(Baubles.MODID, "gui/slots/" + type.getTypeName()));
         }
     }
 
