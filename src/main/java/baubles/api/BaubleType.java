@@ -5,35 +5,43 @@ package baubles.api;
  **/
 public enum BaubleType {
 
-    AMULET(1),
-    RING(2),
-    BELT(1),
-    TRINKET(6),
-    HEAD(1),
-    BODY(1),
-    CHARM(1);
+	AMULET(1),
+	RING(2),
+	BELT(1),
+	TRINKET(6),
+	HEAD(1),
+	BODY(1),
+	CHARM(1);
 
-    public final String name;
-    private final BaubleTypeEx baubleTypeEx;
-    public final int amount;
-    private final int[] validSlots;
+	private final int defaultAmount;
+	private final String typeName;
+	private final BaubleTypeEx baubleTypeEx;
+	private final int[] validSlots;
 
-    BaubleType(int amount) {
-        this.name = this.name().toLowerCase();
-        this.amount = amount;
-//        this.translationKey = "name." + name.toUpperCase();
-//        this.backgroundTexture = "baubles:gui/slots/" + name;
-        this.baubleTypeEx = new BaubleTypeEx(name);
-        this.validSlots = getValidSlots();
-    }
+	BaubleType(int amount) {
+		this.typeName = this.name().toLowerCase();
+		this.defaultAmount = amount;
+		this.baubleTypeEx = new BaubleTypeEx(typeName, amount);
+		this.validSlots = getValidSlots();
+	}
 
-    @Deprecated
-    public boolean hasSlot(int slot) {
-        return baubleTypeEx.hasSlot(slot);
-    }
+	public BaubleTypeEx getBaubleTypeEx() {
+		return baubleTypeEx;
+	}
 
-    @Deprecated
-    public int[] getValidSlots() {
-        return baubleTypeEx.getValidSlots();
-    }
+	public String getTypeName() {
+		return typeName;
+	}
+
+	public int getDefaultAmount() {
+		return this.defaultAmount;
+	}
+
+	public boolean hasSlot(int slot) {
+		return baubleTypeEx.hasSlot(slot);
+	}
+
+	public int[] getValidSlots() {
+		return baubleTypeEx.getValidSlots();
+	}
 }

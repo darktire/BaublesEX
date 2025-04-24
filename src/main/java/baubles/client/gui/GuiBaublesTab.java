@@ -1,10 +1,11 @@
 package baubles.client.gui;
 
-import baubles.common.BaubleContent;
 import baubles.common.container.ContainerBaublesTab;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.entity.player.EntityPlayer;
+
+import static baubles.api.BaublesRegister.getSum;
 
 public class GuiBaublesTab extends InventoryEffectRenderer {
     public GuiBaublesTab(EntityPlayer player) {
@@ -28,7 +29,7 @@ public class GuiBaublesTab extends InventoryEffectRenderer {
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
                 this.drawTexturedModalRect(this.guiLeft + 7 + j * 18, this.guiTop + 17 + i * 18, 5, 227, 18, 18);
-                if (j + i * 9 >= BaubleContent.getAmount()) break outerLoop;
+                if (j + i * 9 >= getSum()) break outerLoop;
             }
         }
     }

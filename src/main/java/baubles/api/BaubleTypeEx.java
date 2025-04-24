@@ -1,63 +1,40 @@
 package baubles.api;
 
-import java.util.ArrayList;
-
 public class BaubleTypeEx {
-
-    protected static ArrayList<String> slots = new ArrayList<>();
-    public String type;
-    public int amount;
-
-    public BaubleTypeEx(String type, int amount) {
-        this.type = type;
+    private int amount;
+    private int[] validSlots;
+    private final String typeName;
+    public BaubleTypeEx(String typeName, int amount) {
+        this.typeName = typeName;
         this.amount = amount;
-        registerType(type, amount);
     }
 
-    /**
-     * Without register type.
-     */
-    public BaubleTypeEx(String type) {
-        this.type = type;
+    public BaubleTypeEx getType() {
+        return this;
     }
 
-    protected void registerType(String type, int amount) {
-        for (int i = 0; i < amount; i++){
-            slots.add(type);
-        }
+    public void setAmount(int x) {
+        amount = x;
+    }
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setValidSlots(int[] slots) {
+        this.validSlots = slots;
+    }
+    public int[] getValidSlots() {
+        return validSlots;
+    }
+
+    public String getTypeName() {
+        return typeName;
     }
 
     public boolean hasSlot(int slot) {
-        for (int s : this.getValidSlots()) {
+        for (int s: validSlots) {
             if (s == slot) return true;
         }
         return false;
     }
-
-    public static int[] getValidSlots(String type) {
-        int[] validSlots = new int[0];
-        if (slots.contains(type)) {
-            int min = slots.indexOf(type);
-            int amount = slots.lastIndexOf(type) - min + 1;
-            validSlots = new int[amount];
-            for (int i = 0; i < amount; i++) validSlots[i] = min + i;
-        }
-        if (type.equals("trinket")) {
-            int length = slots.size();
-            validSlots = new int[length];
-            for (int i = 0; i < length; i++) validSlots[i] = i;
-        }
-
-        return validSlots;
-    }
-
-    public int[] getValidSlots() {
-        return getValidSlots(type);
-    }
-
-    public static ArrayList<String> getSlots() {
-        return slots;
-    }
 }
-
-//todo type define

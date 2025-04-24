@@ -4,9 +4,8 @@ import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.common.BaubleContent;
 import baubles.common.Baubles;
-import baubles.common.Config;
+import baubles.common.config.Config;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +22,8 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+
+import static baubles.api.BaublesRegister.getSum;
 
 @Mod.EventBusSubscriber
 public class ItemRing extends Item implements IBauble {
@@ -114,7 +115,7 @@ public class ItemRing extends Item implements IBauble {
 			IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityPlayer) player);
 			Potion potion = Potion.REGISTRY.getObject(new ResourceLocation("haste"));
 
-			for (int i = 0; i < BaubleContent.getAmount(); i++) {
+			for (int i = 0; i < getSum(); i++) {
 				ItemStack ring1 = baubles.getStackInSlot(i);
 				if (ring1.getItem() == ring) level++;
 				if (level == Config.maxLevel - 1) break;

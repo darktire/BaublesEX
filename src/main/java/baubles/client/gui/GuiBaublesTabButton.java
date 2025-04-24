@@ -1,6 +1,6 @@
 package baubles.client.gui;
 
-import baubles.common.Config;
+import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketOpenBaublesTab;
 import baubles.common.network.PacketOpenNormalInventory;

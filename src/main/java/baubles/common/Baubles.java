@@ -7,6 +7,7 @@ import baubles.api.cap.BaublesCapabilities;
 import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
+import baubles.common.config.ConfigHelper;
 import baubles.common.event.CommandBaubles;
 import baubles.common.network.PacketHandler;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -31,6 +32,8 @@ public class Baubles {
     public static final String MODID = "baubles";
     public static final String MODNAME = "Baubles";
     public static final String VERSION = "2.1.0";
+    public static ConfigHelper config;
+    public static BaublesContent baubles;
 
     @SidedProxy(clientSide = "baubles.client.ClientProxy", serverSide = "baubles.common.CommonProxy")
     public static CommonProxy proxy;
@@ -44,7 +47,8 @@ public class Baubles {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        Config.configLoader(event);
+        config = new ConfigHelper(event);
+        baubles = new BaublesContent();
 
         CapabilityManager.INSTANCE.register(
                 IBaublesItemHandler.class,

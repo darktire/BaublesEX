@@ -14,7 +14,7 @@ import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.render.IRenderBauble;
 import baubles.api.render.IRenderBauble.RenderType;
-import baubles.common.Config;
+import baubles.common.config.Config;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EntityPlayer;
