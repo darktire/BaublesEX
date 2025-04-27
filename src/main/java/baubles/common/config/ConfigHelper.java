@@ -11,10 +11,13 @@ public class ConfigHelper extends Config{
         super(event);
     }
 
+    /**
+     * Reflect from default types to config.
+     * Wait to add json support.
+     */
     public int getAmount(String name) throws NoSuchFieldException, IllegalAccessException {
         Class<?> clazz = Config.class;
         Field field = clazz.getDeclaredField(name);
-
         if (name.equals(BaubleType.TRINKET.name())) return 0;
         return field.getInt(null);
     }

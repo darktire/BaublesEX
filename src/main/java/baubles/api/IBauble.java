@@ -3,6 +3,8 @@ package baubles.api;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
+import static baubles.api.BaublesRegister.getBaubles;
+
 /**
  *
  * This interface should be extended by items that can be worn in bauble slots
@@ -14,20 +16,35 @@ public interface IBauble {
     /**
      * This method return the type of bauble this is.
      * Type is used to determine the slots it can go into.
+     * Use this method when expanding types.
      */
-    default BaubleTypeEx getBaubleTypeEx(ItemStack itemStack) {
+    default BaubleTypeEx getBaubleTypeEx() {
         return null;
-    };
+    }
 
     /**
      * This method return the type of bauble this is.
      * Type is used to determine the slots it can go into.
-     * @deprecated prefer calling {@link IBauble#getBaubleType(ItemStack)} wherever possible
+     * Use this method when it has determined type.
+     */
+    default BaubleType getBaubleType() {
+        return getBaubleType(null);
+    }
+
+    /**
+     * This method return the type of bauble this is.
+     * Type is used to determine the slots it can go into.
+     * Keep this for old api.
+     * @deprecated prefer calling {@link IBauble#getBaubleType()} wherever possible
      */
     @Deprecated
     default BaubleType getBaubleType(ItemStack itemStack) {
         return null;
-    };
+    }
+
+    default void setType(String typeName) {
+        getBaubles().get(typeName);
+    }
 
     /**
      * This method is called once per tick if the bauble is being worn by a player

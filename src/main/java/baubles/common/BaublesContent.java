@@ -18,7 +18,9 @@ public class BaublesContent extends BaublesRegister {
                 int value = config.getAmount(type.name());
                 baubles.get(type.getTypeName()).setAmount(value);
             } catch (NoSuchFieldException | IllegalAccessException e) {
-                Baubles.log.error("BAUBLES default slots loading failed");
+                if (e instanceof NoSuchFieldException) {
+                    Baubles.log.warn("Bauble type " + type.name() + " loading failed");
+                }
             }
         }
     }
