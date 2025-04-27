@@ -3,9 +3,17 @@ package baubles.api;
 import java.util.HashMap;
 
 public class BaublesRegister {
-
+    /**
+     * Dynamic bauble types.
+     */
     protected static HashMap<String, BaubleTypeEx> baubles = new HashMap<>();
+    /**
+     * Help to get type by index.
+     */
     protected static HashMap<Integer, BaubleTypeEx> baubleSlots = new HashMap<>();
+    /**
+     * Simply summarise.
+     */
     protected static int sum;
 
     public BaublesRegister() {
@@ -37,6 +45,10 @@ public class BaublesRegister {
             pointer += amount;
         }
         sum = pointer;
+    }
+
+    public static HashMap<String, BaubleTypeEx> getBaubles() {
+        return baubles;
     }
 
     public static HashMap<Integer, BaubleTypeEx> getSlots() {

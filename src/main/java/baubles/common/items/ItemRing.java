@@ -54,7 +54,12 @@ public class ItemRing extends Item implements IBauble {
 	}
 
 	@Override
-	public BaubleType getBaubleType(ItemStack itemstack) {
+	public BaubleType getBaubleType() {
+		return BaubleType.RING;
+	}
+
+	@Override
+	public BaubleType getBaubleType(ItemStack itemStack) {
 		return BaubleType.RING;
 	}
 
@@ -77,7 +82,6 @@ public class ItemRing extends Item implements IBauble {
 
 	@Override
 	public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
-        IBauble.super.onWornTick(itemstack, player);
     }
 
 	@Override

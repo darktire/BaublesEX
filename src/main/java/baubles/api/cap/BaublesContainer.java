@@ -10,21 +10,25 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import static baubles.api.BaublesRegister.getSum;
+import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 
 public class BaublesContainer extends ItemStackHandler implements IBaublesItemHandler {
 
-    private ArrayList<Boolean> changed;
+    private HashMap<Integer, Boolean> changed;
     private boolean blockEvents = false;
     private EntityLivingBase player;
 
     public BaublesContainer() {
         super(getSum());
-        this.changed = new ArrayList<>(stacks.size());
+        this.changed = new HashMap<>(stacks.size());
     }
 
+    /**
+     * Update container when edit config in game
+     */
     public void updateSlots(EntityPlayer player) {
         if (stacks.size() != getSum()) {
             NonNullList<ItemStack> stacks1 = stacks;
@@ -43,10 +47,10 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack, EntityLivingBase player) {
         if (stack == null || stack.isEmpty()) return false;
-        IBauble bauble = stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
+        IBauble bauble = stack.getCapability(CAPABILITY_ITEM_BAUBLE, null);
         if (bauble != null) {
             boolean canEquip = bauble.canEquip(stack, player);
-            boolean hasSlot = bauble.getBaubleType(stack).hasSlot(slot);
+            boolean hasSlot = bauble.getBaubleType().hasSlot(slot);
             return canEquip && hasSlot;
         }
         return false;
@@ -60,8 +64,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     @Override
     public void setStackInSlot(int slot, ItemStack stack) {
         if (stack.isEmpty() || this.isItemValidForSlot(slot, stack, player)) {
-            super.stacks.set(slot, stack);
-            setChanged(slot, true);
+            super.setStackInSlot(slot, stack);
         }
     }
 
@@ -91,22 +94,14 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         this.blockEvents = blockEvents;
     }
 
-    private void validateChanged(int slot) {
-        if (changed == null) changed = new ArrayList<>(stacks.size());
-        if (slot < 0) throw new RuntimeException("Bauble slot can't be negative" + '(' + slot + ')');
-        if (slot >= changed.size()) changed.add(false);
-    }
-
     @Override
     public boolean isChanged(int slot) {
-        validateChanged(slot);
-        return changed.get(slot);
+        return changed.getOrDefault(slot, false);
     }
 
     @Override
     public void setChanged(int slot, boolean change) {
-        validateChanged(slot);
-        this.changed.set(slot, change);
+        this.changed.put(slot, change);
     }
 
 	@Override
@@ -116,30 +111,28 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
 
     @Override
     public NBTTagCompound serializeNBT() {
-        NBTTagList nbtTagList = new NBTTagList();
+        NBTTagList itemList = new NBTTagList();
         for (int i = 0; i < super.stacks.size(); i++) {
-            if (!super.stacks.get(i).isEmpty())
-            {
-                NBTTagCompound itemTag = new NBTTagCompound();
+            ItemStack itemStack = super.stacks.get(i);
+            if (!itemStack.isEmpty()) {
+                NBTTagCompound itemTag = (NBTTagCompound) CAPABILITY_ITEM_BAUBLE.writeNBT(itemStack.getCapability(CAPABILITY_ITEM_BAUBLE, null), null);
                 itemTag.setInteger("Slot", i);
-                super.stacks.get(i).writeToNBT(itemTag);
-                nbtTagList.appendTag(itemTag);
+                itemStack.writeToNBT(itemTag);
+                itemList.appendTag(itemTag);
             }
         }
         NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setTag("Items", nbtTagList);
+        nbt.setTag("Items", itemList);
         nbt.setInteger("Size", super.stacks.size());
         return nbt;
     }
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-//        setSize(nbt.hasKey("Size", Constants.NBT.TAG_INT) ? nbt.getInteger("Size") : stacks.size());
         NBTTagList tagList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < tagList.tagCount(); i++) {
             NBTTagCompound itemTags = tagList.getCompoundTagAt(i);
             int slot = itemTags.getInteger("Slot");
-
             if (slot >= 0 && slot < super.stacks.size()) {
                 super.stacks.set(slot, new ItemStack(itemTags));
             }
@@ -148,6 +141,6 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
 
     @Override
     protected void onContentsChanged(int slot) {
-        setChanged(slot, true);
+        this.setChanged(slot, true);
     }
 }

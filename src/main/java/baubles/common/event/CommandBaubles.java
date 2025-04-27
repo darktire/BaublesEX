@@ -75,7 +75,7 @@ public class CommandBaubles extends CommandBase {
 					ItemStack st = baubles.getStackInSlot(a);
 					if (!st.isEmpty() && st.hasCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null)) {
 						IBauble bauble = st.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
-						BaubleType bt = bauble.getBaubleType(st);
+						BaubleType bt = bauble.getBaubleType();
 						sender.sendMessage(new TextComponentTranslation("\u00a73 [Slot "+a+"] "+bt+" "+st.getDisplayName()));
 					}
 				}

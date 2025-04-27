@@ -43,6 +43,11 @@ public class GuiBaublesButton extends GuiButton {
     }
 
     @Override
+    public void mouseReleased(int mouseX, int mouseY) {
+        super.mouseReleased(mouseX, mouseY);
+    }
+
+    @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             if (parentGui instanceof GuiContainerCreative && ((GuiContainerCreative) parentGui).getSelectedTabIndex() != 11) return;

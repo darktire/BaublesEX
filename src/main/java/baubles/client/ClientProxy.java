@@ -1,6 +1,7 @@
 package baubles.client;
 
 import baubles.client.gui.GuiBaublesTab;
+import baubles.client.gui.GuiEvents;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.Baubles;
 import baubles.common.CommonProxy;
@@ -28,6 +29,7 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.registerKeyBinding(KEY_BAUBLES);
         ClientRegistry.registerKeyBinding(KEY_BAUBLES_TAB);
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+        MinecraftForge.EVENT_BUS.register(new GuiEvents());
     }
 
     @Override

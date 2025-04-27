@@ -12,6 +12,9 @@ public class BaubleTypeEx {
     public BaubleTypeEx getType() {
         return this;
     }
+    public BaubleType getOldType() {
+        return BaubleType.valueOf(typeName.toUpperCase());
+    }
 
     public void setAmount(int x) {
         amount = x;
