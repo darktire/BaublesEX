@@ -115,7 +115,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         for (int i = 0; i < super.stacks.size(); i++) {
             ItemStack itemStack = super.stacks.get(i);
             if (!itemStack.isEmpty()) {
-                NBTTagCompound itemTag = (NBTTagCompound) CAPABILITY_ITEM_BAUBLE.writeNBT(itemStack.getCapability(CAPABILITY_ITEM_BAUBLE, null), null);
+                NBTTagCompound itemTag = new NBTTagCompound();
                 itemTag.setInteger("Slot", i);
                 itemStack.writeToNBT(itemTag);
                 itemList.appendTag(itemTag);

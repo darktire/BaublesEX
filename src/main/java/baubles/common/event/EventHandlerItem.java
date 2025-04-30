@@ -1,17 +1,12 @@
 package baubles.common.event;
 
 import baubles.api.IBauble;
+import baubles.api.cap.BaublesCapabilityProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 import static baubles.common.Baubles.MODID;
@@ -30,24 +25,12 @@ public class EventHandlerItem {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void itemCapabilityAttach(AttachCapabilitiesEvent<ItemStack> event) {
         ItemStack stack = event.getObject();
-        if (stack.isEmpty() || !(stack.getItem() instanceof IBauble) || stack.hasCapability(CAPABILITY_ITEM_BAUBLE, null)
+        if (stack.isEmpty()
+                || !(stack.getItem() instanceof IBauble)
+                || stack.hasCapability(CAPABILITY_ITEM_BAUBLE, null)
                 || event.getCapabilities().values().stream().anyMatch(c -> c.hasCapability(CAPABILITY_ITEM_BAUBLE, null)))
             return;
 
-        event.addCapability(capabilityResourceLocation, new ICapabilityProvider() {
-
-            @Override
-            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                return capability == CAPABILITY_ITEM_BAUBLE;
-            }
-
-            @Nullable
-            @Override
-            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                return capability == CAPABILITY_ITEM_BAUBLE
-                        ? CAPABILITY_ITEM_BAUBLE.cast((IBauble) stack.getItem())
-                        : null;
-            }
-        });
+        event.addCapability(capabilityResourceLocation, new BaublesCapabilityProvider(stack));
     }
 }

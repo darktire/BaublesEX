@@ -1,9 +1,7 @@
 package baubles.api.cap;
 
-import baubles.api.BaubleTypeEx;
 import baubles.api.IBauble;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
@@ -38,23 +36,11 @@ public class BaublesCapabilities {
 
         @Override
         public NBTBase writeNBT(Capability<IBauble> capability, IBauble instance, EnumFacing side) {
-            NBTTagCompound compound = new NBTTagCompound();
-            if (instance != null) {
-                BaubleTypeEx baubleTypeEx = instance.getBaubleTypeEx();
-                if (baubleTypeEx != null) {
-                    compound.setString("bauble", baubleTypeEx.getTypeName());
-                } else {
-                    compound.setString("bauble", instance.getBaubleType().getTypeName());
-                }
-            }
-            return compound;
+            return null;
         }
 
         @Override
         public void readNBT(Capability<IBauble> capability, IBauble instance, EnumFacing side, NBTBase nbt) {
-            NBTTagCompound compound = (NBTTagCompound) nbt;
-            String typeName = compound.getString("type");
-            instance.setType(typeName);
         }
     }
 }

@@ -151,17 +151,19 @@ public class EventHandlerEntity {
         EntityPlayer player = event.getEntityPlayer();
         EnumHand hand = event.getHand();
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
-        for(int i = 0; i < baubles.getSlots(); i++)
-            if((baubles.getStackInSlot(i) == null || baubles.getStackInSlot(i).isEmpty()) && baubles.isItemValidForSlot(i, player.getHeldItem(hand), player)) {
+        //todo add property
+/*        for(int i = 0; i < baubles.getSlots(); i++) {
+            if ((baubles.getStackInSlot(i) == null || baubles.getStackInSlot(i).isEmpty()) && baubles.isItemValidForSlot(i, player.getHeldItem(hand), player)) {
                 ItemStack itemStack = player.getHeldItem(hand).copy();
                 baubles.setStackInSlot(i, itemStack);
                 IBauble bauble = itemStack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
-                if(!player.capabilities.isCreativeMode){
+                if (!player.capabilities.isCreativeMode) {
                     player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
                 }
                 bauble.onEquipped(player.getHeldItem(hand), player);
                 break;
             }
+        }*/
     }
 
     public void dropItemsAt(EntityPlayer player, List<EntityItem> drops, Entity e) {
