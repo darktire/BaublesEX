@@ -3,6 +3,8 @@ package baubles.common.config;
 import baubles.api.BaubleType;
 import baubles.common.Baubles;
 import baubles.common.BaublesContent;
+import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -16,7 +18,9 @@ import static baubles.common.Baubles.config;
 
 public class Config {
     protected static Configuration configFile;
+    private static final Gson GSON = new Gson();
     public static File modDir;
+    private static File jsonFile;
 
 //    Configuration Options
     public static boolean renderBaubles = true;
@@ -35,6 +39,7 @@ public class Config {
     public static int BODY;
     public static int CHARM;
     public static int maxLevel = 1;
+    private static MoreSetting moreSetting;
 
     public Config(FMLPreInitializationEvent event) {
         loadConfig(event);
@@ -43,6 +48,7 @@ public class Config {
     public void loadConfig(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(ConfigChangeListener.class);
         modDir = event.getModConfigurationDirectory();
+        jsonFile = new File(modDir, "baubles.json");
         try {
             init(event.getSuggestedConfigurationFile());
         } catch (Exception e) {
@@ -78,6 +84,19 @@ public class Config {
         BODY = getAmount("bodySlot", BaubleType.BODY.getDefaultAmount());
         CHARM = getAmount("charmSlot", BaubleType.CHARM.getDefaultAmount());
 
+//        try {
+//            if (jsonFile.exists()) {
+//                    moreSetting = GSON.fromJson(new FileReader(jsonFile), MoreSetting.class);
+//            }
+//            else {
+//                    Files.createFile(jsonFile.toPath());
+//                    moreSetting = new MoreSetting("amulet", BaubleType.AMULET.getDefaultAmount());
+//                    FileUtils.write(jsonFile, GSON.toJson(moreSetting), StandardCharsets.UTF_8);
+//            }
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+
         configFile.save();
     }
 
@@ -92,6 +111,17 @@ public class Config {
                 config.init();
                 baubles = new BaublesContent();
             }
+        }
+    }
+
+    public static class MoreSetting {
+        @Expose
+        private String type;
+        @Expose
+        private int amount;
+        public MoreSetting(String type, int amount) {
+            this.type = type;
+            this.amount = amount;
         }
     }
 }
