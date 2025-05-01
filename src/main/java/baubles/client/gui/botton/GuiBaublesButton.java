@@ -1,5 +1,6 @@
-package baubles.client.gui;
+package baubles.client.gui.botton;
 
+import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketOpenBaublesInventory;
 import baubles.common.network.PacketOpenBaublesTab;

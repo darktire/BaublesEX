@@ -2,7 +2,6 @@ package baubles.common.event;
 
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.BaublesCapabilities;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.BaublesContainerProvider;
 import baubles.api.cap.IBaublesItemHandler;
@@ -15,7 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.WorldServer;
@@ -29,6 +27,8 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.*;
+
+import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 
 public class EventHandlerEntity {
 
@@ -46,6 +46,7 @@ public class EventHandlerEntity {
         }
     }
 
+    //todo for more entity.
     @SubscribeEvent
     public void attachCapabilitiesPlayer(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof EntityPlayer) {
@@ -83,7 +84,7 @@ public class EventHandlerEntity {
             IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
             for (int i = 0; i < baubles.getSlots(); i++) {
                 ItemStack stack = baubles.getStackInSlot(i);
-                IBauble bauble = stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
+                IBauble bauble = stack.getCapability(CAPABILITY_ITEM_BAUBLE, null);
                 if (bauble != null) {
                     bauble.onWornTick(stack, player);
                 }
@@ -110,7 +111,7 @@ public class EventHandlerEntity {
         Set<EntityPlayer> receivers = null;
         for (int i = 0; i < baubles.getSlots(); i++) {
             ItemStack stack = baubles.getStackInSlot(i);
-            IBauble bauble = stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
+            IBauble bauble = stack.getCapability(CAPABILITY_ITEM_BAUBLE, null);
             if (baubles.isChanged(i) || bauble != null && bauble.willAutoSync(stack, player) && !ItemStack.areItemStacksEqual(stack, items[i])) {
                 if (receivers == null) {
                     receivers = new HashSet<>(((WorldServer) player.world).getEntityTracker().getTrackingPlayers(player));
@@ -146,24 +147,27 @@ public class EventHandlerEntity {
         }
     }
 
+    //todo add property
     @SubscribeEvent
     public  void playerRightClickItem(PlayerInteractEvent.RightClickItem event) {
         EntityPlayer player = event.getEntityPlayer();
-        EnumHand hand = event.getHand();
-        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
-        //todo add property
-/*        for(int i = 0; i < baubles.getSlots(); i++) {
-            if ((baubles.getStackInSlot(i) == null || baubles.getStackInSlot(i).isEmpty()) && baubles.isItemValidForSlot(i, player.getHeldItem(hand), player)) {
-                ItemStack itemStack = player.getHeldItem(hand).copy();
-                baubles.setStackInSlot(i, itemStack);
-                IBauble bauble = itemStack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
-                if (!player.capabilities.isCreativeMode) {
-                    player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
+        ItemStack heldItem = player.getHeldItem(event.getHand());
+        IBauble bauble = heldItem.getCapability(CAPABILITY_ITEM_BAUBLE, null);
+        if (bauble != null) {
+            int[] validSlots = bauble.getBaubleType().getValidSlots();
+            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
+            for (int i: validSlots) {
+                if (baubles.getStackInSlot(i) == null || baubles.getStackInSlot(i).isEmpty()) {
+                    ItemStack itemStack = heldItem.copy();
+                    baubles.setStackInSlot(i, itemStack);
+                    if (!player.capabilities.isCreativeMode) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
+                    }
+                    bauble.onEquipped(itemStack, player);
+                    break;
                 }
-                bauble.onEquipped(player.getHeldItem(hand), player);
-                break;
             }
-        }*/
+        }
     }
 
     public void dropItemsAt(EntityPlayer player, List<EntityItem> drops, Entity e) {

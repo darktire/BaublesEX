@@ -10,6 +10,7 @@ bin
 out
 run
 log
+libs
 *.ipr
 *.iws
 *.iml
@@ -22,7 +23,8 @@ build
 # other
 eclipse
 *test*
-screenshot
+pic
+*.psd
 
 # Files from Forge MDK
 forge*changelog.txt

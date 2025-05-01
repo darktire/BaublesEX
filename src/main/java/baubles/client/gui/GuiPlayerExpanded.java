@@ -3,6 +3,7 @@ package baubles.client.gui;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.client.ClientProxy;
+import baubles.client.gui.botton.GuiBaublesFlip;
 import baubles.common.Baubles;
 import baubles.common.BaublesContent;
 import baubles.common.container.ContainerPlayerExpanded;
