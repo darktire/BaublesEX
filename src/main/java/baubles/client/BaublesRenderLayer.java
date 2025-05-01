@@ -70,3 +70,4 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
         return false;
     }
 }
+//todo switcher for render

@@ -1,5 +1,6 @@
-package baubles.client.gui;
+package baubles.client.gui.botton;
 
+import baubles.client.gui.GuiPlayerExpanded;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;

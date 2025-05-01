@@ -1,5 +1,7 @@
-package baubles.client.gui;
+package baubles.client.gui.botton;
 
+import baubles.client.gui.GuiBaublesTab;
+import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketOpenBaublesTab;
@@ -14,7 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public class GuiBaublesTabButton extends GuiButtonEx {
+public class GuiBaublesTabButton extends GuiButtonBase {
 
     public static final ResourceLocation tabs = new ResourceLocation("minecraft", "textures/gui/advancements/tabs.png");
     private final GuiContainer parentGui;

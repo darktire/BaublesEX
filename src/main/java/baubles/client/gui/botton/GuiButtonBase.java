@@ -1,4 +1,4 @@
-package baubles.client.gui;
+package baubles.client.gui.botton;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -7,8 +7,8 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 
-public class GuiButtonEx extends GuiButton {
-    public GuiButtonEx(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
+public class GuiButtonBase extends GuiButton {
+    public GuiButtonBase(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
         super(buttonId, x, y, widthIn, heightIn, buttonText);
     }
 

@@ -74,4 +74,3 @@ public class Baubles {
         event.registerServerCommand(new CommandBaubles());
     }
 }
-//todo baubles view

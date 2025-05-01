@@ -1,15 +1,20 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven { url = 'https://maven.gofancy.wtf/releases' }
         maven { url = 'https://files.minecraftforge.net/maven' }
         maven { url = 'https://repo.spongepowered.org/maven' }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:6.+'
+        classpath 'wtf.gofancy.fancygradle:wtf.gofancy.fancygradle.gradle.plugin:1.1.+'
+//        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
         
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'wtf.gofancy.fancygradle'
+//apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'idea'
 
 version = "${version_major}.${version_minor}.${version_patch}"
@@ -19,8 +24,7 @@ archivesBaseName = "${name}-${minecraft_version}"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20171003-1.12'
-//    mappings channel: 'snapshot', version: '20180814-1.12'
+    mappings channel: "${mappings_channel}", version: "${mappings_version}"
     runs {
         configureEach {
             property 'forge.logging.markers', 'REGISTRIES'
@@ -35,7 +39,21 @@ minecraft {
     }
 }
 
+fancyGradle {
+    patches {
+        resources
+        coremods
+        codeChickenLib
+        asm
+        mergetool
+    }
+}
+
 repositories {
+    maven {
+        name 'Garden of Fancy'
+        url 'https://maven.gofancy.wtf/releases'
+    }
     maven {
         name = "Curse Maven"
         url = "https://www.cursemaven.com"
@@ -43,6 +61,19 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven {
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+    }
+    maven {
+        name = "CoFH Maven"
+        url = "https://maven.covers1624.net"
+    }
+}
+
+configurations {
+    provided
+    compile.extendsFrom(provided)
 }
 
 dependencies {
@@ -52,8 +83,26 @@ dependencies {
         version: "${minecraft_version}-${forge_version}"
     ])
 
-//    implementation ("net.minecraftforge:mergetool:0.2.3.3") { force = true }
+//    provided('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
+//        exclude module: 'guava'
+//        exclude module: 'commons-io'
+//        exclude module: 'gson'
+//    }
+//    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+
+
+    //JEI
+    compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}")
+    //CoFH
+    runtimeOnly fg.deobf("curse.maven:redstone-flux-270789:2920436")
+    implementation fg.deobf("curse.maven:cofh-core-69162:2920433")
 }
+
+//mixin {
+//    add sourceSets.main, "mixins.baubles.refmap.json"
+//    debug.export = true
+//}
 
 tasks.register('replaceResources', Copy) {
     outputs.upToDateWhen { false }
@@ -67,6 +116,7 @@ tasks.register('replaceResources', Copy) {
 tasks.register('copyResources', Copy) {
     outputs.upToDateWhen { false }
     from(sourceSets.main.resources.srcDirs) {
+        exclude "**/*.psd"
         exclude 'mcmod.info'
     }
     into 'build/classes/java/main'
@@ -105,4 +155,9 @@ tasks.register('apiJar', Jar) {
 
 artifacts {
     archives apiJar
+}
+
+tasks.register('cleanLogs') {
+    delete("run/crash-reports")
+    delete("run/logs")
 }
