@@ -28,11 +28,11 @@
 ## More Details:
 
 - ### customizable bauble slots:
-  - customize bauble types and quantities ![img_0.png](pic/old/img_0.png)
+  - customize bauble types and quantities ![img_0.png](https://imgur.com/undefined)
 
 - ### new style of bauble slots:
-  - now the bauble button can open new slots for baubles beside survival inventory. ![img_2.png](pic/old/img_2.png)
-  - add new inventory tab for baubles. now supports a maximum of 27 baubles. support for more slots will be realized in future update. ![img_3.png](pic/old/img_3.png)
+  - now the bauble button can open new slots for baubles beside survival inventory. ![img_2.png](https://imgur.com/tyN637Y)
+  - add new inventory tab for baubles. now supports a maximum of 27 baubles. support for more slots will be realized in future update. ![img_3.png](https://imgur.com/fVpMhRW)
 
 ---
 

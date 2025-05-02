@@ -2,13 +2,23 @@ package baubles.common;
 
 import baubles.api.BaubleType;
 import baubles.api.BaublesRegister;
+import baubles.common.config.Config;
+import baubles.common.config.json.JsonHelper;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import static baubles.common.Baubles.config;
 
 public class BaublesContent extends BaublesRegister {
+    JsonHelper jsonHelper = new JsonHelper();
     public BaublesContent() {
-        this.init();
-        super.loadValidSlots();
+        if (Config.jsonFunction) {
+            readJson();
+        }
+        else {
+            this.init();
+        }
     }
     @Override
     public void init() {
@@ -22,6 +32,29 @@ public class BaublesContent extends BaublesRegister {
                     Baubles.log.warn("Bauble type " + type.name() + " loading failed");
                 }
             }
+        }
+        super.loadValidSlots();
+    }
+
+    public void writeJson() {
+        try {
+            jsonHelper.typesToJson();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void readJson() {
+        try {
+            jsonHelper.jsonToType();
+        } catch (FileNotFoundException e) {
+            this.init();
+            writeJson();
+        }
+        try {
+            jsonHelper.jsonToType();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }

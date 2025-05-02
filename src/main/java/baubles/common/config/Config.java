@@ -3,8 +3,6 @@ package baubles.common.config;
 import baubles.api.BaubleType;
 import baubles.common.Baubles;
 import baubles.common.BaublesContent;
-import com.google.gson.Gson;
-import com.google.gson.annotations.Expose;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -18,18 +16,15 @@ import static baubles.common.Baubles.config;
 
 public class Config {
     protected static Configuration configFile;
-    private static final Gson GSON = new Gson();
-    public static File modDir;
-    private static File jsonFile;
+    public File modDir;
 
 //    Configuration Options
     public static boolean renderBaubles = true;
     public static boolean baublesButton = true;
     public static boolean baublesTab = false;
+    public static boolean jsonFunction = false;
     public static int invPosX = 0;
     public static int babPosX = 28;
-    public static String mode = "NORMAL";
-//    public static String[] validMode = {"NORMAL", "OLD"};
     public static boolean trinketLimit = false;
     public static int AMULET;
     public static int RING;
@@ -39,7 +34,6 @@ public class Config {
     public static int BODY;
     public static int CHARM;
     public static int maxLevel = 1;
-    private static MoreSetting moreSetting;
 
     public Config(FMLPreInitializationEvent event) {
         loadConfig(event);
@@ -48,7 +42,6 @@ public class Config {
     public void loadConfig(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(ConfigChangeListener.class);
         modDir = event.getModConfigurationDirectory();
-        jsonFile = new File(modDir, "baubles.json");
         try {
             init(event.getSuggestedConfigurationFile());
         } catch (Exception e) {
@@ -72,7 +65,7 @@ public class Config {
         babPosX = configFile.getInt("babPosX", "client.gui", babPosX, 0, 255, "The x position of button which calls baublesTab");
         invPosX = configFile.getInt("invPosX", "client.gui", invPosX, 0, 255, "The x position of button which calls inventory");
 
-//        mode = configFile.getString("mode", Configuration.CATEGORY_GENERAL ,mode, "NORMAL mode is current mode with all functions. \nOLD mode is back to classic style of baubles and support only 7 slots.", validMode, validMode);
+        jsonFunction = configFile.getBoolean("jsonFunction", Configuration.CATEGORY_GENERAL ,jsonFunction, "Activate json function or not.");
 
 //        trinketLimit = configFile.getBoolean("trinketLimit", Configuration.CATEGORY_GENERAL, trinketLimit, "(Invalid)Whether trinketSlot is controlled independently. If false, value of trinketSlot won't work.");
 
@@ -83,19 +76,6 @@ public class Config {
         HEAD = getAmount("headSlot", BaubleType.HEAD.getDefaultAmount());
         BODY = getAmount("bodySlot", BaubleType.BODY.getDefaultAmount());
         CHARM = getAmount("charmSlot", BaubleType.CHARM.getDefaultAmount());
-
-//        try {
-//            if (jsonFile.exists()) {
-//                    moreSetting = GSON.fromJson(new FileReader(jsonFile), MoreSetting.class);
-//            }
-//            else {
-//                    Files.createFile(jsonFile.toPath());
-//                    moreSetting = new MoreSetting("amulet", BaubleType.AMULET.getDefaultAmount());
-//                    FileUtils.write(jsonFile, GSON.toJson(moreSetting), StandardCharsets.UTF_8);
-//            }
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
 
         configFile.save();
     }
@@ -111,17 +91,6 @@ public class Config {
                 config.init();
                 baubles = new BaublesContent();
             }
-        }
-    }
-
-    public static class MoreSetting {
-        @Expose
-        private String type;
-        @Expose
-        private int amount;
-        public MoreSetting(String type, int amount) {
-            this.type = type;
-            this.amount = amount;
         }
     }
 }
