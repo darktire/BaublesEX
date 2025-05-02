@@ -1,6 +1,6 @@
 package baubles.client;
 
-import baubles.api.BaubleType;
+import baubles.api.BaubleTypeEx;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilities;
 import baubles.client.gui.GuiBaublesTab;
@@ -20,6 +20,8 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+
+import static baubles.api.BaublesRegister.getBaubles;
 
 public class ClientEventHandler {
 
@@ -42,8 +44,8 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void registerTextures(TextureStitchEvent.Pre event) {
         TextureMap map = event.getMap();
-        for (BaubleType type : BaubleType.values()) {
-            map.registerSprite(new ResourceLocation(Baubles.MODID, "gui/slots/" + type.getTypeName()));
+        for (BaubleTypeEx type : getBaubles().values()) {
+            map.registerSprite(new ResourceLocation(Baubles.MODID, type.getTexture()));
         }
     }
 

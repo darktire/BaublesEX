@@ -79,7 +79,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     public String getSlotTexture() {
-        return "baubles:gui/slots/"+ BaublesContent.getSlots().get(index).getTypeName();
+        return "baubles:"+ BaublesContent.getSlots().get(index).getTexture();
     }
 
     @Override

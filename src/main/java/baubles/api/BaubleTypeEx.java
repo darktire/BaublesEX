@@ -1,12 +1,14 @@
 package baubles.api;
 
 public class BaubleTypeEx {
+    private final String typeName;
     private int amount;
     private int[] validSlots;
-    private final String typeName;
+    private String texture;
     public BaubleTypeEx(String typeName, int amount) {
         this.typeName = typeName;
         this.amount = amount;
+        this.texture = "gui/slots/" + typeName;
     }
 
     public BaubleTypeEx getType() {
@@ -32,6 +34,9 @@ public class BaubleTypeEx {
 
     public String getTypeName() {
         return typeName;
+    }
+    public String getTexture() {
+        return texture;
     }
 
     public boolean hasSlot(int slot) {
