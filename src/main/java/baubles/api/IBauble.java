@@ -1,5 +1,6 @@
 package baubles.api;
 
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
@@ -75,7 +76,7 @@ public interface IBauble {
      * Can this bauble be removed from a bauble slot
      */
     default boolean canUnequip(ItemStack itemstack, EntityLivingBase player) {
-        return true;
+        return !EnchantmentHelper.hasBindingCurse(itemstack);
     }
 
     /**

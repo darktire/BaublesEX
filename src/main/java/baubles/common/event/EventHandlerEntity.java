@@ -8,6 +8,9 @@ import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.Baubles;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketSync;
+import cofh.core.enchantment.EnchantmentSoulbound;
+import cofh.core.util.helpers.ItemHelper;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,6 +33,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import java.util.*;
 
 import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
+import static cofh.core.init.CoreEnchantments.soulbound;
 
 public class EventHandlerEntity {
 
@@ -174,18 +178,36 @@ public class EventHandlerEntity {
     public void dropItemsAt(EntityPlayer player, List<EntityItem> drops, Entity e) {
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
         for (int i = 0; i < baubles.getSlots(); ++i) {
-            if (baubles.getStackInSlot(i) != null && !baubles.getStackInSlot(i).isEmpty()) {
-                EntityItem ei = new EntityItem(e.world,
-                        e.posX, e.posY + e.getEyeHeight(), e.posZ,
-                        baubles.getStackInSlot(i).copy());
-                ei.setPickupDelay(40);
-                float f1 = e.world.rand.nextFloat() * 0.5F;
-                float f2 = e.world.rand.nextFloat() * (float) Math.PI * 2.0F;
-				ei.motionX = -MathHelper.sin(f2) * f1;
-				ei.motionZ = MathHelper.cos(f2) * f1;
-                ei.motionY = 0.20000000298023224D;
-                drops.add(ei);
-                baubles.setStackInSlot(i, ItemStack.EMPTY);
+            ItemStack stack = baubles.getStackInSlot(i);
+            if (stack != null && !stack.isEmpty()) {
+                if (EnchantmentHelper.hasVanishingCurse(stack)) {
+                    baubles.setStackInSlot(i, ItemStack.EMPTY);
+                }
+                else if (EnchantmentHelper.getEnchantmentLevel(soulbound, stack) > 0) {
+                    handleSoulbound(stack);
+                } else {
+                    EntityItem ei = new EntityItem(e.world,
+                                e.posX, e.posY + e.getEyeHeight(), e.posZ,
+                                stack.copy());
+                    ei.setPickupDelay(40);
+                    float f1 = e.world.rand.nextFloat() * 0.5F;
+                    float f2 = e.world.rand.nextFloat() * (float) Math.PI * 2.0F;
+                    ei.motionX = -MathHelper.sin(f2) * f1;
+                    ei.motionZ = MathHelper.cos(f2) * f1;
+                    ei.motionY = 0.20000000298023224D;
+                    drops.add(ei);
+                    baubles.setStackInSlot(i, ItemStack.EMPTY);
+                }
+            }
+        }
+    }
+
+    private void handleSoulbound(ItemStack stack) {
+        int level = EnchantmentHelper.getEnchantmentLevel(soulbound, stack);
+        if(!EnchantmentSoulbound.permanent) {
+            if(cofh.core.util.helpers.MathHelper.RANDOM.nextInt(level + 1) == 0) {
+                ItemHelper.removeEnchantment(stack, soulbound);
+                if(level > 1) ItemHelper.addEnchantment(stack, soulbound, level - 1);
             }
         }
     }
