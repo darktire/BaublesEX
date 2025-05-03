@@ -90,6 +90,7 @@ public class Config {
             if (eventArgs.getModID().equals(Baubles.MODID)) {
                 config.init();
                 baubles = new BaublesContent();
+                baubles.writeJson();
             }
         }
     }

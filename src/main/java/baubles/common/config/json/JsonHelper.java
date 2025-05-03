@@ -43,6 +43,7 @@ public class JsonHelper {
 
     public void jsonToType() throws FileNotFoundException {
         Collection<File> fileList = FileUtils.listFiles(typeDir, new String[]{"json"}, true);
+        if (fileList.isEmpty()) throw new FileNotFoundException();
         for (File jsonFile: fileList) {
             BaubleTypeEx type = GSON.fromJson(new FileReader(jsonFile),BaubleTypeEx.class);
             getBaubles().put(type.getTypeName(), type);

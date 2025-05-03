@@ -2,8 +2,7 @@ package baubles.client.gui;
 
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.client.ClientProxy;
-import baubles.client.gui.botton.GuiBaublesFlip;
+import baubles.client.gui.botton.GuiBaublesController;
 import baubles.common.Baubles;
 import baubles.common.BaublesContent;
 import baubles.common.container.ContainerPlayerExpanded;
@@ -12,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.achievement.GuiStats;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -27,8 +25,7 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.Collections;
 
-public class GuiPlayerExpanded extends GuiContainer {
-
+public class GuiPlayerExpanded extends GuiBaublesBase {
     public static final ResourceLocation background = new ResourceLocation(Baubles.MODID, "textures/gui/baubles_container.png");
     private final IBaublesItemHandler baubles = ((ContainerPlayerExpanded) this.inventorySlots).baubles;
     private float oldMouseX, oldMouseY;
@@ -37,10 +34,6 @@ public class GuiPlayerExpanded extends GuiContainer {
     public GuiPlayerExpanded(EntityPlayer player) {
         super(new ContainerPlayerExpanded(player.inventory, !player.getEntityWorld().isRemote, player));
         this.allowUserInput = true;
-    }
-
-    private void resetGuiLeft() {
-        this.guiLeft = (this.width - this.xSize) / 2;
     }
 
     public void moveBaubleSlots(int value) {
@@ -63,7 +56,7 @@ public class GuiPlayerExpanded extends GuiContainer {
     @Override
     public void updateScreen() {
         this.baubles.setEventBlock(false);
-        resetGuiLeft();
+        super.updateScreen();
     }
 
     /**
@@ -73,9 +66,8 @@ public class GuiPlayerExpanded extends GuiContainer {
     public void initGui() {
         this.buttonList.clear();
         super.initGui();
-        this.buttonList.add(new GuiBaublesFlip(56, this, guiLeft - 27, guiTop, false));
-        this.buttonList.add(new GuiBaublesFlip(57, this, guiLeft - 27, guiTop + 14 + getMaxY(), true));
-        resetGuiLeft();
+        this.buttonList.add(new GuiBaublesController(56, this, guiLeft - 27, guiTop, false));
+        this.buttonList.add(new GuiBaublesController(57, this, guiLeft - 27, guiTop + 14 + getMaxY(), true));
     }
 
     /**
@@ -119,9 +111,6 @@ public class GuiPlayerExpanded extends GuiContainer {
         this.oldMouseX = (float) mouseX;
         this.oldMouseY = (float) mouseY;
         super.drawScreen(mouseX, mouseY, partialTicks);
-//        if (this.hasActivePotionEffects) {
-//            this.drawActivePotionEffects();
-//        }
         this.renderHoveredToolTip(mouseX, mouseY);
     }
 
@@ -149,17 +138,6 @@ public class GuiPlayerExpanded extends GuiContainer {
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
-    @Override
-    protected void keyTyped(char par1, int keyCode) throws IOException {
-        if (keyCode == ClientProxy.KEY_BAUBLES.getKeyCode()) {
-            this.mc.player.closeScreen();
-        }
-        else if (keyCode == ClientProxy.KEY_BAUBLES_TAB.getKeyCode()) {
-            this.mc.player.closeScreen();
-        }
-        else super.keyTyped(par1, keyCode);
-    }
-
     /**
      * Draws the GuiContainer.
      */
@@ -182,6 +160,14 @@ public class GuiPlayerExpanded extends GuiContainer {
         }
 
         GuiInventory.drawEntityOnScreen(k + 51, l + 75, 30, (float) (k + 51) - this.oldMouseX, (float) (l + 75 - 50) - this.oldMouseY, this.mc.player);
+    }
+
+    @Override
+    protected void drawActivePotionEffects() {
+        int i = this.guiLeft;
+        guiLeft -= 27;
+        super.drawActivePotionEffects();
+        guiLeft = i;
     }
 
     @Override

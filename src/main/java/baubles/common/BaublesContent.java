@@ -51,10 +51,5 @@ public class BaublesContent extends BaublesRegister {
             this.init();
             writeJson();
         }
-        try {
-            jsonHelper.jsonToType();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

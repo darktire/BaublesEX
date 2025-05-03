@@ -22,6 +22,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -148,10 +149,10 @@ public class EventHandlerEntity {
     }
 
     //todo add property
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public  void playerRightClickItem(PlayerInteractEvent.RightClickItem event) {
         EntityPlayer player = event.getEntityPlayer();
-        ItemStack heldItem = player.getHeldItem(event.getHand());
+        ItemStack heldItem = event.getItemStack();
         IBauble bauble = heldItem.getCapability(CAPABILITY_ITEM_BAUBLE, null);
         if (bauble != null) {
             int[] validSlots = bauble.getBaubleType().getValidSlots();
