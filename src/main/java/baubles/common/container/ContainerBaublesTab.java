@@ -2,6 +2,7 @@ package baubles.common.container;
 
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilities;
+import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,12 +15,13 @@ import net.minecraft.item.ItemStack;
 import static baubles.api.BaublesRegister.getSum;
 
 public class ContainerBaublesTab extends Container {
-    private final IBaublesItemHandler baubles;
+    public final IBaublesItemHandler baubles;
     private final EntityPlayer player;
 
     public ContainerBaublesTab(InventoryPlayer playerInv, boolean world, EntityPlayer player) {
-        baubles = player.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
         this.player = player;
+        baubles = player.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
+        ((BaublesContainer) baubles).updateSlots(player);
 
         //add bauble slots (amount)
         outerLoop:

@@ -16,14 +16,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public class GuiBaublesTabButton extends GuiButtonBase {
+public class GuiBaublesLabel extends GuiButtonBase {
 
     public static final ResourceLocation tabs = new ResourceLocation("minecraft", "textures/gui/advancements/tabs.png");
     private final GuiContainer parentGui;
     private final int tabX;
     private final int tabId;
 
-    public GuiBaublesTabButton(int buttonId, GuiContainer parentGui, int x, int tabId) {
+    public GuiBaublesLabel(int buttonId, GuiContainer parentGui, int x, int tabId) {
         super(buttonId, parentGui.getGuiLeft() + x, parentGui.getGuiTop() - 28, 28, 26, "");
         this.parentGui = parentGui;
         this.tabX = x;
@@ -31,7 +31,7 @@ public class GuiBaublesTabButton extends GuiButtonBase {
     }
 
     @Override
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+    public void mouseReleased(int mouseX, int mouseY) {
         if (this.hovered && enabled) {
             if (!(parentGui instanceof GuiBaublesTab) && tabId == 1) {
                 PacketHandler.INSTANCE.sendToServer(new PacketOpenBaublesTab());
@@ -41,7 +41,6 @@ public class GuiBaublesTabButton extends GuiButtonBase {
                 PacketHandler.INSTANCE.sendToServer(new PacketOpenNormalInventory());
             }
         }
-        return this.hovered;
     }
 
     @Override
@@ -72,12 +71,8 @@ public class GuiBaublesTabButton extends GuiButtonBase {
             this.hovered = x <= mouseX && mouseX < x + this.width && this.y <= mouseY && mouseY< this.y + this.height;
 
             if (this.hovered) {
-                if (tabId == 0) {
-                    drawHoveringText(mc, I18n.format("itemGroup.inventory"), mouseX, mouseY);
-                }
-                if (tabId == 1) {
-                    drawHoveringText(mc, I18n.format("button.baubles"), mouseX, mouseY);
-                }
+                String translateKey = (tabId == 0) ? "itemGroup.inventory" : "button.baubles";
+                drawHoveringText(mc, I18n.format(translateKey), mouseX, mouseY);
             }
         }
     }

@@ -2,11 +2,10 @@ package baubles.client.gui.botton;
 
 import baubles.client.gui.GuiPlayerExpanded;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class GuiBaublesFlip extends GuiButton {
+public class GuiBaublesController extends GuiButtonBase {
 
     protected final GuiContainer parentGui;
     private final boolean direction;
@@ -16,7 +15,7 @@ public class GuiBaublesFlip extends GuiButton {
      * Add PgDn and PgUp to Bauble slots.
      * @param direction False means PgDn, True means PgUp.
      */
-    public GuiBaublesFlip(int id, GuiContainer parentGui, int x, int y, boolean direction) {
+    public GuiBaublesController(int id, GuiContainer parentGui, int x, int y, boolean direction) {
         super(id, x, y, 27, 14, "");
         this.parentGui = parentGui;
         this.direction = direction;

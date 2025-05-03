@@ -7,15 +7,15 @@ import baubles.common.network.PacketOpenBaublesTab;
 import baubles.common.network.PacketOpenNormalInventory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.creativetab.CreativeTabs;
 import org.lwjgl.opengl.GL11;
 
-public class GuiBaublesButton extends GuiButton {
+public class GuiBaublesButton extends GuiButtonBase {
 
     private final GuiContainer parentGui;
 
@@ -26,32 +26,27 @@ public class GuiBaublesButton extends GuiButton {
 
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        if (this.hovered && enabled) {
-            if (!(parentGui instanceof GuiPlayerExpanded)) {
-                if (parentGui instanceof GuiContainerCreative) {
-                    PacketHandler.INSTANCE.sendToServer(new PacketOpenBaublesTab());
-                }
-                else {
-                    PacketHandler.INSTANCE.sendToServer(new PacketOpenBaublesInventory());
-                }
-            }
-            if (!(parentGui instanceof GuiInventory)) {
-                mc.displayGuiScreen(new GuiInventory(mc.player));
-                PacketHandler.INSTANCE.sendToServer(new PacketOpenNormalInventory());
-            }
-        }
-        return this.hovered;
+        return super.mousePressed(mc, mouseX, mouseY);
     }
 
     @Override
     public void mouseReleased(int mouseX, int mouseY) {
-        super.mouseReleased(mouseX, mouseY);
+        if (this.hovered && enabled) {
+            if (parentGui instanceof GuiPlayerExpanded) {
+                mc.displayGuiScreen(new GuiInventory(mc.player));
+                PacketHandler.INSTANCE.sendToServer(new PacketOpenNormalInventory());
+            } else if (parentGui instanceof GuiInventory) {
+                PacketHandler.INSTANCE.sendToServer(new PacketOpenBaublesInventory());
+            } else if (parentGui instanceof GuiContainerCreative) {
+                PacketHandler.INSTANCE.sendToServer(new PacketOpenBaublesTab());
+            }
+        }
     }
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
-            if (parentGui instanceof GuiContainerCreative && ((GuiContainerCreative) parentGui).getSelectedTabIndex() != 11) return;
+            if (parentGui instanceof GuiContainerCreative && ((GuiContainerCreative) parentGui).getSelectedTabIndex() != CreativeTabs.INVENTORY.getTabIndex()) return;
             int x = this.x + this.parentGui.getGuiLeft();
 
             FontRenderer fontrenderer = mc.fontRenderer;
@@ -74,8 +69,6 @@ public class GuiBaublesButton extends GuiButton {
             }
 
             GlStateManager.popMatrix();
-
-            this.mouseDragged(mc, mouseX, mouseY);
         }
     }
 }

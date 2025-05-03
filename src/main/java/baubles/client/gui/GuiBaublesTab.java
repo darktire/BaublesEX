@@ -1,15 +1,22 @@
 package baubles.client.gui;
 
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.container.ContainerBaublesTab;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 
 import static baubles.api.BaublesRegister.getSum;
 
-public class GuiBaublesTab extends InventoryEffectRenderer {
+public class GuiBaublesTab extends GuiBaublesBase {
+    private final IBaublesItemHandler baubles = ((ContainerBaublesTab) this.inventorySlots).baubles;
     public GuiBaublesTab(EntityPlayer player) {
         super(new ContainerBaublesTab(player.inventory, !player.getEntityWorld().isRemote, player));
+    }
+
+    @Override
+    public void updateScreen() {
+        this.baubles.setEventBlock(false);
+        super.updateScreen();
     }
 
     @Override

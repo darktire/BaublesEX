@@ -8,8 +8,25 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 
 public class GuiButtonBase extends GuiButton {
+    protected Minecraft mc;
     public GuiButtonBase(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
         super(buttonId, x, y, widthIn, heightIn, buttonText);
+    }
+
+    @Override
+    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+        this.mc = mc;
+        return this.enabled && this.visible && this.hovered;
+    }
+
+    @Override
+    public void mouseReleased(int mouseX, int mouseY) {
+        super.mouseReleased(mouseX, mouseY);
+    }
+
+    @Override
+    protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
+        super.mouseDragged(mc, mouseX, mouseY);
     }
 
     protected void drawIcon(Minecraft mc, ItemStack itemStack, int x, int y, boolean thisTab) {
