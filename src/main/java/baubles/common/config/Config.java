@@ -13,6 +13,8 @@ import java.io.File;
 
 import static baubles.common.Baubles.baubles;
 import static baubles.common.Baubles.config;
+import static net.minecraftforge.common.config.Configuration.CATEGORY_CLIENT;
+import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
 public class Config {
     protected static Configuration configFile;
@@ -58,14 +60,16 @@ public class Config {
     }
 
     protected void init() {
-        renderBaubles = configFile.getBoolean("baubleRender", Configuration.CATEGORY_CLIENT, renderBaubles, "Set this to false to disable rendering of baubles in the player.");
+        renderBaubles = configFile.getBoolean("baubleRender", CATEGORY_CLIENT, renderBaubles, "Set this to false to disable rendering of baubles in the player.");
 
         baublesButton = configFile.getBoolean("baublesButton", "client.gui", baublesButton, "Show baublesButton or not");
         baublesTab = configFile.getBoolean("baublesTab", "client.gui", baublesTab, "Show baublesTab or not");
         babPosX = configFile.getInt("babPosX", "client.gui", babPosX, 0, 255, "The x position of button which calls baublesTab");
         invPosX = configFile.getInt("invPosX", "client.gui", invPosX, 0, 255, "The x position of button which calls inventory");
 
-        jsonFunction = configFile.getBoolean("jsonFunction", Configuration.CATEGORY_GENERAL ,jsonFunction, "Activate json function or not.");
+        maxLevel = configFile.getInt("maxLevel", CATEGORY_GENERAL, maxLevel, 0, 255, "Max level of haste given by Miner's Ring");
+
+        jsonFunction = configFile.getBoolean("jsonFunction", CATEGORY_GENERAL ,jsonFunction, "Activate json function or not.");
 
 //        trinketLimit = configFile.getBoolean("trinketLimit", Configuration.CATEGORY_GENERAL, trinketLimit, "(Invalid)Whether trinketSlot is controlled independently. If false, value of trinketSlot won't work.");
 

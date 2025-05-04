@@ -12,8 +12,6 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-import static baubles.api.BaublesRegister.getSum;
-
 public class ContainerBaublesTab extends Container {
     public final IBaublesItemHandler baubles;
     private final EntityPlayer player;
@@ -27,7 +25,7 @@ public class ContainerBaublesTab extends Container {
         outerLoop:
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
-                if (j + i * 9 >= getSum()) {
+                if (j + i * 9 >= baubles.getSlots()) {
                     //add offhand slot (1)
                     this.addSlotToContainer(new Slot(playerInv, 40, 8 + j * 18, 18 + i * 18) {
                         @Override
