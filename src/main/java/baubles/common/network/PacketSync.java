@@ -8,11 +8,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import java.io.IOException;
+import java.util.Objects;
 
 public class PacketSync implements IMessage {
 
@@ -32,14 +35,26 @@ public class PacketSync implements IMessage {
     public void toBytes(ByteBuf buffer) {
         buffer.writeInt(playerId);
         buffer.writeByte(slot);
-        ByteBufUtils.writeItemStack(buffer, bauble);
+        writeItemStack(buffer, bauble);
     }
 
     @Override
     public void fromBytes(ByteBuf buffer) {
         playerId = buffer.readInt();
         slot = buffer.readByte();
-        bauble = ByteBufUtils.readItemStack(buffer);
+        bauble = readItemStack(buffer);
+    }
+
+    //ensure baubles item capability data is synced
+    public static void writeItemStack(ByteBuf to, ItemStack stack) {
+        new PacketBuffer(to).writeCompoundTag(stack.serializeNBT());
+    }
+
+    //ensure baubles item capability data is synced
+    public static ItemStack readItemStack(ByteBuf to) {
+        try { return new ItemStack(Objects.requireNonNull(new PacketBuffer(to).readCompoundTag())); }
+        // Unpossible?
+        catch(IOException e) { throw new RuntimeException(e); }
     }
 
     public static class Handler implements IMessageHandler<PacketSync, IMessage> {

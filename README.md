@@ -20,7 +20,7 @@
 - [ ] more command
 - [x] new style of bauble slots
 - [x] right click to equip baubles
-- [ ] damage for baubles
+- [ ] durability for baubles
 - [ ] enchantment support for baubles
 
 ---

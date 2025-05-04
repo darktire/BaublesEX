@@ -23,8 +23,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import static baubles.api.BaublesRegister.getSum;
-
 @Mod.EventBusSubscriber
 public class ItemRing extends Item implements IBauble {
 	@GameRegistry.ObjectHolder(Baubles.MODID + ":ring")
@@ -119,7 +117,7 @@ public class ItemRing extends Item implements IBauble {
 			IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityPlayer) player);
 			Potion potion = Potion.REGISTRY.getObject(new ResourceLocation("haste"));
 
-			for (int i = 0; i < getSum(); i++) {
+			for (int i : BaubleType.RING.getValidSlots()) {
 				ItemStack ring1 = baubles.getStackInSlot(i);
 				if (ring1.getItem() == ring) level++;
 				if (level == Config.maxLevel - 1) break;

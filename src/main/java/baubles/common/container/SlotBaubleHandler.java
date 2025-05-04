@@ -36,7 +36,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
         ItemStack stack = getStack();
         if (stack.isEmpty()) return false;
         IBauble bauble = stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
-        return bauble == null || !player.isCreative() && bauble.canUnequip(stack, player);
+        return bauble == null || player.isCreative() || bauble.canUnequip(stack, player);
     }
 
     @Override

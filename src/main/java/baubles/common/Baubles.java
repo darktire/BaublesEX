@@ -1,6 +1,5 @@
 package baubles.common;
 
-import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import baubles.api.cap.BaubleItem;
 import baubles.api.cap.BaublesCapabilities;
@@ -26,12 +25,14 @@ import org.apache.logging.log4j.Logger;
         modid = Baubles.MODID,
         name = Baubles.MODNAME,
         version = Baubles.VERSION,
-        guiFactory = "baubles.client.gui.BaublesGuiFactory")
+        guiFactory = Baubles.FACTORY)
 public class Baubles {
 
     public static final String MODID = "baubles";
-    public static final String MODNAME = "Baubles";
-    public static final String VERSION = "2.1.0";
+    public static final String MODNAME = "BaublesEX";
+    public static final String VERSION = "2.1.3";
+    public static final String FACTORY = "baubles.client.gui.BaublesGuiFactory";
+
     public static ConfigHelper config;
     public static BaublesContent baubles;
 
@@ -57,7 +58,7 @@ public class Baubles {
         CapabilityManager.INSTANCE.register(
                 IBauble.class,
                 new BaublesCapabilities.CapabilityItemBaubleStorage(),
-                () -> new BaubleItem(BaubleType.TRINKET));
+                BaubleItem::new);
 
         proxy.registerEventHandlers();
         PacketHandler.init();
