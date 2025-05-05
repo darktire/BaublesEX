@@ -7,6 +7,7 @@ button.baubles=饰品
 button.normal=普通
 #
 # Keybinding
+key.categories.baubles=饰品
 keybind.baublesinventory=饰品栏
 keybind.baublestab=饰品页面
 #
