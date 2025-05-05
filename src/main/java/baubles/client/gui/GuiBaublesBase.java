@@ -1,6 +1,6 @@
 package baubles.client.gui;
 
-import baubles.client.ClientProxy;
+import baubles.common.config.KeyBindings;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.relauncher.Side;
@@ -35,10 +35,10 @@ public abstract class GuiBaublesBase extends InventoryEffectRenderer {
 
     @Override
     protected void keyTyped(char par1, int keyCode) throws IOException {
-        if (keyCode == ClientProxy.KEY_BAUBLES.getKeyCode()) {
+        if (keyCode == KeyBindings.KEY_BAUBLES.getKeyCode()) {
             this.mc.player.closeScreen();
         }
-        else if (keyCode == ClientProxy.KEY_BAUBLES_TAB.getKeyCode()) {
+        else if (keyCode == KeyBindings.KEY_BAUBLES_TAB.getKeyCode()) {
             this.mc.player.closeScreen();
         }
         else super.keyTyped(par1, keyCode);

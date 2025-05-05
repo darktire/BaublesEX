@@ -53,3 +53,4 @@ public class BaublesContent extends BaublesRegister {
         }
     }
 }
+//todo capability to modify slots

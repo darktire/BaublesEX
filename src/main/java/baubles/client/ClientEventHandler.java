@@ -6,6 +6,7 @@ import baubles.api.cap.BaublesCapabilities;
 import baubles.client.gui.GuiBaublesTab;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.Baubles;
+import baubles.common.config.KeyBindings;
 import baubles.common.items.ItemRing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -53,10 +54,10 @@ public class ClientEventHandler {
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         EntityPlayer player = Minecraft.getMinecraft().player;
         Minecraft mc = Minecraft.getMinecraft();
-        if (ClientProxy.KEY_BAUBLES.isPressed()) {
+        if (KeyBindings.KEY_BAUBLES.isPressed()) {
             mc.displayGuiScreen(new GuiPlayerExpanded(player));
         }
-        if (ClientProxy.KEY_BAUBLES_TAB.isPressed()) {
+        if (KeyBindings.KEY_BAUBLES_TAB.isPressed()) {
             mc.displayGuiScreen(new GuiBaublesTab(player));
         }
     }

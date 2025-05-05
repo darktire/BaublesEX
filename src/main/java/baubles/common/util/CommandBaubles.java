@@ -1,4 +1,4 @@
-package baubles.common.event;
+package baubles.common.util;
 
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;

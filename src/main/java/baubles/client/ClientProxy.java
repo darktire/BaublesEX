@@ -5,29 +5,23 @@ import baubles.client.gui.GuiEvents;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.Baubles;
 import baubles.common.CommonProxy;
+import baubles.common.config.KeyBindings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import org.lwjgl.input.Keyboard;
 
 import java.util.Map;
 
 public class ClientProxy extends CommonProxy {
 
-    public static final KeyBinding KEY_BAUBLES = new KeyBinding("keybind.baublesinventory", Keyboard.KEY_B, "key.categories.inventory");
-    public static final KeyBinding KEY_BAUBLES_TAB = new KeyBinding("keybind.baublestab", 0,"key.categories.inventory");
-
     @Override
     public void registerEventHandlers() {
         super.registerEventHandlers();
-        ClientRegistry.registerKeyBinding(KEY_BAUBLES);
-        ClientRegistry.registerKeyBinding(KEY_BAUBLES_TAB);
+        new KeyBindings();
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
         MinecraftForge.EVENT_BUS.register(new GuiEvents());
     }

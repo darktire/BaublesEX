@@ -1,10 +1,9 @@
-package baubles.client.gui;
+package baubles.common.config;
 
 import baubles.common.Baubles;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.client.DefaultGuiFactory;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.IConfigElement;
 
@@ -13,15 +12,14 @@ import java.util.List;
 
 import static baubles.common.Baubles.config;
 
-@SuppressWarnings("unused") // gets used by Forge annotations
-public class BaublesGuiFactory extends DefaultGuiFactory {
+public class BaublesConfigGui extends GuiConfig {
 
-    public BaublesGuiFactory() {
-        super(Baubles.MODID, GuiConfig.getAbridgedConfigPath(config.getConfigFile().toString()));
+    public BaublesConfigGui(GuiScreen parent) {
+        super(getParent(parent), getConfigElements(), Baubles.MODID, false, false, getTitle(parent));
     }
 
     private static List<IConfigElement> getConfigElements() {
-        List<IConfigElement> list = new ArrayList<IConfigElement>();
+        List<IConfigElement> list = new ArrayList<>();
 
         list.addAll(new ConfigElement(config.getConfigFile().getCategory(Configuration.CATEGORY_GENERAL)).getChildElements());
         list.addAll(new ConfigElement(config.getConfigFile().getCategory(Configuration.CATEGORY_CLIENT)).getChildElements());
@@ -29,8 +27,11 @@ public class BaublesGuiFactory extends DefaultGuiFactory {
         return list;
     }
 
-    @Override
-    public GuiScreen createConfigGui(GuiScreen parent) {
-        return new GuiConfig(parent, getConfigElements(), this.modid, false, false, this.title);
+    private static GuiScreen getParent(GuiScreen parent) {
+        return parent;
+    }
+
+    private static String getTitle(GuiScreen parent) {
+        return GuiConfig.getAbridgedConfigPath(config.getConfigFile().toString());
     }
 }
