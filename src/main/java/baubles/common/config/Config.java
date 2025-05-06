@@ -71,7 +71,7 @@ public class Config {
 
         jsonFunction = configFile.getBoolean("jsonFunction", CATEGORY_GENERAL ,jsonFunction, "Activate json function or not.");
 
-//        trinketLimit = configFile.getBoolean("trinketLimit", Configuration.CATEGORY_GENERAL, trinketLimit, "(Invalid)Whether trinketSlot is controlled independently. If false, value of trinketSlot won't work.");
+        trinketLimit = configFile.getBoolean("trinketLimit", Configuration.CATEGORY_GENERAL, trinketLimit, "Whether trinketSlot is independent. If true, trinket will become a independent type.");
 
         AMULET = getAmount("amuletSlot", BaubleType.AMULET.getDefaultAmount());
         RING = getAmount("ringSlot", BaubleType.RING.getDefaultAmount());

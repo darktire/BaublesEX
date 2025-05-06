@@ -93,6 +93,7 @@ dependencies {
 //    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
 
     runtimeOnly fg.deobf(fileTree(dir: 'libs', includes: ['*.jar']))
+//    implementation fg.deobf(fileTree(dir: 'libs', includes: ['*.jar']))
 
     //JEI
     compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")

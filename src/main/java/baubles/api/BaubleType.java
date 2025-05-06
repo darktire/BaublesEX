@@ -8,10 +8,10 @@ public enum BaubleType {
 	AMULET(1),
 	RING(2),
 	BELT(1),
-	TRINKET(6),
 	HEAD(1),
 	BODY(1),
-	CHARM(1);
+	CHARM(1),
+	TRINKET(7);
 
 	private final int defaultAmount;
 	private final String typeName;

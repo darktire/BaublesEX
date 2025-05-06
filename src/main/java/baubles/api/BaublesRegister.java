@@ -14,7 +14,7 @@ public class BaublesRegister {
     /**
      * Simply summarise.
      */
-    protected static int sum;
+    protected static int sum = 7;
 
     public BaublesRegister() {
         init();
@@ -30,7 +30,9 @@ public class BaublesRegister {
     public void registerBauble(String typeName, int amount) {
         baubles.put(typeName, new BaubleTypeEx(typeName, amount));
     }
-
+    /**
+     * Set baubleSlots, validSlots.
+     */
     public void loadValidSlots() {
         int pointer = 0;
         for (BaubleTypeEx type : baubles.values()) {
@@ -44,7 +46,6 @@ public class BaublesRegister {
             type.setValidSlots(list);
             pointer += amount;
         }
-        sum = pointer;
     }
 
     public static HashMap<String, BaubleTypeEx> getBaubles() {
