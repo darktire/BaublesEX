@@ -17,6 +17,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.WorldServer;
@@ -152,26 +154,29 @@ public class EventHandlerEntity {
         }
     }
 
-    //todo add property
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public  void playerRightClickItem(PlayerInteractEvent.RightClickItem event) {
+    public void playerRightClickItem(PlayerInteractEvent.RightClickItem event) {
         EntityPlayer player = event.getEntityPlayer();
         ItemStack heldItem = event.getItemStack();
         IBauble bauble = heldItem.getCapability(CAPABILITY_ITEM_BAUBLE, null);
         if (bauble != null) {
-            int[] validSlots = bauble.getBaubleType().getValidSlots();
-            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
-            for (int i: validSlots) {
-                if (baubles.getStackInSlot(i) == null || baubles.getStackInSlot(i).isEmpty()) {
-                    ItemStack itemStack = heldItem.copy();
-                    baubles.setStackInSlot(i, itemStack);
-                    if (!player.capabilities.isCreativeMode) {
-                        player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
+            ActionResult<ItemStack> action = heldItem.getItem().onItemRightClick(player.world, player, event.getHand());
+            if (action.getType() == EnumActionResult.PASS) {
+                int[] validSlots = bauble.getBaubleType().getValidSlots();
+                IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
+                for (int i: validSlots) {
+                    if (baubles.getStackInSlot(i) == null || baubles.getStackInSlot(i).isEmpty()) {
+                        ItemStack itemStack = heldItem.copy();
+                        baubles.setStackInSlot(i, itemStack);
+                        if (!player.capabilities.isCreativeMode) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
+                        }
+                        bauble.onEquipped(itemStack, player);
+                        break;
                     }
-                    bauble.onEquipped(itemStack, player);
-                    break;
                 }
             }
+            event.setCanceled(true);
         }
     }
 

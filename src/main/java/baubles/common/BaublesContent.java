@@ -1,6 +1,7 @@
 package baubles.common;
 
 import baubles.api.BaubleType;
+import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesRegister;
 import baubles.common.config.Config;
 import baubles.common.config.json.JsonHelper;
@@ -18,22 +19,45 @@ public class BaublesContent extends BaublesRegister {
         }
         else {
             this.init();
+            this.loadValidSlots();
         }
     }
+
     @Override
     public void init() {
         super.init();
+        int amount = 0;
+        int value;
         for (BaubleType type : BaubleType.values()) {
             try {
-                int value = config.getAmount(type.name());
+                value = config.getAmount(type.name());
+                if (type.equals(BaubleType.TRINKET) & !Config.trinketLimit) value = 0;
                 baubles.get(type.getTypeName()).setAmount(value);
+                amount += value;
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 if (e instanceof NoSuchFieldException) {
                     Baubles.log.warn("Bauble type " + type.name() + " loading failed");
                 }
             }
         }
+        if (!Config.trinketLimit & Config.TRINKET > amount) {
+            baubles.get(BaubleType.TRINKET.getTypeName()).setAmount(Config.TRINKET - amount);
+            amount = Config.TRINKET;
+        }
+        sum = amount;
+    }
+
+    @Override
+    public void loadValidSlots() {
         super.loadValidSlots();
+        if (!Config.trinketLimit) {
+            BaubleTypeEx trinket = baubles.get("trinket");
+            int[] trinketSlots = new int[sum];
+            for (int i = 0; i < sum; i++) {
+                trinketSlots[i] = i;
+            }
+            trinket.setValidSlots(trinketSlots);
+        }
     }
 
     public void writeJson() {
@@ -49,6 +73,7 @@ public class BaublesContent extends BaublesRegister {
             jsonHelper.jsonToType();
         } catch (FileNotFoundException e) {
             this.init();
+            this.loadValidSlots();
             writeJson();
         }
     }
