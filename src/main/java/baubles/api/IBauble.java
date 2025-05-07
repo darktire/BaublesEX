@@ -4,8 +4,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
-import static baubles.api.BaublesRegister.getBaubles;
-
 /**
  *
  * This interface should be extended by items that can be worn in bauble slots
@@ -43,9 +41,7 @@ public interface IBauble {
         return null;
     }
 
-    default void setType(String typeName) {
-        getBaubles().get(typeName);
-    }
+    default void setType(String typeName) {}
 
     /**
      * This method is called once per tick if the bauble is being worn by a player
@@ -86,5 +82,9 @@ public interface IBauble {
      */
     default boolean willAutoSync(ItemStack itemstack, EntityLivingBase player) {
         return false;
+    }
+
+    default boolean canDrop(ItemStack itemstack, EntityLivingBase player) {
+        return true;
     }
 }

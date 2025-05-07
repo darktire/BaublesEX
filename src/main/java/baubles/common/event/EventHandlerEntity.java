@@ -6,6 +6,7 @@ import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.BaublesContainerProvider;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.Baubles;
+import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketSync;
 import cofh.core.enchantment.EnchantmentSoulbound;
@@ -149,7 +150,8 @@ public class EventHandlerEntity {
     public void playerDeath(PlayerDropsEvent event) {
         if (event.getEntity() instanceof EntityPlayer
                 && !event.getEntity().world.isRemote
-                && !event.getEntity().world.getGameRules().getBoolean("keepInventory")) {
+                && !event.getEntity().world.getGameRules().getBoolean("keepInventory")
+                && !Config.keepBaubles) {
             dropItemsAt(event.getEntityPlayer(), event.getDrops(), event.getEntityPlayer());
         }
     }
@@ -184,13 +186,14 @@ public class EventHandlerEntity {
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
         for (int i = 0; i < baubles.getSlots(); ++i) {
             ItemStack stack = baubles.getStackInSlot(i);
-            if (stack != null && !stack.isEmpty()) {
+            if (stack != null && !stack.isEmpty() & ((IBauble)stack.getItem()).canDrop(stack, player)) {
                 if (EnchantmentHelper.hasVanishingCurse(stack)) {
                     baubles.setStackInSlot(i, ItemStack.EMPTY);
                 }
                 else if (EnchantmentHelper.getEnchantmentLevel(soulbound, stack) > 0) {
                     handleSoulbound(stack);
-                } else {
+                }
+                else {
                     EntityItem ei = new EntityItem(e.world,
                                 e.posX, e.posY + e.getEyeHeight(), e.posZ,
                                 stack.copy());

@@ -3,7 +3,7 @@ package baubles.common.container;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilities;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.common.BaublesContent;
+import baubles.common.Baubles;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -79,7 +79,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     public String getSlotTexture() {
-        return "baubles:"+ BaublesContent.getSlots().get(index).getTexture();
+        return "baubles:"+ Baubles.baubles.getSlot(index).getTexture();
     }
 
     @Override

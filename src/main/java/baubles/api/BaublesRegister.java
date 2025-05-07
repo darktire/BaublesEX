@@ -1,6 +1,7 @@
 package baubles.api;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class BaublesRegister {
     /**
@@ -30,6 +31,11 @@ public class BaublesRegister {
     public void registerBauble(String typeName, int amount) {
         baubles.put(typeName, new BaubleTypeEx(typeName, amount));
     }
+
+    public void registerBauble(String typeName, BaubleTypeEx type) {
+        baubles.put(typeName, type);
+    }
+
     /**
      * Set baubleSlots, validSlots.
      */
@@ -48,15 +54,19 @@ public class BaublesRegister {
         }
     }
 
-    public static HashMap<String, BaubleTypeEx> getBaubles() {
-        return baubles;
+    public BaubleTypeEx getBaubles(String typeName) {
+        return baubles.get(typeName);
     }
 
-    public static HashMap<Integer, BaubleTypeEx> getSlots() {
-        return baubleSlots;
+    public BaubleTypeEx getSlot(int index) {
+        return baubleSlots.get(index);
     }
 
     public static int getSum() {
         return sum;
+    }
+
+    public Iterator<BaubleTypeEx> iterator() {
+        return baubles.values().iterator();
     }
 }
