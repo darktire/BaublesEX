@@ -29,4 +29,8 @@ public class BaubleItem implements IBauble {
 	public BaubleType getBaubleType(ItemStack itemStack) {
 		return type;
 	}
+
+	public void setType(BaubleType type) {
+		this.type = type;
+	}
 }

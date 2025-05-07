@@ -11,7 +11,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
 
-import static baubles.common.Baubles.baubles;
 import static baubles.common.Baubles.config;
 import static net.minecraftforge.common.config.Configuration.CATEGORY_CLIENT;
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
@@ -28,6 +27,7 @@ public class Config {
     public static int invPosX = 0;
     public static int babPosX = 28;
     public static boolean trinketLimit = false;
+    public static boolean keepBaubles = false;
     public static int AMULET;
     public static int RING;
     public static int BELT;
@@ -71,7 +71,8 @@ public class Config {
 
         jsonFunction = configFile.getBoolean("jsonFunction", CATEGORY_GENERAL ,jsonFunction, "Activate json function or not.");
 
-        trinketLimit = configFile.getBoolean("trinketLimit", Configuration.CATEGORY_GENERAL, trinketLimit, "Whether trinketSlot is independent. If true, trinket will become a independent type.");
+        trinketLimit = configFile.getBoolean("trinketLimit", CATEGORY_GENERAL, trinketLimit, "Whether trinketSlot is independent. If true, trinket will become a independent type.");
+        keepBaubles = configFile.getBoolean("keepBaubles", CATEGORY_GENERAL, keepBaubles, "Whether baubles can drop when player dies.");
 
         AMULET = getAmount("amuletSlot", BaubleType.AMULET.getDefaultAmount());
         RING = getAmount("ringSlot", BaubleType.RING.getDefaultAmount());
@@ -93,9 +94,9 @@ public class Config {
         public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
             if (eventArgs.getModID().equals(Baubles.MODID)) {
                 config.init();
-                baubles = new BaublesContent();
+                Baubles.baubles = new BaublesContent();
                 if (jsonFunction) {
-                    baubles.writeJson();
+                    Baubles.baubles.writeJson();
                 }
             }
         }

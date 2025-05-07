@@ -4,7 +4,6 @@ import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.client.gui.botton.GuiBaublesController;
 import baubles.common.Baubles;
-import baubles.common.BaublesContent;
 import baubles.common.container.ContainerPlayerExpanded;
 import baubles.common.container.SlotBaubleHandler;
 import net.minecraft.client.Minecraft;
@@ -94,7 +93,7 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
 
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(0, 0, 200);
-                String str = I18n.format("name." + BaublesContent.getSlots().get(index).getTypeName().toUpperCase());
+                String str = I18n.format("name." + Baubles.baubles.getSlot(index).getTypeName().toUpperCase());
 
                 GuiUtils.drawHoveringText(Collections.singletonList(str), mouseX - this.guiLeft, mouseY - this.guiTop + 7, width, height, 300, renderer);
                 GlStateManager.popMatrix();

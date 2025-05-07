@@ -22,7 +22,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
-import static baubles.api.BaublesRegister.getBaubles;
+import java.util.Iterator;
 
 public class ClientEventHandler {
 
@@ -45,9 +45,8 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void registerTextures(TextureStitchEvent.Pre event) {
         TextureMap map = event.getMap();
-        for (BaubleTypeEx type : getBaubles().values()) {
-            map.registerSprite(new ResourceLocation(Baubles.MODID, type.getTexture()));
-        }
+        Iterator<BaubleTypeEx> types = Baubles.baubles.iterator();
+        types.forEachRemaining((type)->registerTexture(map, type));
     }
 
     @SubscribeEvent
@@ -60,5 +59,9 @@ public class ClientEventHandler {
         if (KeyBindings.KEY_BAUBLES_TAB.isPressed()) {
             mc.displayGuiScreen(new GuiBaublesTab(player));
         }
+    }
+
+    private void registerTexture(TextureMap map, BaubleTypeEx type) {
+        map.registerSprite(new ResourceLocation(Baubles.MODID, type.getTexture()));
     }
 }
