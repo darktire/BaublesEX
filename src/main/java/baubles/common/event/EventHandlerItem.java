@@ -1,7 +1,7 @@
 package baubles.common.event;
 
-import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilityProvider;
+import baubles.common.extra.BaubleItemContent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -26,7 +26,7 @@ public class EventHandlerItem {
     public void itemCapabilityAttach(AttachCapabilitiesEvent<ItemStack> event) {
         ItemStack stack = event.getObject();
         if (stack.isEmpty()
-                || !(stack.getItem() instanceof IBauble)
+                || !BaubleItemContent.isBauble(stack.getItem())
                 || stack.hasCapability(CAPABILITY_ITEM_BAUBLE, null)
                 || event.getCapabilities().values().stream().anyMatch(c -> c.hasCapability(CAPABILITY_ITEM_BAUBLE, null)))
             return;
