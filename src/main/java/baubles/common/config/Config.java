@@ -16,6 +16,7 @@ import static net.minecraftforge.common.config.Configuration.CATEGORY_CLIENT;
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
 public class Config {
+    public static final String CLIENT_GUI = "client.gui";
     protected static Configuration configFile;
     public File modDir;
 
@@ -36,6 +37,7 @@ public class Config {
     public static int BODY;
     public static int CHARM;
     public static int maxLevel = 1;
+    protected static String[] clickBlacklist = new String[0];
 
     public Config(FMLPreInitializationEvent event) {
         loadConfig(event);
@@ -62,10 +64,10 @@ public class Config {
     protected void init() {
         renderBaubles = configFile.getBoolean("baubleRender", CATEGORY_CLIENT, renderBaubles, "Set this to false to disable rendering of baubles in the player.");
 
-        baublesButton = configFile.getBoolean("baublesButton", "client.gui", baublesButton, "Show baublesButton or not");
-        baublesTab = configFile.getBoolean("baublesTab", "client.gui", baublesTab, "Show baublesTab or not");
-        babPosX = configFile.getInt("babPosX", "client.gui", babPosX, 0, 255, "The x position of button which calls baublesTab");
-        invPosX = configFile.getInt("invPosX", "client.gui", invPosX, 0, 255, "The x position of button which calls inventory");
+        baublesButton = configFile.getBoolean("baublesButton", CLIENT_GUI, baublesButton, "Show baublesButton or not");
+        baublesTab = configFile.getBoolean("baublesTab", CLIENT_GUI, baublesTab, "Show baublesTab or not");
+        babPosX = configFile.getInt("babPosX", CLIENT_GUI, babPosX, 0, 255, "The x position of button which calls baublesTab");
+        invPosX = configFile.getInt("invPosX", CLIENT_GUI, invPosX, 0, 255, "The x position of button which calls inventory");
 
         maxLevel = configFile.getInt("maxLevel", CATEGORY_GENERAL, maxLevel, 0, 255, "Max level of haste given by Miner's Ring");
 
@@ -74,6 +76,14 @@ public class Config {
         trinketLimit = configFile.getBoolean("trinketLimit", CATEGORY_GENERAL, trinketLimit, "Whether trinketSlot is independent. If true, trinket will become a independent type.");
         keepBaubles = configFile.getBoolean("keepBaubles", CATEGORY_GENERAL, keepBaubles, "Whether baubles can drop when player dies.");
 
+        clickBlacklist = configFile.getStringList("clickBlacklist", CATEGORY_GENERAL, clickBlacklist, "");
+
+        initBaubles();
+
+        configFile.save();
+    }
+
+    private void initBaubles() {
         AMULET = getAmount("amuletSlot", BaubleType.AMULET.getDefaultAmount());
         RING = getAmount("ringSlot", BaubleType.RING.getDefaultAmount());
         BELT = getAmount("beltSlot", BaubleType.BELT.getDefaultAmount());
@@ -81,8 +91,6 @@ public class Config {
         HEAD = getAmount("headSlot", BaubleType.HEAD.getDefaultAmount());
         BODY = getAmount("bodySlot", BaubleType.BODY.getDefaultAmount());
         CHARM = getAmount("charmSlot", BaubleType.CHARM.getDefaultAmount());
-
-        configFile.save();
     }
 
     private int getAmount(String key, int value) {

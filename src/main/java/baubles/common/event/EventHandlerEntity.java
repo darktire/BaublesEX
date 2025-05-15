@@ -158,12 +158,13 @@ public class EventHandlerEntity {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerRightClickItem(PlayerInteractEvent.RightClickItem event) {
-        EntityPlayer player = event.getEntityPlayer();
         ItemStack heldItem = event.getItemStack();
+        if (Baubles.config.blacklistItem().contains(heldItem.getItem())) return;
+        EntityPlayer player = event.getEntityPlayer();
         IBauble bauble = heldItem.getCapability(CAPABILITY_ITEM_BAUBLE, null);
         if (bauble != null) {
             ActionResult<ItemStack> action = heldItem.getItem().onItemRightClick(player.world, player, event.getHand());
-            if (action.getType() == EnumActionResult.PASS) {
+            if (action.getType() != EnumActionResult.SUCCESS) {
                 int[] validSlots = bauble.getBaubleType().getValidSlots();
                 IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
                 for (int i: validSlots) {

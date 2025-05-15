@@ -58,7 +58,9 @@ public class BaublesRegister {
     }
 
     public BaubleTypeEx getBaubles(String typeName) {
-        return baubles.get(typeName);
+        BaubleTypeEx type = baubles.get(typeName);
+        if (type == null) type = baubles.get(typeName.toLowerCase());
+        return type;
     }
 
     public BaubleTypeEx getSlot(int index) {
