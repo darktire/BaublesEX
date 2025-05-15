@@ -6,6 +6,7 @@ import baubles.api.inv.BaublesInventoryWrapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 /**
  * @author Azanor
@@ -40,5 +41,10 @@ public class BaublesApi {
             if (!handler.getStackInSlot(a).isEmpty() && handler.getStackInSlot(a).getItem() == bauble) return a;
         }
         return -1;
+    }
+
+    public static IBauble getBaubleItem(ItemStack stack) {
+        IBauble bauble = stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
+        return bauble;
     }
 }

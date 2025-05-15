@@ -25,7 +25,7 @@ public enum BaubleType {
 		this.validSlots = getValidSlots();
 	}
 
-	public BaubleTypeEx getBaubleTypeEx() {
+	public BaubleTypeEx getNewType() {
 		return baubleTypeEx;
 	}
 

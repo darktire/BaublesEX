@@ -1,8 +1,9 @@
-package baubles.common;
+package baubles.common.extra;
 
 import baubles.api.BaubleType;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesRegister;
+import baubles.common.Baubles;
 import baubles.common.config.Config;
 import baubles.common.config.json.JsonHelper;
 
@@ -18,14 +19,14 @@ public class BaublesContent extends BaublesRegister {
             readJson();
         }
         else {
-            this.init();
+            this.registerBaubles();
             this.loadValidSlots();
         }
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void registerBaubles() {
+        super.registerBaubles();
         int amount = 0;
         int value;
         for (BaubleType type : BaubleType.values()) {
@@ -72,7 +73,7 @@ public class BaublesContent extends BaublesRegister {
         try {
             jsonHelper.jsonToType();
         } catch (FileNotFoundException e) {
-            this.init();
+            this.registerBaubles();
             this.loadValidSlots();
             writeJson();
         }

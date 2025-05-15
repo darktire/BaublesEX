@@ -7,8 +7,9 @@ import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.config.ConfigHelper;
+import baubles.common.extra.BaublesContent;
 import baubles.common.network.PacketHandler;
-import baubles.common.util.CommandBaubles;
+import baubles.common.util.command.CommandBaubles;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -31,7 +32,7 @@ public class Baubles {
     public static final String MODID = "baubles";
     public static final String MODNAME = "BaublesEX";
     public static final String VERSION = "2.1.3";
-    public static final String FACTORY = "baubles.common.config.BaublesGuiFactory";
+    public static final String FACTORY = "baubles.client.gui.config.BaublesGuiFactory";
 
     public static ConfigHelper config;
     public static BaublesContent baubles;

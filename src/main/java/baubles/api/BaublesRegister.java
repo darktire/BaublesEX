@@ -18,13 +18,16 @@ public class BaublesRegister {
     protected static int sum = 7;
 
     public BaublesRegister() {
-        init();
+        registerBaubles();
         loadValidSlots();
     }
 
-    public void init() {
+    /**
+     * Create all types and put into {@link BaublesRegister#baubles}
+     */
+    public void registerBaubles() {
         for (BaubleType type : BaubleType.values()) {
-            baubles.put(type.getTypeName(), type.getBaubleTypeEx());
+            baubles.put(type.getTypeName(), type.getNewType());
         }
     }
 

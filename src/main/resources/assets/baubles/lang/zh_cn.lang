@@ -19,3 +19,20 @@ name.TRINKET=饰品 (任意)
 name.HEAD=饰品 (头部)
 name.BODY=饰品 (身体)
 name.CHARM=饰品 (坠饰)
+#
+# Command
+commands.baubles.help=§3你也可以使用 /baub 或 /bau 而不是 /baubles来输入指令。
+commands.baubles.help.view=§3使用如下命令来查看玩家的饰品栏。%s  /baubles view <player>
+commands.baubles.help.clear=§3使用如下命令来清空玩家的饰品栏.%s§3默认清除所有饰品，你也可以选择清除某一槽位。%s  /baubles clear <player> [<slot>]
+commands.baubles.help.hand=§3使用如下命令来查看手中饰品。%s  /baubles hand
+commands.baubles.help.get=§c使用 /baubles help 来获取帮助
+commands.baubles.args.error=§c无效的参数
+commands.baubles.index.out=槽位 %s 超出可用范围
+commands.baubles.player.none=未指定玩家
+commands.baubles.view.info=§3显示 %s §3的饰品
+commands.baubles.view=§3[槽位: %s§3] [物品: %s§3] [种类: %s§3]
+commands.baubles.clear.all=§3清除玩家 %s §3的所有饰品
+commands.baubles.clear.all.claim=§4你所有的饰品被管理员 %s §4清除了
+commands.baubles.clear=§3清除槽位 %s §3的饰品（玩家： %s §3）
+commands.baubles.clear.claim=§4你槽位 %s §4的饰品被管理员 %s §4清除了
+commands.baubles.hand=<%s%s> [type: %s]
