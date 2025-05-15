@@ -4,6 +4,7 @@ buildscript {
         maven { url = 'https://maven.gofancy.wtf/releases' }
         maven { url = 'https://files.minecraftforge.net/maven' }
         maven { url = 'https://repo.spongepowered.org/maven' }
+        flatDir { dirs "libs" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:6.+'
@@ -92,8 +93,8 @@ dependencies {
 //    }
 //    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
 
-    runtimeOnly fg.deobf(fileTree(dir: 'libs', includes: ['*.jar']))
-//    implementation fg.deobf(fileTree(dir: 'libs', includes: ['*.jar']))
+    runtimeOnly fileTree(dir: 'libs', includes: ['*.jar'])
+//    implementation fileTree(dir: 'libs', includes: ['*.jar'])
 
     //JEI
     compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")
@@ -124,6 +125,11 @@ tasks.register('copyResources', Copy) {
         exclude 'mcmod.info'
     }
     into 'build/classes/java/main'
+}
+
+tasks.register('cleanLogs', Delete) {
+    delete("run/crash-reports")
+    delete("run/logs")
 }
 
 processResources {}
@@ -159,9 +165,4 @@ tasks.register('apiJar', Jar) {
 
 artifacts {
     archives apiJar
-}
-
-tasks.register('cleanLogs') {
-    delete("run/crash-reports")
-    delete("run/logs")
 }

@@ -2,7 +2,7 @@ package baubles.common.config;
 
 import baubles.api.BaubleType;
 import baubles.common.Baubles;
-import baubles.common.BaublesContent;
+import baubles.common.extra.BaublesContent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;

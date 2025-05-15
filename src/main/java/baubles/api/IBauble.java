@@ -18,7 +18,7 @@ public interface IBauble {
      * Use this method when expanding types.
      */
     default BaubleTypeEx getBaubleTypeEx() {
-        return null;
+        return new BaubleTypeEx(null, 0);
     }
 
     /**

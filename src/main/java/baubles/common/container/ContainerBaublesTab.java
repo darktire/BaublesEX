@@ -1,5 +1,6 @@
 package baubles.common.container;
 
+import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilities;
 import baubles.api.cap.BaublesContainer;
@@ -18,7 +19,7 @@ public class ContainerBaublesTab extends Container {
 
     public ContainerBaublesTab(InventoryPlayer playerInv, boolean world, EntityPlayer player) {
         this.player = player;
-        baubles = player.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
+        baubles = BaublesApi.getBaublesHandler(player);
         ((BaublesContainer) baubles).updateSlots(player);
 
         //add bauble slots (amount)

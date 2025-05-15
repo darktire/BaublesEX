@@ -1,4 +1,4 @@
-package baubles.common.config;
+package baubles.client.gui.config;
 
 import baubles.common.Baubles;
 import net.minecraft.client.gui.GuiScreen;
