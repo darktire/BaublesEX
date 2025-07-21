@@ -1,8 +1,8 @@
-package baubles.common.config;
+package baubles.common;
 
-import baubles.api.BaubleType;
-import baubles.common.Baubles;
+import baubles.common.config.cfg.CfgBaubles;
 import baubles.common.extra.BaublesContent;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import static baubles.common.Baubles.config;
 import static net.minecraftforge.common.config.Configuration.CATEGORY_CLIENT;
@@ -29,25 +30,20 @@ public class Config {
     public static int babPosX = 28;
     public static boolean trinketLimit = false;
     public static boolean keepBaubles = false;
-    public static int AMULET;
-    public static int RING;
-    public static int BELT;
-    public static int TRINKET;
-    public static int HEAD;
-    public static int BODY;
-    public static int CHARM;
     public static int maxLevel = 1;
     protected static String[] clickBlacklist = new String[0];
 
     public Config(FMLPreInitializationEvent event) {
         loadConfig(event);
+        MinecraftForge.EVENT_BUS.register(Config.ConfigChangeListener.class);
     }
 
     public void loadConfig(FMLPreInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(ConfigChangeListener.class);
         modDir = event.getModConfigurationDirectory();
         try {
-            init(event.getSuggestedConfigurationFile());
+            configFile = new Configuration(event.getSuggestedConfigurationFile());
+            configFile.load();
+            loadData();
         } catch (Exception e) {
             Baubles.log.error("BAUBLES has a problem loading it's configuration");
         } finally {
@@ -55,13 +51,9 @@ public class Config {
         }
     }
 
-    private void init(File file) {
-        configFile = new Configuration(file);
-        configFile.load();
-        init();
-    }
 
-    protected void init() {
+    protected void loadData() {
+        new CfgBaubles(configFile);
         renderBaubles = configFile.getBoolean("baubleRender", CATEGORY_CLIENT, renderBaubles, "Set this to false to disable rendering of baubles in the player.");
 
         baublesButton = configFile.getBoolean("baublesButton", CLIENT_GUI, baublesButton, "Show baublesButton or not");
@@ -78,30 +70,27 @@ public class Config {
 
         clickBlacklist = configFile.getStringList("clickBlacklist", CATEGORY_GENERAL, clickBlacklist, "");
 
-        initBaubles();
-
         configFile.save();
     }
 
-    private void initBaubles() {
-        AMULET = getAmount("amuletSlot", BaubleType.AMULET.getDefaultAmount());
-        RING = getAmount("ringSlot", BaubleType.RING.getDefaultAmount());
-        BELT = getAmount("beltSlot", BaubleType.BELT.getDefaultAmount());
-        TRINKET = getAmount("trinketSlot", BaubleType.TRINKET.getDefaultAmount());
-        HEAD = getAmount("headSlot", BaubleType.HEAD.getDefaultAmount());
-        BODY = getAmount("bodySlot", BaubleType.BODY.getDefaultAmount());
-        CHARM = getAmount("charmSlot", BaubleType.CHARM.getDefaultAmount());
+    public Configuration getConfigFile() {
+        return configFile;
     }
 
-    private int getAmount(String key, int value) {
-        return configFile.getInt(key, "general.slots", value, 0, 100, "");
+    public ArrayList<Item> blacklistItem() {
+        ArrayList<Item> blacklist = new ArrayList<>(clickBlacklist.length);
+        for (String s : clickBlacklist) {
+            Item item = Item.getByNameOrId(s);
+            if (item != null) blacklist.add(item);
+        }
+        return blacklist;
     }
 
     public static class ConfigChangeListener {
         @SubscribeEvent
         public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
             if (eventArgs.getModID().equals(Baubles.MODID)) {
-                config.init();
+                config.loadData();
                 Baubles.baubles = new BaublesContent();
                 if (jsonFunction) {
                     Baubles.baubles.writeJson();
@@ -110,4 +99,5 @@ public class Config {
         }
     }
 }
+//exposed as old api
 //todo configFile ui

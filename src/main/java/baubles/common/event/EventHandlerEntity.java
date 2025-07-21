@@ -6,7 +6,7 @@ import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.BaublesContainerProvider;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.Baubles;
-import baubles.common.config.Config;
+import baubles.common.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketSync;
 import cofh.core.enchantment.EnchantmentSoulbound;

@@ -2,7 +2,7 @@ package baubles.client.gui.botton;
 
 import baubles.client.gui.GuiBaublesTab;
 import baubles.client.gui.GuiPlayerExpanded;
-import baubles.common.config.Config;
+import baubles.common.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketOpenBaublesTab;
 import baubles.common.network.PacketOpenNormalInventory;

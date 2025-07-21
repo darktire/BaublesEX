@@ -13,15 +13,17 @@
 - bauble api
 
 ## Add ~~and wait to add~~ some new functions:
-- [ ] customizable bauble slots
+- [x] customizable bauble slots
   - [x] customize bauble types and quantities
-  - [ ] item can be defined as bauble
-- [ ] more configure
-- [ ] more command
+  - [x] item can be defined as bauble
+- [x] more configure
+- [x] more command
 - [x] new style of bauble slots
 - [x] right click to equip baubles
 - [ ] durability for baubles
 - [ ] enchantment support for baubles
+- [ ] ...
+- [ ] waiting for more suggestions
 
 ---
 
@@ -36,4 +38,4 @@
 
 ---
 
-#  [Original Repo](https://github.com/Azanor/Baubles)
+#  [Original Repo](https://github.com/Azanor/Baubles) / [Download from CF](https://www.curseforge.com/minecraft/mc-mods/baubles)

@@ -102,6 +102,8 @@ dependencies {
     //CoFH
     runtimeOnly fg.deobf("curse.maven:redstone-flux-270789:2920436")
     implementation fg.deobf("curse.maven:cofh-core-69162:2920433")
+
+    runtimeOnly fg.deobf("curse.maven:rl-artifacts-819886:4475428")
 }
 
 //mixin {
