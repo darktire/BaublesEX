@@ -30,18 +30,21 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
      * Update container when edit config in game
      */
     public void updateSlots(EntityPlayer player) {
-        if (stacks.size() != getSum()) {
-            NonNullList<ItemStack> stacks1 = stacks;
-            stacks = NonNullList.withSize(getSum(), ItemStack.EMPTY);
-            for (int i = 0; i < stacks1.size(); i++) {
-                if (i < getSum()) {
-                    super.stacks.set(i, stacks1.get(i));
-                }
-                else {
-                    player.dropItem(stacks1.get(i), false);
-                }
+        NonNullList<ItemStack> stacks1 = stacks;
+        stacks = NonNullList.withSize(getSum(), ItemStack.EMPTY);
+        for (int i = 0; i < stacks1.size(); i++) {
+            if (i < getSum()) {
+                super.stacks.set(i, stacks1.get(i));
+            }
+            else {
+                player.dropItem(stacks1.get(i), false);
             }
         }
+    }
+
+    @Override
+    public ItemStack getStackInSlot(int slot) {
+        return super.getStackInSlot(slot);
     }
 
     @Override

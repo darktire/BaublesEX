@@ -11,7 +11,6 @@ public class BaubleItemRegister {
 
     public void registerItem(Item item, IBauble bauble) {
         baubleItems.put(item, bauble);
-        regHelper.put(String.valueOf(item.getRegistryName()), bauble.getBaubleType().getTypeName());
     }
 
     public static IBauble getIBauble(Item item) {

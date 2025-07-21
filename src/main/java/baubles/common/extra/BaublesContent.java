@@ -4,12 +4,11 @@ import baubles.api.BaubleType;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesRegister;
 import baubles.common.Baubles;
-import baubles.common.config.Config;
+import baubles.common.Config;
+import baubles.common.config.cfg.CfgBaubles;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import static baubles.common.Baubles.config;
 
 public class BaublesContent extends BaublesRegister {
     public BaublesContent() {
@@ -29,7 +28,7 @@ public class BaublesContent extends BaublesRegister {
         int value;
         for (BaubleType type : BaubleType.values()) {
             try {
-                value = config.getAmount(type.name());
+                value = CfgBaubles.getCfgAmount(type.name());
                 if (type.equals(BaubleType.TRINKET) & !Config.trinketLimit) value = 0;
                 baubles.get(type.getTypeName()).setAmount(value);
                 amount += value;
@@ -39,9 +38,9 @@ public class BaublesContent extends BaublesRegister {
                 }
             }
         }
-        if (!Config.trinketLimit & Config.TRINKET > amount) {
-            baubles.get(BaubleType.TRINKET.getTypeName()).setAmount(Config.TRINKET - amount);
-            amount = Config.TRINKET;
+        if (!Config.trinketLimit & CfgBaubles.TRINKET > amount) {
+            baubles.get(BaubleType.TRINKET.getTypeName()).setAmount(CfgBaubles.TRINKET - amount);
+            amount = CfgBaubles.TRINKET;
         }
         sum = amount;
     }

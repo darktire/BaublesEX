@@ -8,6 +8,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import static baubles.api.BaublesRegister.getSum;
+
 /**
  * @author Azanor
  */
@@ -17,6 +19,7 @@ public class BaublesApi {
      */
     public static IBaublesItemHandler getBaublesHandler(EntityPlayer player) {
         IBaublesItemHandler handler = player.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
+        if (handler.getSlots() != getSum()) handler.updateSlots(player);
         handler.setPlayer(player);
         return handler;
     }
@@ -27,6 +30,7 @@ public class BaublesApi {
     @Deprecated
     public static IInventory getBaubles(EntityPlayer player) {
         IBaublesItemHandler handler = player.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
+        if (handler.getSlots() != getSum()) handler.updateSlots(player);
         handler.setPlayer(player);
         return new BaublesInventoryWrapper(handler, player);
     }

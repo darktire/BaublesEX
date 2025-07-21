@@ -3,7 +3,6 @@ package baubles.common.container;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilities;
-import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +19,7 @@ public class ContainerBaublesTab extends Container {
     public ContainerBaublesTab(InventoryPlayer playerInv, boolean world, EntityPlayer player) {
         this.player = player;
         baubles = BaublesApi.getBaublesHandler(player);
-        ((BaublesContainer) baubles).updateSlots(player);
+//        ((BaublesContainer) baubles).updateSlots(player);
 
         //add bauble slots (amount)
         outerLoop:

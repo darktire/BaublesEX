@@ -3,7 +3,6 @@ package baubles.common.container;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilities;
-import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
@@ -32,7 +31,7 @@ public class ContainerPlayerExpanded extends Container {
         this.isLocalWorld = world;
         this.player = player;
         baubles = BaublesApi.getBaublesHandler(player);
-        ((BaublesContainer) baubles).updateSlots(player);
+//        ((BaublesContainer) baubles).updateSlots(player);
         this.slotsAmount = baubles.getSlots();
 
         //add craftResult (1)

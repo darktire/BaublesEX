@@ -5,7 +5,7 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.Baubles;
-import baubles.common.config.Config;
+import baubles.common.Config;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -119,10 +119,9 @@ public class ItemRing extends Item implements IBauble {
 
 			for (int i : BaubleType.RING.getValidSlots()) {
 				ItemStack ring1 = baubles.getStackInSlot(i);
+				if (level >= Config.maxLevel - 1) break;
 				if (ring1.getItem() == ring) level++;
-				if (level == Config.maxLevel - 1) break;
 			}
-
             if (potion != null) {
                 PotionEffect currentEffect = player.getActivePotionEffect(potion);
                 int currentLevel = currentEffect != null ? currentEffect.getAmplifier() : -1;
@@ -130,6 +129,7 @@ public class ItemRing extends Item implements IBauble {
                     player.removeActivePotionEffect(potion);
                     if (level != -1 && !player.world.isRemote)
                         player.addPotionEffect(new PotionEffect(MobEffects.HASTE, Integer.MAX_VALUE, level, true, true));
+
                 }
             }
         }
