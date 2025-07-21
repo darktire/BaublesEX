@@ -13,6 +13,7 @@ public class CfgBaubles extends CfgBase{
     public static int HEAD;
     public static int BODY;
     public static int CHARM;
+    public static String BAUBLES_SLOTS = "general.slots";
 
     public CfgBaubles(Configuration cfgFile) {
         super(cfgFile);
@@ -26,10 +27,12 @@ public class CfgBaubles extends CfgBase{
         HEAD = setCfgAmount(cfgFile, "headSlot", BaubleType.HEAD.getDefaultAmount());
         BODY = setCfgAmount(cfgFile, "bodySlot", BaubleType.BODY.getDefaultAmount());
         CHARM = setCfgAmount(cfgFile, "charmSlot", BaubleType.CHARM.getDefaultAmount());
+
+        cfgFile.getCategory(BAUBLES_SLOTS).setComment("Modify the quantity of initial baubles.");
     }
 
     private int setCfgAmount(Configuration cfgFile, String key, int value) {
-        return cfgFile.getInt(key, "general.slots", value, 0, 100, "");
+        return cfgFile.getInt(key, BAUBLES_SLOTS, value, 0, 100, "");
     }
 
     public static int getCfgAmount(String name) throws NoSuchFieldException, IllegalAccessException {

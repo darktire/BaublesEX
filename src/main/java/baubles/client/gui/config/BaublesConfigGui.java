@@ -21,8 +21,8 @@ public class BaublesConfigGui extends GuiConfig {
     private static List<IConfigElement> getConfigElements() {
         List<IConfigElement> list = new ArrayList<>();
 
-        list.addAll(new ConfigElement(config.getConfigFile().getCategory(Configuration.CATEGORY_GENERAL)).getChildElements());
-        list.addAll(new ConfigElement(config.getConfigFile().getCategory(Configuration.CATEGORY_CLIENT)).getChildElements());
+        list.add(new ConfigElement(config.getConfigFile().getCategory(Configuration.CATEGORY_GENERAL)));
+        list.add(new ConfigElement(config.getConfigFile().getCategory(Configuration.CATEGORY_CLIENT)));
 
         return list;
     }
