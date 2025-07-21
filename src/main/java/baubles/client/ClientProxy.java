@@ -1,6 +1,5 @@
 package baubles.client;
 
-import baubles.client.gui.GuiBaublesTab;
 import baubles.client.gui.GuiEvents;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.Baubles;
@@ -31,9 +30,6 @@ public class ClientProxy extends CommonProxy {
         if (world instanceof WorldClient) {
             if (ID == Baubles.GUI) {
                 return new GuiPlayerExpanded(player);
-            }
-            if (ID == Baubles.TAB) {
-                return new GuiBaublesTab(player);
             }
         }
         return null;

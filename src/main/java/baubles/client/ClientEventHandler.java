@@ -3,7 +3,6 @@ package baubles.client;
 import baubles.api.BaubleTypeEx;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilities;
-import baubles.client.gui.GuiBaublesTab;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.Baubles;
 import baubles.common.config.KeyBindings;
@@ -55,9 +54,6 @@ public class ClientEventHandler {
         Minecraft mc = Minecraft.getMinecraft();
         if (KeyBindings.KEY_BAUBLES.isPressed()) {
             mc.displayGuiScreen(new GuiPlayerExpanded(player));
-        }
-        if (KeyBindings.KEY_BAUBLES_TAB.isPressed()) {
-            mc.displayGuiScreen(new GuiBaublesTab(player));
         }
     }
 

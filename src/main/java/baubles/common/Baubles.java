@@ -46,7 +46,6 @@ public class Baubles {
 
     public static final Logger log = LogManager.getLogger(MODID.toUpperCase());
     public static final int GUI = 0;
-    public static final int TAB = 550;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {

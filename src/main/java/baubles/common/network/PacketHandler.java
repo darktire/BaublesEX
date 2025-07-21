@@ -12,6 +12,5 @@ public class PacketHandler {
         INSTANCE.registerMessage(PacketOpenBaublesInventory.class, PacketOpenBaublesInventory.class, 0, Side.SERVER);
         INSTANCE.registerMessage(PacketOpenNormalInventory.class, PacketOpenNormalInventory.class, 1, Side.SERVER);
         INSTANCE.registerMessage(PacketSync.Handler.class, PacketSync.class, 2, Side.CLIENT);
-        INSTANCE.registerMessage(PacketOpenBaublesTab.class, PacketOpenBaublesTab.class, 3, Side.SERVER);
     }
 }
