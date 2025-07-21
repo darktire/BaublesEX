@@ -2,7 +2,7 @@ package baubles.client.gui;
 
 import baubles.client.gui.botton.GuiBaublesButton;
 import baubles.client.gui.botton.GuiBaublesLabel;
-import baubles.common.Config;
+import baubles.common.config.cfg.CfgGui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
@@ -19,20 +19,20 @@ public class GuiEvents {
 		if (gui instanceof GuiContainer) {
 			GuiContainer guiContainer = (GuiContainer) gui;
 			if (gui instanceof GuiInventory || gui instanceof GuiPlayerExpanded) {
-				if (Config.baublesButton) {
+				if (CfgGui.baublesButton) {
 					event.getButtonList().add(new GuiBaublesButton(55, guiContainer, 64, 9, 10, 10, I18n.format((guiContainer instanceof GuiInventory) ? "button.baubles" : "button.normal")));
 				}
-				if (Config.baublesTab) {
-					event.getButtonList().add(new GuiBaublesLabel(60, guiContainer, Config.invPosX, 0));
-					event.getButtonList().add(new GuiBaublesLabel(60, guiContainer, Config.babPosX, 1));
+				if (CfgGui.baublesTab) {
+					event.getButtonList().add(new GuiBaublesLabel(60, guiContainer, CfgGui.invPosX, 0));
+					event.getButtonList().add(new GuiBaublesLabel(60, guiContainer, CfgGui.babPosX, 1));
 				}
 			}
 			if (gui instanceof GuiBaublesTab) {
-				event.getButtonList().add(new GuiBaublesLabel(60, guiContainer, Config.invPosX, 0));
-				event.getButtonList().add(new GuiBaublesLabel(60, guiContainer, Config.babPosX, 1));
+				event.getButtonList().add(new GuiBaublesLabel(60, guiContainer, CfgGui.invPosX, 0));
+				event.getButtonList().add(new GuiBaublesLabel(60, guiContainer, CfgGui.babPosX, 1));
 			}
 			if (gui instanceof GuiContainerCreative) {
-				if (Config.baublesButton) {
+				if (CfgGui.baublesButton) {
 					event.getButtonList().add(new GuiBaublesButton(55, guiContainer, 95, 6, 10, 10, I18n.format("button.baubles")));
 				}
 			}

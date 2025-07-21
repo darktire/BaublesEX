@@ -2,7 +2,7 @@ package baubles.client.gui.botton;
 
 import baubles.client.gui.GuiBaublesTab;
 import baubles.client.gui.GuiPlayerExpanded;
-import baubles.common.Config;
+import baubles.common.config.cfg.CfgGui;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketOpenBaublesTab;
 import baubles.common.network.PacketOpenNormalInventory;
@@ -52,7 +52,7 @@ public class GuiBaublesLabel extends GuiButtonBase {
             if (parentGui instanceof GuiInventory) onTab = 0;
             if (parentGui instanceof GuiBaublesTab) onTab = 1;
 
-            boolean onSide = (Config.invPosX == 0 && tabId == 0) || (Config.babPosX == 0 && tabId == 1);
+            boolean onSide = (CfgGui.invPosX == 0 && tabId == 0) || (CfgGui.babPosX == 0 && tabId == 1);
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             mc.renderEngine.bindTexture(tabs);
