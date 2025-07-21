@@ -38,6 +38,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
             }
             else {
                 player.dropItem(stacks1.get(i), false);
+                //todo no effect
             }
         }
     }

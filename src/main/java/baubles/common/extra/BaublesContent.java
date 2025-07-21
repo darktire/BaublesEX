@@ -29,7 +29,7 @@ public class BaublesContent extends BaublesRegister {
         for (BaubleType type : BaubleType.values()) {
             try {
                 value = CfgBaubles.getCfgAmount(type.name());
-                if (type.equals(BaubleType.TRINKET) & !Config.trinketLimit) value = 0;
+                if (type.equals(BaubleType.TRINKET) && !Config.trinketLimit) value = 0;
                 baubles.get(type.getTypeName()).setAmount(value);
                 amount += value;
             } catch (NoSuchFieldException | IllegalAccessException e) {
@@ -38,7 +38,7 @@ public class BaublesContent extends BaublesRegister {
                 }
             }
         }
-        if (!Config.trinketLimit & CfgBaubles.TRINKET > amount) {
+        if (!Config.trinketLimit && CfgBaubles.TRINKET > amount) {
             baubles.get(BaubleType.TRINKET.getTypeName()).setAmount(CfgBaubles.TRINKET - amount);
             amount = CfgBaubles.TRINKET;
         }

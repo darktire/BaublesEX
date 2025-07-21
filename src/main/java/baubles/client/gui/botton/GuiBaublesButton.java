@@ -14,7 +14,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import org.lwjgl.opengl.GL11;
 
-public class GuiBaublesButton extends GuiButtonBase {
+public class GuiBaublesButton extends GuiElementBase {
 
     private final GuiContainer parentGui;
 
@@ -46,10 +46,11 @@ public class GuiBaublesButton extends GuiButtonBase {
             if (parentGui instanceof GuiContainerCreative && ((GuiContainerCreative) parentGui).getSelectedTabIndex() != CreativeTabs.INVENTORY.getTabIndex()) return;
             int x = this.x + this.parentGui.getGuiLeft();
 
+            updateHovered(mouseX, mouseY);
+
             FontRenderer fontrenderer = mc.fontRenderer;
             mc.getTextureManager().bindTexture(GuiPlayerExpanded.background);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            this.hovered = mouseX >= x && mouseY >= this.y && mouseX < x + this.width && mouseY < this.y + this.height;
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -57,7 +58,7 @@ public class GuiBaublesButton extends GuiButtonBase {
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0, 200);
 
-            if (this.hovered) {
+            if (isMouseOver()) {
                 this.drawTexturedModalRect(x, this.y, 200, 48, 10, 10);
                 this.drawCenteredString(fontrenderer, I18n.format(this.displayString), x + 5, this.y + this.height, 0xffffff);
             }
