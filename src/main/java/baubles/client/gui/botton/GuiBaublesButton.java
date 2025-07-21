@@ -3,7 +3,6 @@ package baubles.client.gui.botton;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketOpenBaublesInventory;
-import baubles.common.network.PacketOpenBaublesTab;
 import baubles.common.network.PacketOpenNormalInventory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -35,10 +34,8 @@ public class GuiBaublesButton extends GuiButtonBase {
             if (parentGui instanceof GuiPlayerExpanded) {
                 mc.displayGuiScreen(new GuiInventory(mc.player));
                 PacketHandler.INSTANCE.sendToServer(new PacketOpenNormalInventory());
-            } else if (parentGui instanceof GuiInventory) {
+            } else{
                 PacketHandler.INSTANCE.sendToServer(new PacketOpenBaublesInventory());
-            } else if (parentGui instanceof GuiContainerCreative) {
-                PacketHandler.INSTANCE.sendToServer(new PacketOpenBaublesTab());
             }
         }
     }

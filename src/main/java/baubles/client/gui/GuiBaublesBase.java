@@ -38,9 +38,6 @@ public abstract class GuiBaublesBase extends InventoryEffectRenderer {
         if (keyCode == KeyBindings.KEY_BAUBLES.getKeyCode()) {
             this.mc.player.closeScreen();
         }
-        else if (keyCode == KeyBindings.KEY_BAUBLES_TAB.getKeyCode()) {
-            this.mc.player.closeScreen();
-        }
         else super.keyTyped(par1, keyCode);
     }
 }
