@@ -7,9 +7,9 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 
-public class GuiButtonBase extends GuiButton {
+public class GuiElementBase extends GuiButton {
     protected Minecraft mc;
-    public GuiButtonBase(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
+    public GuiElementBase(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
         super(buttonId, x, y, widthIn, heightIn, buttonText);
     }
 
@@ -27,6 +27,10 @@ public class GuiButtonBase extends GuiButton {
     @Override
     protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
         super.mouseDragged(mc, mouseX, mouseY);
+    }
+
+    protected void updateHovered(int mouseX, int mouseY) {
+        this.hovered = mouseX >= x && mouseY >= this.y && mouseX < x + this.width && mouseY < this.y + this.height;
     }
 
     protected void drawIcon(Minecraft mc, ItemStack itemStack, int x, int y, boolean thisTab) {

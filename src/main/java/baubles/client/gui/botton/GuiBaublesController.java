@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class GuiBaublesController extends GuiButtonBase {
+public class GuiBaublesController extends GuiElementBase {
 
     protected final GuiContainer parentGui;
     private final boolean direction;
@@ -36,6 +36,8 @@ public class GuiBaublesController extends GuiButtonBase {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
+            updateHovered(mouseX, mouseY);
+
             mc.getTextureManager().bindTexture(GuiPlayerExpanded.background);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableBlend();
