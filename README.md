@@ -16,12 +16,14 @@
 - [x] customizable bauble slots
   - [x] customize bauble types and quantities
   - [x] item can be defined as bauble
+  - [ ] various abilities for each player
 - [x] more configure
 - [x] more command
 - [x] new style of bauble slots
 - [x] right click to equip baubles
 - [ ] durability for baubles
 - [ ] enchantment support for baubles
+- [ ] visibility of each bauble
 - [ ] ...
 - [ ] waiting for more suggestions
 

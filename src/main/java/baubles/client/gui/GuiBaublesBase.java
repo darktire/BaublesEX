@@ -1,8 +1,10 @@
 package baubles.client.gui;
 
+import baubles.common.Baubles;
 import baubles.common.config.KeyBindings;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -10,6 +12,7 @@ import java.io.IOException;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiBaublesBase extends InventoryEffectRenderer {
+    public static final ResourceLocation BAUBLES_TEX = new ResourceLocation(Baubles.MODID, "textures/gui/baubles_container.png");
 
     public GuiBaublesBase(Container inventorySlotsIn) {
         super(inventorySlotsIn);

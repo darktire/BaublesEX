@@ -8,8 +8,6 @@ button.normal=Normal
 #
 # Keybinding
 key.categories.baubles=Baubles
-keybind.baublesinventory=Baubles Inventory
-keybind.baublestab=Baubles Tab
 #
 # Description
 name.AMULET=Bauble (Amulet)

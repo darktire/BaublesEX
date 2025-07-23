@@ -74,8 +74,8 @@ public class SlotBaubleHandler extends SlotItemHandler {
     @SideOnly(Side.CLIENT)
     public boolean isEnabled()
     {
-        return -3 < yPos && yPos <= 123;
-    }
+        return -2 < yPos && yPos <= 142;
+    }//visible
 
     @Override
     public String getSlotTexture() {

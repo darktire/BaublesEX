@@ -1,15 +1,15 @@
-package baubles.client.gui.botton;
+package baubles.client.gui.element;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.opengl.GL11;
 
-public class GuiElementBase extends GuiButton {
+public class ElementBase extends GuiButton {
     protected Minecraft mc;
-    public GuiElementBase(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
+    public ElementBase(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
         super(buttonId, x, y, widthIn, heightIn, buttonText);
     }
 
@@ -20,20 +20,36 @@ public class GuiElementBase extends GuiButton {
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY) {
-        super.mouseReleased(mouseX, mouseY);
-    }
+    public void mouseReleased(int mouseX, int mouseY) {}
 
     @Override
-    protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
-        super.mouseDragged(mc, mouseX, mouseY);
-    }
+    protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {}
 
     protected void updateHovered(int mouseX, int mouseY) {
-        this.hovered = mouseX >= x && mouseY >= this.y && mouseX < x + this.width && mouseY < this.y + this.height;
+        this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
     }
 
-    protected void drawIcon(Minecraft mc, ItemStack itemStack, int x, int y, boolean thisTab) {
+    public void drawTexture(int x, int y, float zLevel, int textureX, int textureY, int width, int height) {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+
+        float pixelWidth = 0.00390625F;
+        buffer.pos(x        , y + height, zLevel).tex( textureX          * pixelWidth, (textureY + height) * pixelWidth).endVertex();
+        buffer.pos(x + width, y + height, zLevel).tex((textureX + width) * pixelWidth, (textureY + height) * pixelWidth).endVertex();
+        buffer.pos(x + width, y         , zLevel).tex((textureX + width) * pixelWidth,  textureY           * pixelWidth).endVertex();
+        buffer.pos(x        , y         , zLevel).tex( textureX          * pixelWidth,  textureY           * pixelWidth).endVertex();
+
+        tessellator.draw();
+    }
+
+    public void setupBlend() {
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+    }
+
+    public void drawIcon(Minecraft mc, ItemStack itemStack, int x, int y, boolean thisTab) {
         RenderItem itemRender = mc.getRenderItem();
         itemRender.zLevel = 100.0F;
         RenderHelper.enableGUIStandardItemLighting();
@@ -43,7 +59,7 @@ public class GuiElementBase extends GuiButton {
         itemRender.zLevel = 0.0F;
     }
 
-    protected void drawHoveringText(Minecraft mc, String label, int x, int y) {
+    public void drawHoveringText(Minecraft mc, String label, int x, int y) {
         GlStateManager.disableRescaleNormal();
         RenderHelper.disableStandardItemLighting();
         GlStateManager.disableLighting();

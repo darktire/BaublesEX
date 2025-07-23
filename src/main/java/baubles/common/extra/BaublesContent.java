@@ -6,13 +6,16 @@ import baubles.api.BaublesRegister;
 import baubles.common.Baubles;
 import baubles.common.Config;
 import baubles.common.config.cfg.CfgBaubles;
+import baubles.common.config.json.JsonHelper;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class BaublesContent extends BaublesRegister {
+    private static JsonHelper jsonHelper;
     public BaublesContent() {
         if (Config.jsonFunction) {
+            jsonHelper = new JsonHelper();
             readJson();
         }
         else {
@@ -60,7 +63,7 @@ public class BaublesContent extends BaublesRegister {
 
     public void writeJson() {
         try {
-            Baubles.jsonHelper.typesToJson();
+            jsonHelper.typesToJson();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -68,7 +71,7 @@ public class BaublesContent extends BaublesRegister {
 
     public void readJson() {
         try {
-            Baubles.jsonHelper.jsonToType();
+            jsonHelper.jsonToType();
         } catch (FileNotFoundException e) {
             this.registerBaubles();
             this.loadValidSlots();

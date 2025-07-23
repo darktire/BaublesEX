@@ -6,7 +6,6 @@ import baubles.api.cap.BaublesCapabilities;
 import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.common.config.json.JsonHelper;
 import baubles.common.extra.BaublesContent;
 import baubles.common.network.PacketHandler;
 import baubles.common.util.command.CommandBaubles;
@@ -35,7 +34,6 @@ public class Baubles {
     public static final String FACTORY = "baubles.client.gui.config.BaublesGuiFactory";
 
     public static Config config;
-    public static JsonHelper jsonHelper;
     public static BaublesContent baubles;
 
     @SidedProxy(clientSide = "baubles.client.ClientProxy", serverSide = "baubles.common.CommonProxy")
@@ -50,7 +48,6 @@ public class Baubles {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         config = new Config(event);
-        jsonHelper = new JsonHelper();
         baubles = new BaublesContent();
 
         CapabilityManager.INSTANCE.register(

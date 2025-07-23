@@ -2,7 +2,6 @@ package baubles.client.gui;
 
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.client.gui.botton.GuiBaublesController;
 import baubles.common.Baubles;
 import baubles.common.container.ContainerPlayerExpanded;
 import baubles.common.container.SlotBaubleHandler;
@@ -25,9 +24,11 @@ import java.io.IOException;
 import java.util.Collections;
 
 public class GuiPlayerExpanded extends GuiBaublesBase {
-    public static final ResourceLocation background = new ResourceLocation(Baubles.MODID, "textures/gui/baubles_container.png");
+    @Deprecated
+    public static final ResourceLocation background = new ResourceLocation("baubles","textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
     private final IBaublesItemHandler baubles = ((ContainerPlayerExpanded) this.inventorySlots).baubles;
     private float oldMouseX, oldMouseY;
+    private final int finalLine = Math.min(8, baubles.getSlots());
     private int offset = 0;
 
     public GuiPlayerExpanded(EntityPlayer player) {
@@ -35,12 +36,15 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
         this.allowUserInput = true;
     }
 
+    /**
+     * Positive number means moving up slots.
+     * @param value
+     */
     public void moveBaubleSlots(int value) {
         int baublesAmount = baubles.getSlots();
-        int offset1 = offset;
-        offset1 += value;
-        if (offset1 > 0) value = offset;
-        if (offset1 < 7 - baublesAmount) value = 7 - offset - baublesAmount;
+        int offset1 = offset + value;
+        if (offset1 > 0) value = -offset;
+        if (offset1 < finalLine - baublesAmount) value = finalLine - offset - baublesAmount;
         offset += value;
         for (int i = 9; i < 9 + baublesAmount; ++i) {
             Slot slot1 = inventorySlots.inventorySlots.get(i);
@@ -65,12 +69,12 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
     public void initGui() {
         this.buttonList.clear();
         super.initGui();
-        this.buttonList.add(new GuiBaublesController(56, this, guiLeft - 27, guiTop, false));
-        this.buttonList.add(new GuiBaublesController(57, this, guiLeft - 27, guiTop + 14 + getMaxY(), true));
+//        this.buttonList.add(new GUIBaublesController(56, this, guiLeft - 27, guiTop, false));
+//        this.buttonList.add(new GUIBaublesController(57, this, guiLeft - 27, guiTop + 14 + getMaxY(), true));
     }
 
     /**
-     * Draw the foreground layer for the GuiContainer (everything in front of the items)
+     * Draw the foreground layer for the GuiContainer (things in front of the items)
      */
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
@@ -78,7 +82,7 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
         int xLoc = this.guiLeft - 22;
         if (mouseX > xLoc && mouseX < xLoc + 18) {
             int yLoc = this.guiTop + 14;
-            if (mouseY >= yLoc && mouseY < yLoc + getMaxY()) {
+            if (mouseY >= yLoc && mouseY < yLoc + 18 * finalLine) {
                 int index = (mouseY - yLoc) / 18 - offset;
                 BaublesContainer container = ((BaublesContainer) baubles);
 
@@ -122,7 +126,7 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
         int xLoc = this.guiLeft - 22;
         if (mouseX > xLoc && mouseX < xLoc + 18) {
             int yLoc = this.guiTop + 14;
-            if (mouseY >= yLoc && mouseY < yLoc + getMaxY()) {
+            if (mouseY >= yLoc && mouseY < yLoc + 18 * finalLine) {
                 int dWheel = Mouse.getEventDWheel();
                 if (dWheel != 0) {
                     int value = dWheel / 120;
@@ -142,20 +146,20 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
      */
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(INVENTORY_BACKGROUND);
-
         int k = this.guiLeft;
         int l = this.guiTop;
-
-        this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
-
-        int size = Math.min(7, baubles.getSlots());
+        
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        // draw inventory
+        mc.getTextureManager().bindTexture(INVENTORY_BACKGROUND);
+        drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
+        // draw baubles container
+        mc.getTextureManager().bindTexture(BAUBLES_TEX);
+        drawTexturedModalRect(k - 29, l, 18, 0, 28, 166);
 
         // draw slots
-        for (int i = 0; i < size; i++) {
-            this.mc.getTextureManager().bindTexture(background);
-            this.drawTexturedModalRect(k - 27, l + 14 + (i * 18), 0, 227, 28, 18);
+        for (int i = 0; i < finalLine; i++) {
+            drawTexturedModalRect(k - 24, l + 15 + (i * 18), 6, 167, 18, 18);
         }
 
         GuiInventory.drawEntityOnScreen(k + 51, l + 75, 30, (float) (k + 51) - this.oldMouseX, (float) (l + 75 - 50) - this.oldMouseY, this.mc.player);
@@ -178,9 +182,5 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
         if (button.id == 1) {
             this.mc.displayGuiScreen(new GuiStats(this, this.mc.player.getStatFileWriter()));
         }
-    }
-
-    private int getMaxY() {
-        return 18 * Math.min(baubles.getSlots(), 7);
     }
 }

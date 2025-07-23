@@ -21,7 +21,7 @@ public class CfgBaubles extends CfgBase{
 
     public void loadData(Configuration cfgFile) {
         AMULET = setCfgAmount(cfgFile, "amuletSlot", BaubleType.AMULET.getDefaultAmount());
-        RING = setCfgAmount(cfgFile, "ringSlot", BaubleType.RING.getDefaultAmount());
+        RING = setCfgAmount(cfgFile, "ringSlot", BaubleType.RING.getDefaultAmount());// no less than 2 or incompatible with artifact
         BELT = setCfgAmount(cfgFile, "beltSlot", BaubleType.BELT.getDefaultAmount());
         TRINKET = setCfgAmount(cfgFile, "trinketSlot", BaubleType.TRINKET.getDefaultAmount());
         HEAD = setCfgAmount(cfgFile, "headSlot", BaubleType.HEAD.getDefaultAmount());
