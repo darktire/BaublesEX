@@ -1,4 +1,4 @@
-package baubles.client.gui.botton;
+package baubles.client.gui.element;
 
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.network.PacketHandler;
@@ -12,14 +12,13 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
-import org.lwjgl.opengl.GL11;
 
-public class GuiBaublesButton extends GuiElementBase {
+public class GUIBaublesButton extends ElementBase {
 
     private final GuiContainer parentGui;
 
-    public GuiBaublesButton(int buttonId, GuiContainer parentGui, int x, int y, int width, int height,  String buttonText) {
-        super(buttonId, x, parentGui.getGuiTop() + y, 10, 10, buttonText);
+    public GUIBaublesButton(int buttonId, GuiContainer parentGui, int x, int y, String buttonText) {
+        super(buttonId, parentGui.getGuiLeft() + x, parentGui.getGuiTop() + y, 10, 10, buttonText);
         this.parentGui = parentGui;
     }
 
@@ -44,26 +43,21 @@ public class GuiBaublesButton extends GuiElementBase {
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             if (parentGui instanceof GuiContainerCreative && ((GuiContainerCreative) parentGui).getSelectedTabIndex() != CreativeTabs.INVENTORY.getTabIndex()) return;
-            int x = this.x + this.parentGui.getGuiLeft();
 
             updateHovered(mouseX, mouseY);
 
             FontRenderer fontrenderer = mc.fontRenderer;
             mc.getTextureManager().bindTexture(GuiPlayerExpanded.background);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0, 200);
 
             if (isMouseOver()) {
-                this.drawTexturedModalRect(x, this.y, 200, 48, 10, 10);
-                this.drawCenteredString(fontrenderer, I18n.format(this.displayString), x + 5, this.y + this.height, 0xffffff);
+                drawTexture(x, y, zLevel, 200, 48, 10, 10);
+                drawCenteredString(fontrenderer, I18n.format(this.displayString), x + 5, this.y + this.height, 0xffffff);
             }
             else {
-                this.drawTexturedModalRect(x, this.y, 210, 48, 10, 10);
+                drawTexture(x, y, zLevel, 210, 48, 10, 10);
             }
 
             GlStateManager.popMatrix();

@@ -73,7 +73,7 @@ public class ContainerPlayerExpanded extends Container {
 
         //add bauble slots (amount)
         for (int i = 0; i < slotsAmount; i++) {
-            this.addSlotToContainer(new SlotBaubleHandler(player, baubles, i, -21, 15 + (i * 18)));
+            this.addSlotToContainer(new SlotBaubleHandler(player, baubles, i, -23, 16 + (i * 18)));
         }
 
         //add inventory upper half (27)
@@ -173,7 +173,7 @@ public class ContainerPlayerExpanded extends Container {
             // inv -> bauble
             else if (newStack.hasCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null)) {
                 IBauble bauble = newStack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
-                isMerge = bauble.canEquip(oldStack, player) && this.mergeItemStack(oldStack, 9, 8 + slotShift,false);
+                isMerge = bauble.canEquip(oldStack, player) && this.mergeItemStack(oldStack, 9, 9 + slotShift,false);
             }
             if (!isMerge) {
                 // upper -> downer

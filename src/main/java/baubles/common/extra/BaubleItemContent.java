@@ -15,7 +15,7 @@ public class BaubleItemContent extends BaubleItemRegister {
 
     public BaubleItemContent() {
         isInit = true;
-        Baubles.jsonHelper.jsonToItem();
+//        Baubles.jsonHelper.jsonToItem();
         items = regHelper.keySet();
     }
 

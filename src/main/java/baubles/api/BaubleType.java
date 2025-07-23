@@ -11,7 +11,7 @@ public enum BaubleType {
 	HEAD(1),
 	BODY(1),
 	CHARM(1),
-	TRINKET(7);
+	TRINKET(0);
 
 	private final int defaultAmount;
 	private final String typeName;

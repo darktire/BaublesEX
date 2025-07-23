@@ -2,6 +2,7 @@ package baubles.common.event;
 
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilityProvider;
+import baubles.common.Config;
 import baubles.common.extra.BaubleItemContent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -33,7 +34,7 @@ public class EventHandlerItem {
         if (stack.isEmpty()) return;
         Item item = stack.getItem();
 
-        if (BaubleItemContent.isExtra(item)) {
+        if (Config.jsonFunction && BaubleItemContent.isExtra(item)) {
             content.registerItem(item);
         }
         else {

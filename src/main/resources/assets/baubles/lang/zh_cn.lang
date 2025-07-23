@@ -8,8 +8,6 @@ button.normal=普通
 #
 # Keybinding
 key.categories.baubles=饰品
-keybind.baublesinventory=饰品栏
-keybind.baublestab=饰品页面
 #
 # Description
 name.AMULET=饰品 (护身符)
