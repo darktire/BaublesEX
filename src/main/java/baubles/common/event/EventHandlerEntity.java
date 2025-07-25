@@ -35,7 +35,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.*;
 
-import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 import static cofh.core.init.CoreEnchantments.soulbound;
 
 public class EventHandlerEntity {
@@ -92,7 +91,7 @@ public class EventHandlerEntity {
             IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
             for (int i = 0; i < baubles.getSlots(); i++) {
                 ItemStack stack = baubles.getStackInSlot(i);
-                IBauble bauble = stack.getCapability(CAPABILITY_ITEM_BAUBLE, null);
+                IBauble bauble = BaublesApi.getBaubleItem(stack);
                 if (bauble != null) {
                     bauble.onWornTick(stack, player);
                 }
@@ -119,7 +118,7 @@ public class EventHandlerEntity {
         Set<EntityPlayer> receivers = null;
         for (int i = 0; i < baubles.getSlots(); i++) {
             ItemStack stack = baubles.getStackInSlot(i);
-            IBauble bauble = stack.getCapability(CAPABILITY_ITEM_BAUBLE, null);
+            IBauble bauble = BaublesApi.getBaubleItem(stack);
             if (baubles.isChanged(i) || bauble != null && bauble.willAutoSync(stack, player) && !ItemStack.areItemStacksEqual(stack, items[i])) {
                 if (receivers == null) {
                     receivers = new HashSet<>(((WorldServer) player.world).getEntityTracker().getTrackingPlayers(player));
@@ -161,7 +160,7 @@ public class EventHandlerEntity {
         ItemStack heldItem = event.getItemStack();
         if (Baubles.config.blacklistItem().contains(heldItem.getItem())) return;
         EntityPlayer player = event.getEntityPlayer();
-        IBauble bauble = heldItem.getCapability(CAPABILITY_ITEM_BAUBLE, null);
+        IBauble bauble = BaublesApi.getBaubleItem(heldItem);
         if (bauble != null) {
             ActionResult<ItemStack> action = heldItem.getItem().onItemRightClick(player.world, player, event.getHand());
             if (action.getType() != EnumActionResult.SUCCESS) {

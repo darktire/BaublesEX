@@ -3,7 +3,6 @@ package baubles.common.util.command.sub;
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.BaublesCapabilities;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.util.command.CommandBaubles;
 import net.minecraft.command.CommandBase;
@@ -35,8 +34,8 @@ public class CommandView extends CommandBase {
         sender.sendMessage(new TextComponentTranslation("commands.baubles.view.info", player.getName()));
         for (int i = 0; i < baubles.getSlots(); i++) {
             ItemStack stack = baubles.getStackInSlot(i);
-            if (!stack.isEmpty() && stack.hasCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null)) {
-                IBauble bauble = stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
+            if (!stack.isEmpty() && BaublesApi.isBauble(stack)) {
+                IBauble bauble = BaublesApi.getBaubleItem(stack);
                 BaubleType type = bauble.getBaubleType();
                 sender.sendMessage(new TextComponentTranslation("commands.baubles.view", i, stack.getDisplayName(), type.getTypeName()));
             }

@@ -1,5 +1,6 @@
 package baubles.api.cap;
 
+import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,7 +14,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import java.util.HashMap;
 
 import static baubles.api.BaublesRegister.getSum;
-import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 
 public class BaublesContainer extends ItemStackHandler implements IBaublesItemHandler {
 
@@ -51,7 +51,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack, EntityLivingBase player) {
         if (stack == null || stack.isEmpty()) return false;
-        IBauble bauble = stack.getCapability(CAPABILITY_ITEM_BAUBLE, null);
+        IBauble bauble = BaublesApi.getBaubleItem(stack);
         if (bauble != null) {
             boolean canEquip = bauble.canEquip(stack, player);
             boolean hasSlot = bauble.getBaubleType().hasSlot(slot);

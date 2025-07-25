@@ -20,7 +20,7 @@ public class BaublesCapabilities {
     @CapabilityInject(IBauble.class)
     public static Capability<IBauble> CAPABILITY_ITEM_BAUBLE;
 
-    public static class CapabilityBaubles<T extends IBaublesItemHandler> implements IStorage<IBaublesItemHandler> {
+    public static class CapabilityBaubles implements IStorage<IBaublesItemHandler> {
 
         @Override
         public NBTBase writeNBT(Capability<IBaublesItemHandler> capability, IBaublesItemHandler instance, EnumFacing side) {

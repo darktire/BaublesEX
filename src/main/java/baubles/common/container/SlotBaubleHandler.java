@@ -1,7 +1,7 @@
 package baubles.common.container;
 
+import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.BaublesCapabilities;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.Baubles;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,8 +12,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.SlotItemHandler;
-
-import java.util.Objects;
 
 public class SlotBaubleHandler extends SlotItemHandler {
 
@@ -26,6 +24,10 @@ public class SlotBaubleHandler extends SlotItemHandler {
         this.index = index;
     }
 
+    public void incrYPos(int value) {
+        super.yPos += value;
+    }
+
     @Override
     public boolean isItemValid(ItemStack stack) {
         return ((IBaublesItemHandler)getItemHandler()).isItemValidForSlot(index, stack, player);
@@ -35,14 +37,14 @@ public class SlotBaubleHandler extends SlotItemHandler {
     public boolean canTakeStack(EntityPlayer player) {
         ItemStack stack = getStack();
         if (stack.isEmpty()) return false;
-        IBauble bauble = stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
+        IBauble bauble = BaublesApi.getBaubleItem(stack);
         return bauble == null || player.isCreative() || bauble.canUnequip(stack, player);
     }
 
     @Override
     public ItemStack onTake(EntityPlayer playerIn, ItemStack stack) {
         if (!stack.isEmpty() && !((IBaublesItemHandler)getItemHandler()).isEventBlocked()) {
-            IBauble bauble = stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
+            IBauble bauble = BaublesApi.getBaubleItem(stack);
             if (bauble != null) bauble.onUnequipped(stack, playerIn);
         }
 
@@ -52,22 +54,18 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     public void putStack(ItemStack stack) {
-        if (getHasStack() && !ItemStack.areItemStacksEqual(stack, getStack()) && !((IBaublesItemHandler) getItemHandler()).isEventBlocked() && getStack().hasCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null)) {
-            getStack().getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null).onUnequipped(getStack(), player);
+        if (getHasStack() && !ItemStack.areItemStacksEqual(stack, getStack()) && !((IBaublesItemHandler) getItemHandler()).isEventBlocked() && BaublesApi.isBauble(getStack())) {
+            BaublesApi.getBaubleItem(getStack()).onUnequipped(getStack(), player);
         }
 
-        ItemStack oldstack = getStack().copy();
+        ItemStack oldStack = getStack().copy();
 
         ((IItemHandlerModifiable) this.getItemHandler()).setStackInSlot(index, stack);
-        this.onSlotChanged();
+        this.onSlotChanged();//no effect
 
-        if (getHasStack() && !ItemStack.areItemStacksEqual(oldstack, getStack()) && !((IBaublesItemHandler) getItemHandler()).isEventBlocked() && getStack().hasCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null)) {
-            Objects.requireNonNull(getStack().getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null)).onEquipped(getStack(), player);
+        if (getHasStack() && !ItemStack.areItemStacksEqual(oldStack, getStack()) && !((IBaublesItemHandler) getItemHandler()).isEventBlocked()) {
+            BaublesApi.getBaubleItem(getStack()).onEquipped(getStack(), player);
         }
-    }
-
-    public void incrYPos(int value) {
-        super.yPos += value;
     }
 
     @Override

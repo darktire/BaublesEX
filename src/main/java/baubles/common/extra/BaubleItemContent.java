@@ -3,6 +3,7 @@ package baubles.common.extra;
 import baubles.api.cap.BaubleItem;
 import baubles.api.cap.BaubleItemRegister;
 import baubles.common.Baubles;
+import baubles.common.Config;
 import net.minecraft.item.Item;
 
 import java.util.HashMap;
@@ -27,13 +28,12 @@ public class BaubleItemContent extends BaubleItemRegister {
     }
 
     public void registerItem(Item item) {
-        String type = regHelper.get(String.valueOf(item.getRegistryName()));
-        BaubleItem baubleItem = new BaubleItem(item, Baubles.baubles.getBaubles(type));
-        registerItem(item, baubleItem);
+        if (Config.jsonFunction && items.contains(String.valueOf(item.getRegistryName()))) {
+            String type = regHelper.get(String.valueOf(item.getRegistryName()));
+            BaubleItem baubleItem = new BaubleItem(item, Baubles.baubles.getBaubles(type));
+            registerItem(item, baubleItem);
+        }
 //        registerItem(elytra, new BaubleItem(elytra, Baubles.baubles.getBaubles("body")));
-    }
-    public static boolean isExtra(Item item) {
-        return items.contains(String.valueOf(item.getRegistryName()));
     }
 
     public static void setRegHelper(HashMap<String, String> map) {

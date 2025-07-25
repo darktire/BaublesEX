@@ -19,7 +19,7 @@ public enum BaubleType {
 	private final int[] validSlots;
 
 	BaubleType(int amount) {
-		this.typeName = this.name().toLowerCase();
+		this.typeName = this.toString().toLowerCase();
 		this.defaultAmount = amount;
 		this.baubleTypeEx = new BaubleTypeEx(typeName, amount);
 		this.validSlots = getValidSlots();
