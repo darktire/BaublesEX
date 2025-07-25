@@ -2,8 +2,8 @@ package baubles.common;
 
 import baubles.api.IBauble;
 import baubles.api.cap.BaubleItem;
-import baubles.api.cap.BaublesCapabilities;
 import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
+import baubles.api.cap.BaublesCapabilities.CapabilityItemBaubleStorage;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.extra.BaublesContent;
@@ -52,11 +52,11 @@ public class Baubles {
 
         CapabilityManager.INSTANCE.register(
                 IBaublesItemHandler.class,
-                new CapabilityBaubles<>(),
+                new CapabilityBaubles(),
                 BaublesContainer::new);
         CapabilityManager.INSTANCE.register(
                 IBauble.class,
-                new BaublesCapabilities.CapabilityItemBaubleStorage(),
+                new CapabilityItemBaubleStorage(),
                 BaubleItem::new);
 
         proxy.registerEventHandlers();

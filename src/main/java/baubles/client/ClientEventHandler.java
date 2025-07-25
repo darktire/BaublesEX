@@ -1,8 +1,8 @@
 package baubles.client;
 
 import baubles.api.BaubleTypeEx;
+import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.BaublesCapabilities;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.Baubles;
 import baubles.common.config.KeyBindings;
@@ -32,8 +32,8 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void tooltipEvent(ItemTooltipEvent event) {
-        if (!event.getItemStack().isEmpty() && event.getItemStack().hasCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null)) {
-            IBauble bauble = event.getItemStack().getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
+        if (!event.getItemStack().isEmpty() && BaublesApi.isBauble(event.getItemStack())) {
+            IBauble bauble = BaublesApi.getBaubleItem(event.getItemStack());
             if (bauble != null) {
                 String bt = "name." + bauble.getBaubleType().name();
                 event.getToolTip().add(TextFormatting.GOLD + I18n.format(bt));

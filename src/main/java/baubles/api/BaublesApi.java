@@ -9,6 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import static baubles.api.BaublesRegister.getSum;
+import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 
 /**
  * @author Azanor
@@ -47,8 +48,12 @@ public class BaublesApi {
         return -1;
     }
 
+    public static Boolean isBauble(ItemStack stack) {
+        return stack.hasCapability(CAPABILITY_ITEM_BAUBLE, null);
+    }
+
     public static IBauble getBaubleItem(ItemStack stack) {
-        IBauble bauble = stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
+        IBauble bauble = stack.getCapability(CAPABILITY_ITEM_BAUBLE, null);
         return bauble;
     }
 }

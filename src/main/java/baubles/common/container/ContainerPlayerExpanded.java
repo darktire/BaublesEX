@@ -2,7 +2,6 @@ package baubles.common.container;
 
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.BaublesCapabilities;
 import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
@@ -171,8 +170,8 @@ public class ContainerPlayerExpanded extends Container {
                 isMerge = this.mergeItemStack(oldStack, 45 + slotShift, 46 + slotShift, false);
             }
             // inv -> bauble
-            else if (newStack.hasCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null)) {
-                IBauble bauble = newStack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
+            else if (BaublesApi.isBauble(newStack)) {
+                IBauble bauble = BaublesApi.getBaubleItem(newStack);
                 isMerge = bauble.canEquip(oldStack, player) && this.mergeItemStack(oldStack, 9, 9 + slotShift,false);
             }
             if (!isMerge) {
@@ -203,9 +202,9 @@ public class ContainerPlayerExpanded extends Container {
             }
 
             if (oldStack.isEmpty() && !baubles.isEventBlocked() && slot instanceof SlotBaubleHandler) {
-                IBauble cap = newStack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
-                if (cap != null)
-                    cap.onUnequipped(newStack, playerIn);
+                IBauble bauble = BaublesApi.getBaubleItem(newStack);
+                if (bauble != null)
+                    bauble.onUnequipped(newStack, playerIn);
             }
 
             ItemStack itemstack2 = slot.onTake(playerIn, oldStack);

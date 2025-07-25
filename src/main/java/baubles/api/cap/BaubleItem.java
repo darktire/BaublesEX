@@ -27,6 +27,11 @@ public class BaubleItem implements IBauble {
 	}
 
 	@Override
+	public BaubleTypeEx getBaubleTypeEx() {
+		return type;
+	}
+
+	@Override
 	public BaubleType getBaubleType() {
 		return type.getOldType();
 	}
