@@ -4,24 +4,26 @@ import baubles.api.BaubleType;
 import baubles.api.BaubleTypeEx;
 import baubles.api.IBauble;
 import baubles.api.cap.BaubleItem;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
 
 public class BaublesWrapper implements IBauble {
 
     private final Item item;
     private final IBauble bauble;
-    private BaubleTypeEx type;
-    private BaubleTypeEx oldType;
-    private boolean modified = false;
+    private BaubleTypeEx mainType;
+    private ArrayList<BaubleTypeEx> type;// todo types
 
     public BaublesWrapper(Item item) {
         this.item = item;
         this.bauble = (IBauble) item;
-        this.type = bauble.getBaubleTypeEx();
-        if (type == null) this.type = bauble.getBaubleType().getNewType();
-        if (type == null) this.type = new BaubleTypeEx("NO_TYPE", 0);
+        this.mainType = bauble.getBaubleTypeEx();
+        if (mainType == null) this.mainType = bauble.getBaubleType(null).getNewType();
+        if (mainType == null) this.mainType = new BaubleTypeEx("NO_TYPE", 0);
     }
 
     public BaublesWrapper(BaubleItem bauble) {
@@ -30,61 +32,51 @@ public class BaublesWrapper implements IBauble {
     }
 
     public void setType(BaubleTypeEx type) {
-        if (oldType == null) {
-            oldType = this.type;
-            modified = true;
-        }
-        if (oldType == type) modified = false;
-        this.type = type;
+        this.mainType = type;
     }
 
     @Override
     public BaubleTypeEx getBaubleTypeEx() {
-        return type;
-    }
-
-    @Override
-    public BaubleType getBaubleType() {
-        return type.getOldType();
+        return mainType;
     }
 
     @Override
     public BaubleType getBaubleType(ItemStack itemStack) {
-        return type.getOldType();
+        return mainType.getOldType();
     }
 
     @Override
-    public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
-        bauble.onWornTick(itemstack, player);
+    public void onWornTick(ItemStack itemstack, EntityLivingBase entity) {
+        bauble.onWornTick(itemstack, entity);
     }
 
     @Override
-    public void onEquipped(ItemStack itemstack, EntityLivingBase player) {
-        bauble.onEquipped(itemstack, player);
+    public void onEquipped(ItemStack itemstack, EntityLivingBase entity) {
+        bauble.onEquipped(itemstack, entity);
     }
 
     @Override
-    public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {
-        bauble.onUnequipped(itemstack, player);
+    public void onUnequipped(ItemStack itemstack, EntityLivingBase entity) {
+        bauble.onUnequipped(itemstack, entity);
     }
 
     @Override
-    public boolean canEquip(ItemStack itemstack, EntityLivingBase player) {
-        return bauble.canEquip(itemstack, player);
+    public boolean canEquip(ItemStack itemstack, EntityLivingBase entity) {
+        return bauble.canEquip(itemstack, entity);
     }
 
     @Override
-    public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) {
-        return bauble.canUnequip(itemstack, player);
+    public boolean canUnequip(ItemStack itemstack, EntityLivingBase entity) {
+        return !EnchantmentHelper.hasBindingCurse(itemstack) && bauble.canUnequip(itemstack, entity);
     }
 
     @Override
-    public boolean willAutoSync(ItemStack itemstack, EntityLivingBase player) {
-        return bauble.willAutoSync(itemstack, player);
+    public boolean willAutoSync(ItemStack itemstack, EntityLivingBase entity) {
+        return bauble.willAutoSync(itemstack, entity);
     }
 
     @Override
-    public boolean canDrop(ItemStack itemstack, EntityLivingBase player) {
-        return bauble.canDrop(itemstack, player);
+    public boolean canDrop(ItemStack itemstack, EntityLivingBase entity) {
+        return bauble.canDrop(itemstack, entity);
     }
 }

@@ -50,7 +50,7 @@ public class BaublesRegister {
             BaubleTypeEx type = iterator.next();
             int amount = type.getAmount();
             for (int i = 0; i < amount; i++) {
-                type.addValidSlots(pointer + i);
+                type.addOriSlots(pointer + i);
                 BaublesContent.addLazySlots(type);
             }
             pointer += amount;
@@ -58,7 +58,7 @@ public class BaublesRegister {
         BaublesContent.setSum(pointer);
         if (!Config.trinketLimit) {
             BaubleTypeEx trinket = BaublesContent.getTypeByName("trinket");
-            iterator.forEachRemaining(trinket::addValidSlots);
+            iterator.forEachRemaining(trinket::addOriSlots);
         }
     }
 }

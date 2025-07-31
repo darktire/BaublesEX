@@ -3,7 +3,7 @@ package baubles.common.container;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.util.BaublesContent;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -16,11 +16,11 @@ import net.minecraftforge.items.SlotItemHandler;
 public class SlotBaubleHandler extends SlotItemHandler {
 
     private int index;
-    private final EntityPlayer player;
+    private final EntityLivingBase entity;
 
     public SlotBaubleHandler(EntityPlayer player, IBaublesItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);
-        this.player = player;
+        this.entity = player;
         this.index = index;
     }
 
@@ -30,7 +30,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        return ((IBaublesItemHandler)getItemHandler()).isItemValidForSlot(index, stack, player);
+        return ((IBaublesItemHandler)getItemHandler()).isItemValidForSlot(index, stack, entity);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
     @Override
     public void putStack(ItemStack stack) {
         if (getHasStack() && !ItemStack.areItemStacksEqual(stack, getStack()) && !((IBaublesItemHandler) getItemHandler()).isEventBlocked() && BaublesApi.isBauble(getStack())) {
-            BaublesApi.toBauble(getStack()).onUnequipped(getStack(), player);
+            BaublesApi.toBauble(getStack()).onUnequipped(getStack(), entity);
         }
 
         ItemStack oldStack = getStack().copy();
@@ -64,7 +64,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
         this.onSlotChanged();//no effect
 
         if (getHasStack() && !ItemStack.areItemStacksEqual(oldStack, getStack()) && !((IBaublesItemHandler) getItemHandler()).isEventBlocked()) {
-            BaublesApi.toBauble(getStack()).onEquipped(getStack(), player);
+            BaublesApi.toBauble(getStack()).onEquipped(getStack(), entity);
         }
     }
 
@@ -77,7 +77,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     public String getSlotTexture() {
-        return "baubles:"+ BaublesContent.getSlot(index).getTexture();
+        return "baubles:"+ BaublesApi.getBaublesHandler(entity).getTypeInSlot(index).getTexture();
     }
 
     @Override

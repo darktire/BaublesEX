@@ -16,7 +16,7 @@
 - [x] customizable bauble slots
   - [x] customize bauble types and quantities
   - [x] item can be defined as bauble
-  - [ ] various abilities for each player
+  - [ ] various abilities for each entity
 - [x] more configure
 - [x] more command
 - [x] new style of bauble slots

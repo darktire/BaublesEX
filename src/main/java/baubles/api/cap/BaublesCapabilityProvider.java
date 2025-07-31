@@ -42,7 +42,6 @@ public class BaublesCapabilityProvider implements ICapabilityProvider, INBTSeria
                 nbt.setString(BAUBLE_KEY, type.getTypeName());
             }
         }
-        //todo add more types support
         return nbt;
     }
 

@@ -58,20 +58,21 @@ repositories {
         url 'https://maven.gofancy.wtf/releases'
     }
     maven {
-        name = "Curse Maven"
-        url = "https://www.cursemaven.com"
+        name "Curse Maven"
+        url "https://www.cursemaven.com"
         content {
             includeGroup "curse.maven"
         }
     }
     maven {
-        name = "Jared's maven"
-        url = "https://maven.blamejared.com/"
+        name "Jared's maven"
+        url "https://maven.blamejared.com/"
     }
     maven {
-        name = "CoFH Maven"
-        url = "https://maven.covers1624.net"
+        name "CoFH Maven"
+        url "https://maven.covers1624.net"
     }
+//    maven { url "https://maven.tehnut.info" }
 }
 
 configurations {
@@ -97,13 +98,14 @@ dependencies {
 //    implementation fileTree(dir: 'libs', includes: ['*.jar'])
 
     //JEI
-    compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")
+//    compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}")
     //CoFH
     runtimeOnly fg.deobf("curse.maven:redstone-flux-270789:2920436")
     implementation fg.deobf("curse.maven:cofh-core-69162:2920433")
-
-    runtimeOnly fg.deobf("curse.maven:rl-artifacts-819886:4475428")
+    //Hwyla
+//    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
+//    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
 }
 
 //mixin {

@@ -2,6 +2,7 @@ package baubles.api.util;
 
 import baubles.api.BaubleTypeEx;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -11,6 +12,7 @@ public class BaublesContent{
      * Simply summarise.
      */
     private static int sum = 7;
+    public static boolean changed = false;
     /**
      * Dynamic bauble types.
      */
@@ -22,12 +24,7 @@ public class BaublesContent{
     /**
      * Set the lazy list of slots.
      */
-    private static final LinkedList<BaubleTypeEx> BAUBLE_SLOTS = new LinkedList<>();
-
-    public static void registerBauble(BaubleTypeEx type) {
-        BAUBLE_TYPES.put(type.getTypeName(), type);
-        BAUBLE_ORDER.add(type);
-    }
+    private static final ArrayList<BaubleTypeEx> BAUBLE_SLOTS = new ArrayList<>();
 
     public static void registerBauble(BaubleTypeEx type, int amount) {
         if (amount < 0) amount = 0;
@@ -43,6 +40,11 @@ public class BaublesContent{
         registerBauble(new BaubleTypeEx(typeName, amount), amount);
     }
 
+    public static void registerBauble(BaubleTypeEx type) {
+        BAUBLE_TYPES.put(type.getTypeName(), type);
+        BAUBLE_ORDER.add(type);
+    }
+
     public static void setSum(int value) {
         sum = value;
     }
@@ -56,12 +58,19 @@ public class BaublesContent{
     public static void addLazySlots(BaubleTypeEx type) {
         BAUBLE_SLOTS.add(type);
     }
-    public static BaubleTypeEx getSlot(int index) {
-        return BAUBLE_SLOTS.get(index);
+    public static ArrayList<BaubleTypeEx> getLazyList() {
+        return BAUBLE_SLOTS;
     }
 
     public static BaubleTypeEx getTypeByName(String typeName) {
         return BAUBLE_TYPES.get(typeName);
+    }
+    public static BaubleTypeEx getTypeById(int id) {
+        return BAUBLE_ORDER.get(id);
+    }
+
+    public static boolean hasType(String typeName) {
+        return BAUBLE_TYPES.containsKey(typeName);
     }
 
     public static Iterator<BaubleTypeEx> iterator() {
