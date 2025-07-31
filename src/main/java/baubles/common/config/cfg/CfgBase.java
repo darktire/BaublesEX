@@ -3,11 +3,11 @@ package baubles.common.config.cfg;
 import net.minecraftforge.common.config.Configuration;
 
 public abstract class CfgBase {
-    protected final Configuration cfgFile;
+    protected static Configuration cfgFile;
 
-    public CfgBase(Configuration cfgFile){
-        this.cfgFile = cfgFile;
-        loadData();
+    public CfgBase(Configuration file){
+        cfgFile = file;
+        if (cfgFile != null) loadData();
     }
 
     public abstract void loadData();

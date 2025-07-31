@@ -29,21 +29,20 @@ public class ContainerPlayerExpanded extends Container {
     public ContainerPlayerExpanded(InventoryPlayer playerInv, boolean world, EntityPlayer player) {
         this.isLocalWorld = world;
         this.player = player;
-        baubles = BaublesApi.getBaublesHandler(player);
-//        ((BaublesContainer) baubles).updateSlots(player);
+        this.baubles = BaublesApi.getBaublesHandler(player);
         this.slotsAmount = baubles.getSlots();
 
-        //add craftResult (1)
+        //add craftResult (1) [0,1)
         this.addSlotToContainer(new SlotCrafting(player, this.craftMatrix, this.craftResult, 0, 154, 28));
 
-        //add craftMatrix (4)
+        //add craftMatrix (4) [1,5)
         for (int i = 0; i < 2; ++i) {
             for (int j = 0; j < 2; ++j) {
                 this.addSlotToContainer(new Slot(this.craftMatrix, j + i * 2, 98 + j * 18, 18 + i * 18));
             }
         }
 
-        //add armor slots (4)
+        //add armor slots (4) [5,9)
         for (int k = 0; k < 4; k++) {
             final EntityEquipmentSlot slot = equipmentSlots[k];
             this.addSlotToContainer(new Slot(playerInv, 36 + (3 - k), 8, 8 + k * 18) {
@@ -70,24 +69,19 @@ public class ContainerPlayerExpanded extends Container {
             });
         }
 
-        //add bauble slots (amount)
-        for (int i = 0; i < slotsAmount; i++) {
-            this.addSlotToContainer(new SlotBaubleHandler(player, baubles, i, -23, 16 + (i * 18)));
-        }
-
-        //add inventory upper half (27)
+        //add inventory upper half (27) [9,36)
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
                 this.addSlotToContainer(new Slot(playerInv, j + (i + 1) * 9, 8 + j * 18, 84 + i * 18));
             }
         }
 
-        //add inventory downer half (9)
+        //add inventory downer half (9) [36,45)
         for (int i = 0; i < 9; ++i) {
             this.addSlotToContainer(new Slot(playerInv, i, 8 + i * 18, 142));
         }
 
-        //add offhand slot (1)
+        //add offhand slot (1) [45,46)
         this.addSlotToContainer(new Slot(playerInv, 40, 77, 62) {
             @Override
             public boolean isItemValid(ItemStack stack) {
@@ -99,6 +93,12 @@ public class ContainerPlayerExpanded extends Container {
                 return "minecraft:items/empty_armor_slot_shield";
             }
         });
+
+        //add bauble slots (amount)
+        for (int i = 0; i < slotsAmount; i++) {
+            this.addSlotToContainer(new SlotBaubleHandler(player, baubles, i, -23, 16 + (i * 18)));
+        }
+
         this.onCraftMatrixChanged(this.craftMatrix);
     }
 
@@ -140,25 +140,28 @@ public class ContainerPlayerExpanded extends Container {
             ItemStack oldStack = slot.getStack();
             newStack = oldStack.copy();
             EntityEquipmentSlot entityequipmentslot = EntityLiving.getSlotForItemStack(newStack);
-            int slotShift = slotsAmount;
             boolean isMerge = false;
 
             // craftResult -> inv
             if (index == 0) {
-                isMerge = this.mergeItemStack(oldStack, 9 + slotShift, 45 + slotShift, true);
+                isMerge = this.mergeItemStack(oldStack, 9, 45, true);
                 if (!isMerge) slot.onSlotChange(oldStack, newStack);
             }
             // craftMatrix -> inv
             else if (index < 5) {
-                isMerge = this.mergeItemStack(oldStack, 9 + slotShift, 45 + slotShift, false);
+                isMerge = this.mergeItemStack(oldStack, 9, 45, false);
             }
             // armor -> inv
             else if (index < 9) {
-                isMerge = this.mergeItemStack(oldStack, 9 + slotShift, 45 + slotShift, false);
+                isMerge = this.mergeItemStack(oldStack, 9, 45, false);
+            }
+            // offhand -> inv
+            else if (index == 45) {
+                isMerge = this.mergeItemStack(oldStack, 9, 45, false);
             }
             // baubles -> inv
-            else if (index < 9 + slotShift) {
-                isMerge = this.mergeItemStack(oldStack, 9 + slotShift, 45 + slotShift, false);
+            else if (46 <= index && index < 46 + slotsAmount) {
+                isMerge = this.mergeItemStack(oldStack, 9, 45, false);
             }
             // inv -> armor
             else if (entityequipmentslot.getSlotType() == EntityEquipmentSlot.Type.ARMOR && !this.inventorySlots.get(8 - entityequipmentslot.getIndex()).getHasStack()) {
@@ -166,25 +169,26 @@ public class ContainerPlayerExpanded extends Container {
                 isMerge = this.mergeItemStack(oldStack, i, i + 1, false);
             }
             // inv -> offhand
-            else if (entityequipmentslot == EntityEquipmentSlot.OFFHAND && !this.inventorySlots.get(45 + slotShift).getHasStack()) {
-                isMerge = this.mergeItemStack(oldStack, 45 + slotShift, 46 + slotShift, false);
+            else if (entityequipmentslot == EntityEquipmentSlot.OFFHAND && !this.inventorySlots.get(45).getHasStack()) {
+                isMerge = this.mergeItemStack(oldStack, 45, 46, false);
             }
             // inv -> bauble
             else if (BaublesApi.isBauble(newStack)) {
                 IBauble bauble = BaublesApi.toBauble(newStack);
-                isMerge = bauble.canEquip(oldStack, player) && this.mergeItemStack(oldStack, 9, 9 + slotShift,false);
+                isMerge = bauble.canEquip(oldStack, player) && this.mergeItemStack(oldStack, 46, 46 + slotsAmount,false);
             }
+
             if (!isMerge) {
                 // upper -> downer
-                if (index >= 9 + slotShift && index < 36 + slotShift) {
-                    isMerge = this.mergeItemStack(oldStack, 36 + slotShift, 45 + slotShift, false);
+                if (9 <= index && index < 36 ) {
+                    isMerge = this.mergeItemStack(oldStack, 36, 45, false);
                 }
                 // downer -> upper
-                else if (index >= 36 + slotShift && index < 45 + slotShift) {
-                    isMerge = this.mergeItemStack(oldStack, 9 + slotShift, 36 + slotShift, false);
+                else if (36 <= index && index < 45) {
+                    isMerge = this.mergeItemStack(oldStack, 9, 36, false);
                 }
-                // else
-                else isMerge = this.mergeItemStack(oldStack, 9 + slotShift, 45 + slotShift, false);
+                // else?
+                else isMerge = this.mergeItemStack(oldStack, 9, 45, false);
             }
 
             if (!isMerge) return ItemStack.EMPTY;

@@ -19,6 +19,7 @@ name.body=饰品 (身体)
 name.charm=饰品 (坠饰)
 #
 # Command
+commands.baubles.error=错误的命令
 commands.baubles.help=§3你也可以使用 /baub 或 /bau 而不是 /baubles来输入指令。
 commands.baubles.help.view=§3使用如下命令来查看玩家的饰品栏。%s  /baubles view <player>
 commands.baubles.help.clear=§3使用如下命令来清空玩家的饰品栏.%s§3默认清除所有饰品，你也可以选择清除某一槽位。%s  /baubles clear <player> [<slot>]

@@ -6,11 +6,13 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketHandler {
-    public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Baubles.MODID.toLowerCase());
+    private static int START_ID = 0;
+    public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Baubles.MODID);
 
     public static void init() {
-        INSTANCE.registerMessage(PacketOpenBaublesInventory.class, PacketOpenBaublesInventory.class, 0, Side.SERVER);
-        INSTANCE.registerMessage(PacketOpenNormalInventory.class, PacketOpenNormalInventory.class, 1, Side.SERVER);
-        INSTANCE.registerMessage(PacketSync.Handler.class, PacketSync.class, 2, Side.CLIENT);
+        INSTANCE.registerMessage(PacketOpenBaublesInventory.class, PacketOpenBaublesInventory.class, START_ID++, Side.SERVER);
+        INSTANCE.registerMessage(PacketOpenNormalInventory.class, PacketOpenNormalInventory.class, START_ID++, Side.SERVER);
+        INSTANCE.registerMessage(PacketSync.Handler.class, PacketSync.class, START_ID++, Side.CLIENT);
+        INSTANCE.registerMessage(PacketModifySlots.Handler.class, PacketModifySlots.class, START_ID++, Side.CLIENT);
     }
 }

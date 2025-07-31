@@ -1,8 +1,8 @@
 package baubles.client.gui;
 
+import baubles.api.BaublesApi;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.util.BaublesContent;
 import baubles.common.container.ContainerPlayerExpanded;
 import baubles.common.container.SlotBaubleHandler;
 import net.minecraft.client.Minecraft;
@@ -12,6 +12,7 @@ import net.minecraft.client.gui.achievement.GuiStats;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -27,12 +28,14 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
     @Deprecated
     public static final ResourceLocation background = new ResourceLocation("baubles","textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
     private final IBaublesItemHandler baubles = ((ContainerPlayerExpanded) this.inventorySlots).baubles;
+    private final EntityLivingBase entity;
     private float oldMouseX, oldMouseY;
     private final int finalLine = Math.min(8, baubles.getSlots());
     private int offset = 0;
 
     public GuiPlayerExpanded(EntityPlayer player) {
         super(new ContainerPlayerExpanded(player.inventory, !player.getEntityWorld().isRemote, player));
+        this.entity = player;
         this.allowUserInput = true;
     }
 
@@ -97,7 +100,7 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
 
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(0, 0, 200);
-                String str = I18n.format("name." + BaublesContent.getSlot(index).getTypeName());
+                String str = I18n.format("name." + BaublesApi.getBaublesHandler(entity).getTypeInSlot(index).getTypeName());
 
                 GuiUtils.drawHoveringText(Collections.singletonList(str), mouseX - this.guiLeft, mouseY - this.guiTop + 7, width, height, 300, renderer);
                 GlStateManager.popMatrix();

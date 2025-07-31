@@ -1,5 +1,6 @@
 package baubles.common;
 
+import baubles.api.util.BaublesContent;
 import baubles.common.config.cfg.CfgBaubles;
 import baubles.common.config.cfg.CfgGui;
 import net.minecraft.item.Item;
@@ -16,7 +17,7 @@ import static net.minecraftforge.common.config.Configuration.CATEGORY_CLIENT;
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
 public class Config {
-    protected static Configuration configFile;
+    private static Configuration configFile;
     public File modDir;
 
     private CfgBaubles cfgBaubles;
@@ -90,6 +91,7 @@ public class Config {
                 Baubles.config.cfgGui.loadData();
                 Baubles.REGISTER.registerBaubles();
                 Baubles.REGISTER.loadValidSlots();
+                BaublesContent.changed = true;
             }
         }
     }

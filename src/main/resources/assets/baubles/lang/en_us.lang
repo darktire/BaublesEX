@@ -19,6 +19,7 @@ name.body=Bauble (Body)
 name.charm=Bauble (Charm)
 #
 # Command
+commands.baubles.error=Error command
 commands.baubles.help=§3You can also use /baub or /bau instead of /baubles.
 commands.baubles.help.view=§3Use this to view the baubles inventory of a player.%s  /baubles view <player>
 commands.baubles.help.clear=§3Use this to clear a players baubles inventory.%s§3Default is everything or you can give a slot number.%s  /baubles clear <player> [<slot>]

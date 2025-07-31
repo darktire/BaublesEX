@@ -1,8 +1,8 @@
 package baubles.common.util.command;
 
 import baubles.common.util.command.sub.CommandClear;
+import baubles.common.util.command.sub.CommandDebug;
 import baubles.common.util.command.sub.CommandHand;
-import baubles.common.util.command.sub.CommandModify;
 import baubles.common.util.command.sub.CommandView;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
@@ -22,7 +22,7 @@ public class CommandBaubles extends CommandTreeBase {
 		this.addSubcommand(new CommandView());
 		this.addSubcommand(new CommandClear());
 		this.addSubcommand(new CommandHand());
-		this.addSubcommand(new CommandModify());
+		this.addSubcommand(new CommandDebug());
 	}
 
 	@Override
