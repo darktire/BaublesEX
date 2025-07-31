@@ -13,13 +13,13 @@ public class CfgBaubles extends CfgBase{
     public static int HEAD;
     public static int BODY;
     public static int CHARM;
-    public static String BAUBLES_SLOTS = "general.slots";
+    private final String BAUBLES_SLOTS = "general.slots";
 
     public CfgBaubles(Configuration cfgFile) {
         super(cfgFile);
     }
 
-    public void loadData(Configuration cfgFile) {
+    public void loadData() {
         AMULET = setCfgAmount(cfgFile, "amuletSlot", BaubleType.AMULET.getDefaultAmount());
         RING = setCfgAmount(cfgFile, "ringSlot", BaubleType.RING.getDefaultAmount());// no less than 2 or incompatible with artifact
         BELT = setCfgAmount(cfgFile, "beltSlot", BaubleType.BELT.getDefaultAmount());
@@ -35,9 +35,13 @@ public class CfgBaubles extends CfgBase{
         return cfgFile.getInt(key, BAUBLES_SLOTS, value, 0, 100, "");
     }
 
-    public static int getCfgAmount(String name) throws NoSuchFieldException, IllegalAccessException {
-        Class<?> clazz = CfgBaubles.class;
-        Field field = clazz.getDeclaredField(name);
-        return field.getInt(null);
+    public static int getCfgAmount(String tag){
+        try {
+            Class<?> clazz = CfgBaubles.class;
+            Field field = clazz.getDeclaredField(tag);
+            return field.getInt(null);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

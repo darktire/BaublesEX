@@ -3,24 +3,25 @@ package baubles.api;
 import baubles.api.cap.BaublesCapabilities;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.inv.BaublesInventoryWrapper;
+import baubles.api.util.BaublesContent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import static baubles.api.BaublesRegister.getSum;
 import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 
 /**
  * @author Azanor
  */
 public class BaublesApi {
+
     /**
      * Retrieves the baubles inventory capability handler for the supplied player
      */
     public static IBaublesItemHandler getBaublesHandler(EntityPlayer player) {
         IBaublesItemHandler handler = player.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
-        if (handler.getSlots() != getSum()) handler.updateSlots(player);
+        if (handler.getSlots() != BaublesContent.getSum()) handler.updateSlots(player);
         handler.setPlayer(player);
         return handler;
     }
@@ -31,7 +32,7 @@ public class BaublesApi {
     @Deprecated
     public static IInventory getBaubles(EntityPlayer player) {
         IBaublesItemHandler handler = player.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
-        if (handler.getSlots() != getSum()) handler.updateSlots(player);
+        if (handler.getSlots() != BaublesContent.getSum()) handler.updateSlots(player);
         handler.setPlayer(player);
         return new BaublesInventoryWrapper(handler, player);
     }
@@ -52,8 +53,7 @@ public class BaublesApi {
         return stack.hasCapability(CAPABILITY_ITEM_BAUBLE, null);
     }
 
-    public static IBauble getBaubleItem(ItemStack stack) {
-        IBauble bauble = stack.getCapability(CAPABILITY_ITEM_BAUBLE, null);
-        return bauble;
+    public static IBauble toBauble(ItemStack stack) {
+        return stack.getCapability(CAPABILITY_ITEM_BAUBLE, null);
     }
 }

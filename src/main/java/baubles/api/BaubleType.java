@@ -8,21 +8,19 @@ public enum BaubleType {
 	AMULET(1),
 	RING(2),
 	BELT(1),
+	TRINKET(0),
 	HEAD(1),
 	BODY(1),
-	CHARM(1),
-	TRINKET(0);
+	CHARM(1);
 
 	private final int defaultAmount;
 	private final String typeName;
 	private final BaubleTypeEx baubleTypeEx;
-	private final int[] validSlots;
 
 	BaubleType(int amount) {
 		this.typeName = this.toString().toLowerCase();
 		this.defaultAmount = amount;
 		this.baubleTypeEx = new BaubleTypeEx(typeName, amount);
-		this.validSlots = getValidSlots();
 	}
 
 	public BaubleTypeEx getNewType() {
@@ -37,11 +35,13 @@ public enum BaubleType {
 		return this.defaultAmount;
 	}
 
+	@Deprecated
 	public boolean hasSlot(int slot) {
 		return baubleTypeEx.hasSlot(slot);
 	}
 
+	@Deprecated
 	public int[] getValidSlots() {
-		return baubleTypeEx.getValidSlots();
+        return baubleTypeEx.getValidSlots().stream().mapToInt(Integer::intValue).toArray();
 	}
 }

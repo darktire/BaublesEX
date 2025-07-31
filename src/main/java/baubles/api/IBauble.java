@@ -41,8 +41,6 @@ public interface IBauble {
         return null;
     }
 
-    default void setType(String typeName) {}
-
     /**
      * This method is called once per tick if the bauble is being worn by a player
      */

@@ -1,6 +1,5 @@
 package baubles.common.util.command.sub;
 
-import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
@@ -35,9 +34,8 @@ public class CommandView extends CommandBase {
         for (int i = 0; i < baubles.getSlots(); i++) {
             ItemStack stack = baubles.getStackInSlot(i);
             if (!stack.isEmpty() && BaublesApi.isBauble(stack)) {
-                IBauble bauble = BaublesApi.getBaubleItem(stack);
-                BaubleType type = bauble.getBaubleType();
-                sender.sendMessage(new TextComponentTranslation("commands.baubles.view", i, stack.getDisplayName(), type.getTypeName()));
+                IBauble bauble = BaublesApi.toBauble(stack);
+                sender.sendMessage(new TextComponentTranslation("commands.baubles.view", i, stack.getDisplayName(), bauble.getBaubleTypeEx().getTypeName()));
             }
         }
     }

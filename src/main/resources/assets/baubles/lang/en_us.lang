@@ -10,13 +10,13 @@ button.normal=Normal
 key.categories.baubles=Baubles
 #
 # Description
-name.AMULET=Bauble (Amulet)
-name.RING=Bauble (Ring)
-name.BELT=Bauble (Belt)
-name.TRINKET=Bauble (Any)
-name.HEAD=Bauble (Head)
-name.BODY=Bauble (Body)
-name.CHARM=Bauble (Charm)
+name.amulet=Bauble (Amulet)
+name.ring=Bauble (Ring)
+name.belt=Bauble (Belt)
+name.trinket=Bauble (Any)
+name.head=Bauble (Head)
+name.body=Bauble (Body)
+name.charm=Bauble (Charm)
 #
 # Command
 commands.baubles.help=§3You can also use /baub or /bau instead of /baubles.

@@ -10,7 +10,7 @@ public class CfgGui extends CfgBase{
         super(cfgFile);
     }
 
-    public void loadData(Configuration cfgFile) {
+    public void loadData() {
         baublesButton = cfgFile.getBoolean("baublesButton", CLIENT_GUI, baublesButton, "Show baublesButton or not");
 
         cfgFile.getCategory(CLIENT_GUI).setComment("Edit new gui.");

@@ -1,13 +1,17 @@
 package baubles.api;
 
+import java.util.ArrayList;
+
 public class BaubleTypeEx {
     private final String typeName;
     private int amount;
-    private int[] validSlots;
-    private String texture;
+    private final ArrayList<Integer> validSlots;
+    private final String texture;
+
     public BaubleTypeEx(String typeName, int amount) {
         this.typeName = typeName;
         this.amount = amount;
+        this.validSlots = new ArrayList<>();
         this.texture = "gui/slots/" + typeName;
     }
 
@@ -25,10 +29,16 @@ public class BaubleTypeEx {
         return amount;
     }
 
-    public void setValidSlots(int[] slots) {
-        this.validSlots = slots;
+    public void addValidSlots(int slots) {
+        validSlots.add(slots);
     }
-    public int[] getValidSlots() {
+    public void addValidSlots(ArrayList<Integer> slots) {
+        validSlots.addAll(slots);
+    }
+    public void addValidSlots(BaubleTypeEx type) {
+        validSlots.addAll(type.getValidSlots());
+    }
+    public ArrayList<Integer> getValidSlots() {
         return validSlots;
     }
 
@@ -40,9 +50,6 @@ public class BaubleTypeEx {
     }
 
     public boolean hasSlot(int slot) {
-        for (int s: validSlots) {
-            if (s == slot) return true;
-        }
-        return false;
+        return validSlots.contains(slot);
     }
 }

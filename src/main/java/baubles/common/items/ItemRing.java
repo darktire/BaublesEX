@@ -52,11 +52,6 @@ public class ItemRing extends Item implements IBauble {
 	}
 
 	@Override
-	public BaubleType getBaubleType() {
-		return BaubleType.RING;
-	}
-
-	@Override
 	public BaubleType getBaubleType(ItemStack itemStack) {
 		return BaubleType.RING;
 	}

@@ -2,7 +2,6 @@ package baubles.common;
 
 import baubles.common.config.cfg.CfgBaubles;
 import baubles.common.config.cfg.CfgGui;
-import baubles.common.extra.BaublesContent;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -13,13 +12,15 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.io.File;
 import java.util.ArrayList;
 
-import static baubles.common.Baubles.config;
 import static net.minecraftforge.common.config.Configuration.CATEGORY_CLIENT;
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
 public class Config {
     protected static Configuration configFile;
     public File modDir;
+
+    private CfgBaubles cfgBaubles;
+    private CfgGui cfgGui;
 
 //    Configuration Options
     public static boolean renderBaubles = true;
@@ -39,6 +40,10 @@ public class Config {
         try {
             configFile = new Configuration(event.getSuggestedConfigurationFile());
             configFile.load();
+
+            cfgBaubles = new CfgBaubles(configFile);
+            cfgGui = new CfgGui(configFile);
+
             loadData();
         } catch (Exception e) {
             Baubles.log.error("BAUBLES has a problem loading it's configuration");
@@ -49,10 +54,6 @@ public class Config {
 
 
     protected void loadData() {
-
-        new CfgBaubles(configFile);
-        new CfgGui(configFile);
-
         renderBaubles = configFile.getBoolean("baubleRender", CATEGORY_CLIENT, renderBaubles, "Set this to false to disable rendering of baubles in the player.");
 
         maxLevel = configFile.getInt("maxLevel", CATEGORY_GENERAL, maxLevel, 0, 255, "Max level of haste given by Miner's Ring");
@@ -84,11 +85,11 @@ public class Config {
         @SubscribeEvent
         public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
             if (eventArgs.getModID().equals(Baubles.MODID)) {
-                config.loadData();
-                Baubles.baubles = new BaublesContent();
-                if (jsonFunction) {
-                    Baubles.baubles.writeJson();
-                }
+                Baubles.config.loadData();
+                Baubles.config.cfgBaubles.loadData();
+                Baubles.config.cfgGui.loadData();
+                Baubles.REGISTER.registerBaubles();
+                Baubles.REGISTER.loadValidSlots();
             }
         }
     }
