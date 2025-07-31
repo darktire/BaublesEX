@@ -91,7 +91,7 @@ public class EventHandlerEntity {
             IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
             for (int i = 0; i < baubles.getSlots(); i++) {
                 ItemStack stack = baubles.getStackInSlot(i);
-                IBauble bauble = BaublesApi.getBaubleItem(stack);
+                IBauble bauble = BaublesApi.toBauble(stack);
                 if (bauble != null) {
                     bauble.onWornTick(stack, player);
                 }
@@ -118,7 +118,7 @@ public class EventHandlerEntity {
         Set<EntityPlayer> receivers = null;
         for (int i = 0; i < baubles.getSlots(); i++) {
             ItemStack stack = baubles.getStackInSlot(i);
-            IBauble bauble = BaublesApi.getBaubleItem(stack);
+            IBauble bauble = BaublesApi.toBauble(stack);
             if (baubles.isChanged(i) || bauble != null && bauble.willAutoSync(stack, player) && !ItemStack.areItemStacksEqual(stack, items[i])) {
                 if (receivers == null) {
                     receivers = new HashSet<>(((WorldServer) player.world).getEntityTracker().getTrackingPlayers(player));
@@ -160,11 +160,11 @@ public class EventHandlerEntity {
         ItemStack heldItem = event.getItemStack();
         if (Baubles.config.blacklistItem().contains(heldItem.getItem())) return;
         EntityPlayer player = event.getEntityPlayer();
-        IBauble bauble = BaublesApi.getBaubleItem(heldItem);
+        IBauble bauble = BaublesApi.toBauble(heldItem);
         if (bauble != null) {
             ActionResult<ItemStack> action = heldItem.getItem().onItemRightClick(player.world, player, event.getHand());
             if (action.getType() != EnumActionResult.SUCCESS) {
-                int[] validSlots = bauble.getBaubleType().getValidSlots();
+                ArrayList<Integer> validSlots = bauble.getBaubleTypeEx().getValidSlots();
                 IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
                 for (int i: validSlots) {
                     if (baubles.getStackInSlot(i) == null || baubles.getStackInSlot(i).isEmpty()) {

@@ -171,7 +171,7 @@ public class ContainerPlayerExpanded extends Container {
             }
             // inv -> bauble
             else if (BaublesApi.isBauble(newStack)) {
-                IBauble bauble = BaublesApi.getBaubleItem(newStack);
+                IBauble bauble = BaublesApi.toBauble(newStack);
                 isMerge = bauble.canEquip(oldStack, player) && this.mergeItemStack(oldStack, 9, 9 + slotShift,false);
             }
             if (!isMerge) {
@@ -202,7 +202,7 @@ public class ContainerPlayerExpanded extends Container {
             }
 
             if (oldStack.isEmpty() && !baubles.isEventBlocked() && slot instanceof SlotBaubleHandler) {
-                IBauble bauble = BaublesApi.getBaubleItem(newStack);
+                IBauble bauble = BaublesApi.toBauble(newStack);
                 if (bauble != null)
                     bauble.onUnequipped(newStack, playerIn);
             }

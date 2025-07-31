@@ -2,6 +2,7 @@ package baubles.api.cap;
 
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
+import baubles.api.util.BaublesContent;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,8 +14,6 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.HashMap;
 
-import static baubles.api.BaublesRegister.getSum;
-
 public class BaublesContainer extends ItemStackHandler implements IBaublesItemHandler {
 
     private HashMap<Integer, Boolean> changed;
@@ -22,7 +21,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     private EntityLivingBase player;
 
     public BaublesContainer() {
-        super(getSum());
+        super(BaublesContent.getSum());
         this.changed = new HashMap<>(stacks.size());
     }
 
@@ -31,10 +30,10 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
      */
     public void updateSlots(EntityPlayer player) {
         NonNullList<ItemStack> stacks1 = stacks;
-        stacks = NonNullList.withSize(getSum(), ItemStack.EMPTY);
+        stacks = NonNullList.withSize(BaublesContent.getSum(), ItemStack.EMPTY);
         for (int i = 0; i < stacks1.size(); i++) {
-            if (i < getSum()) {
-                super.stacks.set(i, stacks1.get(i));
+            if (i < BaublesContent.getSum()) {
+                stacks.set(i, stacks1.get(i));
             }
             else {
                 player.dropItem(stacks1.get(i), false);
@@ -51,10 +50,10 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack, EntityLivingBase player) {
         if (stack == null || stack.isEmpty()) return false;
-        IBauble bauble = BaublesApi.getBaubleItem(stack);
+        IBauble bauble = BaublesApi.toBauble(stack);
         if (bauble != null) {
             boolean canEquip = bauble.canEquip(stack, player);
-            boolean hasSlot = bauble.getBaubleType().hasSlot(slot);
+            boolean hasSlot = bauble.getBaubleTypeEx().hasSlot(slot);
             return canEquip && hasSlot;
         }
         return false;
@@ -116,8 +115,8 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagList itemList = new NBTTagList();
-        for (int i = 0; i < super.stacks.size(); i++) {
-            ItemStack itemStack = super.stacks.get(i);
+        for (int i = 0; i < stacks.size(); i++) {
+            ItemStack itemStack = stacks.get(i);
             if (!itemStack.isEmpty()) {
                 NBTTagCompound itemTag = new NBTTagCompound();
                 itemTag.setInteger("Slot", i);
@@ -127,7 +126,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         }
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setTag("Items", itemList);
-        nbt.setInteger("Size", super.stacks.size());
+        nbt.setInteger("Size", stacks.size());
         return nbt;
     }
 
@@ -137,8 +136,8 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         for (int i = 0; i < tagList.tagCount(); i++) {
             NBTTagCompound itemTags = tagList.getCompoundTagAt(i);
             int slot = itemTags.getInteger("Slot");
-            if (slot >= 0 && slot < super.stacks.size()) {
-                super.stacks.set(slot, new ItemStack(itemTags));
+            if (slot >= 0 && slot < stacks.size()) {
+                stacks.set(slot, new ItemStack(itemTags));
             }
         }
     }

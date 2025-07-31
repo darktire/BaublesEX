@@ -1,9 +1,8 @@
 package baubles.common.config.json;
 
 import baubles.api.BaubleTypeEx;
+import baubles.api.util.BaublesContent;
 import baubles.common.Baubles;
-import baubles.common.extra.BaubleItemContent;
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
@@ -12,10 +11,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 
 
@@ -33,7 +30,7 @@ public class JsonHelper {
     }
 
     public void typesToJson() throws IOException {
-        Iterator<BaubleTypeEx> types = Baubles.baubles.iterator();
+        Iterator<BaubleTypeEx> types = BaublesContent.iterator();
         while (types.hasNext()) {
             BaubleTypeEx type = types.next();
             File jsonFile = new File(typeDir, type.getTypeName() + ".json");
@@ -48,7 +45,7 @@ public class JsonHelper {
         try {
             for (File jsonFile : files) {
                     BaubleTypeEx type = GSON.fromJson(new FileReader(jsonFile), BaubleTypeEx.class);
-                    Baubles.baubles.registerBauble(type.getTypeName(), type);
+                    BaublesContent.registerBauble(type);
             }
         } catch (FileNotFoundException e) {
             //Impossible?
@@ -67,12 +64,12 @@ public class JsonHelper {
     }
 
     public void jsonToItem() {
-        File jsonFile = new File(itemDir, "item.json");
+/*        File jsonFile = new File(itemDir, "item.json");
         Type type = new TypeToken<HashMap<String, String>>(){}.getType();
         try {
-            BaubleItemContent.setRegHelper(GSON.fromJson(new FileReader(jsonFile), type));
+            BaubleItemsContent.setRegHelper(GSON.fromJson(new FileReader(jsonFile), type));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 }

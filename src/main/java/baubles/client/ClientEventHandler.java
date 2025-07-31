@@ -3,6 +3,7 @@ package baubles.client;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
+import baubles.api.util.BaublesContent;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.Baubles;
 import baubles.common.config.KeyBindings;
@@ -33,9 +34,9 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void tooltipEvent(ItemTooltipEvent event) {
         if (!event.getItemStack().isEmpty() && BaublesApi.isBauble(event.getItemStack())) {
-            IBauble bauble = BaublesApi.getBaubleItem(event.getItemStack());
+            IBauble bauble = BaublesApi.toBauble(event.getItemStack());
             if (bauble != null) {
-                String bt = "name." + bauble.getBaubleType().name();
+                String bt = "name." + bauble.getBaubleTypeEx().getTypeName();
                 event.getToolTip().add(TextFormatting.GOLD + I18n.format(bt));
             }
         }
@@ -44,7 +45,7 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void registerTextures(TextureStitchEvent.Pre event) {
         TextureMap map = event.getMap();
-        Iterator<BaubleTypeEx> types = Baubles.baubles.iterator();
+        Iterator<BaubleTypeEx> types = BaublesContent.iterator();
         types.forEachRemaining((type)->registerTexture(map, type));
     }
 
