@@ -22,7 +22,7 @@ public class BaublesWrapper implements IBauble {
         this.item = item;
         this.bauble = (IBauble) item;
         this.mainType = bauble.getBaubleTypeEx();
-        if (mainType == null) this.mainType = bauble.getBaubleType(null).getNewType();
+        if (mainType == null) this.mainType = bauble.getBaubleType(ItemStack.EMPTY).getNewType();
         if (mainType == null) this.mainType = new BaubleTypeEx("NO_TYPE", 0);
     }
 

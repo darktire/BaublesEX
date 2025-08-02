@@ -23,7 +23,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     /**
      * Set the modified list of slots.
      */
-    private ArrayList<BaubleTypeEx> MODIFIED_SLOTS;
+    private final ArrayList<BaubleTypeEx> MODIFIED_SLOTS = new ArrayList<>();
     private final HashMap<String, Integer> MODIFIER_FACTOR = new HashMap<>();
     private final HashMap<String, Integer> BAUBLE_MODIFIER = new HashMap<>();
 
@@ -34,35 +34,34 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     public BaublesContainer(EntityLivingBase entity) {
         super(BaublesContent.getSum());
         this.entity = entity;
-        this.MODIFIED_SLOTS = BaublesContent.getLazyList();
+        this.MODIFIED_SLOTS.addAll(BaublesContent.getLazyList());
     }
 
     @Override
     public void modifySlots(String typeName, int modifier) {
-        if (modifier == 0) return;
-        int size = MODIFIED_SLOTS.size();
-        ArrayList<BaubleTypeEx> newList = new ArrayList<>(size);
+        if (BAUBLE_MODIFIER.getOrDefault(typeName, 0) == modifier) return;
+        MODIFIED_SLOTS.clear();
+        MODIFIED_SLOTS.addAll(BaublesContent.getLazyList());
         BaubleTypeEx type = BaublesContent.getTypeByName(typeName);
-        int lastIndex = MODIFIED_SLOTS.lastIndexOf(type);
         if (modifier > 0) {
-            newList.addAll(MODIFIED_SLOTS.subList(0, lastIndex + 1));
+            int index = MODIFIED_SLOTS.indexOf(type);
             for (int i = 0; i < modifier; i++) {
-                newList.add(type);
+                MODIFIED_SLOTS.add(index, type);
             }
         }
         else {
+            int lastIndex = MODIFIED_SLOTS.lastIndexOf(type);
             if (modifier + type.getAmount() < 0) modifier = -type.getAmount();
-            newList.addAll(MODIFIED_SLOTS.subList(0, lastIndex + modifier + 1));
+            MODIFIED_SLOTS.subList(lastIndex + modifier + 1, lastIndex + 1).clear();
         }
-        newList.addAll(MODIFIED_SLOTS.subList(lastIndex + 1, size));
-        MODIFIED_SLOTS = newList;
         BAUBLE_MODIFIER.put(typeName, modifier);
         if (!needUpdate) needUpdate = true;
     }
 
     @Override
     public void clearModifier() {
-        MODIFIED_SLOTS = BaublesContent.getLazyList();
+        MODIFIED_SLOTS.clear();
+        MODIFIED_SLOTS.addAll(BaublesContent.getLazyList());
         BAUBLE_MODIFIER.clear();
         needUpdate = true;
     }
@@ -97,7 +96,13 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
 
     @Override
     public ArrayList<Integer> getValidSlots(BaubleTypeEx type) {
-        return type.getOriSlots();//todo modifier
+        ArrayList<Integer> list = new ArrayList<>();
+        int index = MODIFIED_SLOTS.indexOf(type);
+        while (index != -1) {
+            if (MODIFIED_SLOTS.subList(index, MODIFIED_SLOTS.size()).contains(type)) { list.add(index++); }
+            else { break; }
+        }
+        return list;
     }
 
     @Override

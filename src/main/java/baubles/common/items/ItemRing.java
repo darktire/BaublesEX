@@ -3,7 +3,7 @@ package baubles.common.items;
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.IBaublesItemHandler;
+import baubles.api.cap.IBaublesModifiable;
 import baubles.api.util.BaublesContent;
 import baubles.common.Baubles;
 import baubles.common.Config;
@@ -106,10 +106,10 @@ public class ItemRing extends Item implements IBauble {
 
 	public void updatePotionStatus(EntityLivingBase entity) {
 		int level = -1;
-		IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
+		IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
 		Potion potion = Potion.REGISTRY.getObject(new ResourceLocation("haste"));
 
-		for (int i : BaublesContent.getTypeByName("ring").getOriSlots()) {
+		for (int i : baubles.getValidSlots(BaublesContent.getTypeByName("ring"))) {
 			ItemStack ring1 = baubles.getStackInSlot(i);
 			if (level >= Config.maxLevel - 1) break;
 			if (ring1.getItem() == ring) level++;
