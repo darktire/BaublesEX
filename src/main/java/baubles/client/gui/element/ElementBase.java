@@ -8,14 +8,12 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
 public class ElementBase extends GuiButton {
-    protected Minecraft mc;
     public ElementBase(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
         super(buttonId, x, y, widthIn, heightIn, buttonText);
     }
 
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        this.mc = mc;
         return this.enabled && this.visible && this.hovered;
     }
 
@@ -23,10 +21,24 @@ public class ElementBase extends GuiButton {
     public void mouseReleased(int mouseX, int mouseY) {}
 
     @Override
-    protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {}
+    protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {}//only called by drawButton
 
-    protected void updateHovered(int mouseX, int mouseY) {
-        this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+    public void updateHovered(int mouseX, int mouseY) {
+        this.hovered = getHovered(mouseX, mouseY, this.x, this.y, this.width, this.height);
+    }
+
+    public boolean getHovered(int mouseX, int mouseY, int left, int top, int width, int height) {
+        return mouseX >= left && mouseY >= top && mouseX < left + width && mouseY < top + height;
+    }
+
+    public void glPush() {
+//        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0, 0, 200);
+    }
+
+    public void glPop() {
+        GlStateManager.popMatrix();
     }
 
     public void drawTexture(int x, int y, float zLevel, int textureX, int textureY, int width, int height) {

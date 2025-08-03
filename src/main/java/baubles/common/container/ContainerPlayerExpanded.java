@@ -2,9 +2,10 @@ package baubles.common.container;
 
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.IBaublesItemHandler;
+import baubles.api.cap.IBaublesModifiable;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
@@ -12,7 +13,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
 public class ContainerPlayerExpanded extends Container {
-    public IBaublesItemHandler baubles;
+    public IBaublesModifiable baubles;
     private int slotsAmount;
     /**
      * The crafting matrix inventory.
@@ -29,7 +30,7 @@ public class ContainerPlayerExpanded extends Container {
     public ContainerPlayerExpanded(InventoryPlayer playerInv, boolean world, EntityPlayer player) {
         this.isLocalWorld = world;
         this.player = player;
-        this.baubles = BaublesApi.getBaublesHandler(player);
+        this.baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
         this.slotsAmount = baubles.getSlots();
 
         //add craftResult (1) [0,1)

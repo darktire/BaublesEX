@@ -1,6 +1,7 @@
 package baubles.common.util.command.sub;
 
 import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesModifiable;
 import baubles.api.util.BaubleItemsContent;
 import baubles.api.util.BaublesContent;
 import baubles.common.network.PacketHandler;
@@ -36,13 +37,17 @@ public class CommandDebug extends CommandBase {
         else if (args[0].equals("mod")) {
             if (entity instanceof EntityLivingBase && BaublesContent.hasType(args[1]) && args[2].matches("-?\\d+")) {
                 int modifier = Integer.parseInt(args[2]);
-                BaublesApi.getBaublesHandler((EntityLivingBase) entity).modifySlots(args[1], modifier);
-                PacketHandler.INSTANCE.sendTo(new PacketModifySlots((EntityPlayer) entity, args[1], modifier), (EntityPlayerMP) entity);
+                IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
+                baubles.modifySlot(args[1], modifier);
+                PacketHandler.INSTANCE.sendTo(new PacketModifySlots((EntityPlayer) entity, args[1], modifier, false), (EntityPlayerMP) entity);
+                baubles.updateSlots();
             }
         }
         else if (args[0].equals("reset") && entity instanceof EntityLivingBase) {
-            BaublesApi.getBaublesHandler((EntityLivingBase) entity).clearModifier();
-            PacketHandler.INSTANCE.sendTo(new PacketModifySlots((EntityPlayer) entity, "reset", 0), (EntityPlayerMP) entity);
+            IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
+            baubles.clearModifier();
+            PacketHandler.INSTANCE.sendTo(new PacketModifySlots((EntityPlayer) entity, "reset", 0, false), (EntityPlayerMP) entity);
+            baubles.updateSlots();
         }
         else {
             sender.sendMessage(new TextComponentTranslation("commands.baubles.error"));
