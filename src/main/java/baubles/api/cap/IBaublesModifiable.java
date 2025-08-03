@@ -6,7 +6,9 @@ import java.util.ArrayList;
 
 public interface IBaublesModifiable extends IBaublesItemHandler{
 
-    void modifySlots(String typeName, int modifier);
+    void modifySlot(String typeName, int modifier);
+
+    void modifySlotOA(String typeName, int modifier);
 
     void clearModifier();
 

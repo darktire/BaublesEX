@@ -1,5 +1,6 @@
 package baubles.common.network;
 
+import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.util.BaublesContent;
@@ -19,13 +20,21 @@ public class PacketModifySlots implements IMessage {
     private int playerId;
     private int typeId;
     private int modifier;
+    private boolean addition;
 
-    public PacketModifySlots() {}
+    public PacketModifySlots() {
+    }
 
-    public PacketModifySlots(EntityPlayer entity, String typeName, int modifier) {
+    public PacketModifySlots(EntityPlayer entity, String typeName, int modifier, boolean addition) {
         this.playerId = entity.getEntityId();
-        this.typeId = typeName.equals("reset") ? -1 : BaublesContent.getTypeByName(typeName).getId();
+        if (typeName.equals("reset")) this.typeId = -2;
+        else {
+            BaubleTypeEx type = BaublesContent.getTypeByName(typeName);
+            if (type == null) this.typeId = -1;
+            else this.typeId = type.getId();
+        }
         this.modifier = modifier;
+        this.addition = addition;
     }
 
     @Override
@@ -33,6 +42,7 @@ public class PacketModifySlots implements IMessage {
         buffer.writeInt(playerId);
         buffer.writeInt(typeId);
         buffer.writeInt(modifier);
+        buffer.writeBoolean(addition);
     }
 
     @Override
@@ -40,6 +50,7 @@ public class PacketModifySlots implements IMessage {
         playerId = buffer.readInt();
         typeId = buffer.readInt();
         modifier = buffer.readInt();
+        addition = buffer.readBoolean();
     }
 
     public static class Handler implements IMessageHandler<PacketModifySlots, IMessage> {
@@ -55,11 +66,12 @@ public class PacketModifySlots implements IMessage {
             Entity entity = world.getEntityByID(message.playerId);
             if (entity instanceof EntityLivingBase) {
                 IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
-                if (message.typeId == -1) {
+                if (message.typeId == -2) {
                     baubles.clearModifier();
                 }
-                else {
-                    baubles.modifySlots(BaublesContent.getTypeById(message.typeId).getTypeName(), message.modifier);
+                else if (message.typeId > -1) {
+                    if (message.addition) baubles.modifySlotOA(BaublesContent.getTypeById(message.typeId).getTypeName(), message.modifier);
+                    else baubles.modifySlot(BaublesContent.getTypeById(message.typeId).getTypeName(), message.modifier);
                 }
             }
         }

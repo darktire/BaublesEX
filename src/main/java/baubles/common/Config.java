@@ -25,7 +25,7 @@ public class Config {
 
 //    Configuration Options
     public static boolean renderBaubles = true;
-    public static boolean jsonFunction = false;
+//    public static boolean jsonFunction = false;
     public static boolean trinketLimit = false;
     public static boolean keepBaubles = false;
     public static int maxLevel = 1;
@@ -59,7 +59,7 @@ public class Config {
 
         maxLevel = configFile.getInt("maxLevel", CATEGORY_GENERAL, maxLevel, 0, 255, "Max level of haste given by Miner's Ring");
 
-        jsonFunction = configFile.getBoolean("jsonFunction", CATEGORY_GENERAL ,jsonFunction, "Activate json function or not. (experimental function)");
+//        jsonFunction = configFile.getBoolean("jsonFunction", CATEGORY_GENERAL ,jsonFunction, "Activate json function or not. (experimental function)");
 
         trinketLimit = configFile.getBoolean("trinketLimit", CATEGORY_GENERAL, trinketLimit, "Whether trinketSlot is independent. If true, trinket will become a independent type.");
         keepBaubles = configFile.getBoolean("keepBaubles", CATEGORY_GENERAL, keepBaubles, "Whether baubles can drop when player dies.");

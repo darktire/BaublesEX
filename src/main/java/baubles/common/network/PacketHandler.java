@@ -10,8 +10,8 @@ public class PacketHandler {
     public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Baubles.MODID);
 
     public static void init() {
-        INSTANCE.registerMessage(PacketOpenBaublesInventory.class, PacketOpenBaublesInventory.class, START_ID++, Side.SERVER);
-        INSTANCE.registerMessage(PacketOpenNormalInventory.class, PacketOpenNormalInventory.class, START_ID++, Side.SERVER);
+        INSTANCE.registerMessage(PacketOpenBaublesInventory.Handler.class, PacketOpenBaublesInventory.class, START_ID++, Side.SERVER);
+        INSTANCE.registerMessage(PacketOpenNormalInventory.Handler.class, PacketOpenNormalInventory.class, START_ID++, Side.SERVER);
         INSTANCE.registerMessage(PacketSync.Handler.class, PacketSync.class, START_ID++, Side.CLIENT);
         INSTANCE.registerMessage(PacketModifySlots.Handler.class, PacketModifySlots.class, START_ID++, Side.CLIENT);
     }

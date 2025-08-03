@@ -7,20 +7,26 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketOpenNormalInventory implements IMessage, IMessageHandler<PacketOpenNormalInventory, IMessage> {
+public class PacketOpenNormalInventory implements IMessage {
 
     public PacketOpenNormalInventory() {}
 
     @Override
-    public IMessage onMessage(PacketOpenNormalInventory message, MessageContext ctx) {
-        IThreadListener mainThread = (WorldServer) ctx.getServerHandler().player.world;
-        mainThread.addScheduledTask(() -> {
-            ctx.getServerHandler().player.openContainer.onContainerClosed(ctx.getServerHandler().player);
-            ctx.getServerHandler().player.openContainer = ctx.getServerHandler().player.inventoryContainer;
-        });
-        return null;
-    }
+    public void toBytes(ByteBuf buffer) {}
 
-    @Override public void toBytes(ByteBuf buffer) {}
-    @Override public void fromBytes(ByteBuf buffer) {}
+    @Override
+    public void fromBytes(ByteBuf buffer) {}
+
+
+    public static class Handler implements IMessageHandler<PacketOpenNormalInventory, IMessage> {
+        @Override
+        public IMessage onMessage(PacketOpenNormalInventory message, MessageContext ctx) {
+            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().player.world;
+            mainThread.addScheduledTask(() -> {
+                ctx.getServerHandler().player.openContainer.onContainerClosed(ctx.getServerHandler().player);
+                ctx.getServerHandler().player.openContainer = ctx.getServerHandler().player.inventoryContainer;
+            });
+            return null;
+        }
+    }
 }

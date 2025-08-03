@@ -64,7 +64,7 @@ public class BaublesSync {
             int modifier = baubles.getModifier(typeName);
             if (modifier == 0) continue;
             for (EntityPlayerMP receiver : receivers) {
-                PacketHandler.INSTANCE.sendTo(new PacketModifySlots((EntityPlayer) entity, typeName, modifier), receiver);
+                PacketHandler.INSTANCE.sendTo(new PacketModifySlots((EntityPlayer) entity, typeName, modifier, false), receiver);
             }
         }
     }

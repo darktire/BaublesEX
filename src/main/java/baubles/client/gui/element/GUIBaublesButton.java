@@ -8,8 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
-import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 
@@ -31,7 +29,7 @@ public class GUIBaublesButton extends ElementBase {
     public void mouseReleased(int mouseX, int mouseY) {
         if (this.hovered && enabled) {
             if (parentGui instanceof GuiPlayerExpanded) {
-                mc.displayGuiScreen(new GuiInventory(mc.player));
+                ((GuiPlayerExpanded) parentGui).displayNormalInventory();
                 PacketHandler.INSTANCE.sendToServer(new PacketOpenNormalInventory());
             } else{
                 PacketHandler.INSTANCE.sendToServer(new PacketOpenBaublesInventory());
@@ -41,26 +39,21 @@ public class GUIBaublesButton extends ElementBase {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-        if (this.visible) {
+        if (visible) {
             if (parentGui instanceof GuiContainerCreative && ((GuiContainerCreative) parentGui).getSelectedTabIndex() != CreativeTabs.INVENTORY.getTabIndex()) return;
-
             updateHovered(mouseX, mouseY);
 
-            FontRenderer fontrenderer = mc.fontRenderer;
+            glPush();
             mc.getTextureManager().bindTexture(GuiPlayerExpanded.background);
-
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0, 0, 200);
-
-            if (isMouseOver()) {
+            if (hovered) {
                 drawTexture(x, y, zLevel, 200, 48, 10, 10);
+                FontRenderer fontrenderer = mc.fontRenderer;
                 drawCenteredString(fontrenderer, I18n.format(this.displayString), x + 5, this.y + this.height, 0xffffff);
             }
             else {
                 drawTexture(x, y, zLevel, 210, 48, 10, 10);
             }
-
-            GlStateManager.popMatrix();
+            glPop();
         }
     }
 }
