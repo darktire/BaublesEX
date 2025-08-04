@@ -18,14 +18,14 @@ public class GUIBaublesController extends ElementBase {
 
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        pressed = super.mousePressed(mc, mouseX, mouseY);
-        return pressed;
+        this.pressed = super.mousePressed(mc, mouseX, mouseY);
+        return this.pressed;
     }
 
     @Override
     public void mouseReleased(int mouseX, int mouseY) {
-        if (pressed) pressed = false;
-        if (buttonID == 2) parentGui.getScroller().visible = !parentGui.getScroller().visible;
+        if (this.pressed) this.pressed = false;
+        if (this.buttonID == 2) this.parentGui.scroller.visible = !this.parentGui.scroller.visible;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class GUIBaublesController extends ElementBase {
             updateHovered(mouseX, mouseY);
             glPush();
             mc.getTextureManager().bindTexture(GuiBaublesBase.BAUBLES_TEX);
-            drawTexture(x, y, zLevel, 6 + (pressed ? 8 : 0), buttonID * 8 + 185, 8, 8);
+            drawTexture(this.x, this.y, this.zLevel, 6 + (this.pressed ? 8 : 0), this.buttonID * 8 + 185, 8, 8);
             glPop();
         }
     }

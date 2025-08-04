@@ -31,7 +31,6 @@ public class ContainerPlayerExpanded extends Container {
         this.isLocalWorld = world;
         this.player = player;
         this.baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
-        this.slotsAmount = baubles.getSlots();
 
         //add craftResult (1) [0,1)
         this.addSlotToContainer(new SlotCrafting(player, this.craftMatrix, this.craftResult, 0, 154, 28));
@@ -96,11 +95,21 @@ public class ContainerPlayerExpanded extends Container {
         });
 
         //add bauble slots (amount)
+        this.addBaubleSlots(player);
+
+        this.onCraftMatrixChanged(this.craftMatrix);
+    }
+
+    public void removeBaubleSlots() {
+        this.inventorySlots.subList(46, 46 + slotsAmount).clear();
+        this.inventoryItemStacks.subList(46, 46 + slotsAmount).clear();
+    }
+
+    public void addBaubleSlots(EntityPlayer player) {
+        this.slotsAmount = baubles.getSlots();
         for (int i = 0; i < slotsAmount; i++) {
             this.addSlotToContainer(new SlotBaubleHandler(player, baubles, i, -23, 16 + (i * 18)));
         }
-
-        this.onCraftMatrixChanged(this.craftMatrix);
     }
 
     /**

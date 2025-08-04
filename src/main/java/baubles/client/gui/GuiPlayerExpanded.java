@@ -1,7 +1,6 @@
 package baubles.client.gui;
 
 import baubles.api.cap.BaublesContainer;
-import baubles.api.cap.IBaublesModifiable;
 import baubles.client.gui.element.GUIBaublesController;
 import baubles.client.gui.element.GUIBaublesScroller;
 import baubles.common.container.ContainerPlayerExpanded;
@@ -14,7 +13,6 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiUtils;
@@ -26,36 +24,39 @@ import java.util.Collections;
 
 public class GuiPlayerExpanded extends GuiBaublesBase {
     @Deprecated public static final ResourceLocation background = new ResourceLocation("baubles","textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
-    public final IBaublesModifiable baubles = ((ContainerPlayerExpanded) this.inventorySlots).baubles;//container in sever
-    public int finalLine = Math.min(8, baubles.getSlots());//todo need updater
+    private final EntityPlayer player;
+    public ContainerPlayerExpanded containerEx = (ContainerPlayerExpanded) this.inventorySlots;
+    public BaublesContainer baubles = (BaublesContainer) (this.containerEx).baubles;//container in sever
+    public int baublesAmount = this.baubles.getSlots();
+    public int finalLine = Math.min(8, baublesAmount);//todo need updater
     public int offset = 0;
-    private GUIBaublesScroller scroller;
+    private int preOffset = 0;
+    public GUIBaublesScroller scroller;
 
     public GuiPlayerExpanded(EntityPlayer player) {
         super(new ContainerPlayerExpanded(player.inventory, !player.getEntityWorld().isRemote, player));
+        this.player = player;
         this.allowUserInput = true;
     }
 
-    /**
-     * Positive number means moving up slots.
-     * @param value
-     */
-    public void moveBaubleSlots(int value) {
+    public void modifyOffset(int value) {
         if (value == 0) return;
-        int baublesAmount = baubles.getSlots();
-        int offset1 = offset + value;
-        if (offset1 > 0) value = -offset;
-        if (offset1 < finalLine - baublesAmount) value = finalLine - offset - baublesAmount;
-        offset += value;
-        for (int i = 46; i < 46 + baublesAmount; ++i) {
-            Slot slot1 = inventorySlots.inventorySlots.get(i);
-            SlotBaubleHandler baubleSlots = ((SlotBaubleHandler) slot1);
-            baubleSlots.incrYPos(18 * value);
-        }
+        int offset1 = this.offset + value;
+        if (offset1 > 0) value = -this.offset;
+        if (offset1 < this.finalLine - this.baublesAmount) value = this.finalLine - this.offset - this.baublesAmount;
+        this.offset += value;
     }
 
-    public GUIBaublesScroller getScroller() {
-        return scroller;
+    public boolean needMoveSlots() {
+        return this.preOffset != this.offset;
+    }
+
+    public void moveSlots() {
+        for (int i = 46; i < 46 + this.baublesAmount; i++) {
+            SlotBaubleHandler baubleSlots = ((SlotBaubleHandler) this.inventorySlots.inventorySlots.get(i));
+            baubleSlots.setYPos(18 * this.offset);
+        }
+        this.preOffset = this.offset;
     }
 
     /**
@@ -63,7 +64,16 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
      */
     @Override
     public void updateScreen() {
-        baubles.setEventBlock(false);
+        if (!this.baubles.guiUpdated) {
+            this.containerEx.removeBaubleSlots();
+            this.containerEx.addBaubleSlots(this.player);
+            this.baublesAmount = this.baubles.getSlots();
+            this.finalLine = Math.min(8, baublesAmount);
+            this.moveSlots();
+            this.scroller.setBarPos(this.offset);
+            this.baubles.guiUpdated = true;
+        }
+//        baubles.setEventBlock(false);
         super.updateScreen();
     }
 
@@ -72,12 +82,12 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
      */
     @Override
     public void initGui() {
-        buttonList.clear();
+        this.buttonList.clear();
         super.initGui();
-        buttonList.add(new GUIBaublesController(56, this, guiLeft - 24, guiTop + 5, 1));
-        buttonList.add(new GUIBaublesController(57, this, guiLeft - 14, guiTop + 5, 2));
-        scroller = new GUIBaublesScroller(58, this, guiLeft - 48, guiTop);
-        buttonList.add(scroller);
+        this.buttonList.add(new GUIBaublesController(56, this, this.guiLeft - 24, this.guiTop + 5, 0));
+        this.buttonList.add(new GUIBaublesController(57, this, this.guiLeft - 14, this.guiTop + 5, 2));
+        this.scroller = new GUIBaublesScroller(58, this, this.guiLeft - 48, this.guiTop);
+        this.buttonList.add(this.scroller);
     }
 
     /**
@@ -86,12 +96,13 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         this.fontRenderer.drawString(I18n.format("container.crafting"), 97, 8, 4210752);
-        int xLoc = guiLeft - 22;
+        int xLoc = this.guiLeft - 22;
         if (mouseX > xLoc && mouseX < xLoc + 18) {
-            int yLoc = guiTop + 14;
-            if (mouseY >= yLoc && mouseY < yLoc + 18 * finalLine) {
-                int index = (mouseY - yLoc) / 18 - offset;
-                BaublesContainer container = (BaublesContainer) baubles;
+            int yLoc = this.guiTop + 14;
+            if (mouseY >= yLoc && mouseY < yLoc + 18 * this.finalLine) {
+                int index = (mouseY - yLoc) / 18 - this.offset;
+                if (index >= this.baublesAmount) return;
+                BaublesContainer container = this.baubles;
                 ItemStack stack = container.getStackInSlot(index);
                 if (!stack.isEmpty()) return;
 
@@ -103,9 +114,9 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
 
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(0, 0, 200);
-                String str = I18n.format("name." + baubles.getTypeInSlot(index).getTypeName());
+                String str = I18n.format("name." + this.baubles.getTypeInSlot(index).getTypeName());
 
-                GuiUtils.drawHoveringText(Collections.singletonList(str), mouseX - guiLeft, mouseY - guiTop + 7, width, height, 300, renderer);
+                GuiUtils.drawHoveringText(Collections.singletonList(str), mouseX - this.guiLeft, mouseY - this.guiTop + 7, this.width, this.height, 300, renderer);
                 GlStateManager.popMatrix();
             }
         }
@@ -134,8 +145,9 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
                 int dWheel = Mouse.getEventDWheel();
                 if (dWheel != 0) {
                     int value = dWheel / 120;
-                    moveBaubleSlots(value);
-                    scroller.moveScrollerBar(value);
+                    this.modifyOffset(value);
+                    if (this.needMoveSlots()) this.moveSlots();
+                    this.scroller.moveScrollerBar(value);
                 }
             }
         }
@@ -151,19 +163,20 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
      */
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        int k = guiLeft;
-        int l = guiTop;
+        int k = this.guiLeft;
+        int l = this.guiTop;
         
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         // draw inventory
-        mc.getTextureManager().bindTexture(INVENTORY_BACKGROUND);
-        drawTexturedModalRect(k, l, 0, 0, xSize, ySize);
+        this.mc.getTextureManager().bindTexture(INVENTORY_BACKGROUND);
+        drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
         // draw baubles container
-        mc.getTextureManager().bindTexture(BAUBLES_TEX);
+        this.mc.getTextureManager().bindTexture(BAUBLES_TEX);
         drawTexturedModalRect(k - 29, l, 18, 0, 28, 166);
 
         // draw slots
-        for (int i = 0; i < finalLine; i++) {
+        for (int i = 0; i < this.finalLine; i++) {
+            if (i >= this.baublesAmount + this.offset) break;
             drawTexturedModalRect(k - 24, l + 15 + (i * 18), 6, 167, 18, 18);
         }
 
@@ -172,10 +185,10 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
 
     @Override
     protected void drawActivePotionEffects() {
-        if (!scroller.visible) {
-            guiLeft -= 27;
+        if (!this.scroller.visible) {
+            this.guiLeft -= 27;
             super.drawActivePotionEffects();
-            guiLeft += 27;
+            this.guiLeft += 27;
         }
     }
 

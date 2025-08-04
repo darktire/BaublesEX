@@ -15,17 +15,19 @@ import net.minecraftforge.items.SlotItemHandler;
 
 public class SlotBaubleHandler extends SlotItemHandler {
 
-    private int index;
+    private final int index;
+    private final int startYPos;
     private final EntityLivingBase entity;
 
-    public SlotBaubleHandler(EntityPlayer player, IBaublesItemHandler itemHandler, int index, int xPosition, int yPosition) {
+    public SlotBaubleHandler(EntityLivingBase entity, IBaublesItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);
-        this.entity = player;
+        this.entity = entity;
         this.index = index;
+        this.startYPos = yPosition;
     }
 
-    public void incrYPos(int value) {
-        super.yPos += value;
+    public void setYPos(int value) {
+        this.yPos = this.startYPos + value;
     }
 
     @Override

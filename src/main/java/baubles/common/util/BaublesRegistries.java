@@ -7,13 +7,18 @@ import baubles.api.util.BaubleItemsContent;
 import baubles.api.util.BaublesContent;
 import baubles.common.Config;
 import baubles.common.config.cfg.CfgBaubles;
+import baubles.common.items.ItemRing;
+import baubles.common.items.ItemTyre;
 import net.minecraft.item.Item;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Iterator;
 
-public class BaublesRegister {
+public class BaublesRegistries {
 
-    public BaublesRegister() {
+    public BaublesRegistries() {
         registerBaubles();
         loadValidSlots();
     }
@@ -59,6 +64,18 @@ public class BaublesRegister {
         if (!Config.trinketLimit) {
             BaubleTypeEx trinket = BaublesContent.getTypeByName("trinket");
             iterator.forEachRemaining(trinket::addOriSlots);
+        }
+    }
+
+    @Mod.EventBusSubscriber
+    public static class ModItems {
+        public static final Item Ring = new ItemRing().setRegistryName("ring");
+        public static final Item Tyre = new ItemTyre().setRegistryName("tyre");
+
+        @SubscribeEvent
+        public static void registerItems(RegistryEvent.Register<Item> event) {
+            event.getRegistry().register(Ring);
+            if (Config.testItem) event.getRegistry().register(Tyre);
         }
     }
 }

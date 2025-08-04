@@ -30,6 +30,7 @@ public class Config {
     public static boolean keepBaubles = false;
     public static int maxLevel = 1;
     protected static String[] clickBlacklist = new String[0];
+    public static boolean testItem = false;
 
     public Config(FMLPreInitializationEvent event) {
         loadConfig(event);
@@ -66,6 +67,9 @@ public class Config {
 
         clickBlacklist = configFile.getStringList("clickBlacklist", CATEGORY_GENERAL, clickBlacklist, "");
 
+        testItem = configFile.getBoolean("Tyre", CATEGORY_GENERAL, testItem, "");
+        configFile.getCategory(CATEGORY_GENERAL).get("Tyre").requiresMcRestart();
+
         configFile.save();
     }
 
@@ -89,8 +93,8 @@ public class Config {
                 Baubles.config.loadData();
                 Baubles.config.cfgBaubles.loadData();
                 Baubles.config.cfgGui.loadData();
-                Baubles.REGISTER.registerBaubles();
-                Baubles.REGISTER.loadValidSlots();
+                Baubles.registries.registerBaubles();
+                Baubles.registries.loadValidSlots();
                 BaublesContent.changed = true;
             }
         }

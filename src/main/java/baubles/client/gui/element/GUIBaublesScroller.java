@@ -71,7 +71,8 @@ public class GUIBaublesScroller extends ElementBase {
             int offset = -Math.round(movement / pixelPerSlot);
             int value = offset - parentGui.offset;
             if (value != 0) {
-                parentGui.moveBaubleSlots(value);
+                this.parentGui.modifyOffset(value);
+                if (this.parentGui.needMoveSlots()) this.parentGui.moveSlots();
             }
         }
     }
@@ -80,5 +81,9 @@ public class GUIBaublesScroller extends ElementBase {
         barPos -= (int) (value * ((float) rest / (parentGui.baubles.getSlots() - parentGui.finalLine)));
         if (barPos < 0) barPos = 0;
         if (barPos > rest) barPos = rest;
+    }
+
+    public void setBarPos(int value) {
+        barPos = (int) (-value * ((float) rest / (parentGui.baubles.getSlots() - parentGui.finalLine)));
     }
 }
