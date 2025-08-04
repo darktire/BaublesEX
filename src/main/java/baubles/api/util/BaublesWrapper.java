@@ -13,10 +13,12 @@ import java.util.ArrayList;
 
 public class BaublesWrapper implements IBauble {
 
-    private final Item item;
-    private final IBauble bauble;
+    private Item item;
+    private IBauble bauble;
     private BaubleTypeEx mainType;
     private ArrayList<BaubleTypeEx> type;// todo types
+
+    public BaublesWrapper() {}
 
     public BaublesWrapper(Item item) {
         this.item = item;

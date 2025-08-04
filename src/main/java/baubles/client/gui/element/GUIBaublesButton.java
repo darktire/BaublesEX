@@ -27,9 +27,9 @@ public class GUIBaublesButton extends ElementBase {
 
     @Override
     public void mouseReleased(int mouseX, int mouseY) {
-        if (this.hovered && enabled) {
-            if (parentGui instanceof GuiPlayerExpanded) {
-                ((GuiPlayerExpanded) parentGui).displayNormalInventory();
+        if (this.hovered && this.enabled) {
+            if (this.parentGui instanceof GuiPlayerExpanded) {
+                ((GuiPlayerExpanded) this.parentGui).displayNormalInventory();
                 PacketHandler.INSTANCE.sendToServer(new PacketOpenNormalInventory());
             } else{
                 PacketHandler.INSTANCE.sendToServer(new PacketOpenBaublesInventory());
@@ -39,13 +39,13 @@ public class GUIBaublesButton extends ElementBase {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-        if (visible) {
-            if (parentGui instanceof GuiContainerCreative && ((GuiContainerCreative) parentGui).getSelectedTabIndex() != CreativeTabs.INVENTORY.getTabIndex()) return;
+        if (this.visible) {
+            if (this.parentGui instanceof GuiContainerCreative && ((GuiContainerCreative) this.parentGui).getSelectedTabIndex() != CreativeTabs.INVENTORY.getTabIndex()) return;
             updateHovered(mouseX, mouseY);
 
             glPush();
             mc.getTextureManager().bindTexture(GuiPlayerExpanded.background);
-            if (hovered) {
+            if (this.hovered) {
                 drawTexture(x, y, zLevel, 200, 48, 10, 10);
                 FontRenderer fontrenderer = mc.fontRenderer;
                 drawCenteredString(fontrenderer, I18n.format(this.displayString), x + 5, this.y + this.height, 0xffffff);

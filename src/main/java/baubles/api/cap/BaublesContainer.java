@@ -18,6 +18,7 @@ import java.util.HashMap;
 public class BaublesContainer extends ItemStackHandler implements IBaublesModifiable {
 
     private boolean blockEvents = false;
+    private static final BaubleTypeEx TRINKET = BaublesContent.getTypeByName("trinket");
     private EntityLivingBase entity;
     private final HashMap<Integer, Boolean> changed = new HashMap<>();
     /**
@@ -28,7 +29,8 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     private final HashMap<String, Integer> MODIFIER_FACTOR = new HashMap<>();
     private final HashMap<String, Integer> BAUBLE_MODIFIER = new HashMap<>();
 
-    private boolean needUpdate = false;
+    public boolean slotsUpdated = true;
+    public boolean guiUpdated = true;
 
     public BaublesContainer() { super(BaublesContent.getSum()); }
 
@@ -74,7 +76,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         }
 
         BAUBLE_MODIFIER.put(typeName, original + modifier);
-        if (!needUpdate) needUpdate = true;
+        if (slotsUpdated) slotsUpdated = false;
     }
 
     @Override
@@ -84,33 +86,48 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         MODIFIED_SLOTS.clear();
         MODIFIED_SLOTS.addAll(BaublesContent.getLazyList());
         BAUBLE_MODIFIER.clear();
-        needUpdate = true;
+        slotsUpdated = false;
     }
 
     @Override
     public void updateSlots() {
-        if (!BaublesContent.changed && !needUpdate) return;
+        if (!BaublesContent.changed && slotsUpdated) return;
         NonNullList<ItemStack> stacks1 = stacks;
         setSize(MODIFIED_SLOTS.size());
+        int move1 = 0;
         boolean drop;
         for (int i = 0; i < stacks1.size(); i++) {
             ItemStack stack = stacks1.get(i);
             if (stack.isEmpty()) continue;
-            BaubleTypeEx type = BaublesApi.toBauble(stack).getBaubleTypeEx();
+            IBauble bauble = BaublesApi.toBauble(stack);
+            BaubleTypeEx type = bauble.getBaubleTypeEx();
+            if (type.equals(TRINKET)) {
+                int newIndex = i + move1;
+                if (newIndex < MODIFIED_SLOTS.size()) {
+                    stacks.set(newIndex, stack);
+                    continue;
+                }
+            }
             int start = MODIFIED_SLOTS.indexOf(type);
             drop = false;
             if (start == -1) drop = true;
             else {
-                int newIndex = start - PREVIOUS_SLOTS.indexOf(type) + i;
+                int move = start - PREVIOUS_SLOTS.indexOf(type);
+                int newIndex = i + move;
                 if (newIndex < MODIFIED_SLOTS.size() && MODIFIED_SLOTS.get(newIndex).equals(type)) {
                     stacks.set(newIndex, stack);
+                    move1 = move;
                 }
                 else drop = true;
             }
-            if (drop && !entity.world.isRemote) entity.dropItem(stack.getItem(), stack.getCount());
+            if (drop && !entity.world.isRemote) {
+                entity.entityDropItem(stack, 0);
+                bauble.onUnequipped(stack, entity);
+            }
         }
         if (BaublesContent.changed) BaublesContent.changed = false;
-        if (needUpdate) needUpdate = false;
+        if (!slotsUpdated) slotsUpdated = true;
+        if (guiUpdated) guiUpdated = false;
     }
 
     @Override
@@ -126,10 +143,15 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     @Override
     public ArrayList<Integer> getValidSlots(BaubleTypeEx type) {
         ArrayList<Integer> list = new ArrayList<>();
-        int index = MODIFIED_SLOTS.indexOf(type);
-        while (index != -1) {
-            if (MODIFIED_SLOTS.subList(index, MODIFIED_SLOTS.size()).contains(type)) { list.add(index++); }
-            else { break; }
+        if (type.equals(TRINKET)) {
+            for (int i = 0; i < MODIFIED_SLOTS.size(); i++) list.add(i);
+        }
+        else {
+            int index = MODIFIED_SLOTS.indexOf(type);
+            while (index != -1) {
+                if (MODIFIED_SLOTS.subList(index, MODIFIED_SLOTS.size()).contains(type)) list.add(index++);
+                else break;
+            }
         }
         return list;
     }
@@ -148,7 +170,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         IBauble bauble = BaublesApi.toBauble(stack);
         if (bauble != null) {
             boolean canEquip = bauble.canEquip(stack, entity);
-            boolean hasSlot = bauble.getBaubleTypeEx().equals(MODIFIED_SLOTS.get(slot));
+            boolean hasSlot = bauble.getBaubleTypeEx().equals(MODIFIED_SLOTS.get(slot)) || bauble.getBaubleTypeEx().equals(TRINKET);
             return canEquip && hasSlot;
         }
         return false;

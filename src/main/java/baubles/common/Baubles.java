@@ -1,14 +1,13 @@
 package baubles.common;
 
-import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import baubles.api.cap.BaubleItem;
 import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
 import baubles.api.cap.BaublesCapabilities.CapabilityItemBaubleStorage;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesModifiable;
+import baubles.api.util.BaublesWrapper;
 import baubles.common.network.PacketHandler;
-import baubles.common.util.BaublesRegister;
+import baubles.common.util.BaublesRegistries;
 import baubles.common.util.command.CommandBaubles;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
@@ -35,7 +34,7 @@ public class Baubles {
     public static final String FACTORY = "baubles.client.gui.config.BaublesGuiFactory";
 
     public static Config config;
-    public static BaublesRegister REGISTER;
+    public static BaublesRegistries registries;
 
     @SidedProxy(clientSide = "baubles.client.ClientProxy", serverSide = "baubles.common.CommonProxy")
     public static CommonProxy proxy;
@@ -49,7 +48,7 @@ public class Baubles {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         config = new Config(event);
-        REGISTER = new BaublesRegister();
+        registries = new BaublesRegistries();
 
         CapabilityManager.INSTANCE.register(
                 IBaublesModifiable.class,
@@ -58,7 +57,7 @@ public class Baubles {
         CapabilityManager.INSTANCE.register(
                 IBauble.class,
                 new CapabilityItemBaubleStorage(),
-                () -> new BaubleItem(BaubleType.TRINKET));
+                BaublesWrapper::new);
 
         proxy.registerEventHandlers();
         PacketHandler.init();

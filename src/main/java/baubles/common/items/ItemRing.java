@@ -7,6 +7,7 @@ import baubles.api.cap.IBaublesModifiable;
 import baubles.api.util.BaublesContent;
 import baubles.common.Baubles;
 import baubles.common.Config;
+import baubles.common.util.BaublesRegistries;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
@@ -18,30 +19,19 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod.EventBusSubscriber
 public class ItemRing extends Item implements IBauble {
 	@GameRegistry.ObjectHolder(Baubles.MODID + ":ring")
 	public static final Item ringModel = null;
 
-	public ItemRing()
-	{
+	public ItemRing() {
 		super();
 		this.setMaxStackSize(1);
 		this.setHasSubtypes(true);
 		this.setMaxDamage(0);
 		this.setCreativeTab(CreativeTabs.TOOLS);
-	}
-
-	private static final Item ring = new ItemRing().setUnlocalizedName("Ring").setRegistryName("ring");
-
-	@SubscribeEvent
-	public static void registerItems(RegistryEvent.Register<Item> event) {
-		event.getRegistry().register(ring);
+		this.setUnlocalizedName("Ring");
 	}
 
 	@Override
@@ -112,7 +102,7 @@ public class ItemRing extends Item implements IBauble {
 		for (int i : baubles.getValidSlots(BaublesContent.getTypeByName("ring"))) {
 			ItemStack ring1 = baubles.getStackInSlot(i);
 			if (level >= Config.maxLevel - 1) break;
-			if (ring1.getItem() == ring) level++;
+			if (ring1.getItem() == BaublesRegistries.ModItems.Ring) level++;
 		}
 		if (potion != null) {
 			PotionEffect currentEffect = entity.getActivePotionEffect(potion);

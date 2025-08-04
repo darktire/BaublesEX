@@ -43,6 +43,6 @@ public class EventHandlerItem {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void itemBaubleWrap(RegistryEvent.Register<Item> event) {
-        Baubles.REGISTER.registerItems();
+        Baubles.registries.registerItems();
     }
 }
