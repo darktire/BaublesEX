@@ -16,7 +16,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'wtf.gofancy.fancygradle'
 apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'idea'
+//apply plugin: 'idea'
 
 version = "${version_major}.${version_minor}.${version_patch}"
 group = ''
@@ -45,7 +45,7 @@ minecraft {
 
 fancyGradle {
     patches {
-        resources
+//        resources
         coremods
         codeChickenLib
         asm

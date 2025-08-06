@@ -40,7 +40,7 @@ public class GUIBaublesButton extends ElementBase {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
-            if (this.parentGui instanceof GuiContainerCreative && ((GuiContainerCreative) this.parentGui).getSelectedTabIndex() != CreativeTabs.INVENTORY.getTabIndex()) return;
+            if (this.parentGui instanceof GuiContainerCreative && ((GuiContainerCreative) this.parentGui).getSelectedTabIndex() != CreativeTabs.INVENTORY.getIndex()) return;
             updateHovered(mouseX, mouseY);
 
             glPush();

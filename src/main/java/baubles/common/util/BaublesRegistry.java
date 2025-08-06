@@ -16,9 +16,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Iterator;
 
-public class BaublesRegistries {
+public class BaublesRegistry {
 
-    public BaublesRegistries() {
+    public BaublesRegistry() {
         registerBaubles();
         loadValidSlots();
     }
@@ -29,7 +29,7 @@ public class BaublesRegistries {
                 BaubleItemsContent.registerBauble(item);
             }
         }
-        if (Config.Items.elytraBauble) BaubleItemsContent.registerBauble(Items.ELYTRA, BaublesContent.getTypeByName("body"));
+        if (Config.ModItems.elytraBauble) BaubleItemsContent.registerBauble(Items.ELYTRA, BaublesContent.getTypeByName("body"));
     }
 
     public void registerBaubles() {
@@ -76,7 +76,7 @@ public class BaublesRegistries {
         @SubscribeEvent
         public static void registerItems(RegistryEvent.Register<Item> event) {
             event.getRegistry().register(Ring);
-            if (Config.Items.testItem) event.getRegistry().register(Tyre);
+            if (Config.ModItems.testItem) event.getRegistry().register(Tyre);
         }
     }
 }

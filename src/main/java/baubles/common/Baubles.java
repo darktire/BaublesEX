@@ -7,7 +7,7 @@ import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.util.BaublesWrapper;
 import baubles.common.network.PacketHandler;
-import baubles.common.util.BaublesRegistries;
+import baubles.common.util.BaublesRegistry;
 import baubles.common.util.command.CommandBaubles;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
@@ -34,7 +34,7 @@ public class Baubles {
     public static final String FACTORY = "baubles.client.gui.config.BaublesGuiFactory";
 
     public static Config config;
-    public static BaublesRegistries registries;
+    public static BaublesRegistry registries;
 
     @SidedProxy(clientSide = "baubles.client.ClientProxy", serverSide = "baubles.common.CommonProxy")
     public static CommonProxy proxy;
@@ -48,7 +48,7 @@ public class Baubles {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         config = new Config(event);
-        registries = new BaublesRegistries();
+        registries = new BaublesRegistry();
 
         CapabilityManager.INSTANCE.register(
                 IBaublesModifiable.class,

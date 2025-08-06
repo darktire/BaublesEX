@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 
 public class FlyingHelper {
     public static ItemStack elytraInBaubles(ItemStack stack, EntityLivingBase player) {
-        if (Config.Items.elytraBauble && !(stack.getItem() instanceof ItemElytra) && !ItemElytra.isUsable(stack)) {
+        if (Config.ModItems.elytraBauble && !(stack.getItem() instanceof ItemElytra) && !ItemElytra.isUsable(stack)) {
             IBaublesModifiable baubles = BaublesApi.getBaublesHandler(player);
             if (baubles != null) {
                 for (int i = 0; i < baubles.getSlots(); i++) {
