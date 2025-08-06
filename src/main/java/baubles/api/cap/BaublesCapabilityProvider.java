@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 
 public class BaublesCapabilityProvider implements ICapabilityProvider, INBTSerializable<NBTTagCompound> {
-    public static final String BAUBLE_KEY = "Bauble";
+    public static final String BAUBLE_TYPE = "Type";
     private final ItemStack stack;
     private final BaublesWrapper wrapper;
 
@@ -34,19 +34,16 @@ public class BaublesCapabilityProvider implements ICapabilityProvider, INBTSeria
 
     @Override
     public NBTTagCompound serializeNBT() {
-        NBTTagCompound nbt = stack.getTagCompound();
-        if (nbt == null) nbt = new NBTTagCompound();
-        if (!nbt.hasKey(BAUBLE_KEY)) {
+        NBTTagCompound nbt = new NBTTagCompound();
+        if (!nbt.hasKey(BAUBLE_TYPE)) {
             BaubleTypeEx type = wrapper.getBaubleTypeEx();
             if (type != null) {
-                nbt.setString(BAUBLE_KEY, type.getTypeName());
+                nbt.setString(BAUBLE_TYPE, type.getTypeName());
             }
         }
         return nbt;
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound compound) {
-        stack.setTagCompound(compound);
-    }
+    public void deserializeNBT(NBTTagCompound compound) {}
 }

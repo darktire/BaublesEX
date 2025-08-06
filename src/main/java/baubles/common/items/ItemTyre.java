@@ -21,7 +21,7 @@ public class ItemTyre extends Item implements IBauble {
 		this.setHasSubtypes(true);
 		this.setMaxDamage(0);
 		this.setCreativeTab(CreativeTabs.TOOLS);
-		this.setUnlocalizedName("Tyre");
+		this.setTranslationKey("Tyre");
 	}
 
 	@Override

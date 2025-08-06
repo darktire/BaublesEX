@@ -8,7 +8,7 @@ import baubles.api.cap.IBaublesModifiable;
 import baubles.api.util.BaublesContent;
 import baubles.common.Baubles;
 import baubles.common.Config;
-import baubles.common.util.BaublesRegistries;
+import baubles.common.util.BaublesRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
@@ -32,7 +32,7 @@ public class ItemRing extends Item implements IBauble {
 		this.setHasSubtypes(true);
 		this.setMaxDamage(0);
 		this.setCreativeTab(CreativeTabs.TOOLS);
-		this.setUnlocalizedName("Ring");
+		this.setTranslationKey("Ring");
 	}
 
 	@Override
@@ -79,8 +79,8 @@ public class ItemRing extends Item implements IBauble {
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack par1ItemStack) {
-		return super.getUnlocalizedName() + "." + par1ItemStack.getItemDamage();
+	public String getTranslationKey(ItemStack par1ItemStack) {
+		return super.getTranslationKey() + "." + par1ItemStack.getItemDamage();
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class ItemRing extends Item implements IBauble {
 			if (baubles.getTypeInSlot(i) != target) continue;
 			ItemStack ring1 = baubles.getStackInSlot(i);
 			if (level >= Config.maxLevel - 1) break;
-			if (ring1.getItem() == BaublesRegistries.ModItems.Ring) level++;
+			if (ring1.getItem() == BaublesRegistry.ModItems.Ring) level++;
 		}
 		if (potion != null) {
 			PotionEffect currentEffect = entity.getActivePotionEffect(potion);

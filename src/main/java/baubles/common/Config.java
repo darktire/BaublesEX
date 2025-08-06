@@ -44,7 +44,7 @@ public class Config {
 
             new Slots();
             new Gui();
-            new Items();
+            new ModItems();
             loadData();
         } catch (Exception e) {
             Baubles.log.error("BAUBLES has a problem loading it's configuration");
@@ -135,7 +135,7 @@ public class Config {
         }
     }
 
-    public static class Items extends Base {
+    public static class ModItems extends Base {
         public static boolean testItem = false;
         public static boolean elytraBauble = false;
 
@@ -154,7 +154,7 @@ public class Config {
             if (eventArgs.getModID().equals(Baubles.MODID)) {
                 new Slots();
                 new Gui();
-                new Items();
+                new ModItems();
                 Baubles.config.loadData();
                 Baubles.registries.registerBaubles();
                 Baubles.registries.loadValidSlots();

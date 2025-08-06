@@ -16,7 +16,7 @@ import static baubles.common.Baubles.MODID;
 
 @SuppressWarnings("unused") // gets used by Forge event handler
 public class EventHandlerItem {
-    private static final ResourceLocation BaubleItemCap = new ResourceLocation(MODID, "bauble");
+    private static final ResourceLocation BaubleItemCap = new ResourceLocation(MODID, "bauble_cap");
 
     /**
      * Attach bauble capability only for baubles do not already have the capability when creating stacks.
