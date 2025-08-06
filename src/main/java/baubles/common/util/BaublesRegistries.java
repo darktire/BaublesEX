@@ -6,9 +6,9 @@ import baubles.api.IBauble;
 import baubles.api.util.BaubleItemsContent;
 import baubles.api.util.BaublesContent;
 import baubles.common.Config;
-import baubles.common.config.cfg.CfgBaubles;
 import baubles.common.items.ItemRing;
 import baubles.common.items.ItemTyre;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,18 +29,19 @@ public class BaublesRegistries {
                 BaubleItemsContent.registerBauble(item);
             }
         }
+        if (Config.Items.elytraBauble) BaubleItemsContent.registerBauble(Items.ELYTRA, BaublesContent.getTypeByName("body"));
     }
 
     public void registerBaubles() {
         int amount = 0;
         for (BaubleType type : BaubleType.values()) {
-            int value = CfgBaubles.getCfgAmount(type.toString());
-            if (type.equals(BaubleType.TRINKET) && !Config.trinketLimit) value = 0;
+            int value = Config.Slots.getCfgAmount(type.toString());
+            if (type == BaubleType.TRINKET && !Config.trinketLimit) value = 0;
             BaublesContent.registerBauble(type.getNewType(), value);
             amount += value;
         }
         if (!Config.trinketLimit) {
-            int trinket = CfgBaubles.getCfgAmount(BaubleType.TRINKET.toString());
+            int trinket = Config.Slots.getCfgAmount(BaubleType.TRINKET.toString());
             if (trinket > amount) {
                 BaublesContent.registerBauble(BaubleType.TRINKET.getNewType(), trinket - amount);
             }
@@ -75,7 +76,7 @@ public class BaublesRegistries {
         @SubscribeEvent
         public static void registerItems(RegistryEvent.Register<Item> event) {
             event.getRegistry().register(Ring);
-            if (Config.testItem) event.getRegistry().register(Tyre);
+            if (Config.Items.testItem) event.getRegistry().register(Tyre);
         }
     }
 }

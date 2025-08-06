@@ -31,6 +31,7 @@ public class BaublesWrapper implements IBauble {
     public BaublesWrapper(BaubleItem bauble) {
         this.item = bauble.getItem();
         this.bauble = bauble;
+        this.mainType = bauble.getBaubleTypeEx();
     }
 
     public void setType(BaubleTypeEx type) {

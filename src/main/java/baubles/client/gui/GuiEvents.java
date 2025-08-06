@@ -1,7 +1,7 @@
 package baubles.client.gui;
 
 import baubles.client.gui.element.GUIBaublesButton;
-import baubles.common.config.cfg.CfgGui;
+import baubles.common.Config;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
@@ -18,12 +18,12 @@ public class GuiEvents {
 		if (gui instanceof GuiContainer) {
 			GuiContainer guiContainer = (GuiContainer) gui;
 			if (gui instanceof GuiInventory || gui instanceof GuiPlayerExpanded) {
-				if (CfgGui.baublesButton) {
+				if (Config.Gui.baublesButton) {
 					event.getButtonList().add(new GUIBaublesButton(55, guiContainer, 64, 9, I18n.format((guiContainer instanceof GuiInventory) ? "button.baubles" : "button.normal")));
 				}
 			}
 			if (gui instanceof GuiContainerCreative) {
-				if (CfgGui.baublesButton) {
+				if (Config.Gui.baublesButton) {
 					event.getButtonList().add(new GUIBaublesButton(55, guiContainer, 95, 6, I18n.format("button.baubles")));
 				}
 			}

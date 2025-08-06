@@ -25,6 +25,7 @@ eclipse
 *test*
 pic
 *.psd
+*.bak
 
 # Files from Forge MDK
 forge*changelog.txt

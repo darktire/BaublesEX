@@ -16,15 +16,19 @@ public class BaubleItemsContent {
         BAUBLE_ITEMS.put(item, new BaublesWrapper(item));
     }
 
-    public static void registerBauble(BaubleItem item) {
-        BAUBLE_ITEMS.put(item.getItem(), new BaublesWrapper(item));
+    public static void registerBauble(BaubleItem baubleItem) {
+        BAUBLE_ITEMS.put(baubleItem.getItem(), new BaublesWrapper(baubleItem));
     }
 
     public static void registerBauble(Item item, BaubleTypeEx type) {
         registerBauble(new BaubleItem(item, type));
     }
 
-    public static BaublesWrapper itemToBauble(Item item) {
+    public static BaublesWrapper toBauble(Item item) {
         return BAUBLE_ITEMS.get(item);
+    }
+
+    public static boolean isBauble(Item item) {
+        return BAUBLE_ITEMS.containsKey(item);
     }
 }

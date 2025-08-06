@@ -2,7 +2,7 @@ package baubles.client.gui.element;
 
 import baubles.client.gui.GuiBaublesBase;
 import baubles.client.gui.GuiPlayerExpanded;
-import baubles.common.config.cfg.CfgGui;
+import baubles.common.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 
@@ -12,12 +12,12 @@ public class GUIBaublesScroller extends ElementBase {
 
     private int barPos, dragStartY, movement;
     private boolean dragging;
-    private int rest = 142 - 89;
+    private final int rest = 142 - 89;
 
     public GUIBaublesScroller(int id, GuiPlayerExpanded parentGui, int x, int y) {
         super(id, x, y, 18, 166, "");
         this.parentGui = parentGui;
-        this.visible = CfgGui.scrollerBar;
+        this.visible = Config.Gui.scrollerBar;
         this.barPos = 0;
     }
 

@@ -26,7 +26,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
      */
     private final ArrayList<BaubleTypeEx> MODIFIED_SLOTS = new ArrayList<>();
     private final ArrayList<BaubleTypeEx> PREVIOUS_SLOTS = new ArrayList<>();
-    private final HashMap<String, Integer> MODIFIER_FACTOR = new HashMap<>();
+//    private final HashMap<String, Integer> MODIFIER_FACTOR = new HashMap<>();
     private final HashMap<String, Integer> BAUBLE_MODIFIER = new HashMap<>();
 
     public boolean slotsUpdated = true;
@@ -91,7 +91,8 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
 
     @Override
     public void updateSlots() {
-        if (!BaublesContent.changed && slotsUpdated) return;
+        if (BaublesContent.changed) onConfigChanged();
+        if (slotsUpdated) return;
         NonNullList<ItemStack> stacks1 = stacks;
         setSize(MODIFIED_SLOTS.size());
         int move1 = 0;
@@ -101,7 +102,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
             if (stack.isEmpty()) continue;
             IBauble bauble = BaublesApi.toBauble(stack);
             BaubleTypeEx type = bauble.getBaubleTypeEx();
-            if (type.equals(TRINKET)) {
+            if (type == TRINKET) {
                 int newIndex = i + move1;
                 if (newIndex < MODIFIED_SLOTS.size()) {
                     stacks.set(newIndex, stack);
@@ -114,7 +115,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
             else {
                 int move = start - PREVIOUS_SLOTS.indexOf(type);
                 int newIndex = i + move;
-                if (newIndex < MODIFIED_SLOTS.size() && MODIFIED_SLOTS.get(newIndex).equals(type)) {
+                if (newIndex < MODIFIED_SLOTS.size() && MODIFIED_SLOTS.get(newIndex) == type) {
                     stacks.set(newIndex, stack);
                     move1 = move;
                 }
@@ -125,9 +126,20 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
                 bauble.onUnequipped(stack, entity);
             }
         }
-        if (BaublesContent.changed) BaublesContent.changed = false;
         if (!slotsUpdated) slotsUpdated = true;
         if (guiUpdated) guiUpdated = false;
+    }
+
+    private void onConfigChanged() {
+        PREVIOUS_SLOTS.clear();
+        PREVIOUS_SLOTS.addAll(MODIFIED_SLOTS);
+        MODIFIED_SLOTS.clear();
+        MODIFIED_SLOTS.addAll(BaublesContent.getLazyList());
+        for (String typeName: BAUBLE_MODIFIER.keySet()) {
+            modifySlotOA(typeName, BAUBLE_MODIFIER.get(typeName));
+        }
+        BaublesContent.changed = false;
+        slotsUpdated = false;
     }
 
     @Override
@@ -140,21 +152,21 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         return MODIFIED_SLOTS.get(slot);
     }
 
-    @Override
-    public ArrayList<Integer> getValidSlots(BaubleTypeEx type) {
-        ArrayList<Integer> list = new ArrayList<>();
-        if (type.equals(TRINKET)) {
-            for (int i = 0; i < MODIFIED_SLOTS.size(); i++) list.add(i);
-        }
-        else {
-            int index = MODIFIED_SLOTS.indexOf(type);
-            while (index != -1) {
-                if (MODIFIED_SLOTS.subList(index, MODIFIED_SLOTS.size()).contains(type)) list.add(index++);
-                else break;
-            }
-        }
-        return list;
-    }
+//    @Override
+//    public LinkedList<Integer> getValidSlots(BaubleTypeEx type) {
+//        LinkedList<Integer> list = new LinkedList<>();
+//        if (type == TRINKET) {
+//            for (int i = 0; i < MODIFIED_SLOTS.size(); i++) list.add(i);
+//        }
+//        else {
+//            int index = MODIFIED_SLOTS.indexOf(type);
+//            while (index != -1) {
+//                if (MODIFIED_SLOTS.subList(index, MODIFIED_SLOTS.size()).contains(type)) list.add(index++);
+//                else break;
+//            }
+//        }
+//        return list;
+//    }
 
     @Override
     public ItemStack getStackInSlot(int slot) {
@@ -170,7 +182,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         IBauble bauble = BaublesApi.toBauble(stack);
         if (bauble != null) {
             boolean canEquip = bauble.canEquip(stack, entity);
-            boolean hasSlot = bauble.getBaubleTypeEx().equals(MODIFIED_SLOTS.get(slot)) || bauble.getBaubleTypeEx().equals(TRINKET);
+            boolean hasSlot = bauble.getBaubleTypeEx() == MODIFIED_SLOTS.get(slot) || bauble.getBaubleTypeEx() == TRINKET;
             return canEquip && hasSlot;
         }
         return false;

@@ -2,8 +2,6 @@ package baubles.api.cap;
 
 import baubles.api.BaubleTypeEx;
 
-import java.util.ArrayList;
-
 public interface IBaublesModifiable extends IBaublesItemHandler{
 
     void modifySlot(String typeName, int modifier);
@@ -20,6 +18,4 @@ public interface IBaublesModifiable extends IBaublesItemHandler{
     int getModifier(String typeName);
 
     BaubleTypeEx getTypeInSlot(int index);
-
-    ArrayList<Integer> getValidSlots(BaubleTypeEx type);
 }

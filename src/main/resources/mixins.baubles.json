@@ -1,0 +1,17 @@
+{
+  "package": "baubles.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "mixins.baubles.refmap.json",
+  "mixins": [
+    "ElytraMixin$EntityMixin",
+    "ElytraMixin$NetMixin"
+  ],
+  "client": [
+    "ElytraMixin$PlayerMixin"
+  ],
+  "server": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

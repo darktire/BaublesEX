@@ -4,22 +4,22 @@ buildscript {
         maven { url = 'https://maven.gofancy.wtf/releases' }
         maven { url = 'https://files.minecraftforge.net/maven' }
         maven { url = 'https://repo.spongepowered.org/maven' }
-        flatDir { dirs "libs" }
+//        flatDir { dirs "libs" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:6.+'
         classpath 'wtf.gofancy.fancygradle:wtf.gofancy.fancygradle.gradle.plugin:1.1.+'
-//        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
         
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'wtf.gofancy.fancygradle'
-//apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'idea'
 
 version = "${version_major}.${version_minor}.${version_patch}"
-group = 'darktire.baubles'
+group = ''
 archivesBaseName = "${name}-${minecraft_version}"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
@@ -32,6 +32,7 @@ minecraft {
         configureEach {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
+            arg '-torg.spongepowered.asm.launch.MixinTweaker'
         }
 
         client {
@@ -76,23 +77,24 @@ repositories {
 }
 
 configurations {
-    provided
-    compile.extendsFrom(provided)
+    embed
+    compile.extendsFrom(embed)
 }
 
 dependencies {
-    minecraft([
+    minecraft(
         group  : "${forge_group}",
         name   : "forge",
         version: "${minecraft_version}-${forge_version}"
-    ])
+    )
 
-//    provided('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
-//        exclude module: 'guava'
-//        exclude module: 'commons-io'
-//        exclude module: 'gson'
-//    }
-//    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+    embed('org.spongepowered:mixin:0.8.+') {
+        exclude module: 'guava'
+        exclude module: 'commons-io'
+        exclude module: 'gson'
+    }
+    implementation 'org.spongepowered:mixin:0.8.+'
+    annotationProcessor 'org.spongepowered:mixin:0.8.+:processor'
 
     runtimeOnly fileTree(dir: 'libs', includes: ['*.jar'])
 //    implementation fileTree(dir: 'libs', includes: ['*.jar'])
@@ -108,25 +110,23 @@ dependencies {
 //    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
 }
 
-//mixin {
-//    add sourceSets.main, "mixins.baubles.refmap.json"
-//    debug.export = true
-//}
+mixin {
+    add sourceSets.main, refmap_configs.replace('${mod_id}', mod_id)
+    config mixin_configs.replace('${mod_id}', mod_id)
 
-tasks.register('replaceResources', Copy) {
-    outputs.upToDateWhen { false }
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand version:version, mcversion:minecraft_version
-    }
-    into 'build/classes/java/main'
+    debug.verbose = true
+    debug.export = true
 }
 
-tasks.register('copyResources', Copy) {
-    outputs.upToDateWhen { false }
+tasks.register('copyResource', Copy) {
+    inputs.files sourceSets.main.resources.srcDirs
+
     from(sourceSets.main.resources.srcDirs) {
-        exclude "**/*.psd"
-        exclude 'mcmod.info'
+        include 'mcmod.info'
+        expand mod_id:mod_id, mod_name:mod_name, version:version, mcversion:minecraft_version
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*.bak', '**/*.psd', 'mcmod.info'
     }
     into 'build/classes/java/main'
 }
@@ -136,37 +136,28 @@ tasks.register('cleanLogs', Delete) {
     delete("run/logs")
 }
 
-processResources {}
+processResources.enabled = false
+//processResources {}
 
 classes.configure {
-    dependsOn(replaceResources)
-    dependsOn(copyResources)
+    dependsOn(copyResource)
 }
 
 jar {
-    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
-    manifest {
-        attributes([
-            'Specification-Title'     : 'BaublesEX',
-            'Specification-Vendor'    : 'darktire',
-            'Specification-Version'   : "${version}",
-            'Implementation-Title'    : name,
-            'Implementation-Version'  : "${version}",
-            'Implementation-Vendor'   : 'darktire',
-            'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            "Automatic-Module-Name": "${group}",
-        ])
+//    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+
+    from { configurations.embed.collect { it.isDirectory() ? it : zipTree(it) } } {
+        exclude 'LICENSE.txt', 'META-INF/MANIFSET.MF', 'META-INF/maven/**', 'META-INF/*.RSA', 'META-INF/*.SF'
     }
+
+    manifest {
+        attributes(
+                'ForceLoadAsMod': 'true',
+                'FMLCorePluginContainsFMLMod': 'true',
+                'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+                'TweakOrder': '0'
+        )
+    }
+
     finalizedBy('reobfJar')
-}
-
-tasks.register('apiJar', Jar) {
-    archiveClassifier = 'api'
-    from sourceSets.main.output
-    from sourceSets.main.allSource
-    include 'baubles/api/**'
-}
-
-artifacts {
-    archives apiJar
 }

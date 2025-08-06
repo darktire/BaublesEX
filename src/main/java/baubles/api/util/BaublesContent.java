@@ -28,19 +28,17 @@ public class BaublesContent{
 
     public static void registerBauble(BaubleTypeEx type, int amount) {
         if (amount < 0) amount = 0;
-        if (BAUBLE_TYPES.containsKey(type.getTypeName())) {
-            type.setAmount(amount);
-        }
-        else {
-            registerBauble(type);
-        }
+        type.setAmount(amount);
+        registerBauble(type);
     }
 
     public static void registerBauble(String typeName, int amount) {
-        registerBauble(new BaubleTypeEx(typeName, amount), amount);
+        if (amount < 0) amount = 0;
+        registerBauble(new BaubleTypeEx(typeName, amount));
     }
 
     public static void registerBauble(BaubleTypeEx type) {
+        if (BAUBLE_TYPES.containsKey(type.getTypeName())) return;// todo log
         BAUBLE_TYPES.put(type.getTypeName(), type);
         BAUBLE_ORDER.add(type);
     }
