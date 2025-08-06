@@ -1,8 +1,8 @@
 package baubles.common.event;
 
 import baubles.api.BaublesApi;
-import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilityProvider;
+import baubles.api.util.BaubleItemsContent;
 import baubles.common.Baubles;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,7 +29,7 @@ public class EventHandlerItem {
         if (stack.isEmpty()) return;
         Item item = stack.getItem();
 
-        if (!(item instanceof IBauble)) return;
+        if (!(BaubleItemsContent.isBauble(item))) return;
 
         if (BaublesApi.isBauble(stack)) {
             ((BaublesCapabilityProvider)event.getCapabilities().get(BaubleItemCap)).serializeNBT();

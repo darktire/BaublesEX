@@ -13,20 +13,16 @@ public enum BaubleType {
 	CHARM(1),
 	TRINKET(0);
 
-	private final int defaultAmount;
+	public final int amount;
     private final BaubleTypeEx baubleTypeEx;
 
 	BaubleType(int amount) {
-		this.defaultAmount = amount;
+		this.amount = amount;
 		this.baubleTypeEx = new BaubleTypeEx(this.toString().toLowerCase(), amount);
 	}
 
 	public BaubleTypeEx getNewType() {
 		return baubleTypeEx;
-	}
-
-	public int getDefaultAmount() {
-		return this.defaultAmount;
 	}
 
 	@Deprecated

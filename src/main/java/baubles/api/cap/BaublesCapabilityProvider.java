@@ -19,7 +19,7 @@ public class BaublesCapabilityProvider implements ICapabilityProvider, INBTSeria
 
     public BaublesCapabilityProvider(ItemStack itemStack) {
         this.stack = itemStack;
-        this.wrapper = BaubleItemsContent.itemToBauble(itemStack.getItem());
+        this.wrapper = BaubleItemsContent.toBauble(itemStack.getItem());
     }
 
     @Override
