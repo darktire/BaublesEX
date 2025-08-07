@@ -32,7 +32,7 @@ public abstract class ElytraMixin {
 
         @ModifyVariable(method = "updateElytra", at = @At("STORE"), ordinal = 0)
         private ItemStack injected(ItemStack stack) {
-            return FlyingHelper.elytraInBaubles(stack, (EntityLivingBase) ((Entity) this));
+            return FlyingHelper.elytraInBaubles(stack, (EntityLivingBase) (Entity) this);
         }
     }
 

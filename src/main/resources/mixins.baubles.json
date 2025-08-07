@@ -4,7 +4,8 @@
   "refmap": "mixins.baubles.refmap.json",
   "mixins": [
     "ElytraMixin$EntityMixin",
-    "ElytraMixin$NetMixin"
+    "ElytraMixin$NetMixin",
+    "EnchantmentMixin"
   ],
   "client": [
     "ElytraMixin$PlayerMixin"
