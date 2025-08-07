@@ -6,7 +6,7 @@ import net.minecraft.item.Item;
 
 import java.util.HashMap;
 
-public class BaubleItemsContent {
+public class ItemsData {
     /**
      * Dynamic bauble items.
      */

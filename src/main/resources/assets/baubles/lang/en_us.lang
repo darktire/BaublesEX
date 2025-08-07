@@ -17,6 +17,7 @@ name.trinket=Bauble (Any)
 name.head=Bauble (Head)
 name.body=Bauble (Body)
 name.charm=Bauble (Charm)
+name.elytra=Bauble (elytra)
 #
 # Command
 commands.baubles.error=Error command

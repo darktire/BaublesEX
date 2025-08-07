@@ -34,7 +34,7 @@ public class Baubles {
     public static final String FACTORY = "baubles.client.gui.config.BaublesGuiFactory";
 
     public static Config config;
-    public static BaublesRegistry registries;
+    public static BaublesRegistry registry;
 
     @SidedProxy(clientSide = "baubles.client.ClientProxy", serverSide = "baubles.common.CommonProxy")
     public static CommonProxy proxy;
@@ -48,7 +48,7 @@ public class Baubles {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         config = new Config(event);
-        registries = new BaublesRegistry();
+        registry = new BaublesRegistry();
 
         CapabilityManager.INSTANCE.register(
                 IBaublesModifiable.class,

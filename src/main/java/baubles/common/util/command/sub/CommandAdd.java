@@ -2,7 +2,7 @@ package baubles.common.util.command.sub;
 
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.api.util.BaublesContent;
+import baubles.api.util.TypesData;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
 import baubles.common.util.command.CommandBaubles;
@@ -28,7 +28,7 @@ public class CommandAdd extends CommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         EntityPlayerMP player = CommandBaubles.checkPlayer(server, sender, args);
-        if (BaublesContent.hasType(args[1]) && args[2].matches("-?\\d+")) {
+        if (TypesData.hasType(args[1]) && args[2].matches("-?\\d+")) {
             int modifier = Integer.parseInt(args[2]);
             IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
             baubles.modifySlot(args[1], modifier);

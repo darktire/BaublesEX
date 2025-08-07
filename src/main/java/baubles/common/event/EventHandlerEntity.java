@@ -1,22 +1,24 @@
 package baubles.common.event;
 
+import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.BaublesContainerProvider;
 import baubles.api.cap.IBaublesItemHandler;
+import baubles.api.cap.IBaublesModifiable;
 import baubles.common.Baubles;
 import baubles.common.Config;
+import baubles.common.util.BaublesRegistry;
 import cofh.core.enchantment.EnchantmentSoulbound;
 import cofh.core.util.helpers.ItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -27,12 +29,12 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static cofh.core.init.CoreEnchantments.soulbound;
 
 public class EventHandlerEntity {
+    private static final ResourceLocation BAUBLES_CAP = new ResourceLocation(Baubles.MODID, "container");
 
     @SubscribeEvent
     public void cloneCapabilitiesEvent(PlayerEvent.Clone event) {
@@ -50,7 +52,7 @@ public class EventHandlerEntity {
     @SubscribeEvent
     public void attachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof EntityPlayer) {
-            event.addCapability(new ResourceLocation(Baubles.MODID, "container"), new BaublesContainerProvider(new BaublesContainer((EntityPlayer) event.getObject())));
+            event.addCapability(BAUBLES_CAP, new BaublesContainerProvider(new BaublesContainer((EntityPlayer) event.getObject())));
         }
     }
 
@@ -83,35 +85,32 @@ public class EventHandlerEntity {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerRightClickItem(PlayerInteractEvent.RightClickItem event) {
         ItemStack heldItem = event.getItemStack();
-        if (Baubles.config.blacklistItem().contains(heldItem.getItem())) return;
-        EntityPlayer player = event.getEntityPlayer();
+        if (Baubles.config.getBlacklist().contains(heldItem.getItem())) return;
         IBauble bauble = BaublesApi.toBauble(heldItem);
         if (bauble != null) {
-            ActionResult<ItemStack> action = heldItem.getItem().onItemRightClick(player.world, player, event.getHand());
-            if (action.getType() != EnumActionResult.SUCCESS) {
-                ArrayList<Integer> validSlots = bauble.getBaubleTypeEx().getOriSlots();
-                IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
-                for (int i: validSlots) {
-                    if (baubles.getStackInSlot(i) == null || baubles.getStackInSlot(i).isEmpty()) {
-                        ItemStack itemStack = heldItem.copy();
-                        baubles.setStackInSlot(i, itemStack);
-                        if (!player.capabilities.isCreativeMode) {
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
-                        }
-                        bauble.onEquipped(itemStack, player);
-                        break;
+            BaubleTypeEx type = bauble.getBaubleTypeEx();
+            EntityPlayer player = event.getEntityPlayer();
+            IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
+            for (int i = 0; i < baubles.getSlots(); i++) {
+                if (baubles.getTypeInSlot(i) != type && type != BaublesRegistry.TRINKET) continue;
+                if (baubles.getStackInSlot(i).isEmpty()) {
+                    ItemStack itemStack = heldItem.copy();
+                    baubles.setStackInSlot(i, itemStack);
+                    if (!player.capabilities.isCreativeMode) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
                     }
+                    bauble.onEquipped(itemStack, player);
+                    break;
                 }
             }
-            event.setCanceled(true);
         }
     }
 
     public void dropItemsAt(EntityPlayer player, List<EntityItem> drops, Entity e) {
-        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
+        IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
         for (int i = 0; i < baubles.getSlots(); ++i) {
             ItemStack stack = baubles.getStackInSlot(i);
-            if (stack != null && !stack.isEmpty() && ((IBauble)stack.getItem()).canDrop(stack, player)) {
+            if (!stack.isEmpty() && ((IBauble) stack.getItem()).canDrop(stack, player)) {
                 if (EnchantmentHelper.hasVanishingCurse(stack)) {
                     baubles.setStackInSlot(i, ItemStack.EMPTY);
                 }

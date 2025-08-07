@@ -17,9 +17,15 @@
   - [x] customize bauble types and quantities
   - [x] item can be defined as bauble
   - [ ] various abilities for each entity
+- [x] more apis
+  - [x] provide the method to add specific baubles for player
+  - [x] provide register for bauble type
+  - [x] provide register for existed item
 - [x] more configure
 - [x] more command
-- [x] new style of bauble slots
+- [x] add bauble button in creative tab
+- [x] elytra can be a bauble in the config
+- [x] new style of bauble slots (redraw again)
 - [x] right click to equip baubles
 - [x] enchantment support for baubles
 - [ ] visibility of each bauble
@@ -30,13 +36,12 @@
 
 ## More Details:
 
-- ### customizable bauble slots:
-  - customize bauble types and quantities ![img_0.png](https://i.imgur.com/r4DF4Pf.png)
+- ### customizable bauble slots in the config:
+  - customize bauble types and quantities ![img_0.png](https://i.imgur.com/JhJC0yM.png)
 
 - ### new style of bauble slots:
-  - now the bauble button can open new slots for baubles beside survival inventory. ![img_2.png](https://i.imgur.com/tyN637Y.png)
-  - add new inventory tab for baubles. now supports a maximum of 27 baubles. support for more slots will be realized in future update. ![img_3.png](https://i.imgur.com/fVpMhRW.png)
+  - now the bauble button can open new slots for baubles beside survival inventory. ![img_1.png](https://i.imgur.com/3ri5oKX.png)
 
 ---
 
-#  [Original Repo](https://github.com/Azanor/Baubles) / [Download from CF](https://www.curseforge.com/minecraft/mc-mods/baubles)
+#  [Original Repo](https://github.com/Azanor/Baubles) / [Download original version from CF](https://www.curseforge.com/minecraft/mc-mods/baubles)

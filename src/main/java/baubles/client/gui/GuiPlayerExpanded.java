@@ -3,6 +3,7 @@ package baubles.client.gui;
 import baubles.api.cap.BaublesContainer;
 import baubles.client.gui.element.GUIBaublesController;
 import baubles.client.gui.element.GUIBaublesScroller;
+import baubles.common.Baubles;
 import baubles.common.Config;
 import baubles.common.compat.JeiPlugin;
 import baubles.common.container.ContainerPlayerExpanded;
@@ -27,7 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class GuiPlayerExpanded extends GuiBaublesBase {
-    @Deprecated public static final ResourceLocation background = new ResourceLocation("baubles","textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
+    @Deprecated public static final ResourceLocation background = new ResourceLocation(Baubles.MODID,"textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
     private final EntityPlayer player;
     public ContainerPlayerExpanded containerEx = (ContainerPlayerExpanded) this.inventorySlots;
     public BaublesContainer baubles = (BaublesContainer) (this.containerEx).baubles;//container in sever
