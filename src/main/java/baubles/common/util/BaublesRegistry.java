@@ -3,8 +3,8 @@ package baubles.common.util;
 import baubles.api.BaubleType;
 import baubles.api.BaubleTypeEx;
 import baubles.api.IBauble;
-import baubles.api.util.BaubleItemsContent;
-import baubles.api.util.BaublesContent;
+import baubles.api.util.ItemsData;
+import baubles.api.util.TypesData;
 import baubles.common.Config;
 import baubles.common.items.ItemRing;
 import baubles.common.items.ItemTire;
@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.Iterator;
 
 public class BaublesRegistry {
+    public static BaubleTypeEx TRINKET = BaubleType.TRINKET.getNewType();
 
     public BaublesRegistry() {
         registerBaubles();
@@ -26,46 +27,47 @@ public class BaublesRegistry {
     public void registerItems() {
         for (Item item : Item.REGISTRY) {
             if (item instanceof IBauble) {
-                BaubleItemsContent.registerBauble(item);
+                ItemsData.registerBauble(item);
             }
         }
-        if (Config.ModItems.elytraBauble) BaubleItemsContent.registerBauble(Items.ELYTRA, BaublesContent.getTypeByName("body"));
+        if (Config.ModItems.elytraBauble) ItemsData.registerBauble(Items.ELYTRA, TypesData.getTypeByName(Config.ModItems.elytraSlot));
     }
 
     public void registerBaubles() {
         int amount = 0;
         for (BaubleType type : BaubleType.values()) {
             int value = Config.Slots.getCfgAmount(type.toString());
-            if (type == BaubleType.TRINKET && !Config.trinketLimit) value = 0;
-            BaublesContent.registerBauble(type.getNewType(), value);
+            if (type == BaubleType.TRINKET) value = 0;
+            TypesData.registerBauble(type.getNewType(), value);
             amount += value;
         }
-        if (!Config.trinketLimit) {
-            int trinket = Config.Slots.getCfgAmount(BaubleType.TRINKET.toString());
-            if (trinket > amount) {
-                BaublesContent.registerBauble(BaubleType.TRINKET.getNewType(), trinket - amount);
-            }
+
+        int trinket = Config.Slots.getCfgAmount(BaubleType.TRINKET.toString());
+        if (trinket > amount) {
+            TypesData.registerBauble(BaubleType.TRINKET.getNewType(), trinket - amount);
         }
+
+        if (Config.ModItems.elytraBauble && Config.ModItems.elytraSlot.equals("elytra")) TypesData.registerBauble("elytra", 1);
     }
 
     public void loadValidSlots() {
         int pointer = 0;
-        Iterator<BaubleTypeEx> iterator = BaublesContent.iterator();
-        BaublesContent.initLazyList();
+        Iterator<BaubleTypeEx> iterator = TypesData.iterator();
+        TypesData.initLazyList();
         while (iterator.hasNext()) {
             BaubleTypeEx type = iterator.next();
             int amount = type.getAmount();
             for (int i = 0; i < amount; i++) {
                 type.addOriSlots(pointer + i);
-                BaublesContent.addLazySlots(type);
+                TypesData.addLazySlots(type);
             }
             pointer += amount;
         }
-        BaublesContent.setSum(pointer);
-        if (!Config.trinketLimit) {
-            BaubleTypeEx trinket = BaublesContent.getTypeByName("trinket");
-            iterator.forEachRemaining(trinket::addOriSlots);
-        }
+        TypesData.setSum(pointer);
+
+        BaubleTypeEx trinket = TRINKET;
+        iterator.forEachRemaining(trinket::addOriSlots);
+
     }
 
     @Mod.EventBusSubscriber

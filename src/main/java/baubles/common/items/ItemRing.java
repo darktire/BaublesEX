@@ -5,7 +5,7 @@ import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.api.util.BaublesContent;
+import baubles.api.util.TypesData;
 import baubles.common.Config;
 import baubles.common.util.BaublesRegistry;
 import net.minecraft.creativetab.CreativeTabs;
@@ -96,7 +96,7 @@ public class ItemRing extends Item implements IBauble {
 		IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
 		Potion potion = Potion.REGISTRY.getObject(new ResourceLocation("haste"));
 
-		BaubleTypeEx target = BaublesContent.getTypeByName("ring");
+		BaubleTypeEx target = TypesData.getTypeByName("ring");
 		for (int i = 0; i < baubles.getSlots(); i++) {
 			if (baubles.getTypeInSlot(i) != target) continue;
 			ItemStack ring1 = baubles.getStackInSlot(i);

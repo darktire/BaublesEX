@@ -17,6 +17,7 @@ name.trinket=饰品 (任意)
 name.head=饰品 (头部)
 name.body=饰品 (身体)
 name.charm=饰品 (坠饰)
+name.elytra=饰品 (鞘翅)
 #
 # Command
 commands.baubles.error=错误的命令

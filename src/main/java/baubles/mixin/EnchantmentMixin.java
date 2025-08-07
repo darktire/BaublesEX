@@ -1,6 +1,6 @@
 package baubles.mixin;
 
-import baubles.api.util.BaubleItemsContent;
+import baubles.api.util.ItemsData;
 import net.minecraft.block.BlockPumpkin;
 import net.minecraft.item.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,7 +15,7 @@ public class EnchantmentMixin{
     private void canEnchantBaubles(Item itemIn, CallbackInfoReturnable<Boolean> cir) {
         boolean isPumpkin = itemIn instanceof ItemBlock && ((ItemBlock)itemIn).getBlock() instanceof BlockPumpkin;
         boolean flag = itemIn instanceof ItemArmor || itemIn instanceof ItemElytra || itemIn instanceof ItemSkull || isPumpkin;
-        boolean isBauble = BaubleItemsContent.isBauble(itemIn);
+        boolean isBauble = ItemsData.isBauble(itemIn);
         cir.setReturnValue(flag || isBauble);
     }
 }

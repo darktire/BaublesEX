@@ -1,7 +1,7 @@
 package baubles.common.config.json;
 
 import baubles.api.BaubleTypeEx;
-import baubles.api.util.BaublesContent;
+import baubles.api.util.TypesData;
 import baubles.common.Baubles;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,7 +30,7 @@ public class JsonHelper {
     }
 
     public void typesToJson() throws IOException {
-        Iterator<BaubleTypeEx> types = BaublesContent.iterator();
+        Iterator<BaubleTypeEx> types = TypesData.iterator();
         while (types.hasNext()) {
             BaubleTypeEx type = types.next();
             File jsonFile = new File(typeDir, type.getTypeName() + ".json");
@@ -45,7 +45,7 @@ public class JsonHelper {
         try {
             for (File jsonFile : files) {
                     BaubleTypeEx type = GSON.fromJson(new FileReader(jsonFile), BaubleTypeEx.class);
-                    BaublesContent.registerBauble(type);
+                    TypesData.registerBauble(type);
             }
         } catch (FileNotFoundException e) {
             //Impossible?
@@ -67,7 +67,7 @@ public class JsonHelper {
 /*        File jsonFile = new File(itemDir, "item.json");
         Type type = new TypeToken<HashMap<String, String>>(){}.getType();
         try {
-            BaubleItemsContent.setRegHelper(GSON.fromJson(new FileReader(jsonFile), type));
+            ItemsData.setRegHelper(GSON.fromJson(new FileReader(jsonFile), type));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }*/

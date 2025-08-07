@@ -3,7 +3,7 @@ package baubles.client;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.util.BaublesContent;
+import baubles.api.util.TypesData;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.Baubles;
 import baubles.common.Config;
@@ -52,7 +52,7 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void registerTextures(TextureStitchEvent.Pre event) {
         TextureMap map = event.getMap();
-        Iterator<BaubleTypeEx> types = BaublesContent.iterator();
+        Iterator<BaubleTypeEx> types = TypesData.iterator();
         types.forEachRemaining((type)->registerTexture(map, type));
     }
 

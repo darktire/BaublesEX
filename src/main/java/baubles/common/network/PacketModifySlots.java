@@ -3,7 +3,7 @@ package baubles.common.network;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.api.util.BaublesContent;
+import baubles.api.util.TypesData;
 import baubles.common.Baubles;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -29,9 +29,9 @@ public class PacketModifySlots implements IMessage {
         this.playerId = entity.getEntityId();
         if (typeName.equals("reset")) this.typeId = -2;
         else {
-            BaubleTypeEx type = BaublesContent.getTypeByName(typeName);
+            BaubleTypeEx type = TypesData.getTypeByName(typeName);
             if (type == null) this.typeId = -1;
-            else this.typeId = type.getId();
+            else this.typeId = TypesData.getId(type);
         }
         this.modifier = modifier;
         this.addition = addition;
@@ -70,8 +70,8 @@ public class PacketModifySlots implements IMessage {
                     baubles.clearModifier();
                 }
                 else if (message.typeId > -1) {
-                    if (message.addition) baubles.modifySlotOA(BaublesContent.getTypeById(message.typeId).getTypeName(), message.modifier);
-                    else baubles.modifySlot(BaublesContent.getTypeById(message.typeId).getTypeName(), message.modifier);
+                    if (message.addition) baubles.modifySlotOA(TypesData.getTypeById(message.typeId).getTypeName(), message.modifier);
+                    else baubles.modifySlot(TypesData.getTypeById(message.typeId).getTypeName(), message.modifier);
                 }
             }
         }

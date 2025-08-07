@@ -1,7 +1,7 @@
 package baubles.common;
 
 import baubles.api.BaubleType;
-import baubles.api.util.BaublesContent;
+import baubles.api.util.TypesData;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 import static net.minecraftforge.common.config.Configuration.CATEGORY_CLIENT;
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
@@ -23,13 +23,14 @@ public class Config {
 //    Configuration Options
     public static boolean renderBaubles = true;
 //    public static boolean jsonFunction = false;
-    public static boolean trinketLimit = false;
     public static boolean keepBaubles = false;
     public static int maxLevel = 1;
-    protected static String[] clickBlacklist = new String[0];
+    protected static String[] clickBlacklist = new String[]{"wct:wct"};
     public final static String BAUBLES_SLOTS = "general.slots";
     public final static String CLIENT_GUI = "client.gui";
     public final static String BAUBLES_ITEMS = "general.items";
+
+    private final LinkedList<Item> blacklist = new LinkedList<>();
 
     public Config(FMLPreInitializationEvent event) {
         loadConfig(event);
@@ -61,7 +62,6 @@ public class Config {
 
 //        jsonFunction = configFile.getBoolean("jsonFunction", CATEGORY_GENERAL ,jsonFunction, "Activate json function or not. (experimental function)");
 
-        trinketLimit = configFile.getBoolean("trinketLimit", CATEGORY_GENERAL, trinketLimit, "Whether trinketSlot is independent. If true, trinket will become a independent type.");
         keepBaubles = configFile.getBoolean("keepBaubles", CATEGORY_GENERAL, keepBaubles, "Whether baubles can drop when player dies.");
 
         clickBlacklist = configFile.getStringList("clickBlacklist", CATEGORY_GENERAL, clickBlacklist, "");
@@ -73,13 +73,15 @@ public class Config {
         return configFile;
     }
 
-    public ArrayList<Item> blacklistItem() {
-        ArrayList<Item> blacklist = new ArrayList<>(clickBlacklist.length);
+    public LinkedList<Item> getBlacklist() {
+        return this.blacklist;
+    }
+
+    private void setupBlacklist() {
         for (String s : clickBlacklist) {
             Item item = Item.getByNameOrId(s);
             if (item != null) blacklist.add(item);
         }
-        return blacklist;
     }
 
     public abstract static class Base {
@@ -142,11 +144,14 @@ public class Config {
     public static class ModItems extends Base {
         public static boolean testItem = false;
         public static boolean elytraBauble = false;
+        public static String elytraSlot = "elytra";
+        private final String[] elytraValidSlot = {"amulet", "ring", "belt", "trinket", "head", "body", "charm", "elytra"};
 
         @Override
         public void loadData() {
             testItem = configFile.getBoolean("testItem", BAUBLES_ITEMS, testItem, "");
             elytraBauble = configFile.getBoolean("elytraBauble", BAUBLES_ITEMS, elytraBauble, "");
+            elytraSlot = configFile.getString("elytraSlot", BAUBLES_ITEMS, elytraSlot, "", elytraValidSlot);
             configFile.getCategory(BAUBLES_ITEMS).requiresMcRestart();
         }
     }
@@ -160,9 +165,10 @@ public class Config {
                 new Gui();
                 new ModItems();
                 Baubles.config.loadData();
-                Baubles.registries.registerBaubles();
-                Baubles.registries.loadValidSlots();
-                BaublesContent.changed = true;
+                Baubles.config.setupBlacklist();
+                Baubles.registry.registerBaubles();
+                Baubles.registry.loadValidSlots();
+                TypesData.changed = true;
             }
         }
     }

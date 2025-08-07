@@ -1,26 +1,22 @@
 package baubles.api.util;
 
 import baubles.api.BaubleTypeEx;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistry;
+import net.minecraftforge.registries.RegistryBuilder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 
-public class BaublesContent{
+public class TypesData {
+    private static final String BAUBLES_ID = "baubles";
+    private static final ResourceLocation BAUBLE_TYPE = new ResourceLocation(BAUBLES_ID, "type");
+    private static final ForgeRegistry<BaubleTypeEx> Registry = (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>().setType(BaubleTypeEx.class).allowModification().setName(BAUBLE_TYPE).create();
     /**
      * Simply summarise.
      */
     private static int sum = 7;
     public static boolean changed = false;
-    /**
-     * Dynamic bauble types.
-     */
-    private static final HashMap<String, BaubleTypeEx> BAUBLE_TYPES = new HashMap<>();
-    /**
-     * Set the order of baubles.
-     */
-    private static final LinkedList<BaubleTypeEx> BAUBLE_ORDER = new LinkedList<>();
     /**
      * Set the lazy list of slots.
      */
@@ -38,9 +34,7 @@ public class BaublesContent{
     }
 
     public static void registerBauble(BaubleTypeEx type) {
-        if (BAUBLE_TYPES.containsKey(type.getTypeName())) return;// todo log
-        BAUBLE_TYPES.put(type.getTypeName(), type);
-        BAUBLE_ORDER.add(type);
+        Registry.register(type);
     }
 
     public static void setSum(int value) {
@@ -61,17 +55,20 @@ public class BaublesContent{
     }
 
     public static BaubleTypeEx getTypeByName(String typeName) {
-        return BAUBLE_TYPES.get(typeName);
+        return Registry.getValue(new ResourceLocation(BAUBLES_ID, typeName));
     }
     public static BaubleTypeEx getTypeById(int id) {
-        return BAUBLE_ORDER.get(id);
+        return Registry.getValue(id);
+    }
+    public static int getId(BaubleTypeEx type) {
+        return Registry.getID(type);
     }
 
     public static boolean hasType(String typeName) {
-        return BAUBLE_TYPES.containsKey(typeName);
+        return Registry.containsKey(new ResourceLocation(BAUBLES_ID, typeName));
     }
 
     public static Iterator<BaubleTypeEx> iterator() {
-        return BAUBLE_ORDER.iterator();
+        return Registry.iterator();
     }
 }

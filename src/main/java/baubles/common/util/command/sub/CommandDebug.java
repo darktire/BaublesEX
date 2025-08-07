@@ -2,8 +2,8 @@ package baubles.common.util.command.sub;
 
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.api.util.BaubleItemsContent;
-import baubles.api.util.BaublesContent;
+import baubles.api.util.ItemsData;
+import baubles.api.util.TypesData;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
 import net.minecraft.command.CommandBase;
@@ -32,10 +32,10 @@ public class CommandDebug extends CommandBase {
         Entity entity = sender.getCommandSenderEntity();
         if (args[0].equals("change")) {
             Item item = Item.getByNameOrId(args[1]);
-            BaubleItemsContent.toBauble(item).setType(BaublesContent.getTypeByName(args[2]));
+            ItemsData.toBauble(item).setType(TypesData.getTypeByName(args[2]));
         }
         else if (args[0].equals("mod")) {
-            if (entity instanceof EntityLivingBase && BaublesContent.hasType(args[1]) && args[2].matches("-?\\d+")) {
+            if (entity instanceof EntityLivingBase && TypesData.hasType(args[1]) && args[2].matches("-?\\d+")) {
                 int modifier = Integer.parseInt(args[2]);
                 IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
                 baubles.modifySlot(args[1], modifier);

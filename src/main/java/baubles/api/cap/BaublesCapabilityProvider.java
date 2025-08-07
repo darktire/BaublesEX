@@ -1,8 +1,8 @@
 package baubles.api.cap;
 
 import baubles.api.BaubleTypeEx;
-import baubles.api.util.BaubleItemsContent;
 import baubles.api.util.BaublesWrapper;
+import baubles.api.util.ItemsData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -13,13 +13,12 @@ import net.minecraftforge.common.util.INBTSerializable;
 import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 
 public class BaublesCapabilityProvider implements ICapabilityProvider, INBTSerializable<NBTTagCompound> {
-    public static final String BAUBLE_TYPE = "Type";
     private final ItemStack stack;
     private final BaublesWrapper wrapper;
 
     public BaublesCapabilityProvider(ItemStack itemStack) {
         this.stack = itemStack;
-        this.wrapper = BaubleItemsContent.toBauble(itemStack.getItem());
+        this.wrapper = ItemsData.toBauble(itemStack.getItem());
     }
 
     @Override
@@ -35,10 +34,10 @@ public class BaublesCapabilityProvider implements ICapabilityProvider, INBTSeria
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
-        if (!nbt.hasKey(BAUBLE_TYPE)) {
+        if (!nbt.hasKey("type_name")) {
             BaubleTypeEx type = wrapper.getBaubleTypeEx();
             if (type != null) {
-                nbt.setString(BAUBLE_TYPE, type.getTypeName());
+                nbt.setString("type_name", type.getTypeName());
             }
         }
         return nbt;

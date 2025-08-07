@@ -5,7 +5,7 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.api.util.BaublesContent;
+import baubles.api.util.TypesData;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
 import baubles.common.network.PacketSync;
@@ -58,7 +58,7 @@ public class BaublesSync {
 
     private void syncModifier(EntityLivingBase entity, Collection<? extends EntityPlayerMP> receivers) {
         IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
-        Iterator<BaubleTypeEx> iterator = BaublesContent.iterator();
+        Iterator<BaubleTypeEx> iterator = TypesData.iterator();
         while (iterator.hasNext()) {
             String typeName = iterator.next().getTypeName();
             int modifier = baubles.getModifier(typeName);
