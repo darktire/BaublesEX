@@ -4,6 +4,7 @@ import baubles.api.cap.BaublesContainer;
 import baubles.client.gui.element.GUIBaublesController;
 import baubles.client.gui.element.GUIBaublesScroller;
 import baubles.common.Config;
+import baubles.common.compat.JeiPlugin;
 import baubles.common.container.ContainerPlayerExpanded;
 import baubles.common.container.SlotBaubleHandler;
 import net.minecraft.client.Minecraft;
@@ -17,7 +18,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiUtils;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -158,19 +158,21 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
         drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
         renderHoveredToolTip(mouseX, mouseY);
+        //jei compat
+        handleMouse(mouseX, mouseY);
     }
 
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
-        int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+    }
 
+    private void handleMouse(int mouseX, int mouseY) {
         int xLoc = this.guiLeft - 4;
         if (xLoc - 18 * this.column < mouseX && mouseX < xLoc) {
             int yLoc = this.guiTop + 14;
             if (mouseY >= yLoc && mouseY < yLoc + 18 * 8) {
-                int dWheel = Mouse.getEventDWheel();
+                int dWheel = JeiPlugin.JEI_COMPAT.getIngredientUnderMouse(this, mouseX, mouseY);
                 if (dWheel != 0) {
                     int value = dWheel / 120;
                     this.modifyOffset(value);

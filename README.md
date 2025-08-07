@@ -21,8 +21,7 @@
 - [x] more command
 - [x] new style of bauble slots
 - [x] right click to equip baubles
-- [ ] durability for baubles
-- [ ] enchantment support for baubles
+- [x] enchantment support for baubles
 - [ ] visibility of each bauble
 - [ ] ...
 - [ ] waiting for more suggestions
