@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 
 public class GUIBaublesController extends ElementBase {
 
-    protected final GuiPlayerExpanded parentGui;
+    private final GuiPlayerExpanded parentGui;
     private final int buttonID;
     private boolean pressed;
 
@@ -25,7 +25,21 @@ public class GUIBaublesController extends ElementBase {
     @Override
     public void mouseReleased(int mouseX, int mouseY) {
         if (this.pressed) this.pressed = false;
-        if (this.buttonID == 2) this.parentGui.scroller.visible = !this.parentGui.scroller.visible;
+        if (this.buttonID == 1) {
+            this.parentGui.wider = !this.parentGui.wider;
+            this.parentGui.offset = 0;
+            this.parentGui.updated = false;
+        }
+        else if (this.buttonID == 2) {
+            if (this.parentGui.scroller.visible) {
+                this.parentGui.scroller.visible = false;
+                this.parentGui.getExtraArea().remove(this.parentGui.scroller.area);
+            }
+            else {
+                this.parentGui.scroller.visible = true;
+                this.parentGui.getExtraArea().add(this.parentGui.scroller.area);
+            }
+        }
     }
 
     @Override
@@ -34,7 +48,7 @@ public class GUIBaublesController extends ElementBase {
             updateHovered(mouseX, mouseY);
             glPush();
             mc.getTextureManager().bindTexture(GuiBaublesBase.BAUBLES_TEX);
-            drawTexture(this.x, this.y, this.zLevel, 6 + (this.pressed ? 8 : 0), this.buttonID * 8 + 185, 8, 8);
+            drawTexturedModalRect(this.x, this.y, 6 + (this.pressed ? 8 : 0), this.buttonID * 8 + 185, 8, 8);
             glPop();
         }
     }

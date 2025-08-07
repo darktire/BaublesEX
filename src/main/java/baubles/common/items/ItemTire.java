@@ -13,15 +13,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public class ItemTyre extends Item implements IBauble {
+public class ItemTire extends Item implements IBauble {
 
-	public ItemTyre() {
+	public ItemTire() {
 		super();
 		this.setMaxStackSize(1);
 		this.setHasSubtypes(true);
 		this.setMaxDamage(0);
 		this.setCreativeTab(CreativeTabs.TOOLS);
-		this.setTranslationKey("Tyre");
+		this.setTranslationKey("Tire");
 	}
 
 	@Override

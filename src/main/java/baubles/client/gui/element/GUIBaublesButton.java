@@ -1,5 +1,6 @@
 package baubles.client.gui.element;
 
+import baubles.client.gui.GuiBaublesBase;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketOpenBaublesInventory;
@@ -44,14 +45,14 @@ public class GUIBaublesButton extends ElementBase {
             updateHovered(mouseX, mouseY);
 
             glPush();
-            mc.getTextureManager().bindTexture(GuiPlayerExpanded.background);
+            mc.getTextureManager().bindTexture(GuiBaublesBase.BAUBLES_TEX);
             if (this.hovered) {
-                drawTexture(x, y, zLevel, 200, 48, 10, 10);
+                drawTexturedModalRect(this.x, this.y, 6, 217, 10, 10);
                 FontRenderer fontrenderer = mc.fontRenderer;
-                drawCenteredString(fontrenderer, I18n.format(this.displayString), x + 5, this.y + this.height, 0xffffff);
+                drawCenteredString(fontrenderer, I18n.format(this.displayString), this.x + 5, this.y + this.height, 0xffffff);
             }
             else {
-                drawTexture(x, y, zLevel, 210, 48, 10, 10);
+                drawTexturedModalRect(this.x, this.y, 16, 217, 10, 10);
             }
             glPop();
         }

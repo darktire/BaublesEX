@@ -126,11 +126,15 @@ public class Config {
     public static class Gui extends Base {
         public static boolean baublesButton = true;
         public static boolean scrollerBar = true;
+        public static boolean widerBar = false;
+        public static int column = 2;
 
         @Override
         public void loadData() {
             baublesButton = configFile.getBoolean("baublesButton", CLIENT_GUI, baublesButton, "Show baubles button or not");
-            scrollerBar = configFile.getBoolean("scrollerBar", CLIENT_GUI, scrollerBar, "Default visibility of the scroller bar ");
+            scrollerBar = configFile.getBoolean("scrollerBar", CLIENT_GUI, scrollerBar, "Default visibility of the scroller bar");
+            widerBar = configFile.getBoolean("widerBar", CLIENT_GUI, widerBar, "Default selection of the sidebar");
+            column = configFile.getInt("column", CLIENT_GUI, column, 2,5, "Columns of the wider sidebar");
             configFile.getCategory(CLIENT_GUI).setComment("Edit new gui.");
         }
     }
