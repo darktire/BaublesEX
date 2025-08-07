@@ -6,13 +6,15 @@ import baubles.api.IBauble;
 import baubles.api.util.BaublesContent;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.Baubles;
+import baubles.common.Config;
 import baubles.common.config.KeyBindings;
-import baubles.common.items.ItemRing;
+import baubles.common.util.BaublesRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -28,7 +30,12 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void registerItemModels(ModelRegistryEvent event) {
-        ModelLoader.setCustomModelResourceLocation(ItemRing.ringModel, 0, new ModelResourceLocation("baubles:ring", "inventory"));
+        registerModel(BaublesRegistry.ModItems.Ring);
+        if (Config.ModItems.testItem) registerModel(BaublesRegistry.ModItems.Tire);
+    }
+
+    private void registerModel(Item item) {
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
     }
 
     @SubscribeEvent

@@ -3,6 +3,7 @@ package baubles.common.container;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesModifiable;
+import baubles.common.Config;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -95,20 +96,30 @@ public class ContainerPlayerExpanded extends Container {
         });
 
         //add bauble slots (amount)
-        this.addBaubleSlots(player);
+        if (Config.Gui.widerBar) this.addWideBauble();
+        else this.addSlimBauble();
 
         this.onCraftMatrixChanged(this.craftMatrix);
     }
 
-    public void removeBaubleSlots() {
-        this.inventorySlots.subList(46, 46 + slotsAmount).clear();
-        this.inventoryItemStacks.subList(46, 46 + slotsAmount).clear();
+    public void removeBauble() {
+        this.inventorySlots.subList(46, 46 + this.slotsAmount).clear();
+        this.inventoryItemStacks.subList(46, 46 + this.slotsAmount).clear();
     }
 
-    public void addBaubleSlots(EntityPlayer player) {
-        this.slotsAmount = baubles.getSlots();
-        for (int i = 0; i < slotsAmount; i++) {
-            this.addSlotToContainer(new SlotBaubleHandler(player, baubles, i, -23, 16 + (i * 18)));
+    public void addSlimBauble() {
+        this.slotsAmount = this.baubles.getSlots();
+        for (int i = 0; i < this.slotsAmount; i++) {
+            this.addSlotToContainer(new SlotBaubleHandler(this.player, this.baubles, i, -23, 16 + i * 18));
+        }
+    }
+
+    public void addWideBauble() {
+        this.slotsAmount = this.baubles.getSlots();
+        for (int i = 0; i < this.slotsAmount; i++) {
+            int j = i / Config.Gui.column;
+            int k = i % Config.Gui.column;
+            this.addSlotToContainer(new SlotBaubleHandler(this.player, this.baubles, i, -23 + (k - Config.Gui.column + 1) * 18, 16 + j * 18));
         }
     }
 

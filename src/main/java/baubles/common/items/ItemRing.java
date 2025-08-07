@@ -6,7 +6,6 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.util.BaublesContent;
-import baubles.common.Baubles;
 import baubles.common.Config;
 import baubles.common.util.BaublesRegistry;
 import net.minecraft.creativetab.CreativeTabs;
@@ -20,11 +19,8 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ItemRing extends Item implements IBauble {
-	@GameRegistry.ObjectHolder(Baubles.MODID + ":ring")
-	public static final Item ringModel = null;
 
 	public ItemRing() {
 		super();

@@ -75,4 +75,3 @@ public class BaublesContent{
         return BAUBLE_ORDER.iterator();
     }
 }
-//todo capability to modify slots

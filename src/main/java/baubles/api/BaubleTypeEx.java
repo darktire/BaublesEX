@@ -1,8 +1,10 @@
 package baubles.api;
 
+import net.minecraftforge.registries.IForgeRegistryEntry;
+
 import java.util.ArrayList;
 
-public class BaubleTypeEx {
+public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> {
     private final String typeName;
     private static int START_ID = 0;
     private final int id;

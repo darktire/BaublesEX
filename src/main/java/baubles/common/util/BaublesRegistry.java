@@ -7,7 +7,7 @@ import baubles.api.util.BaubleItemsContent;
 import baubles.api.util.BaublesContent;
 import baubles.common.Config;
 import baubles.common.items.ItemRing;
-import baubles.common.items.ItemTyre;
+import baubles.common.items.ItemTire;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
@@ -71,12 +71,12 @@ public class BaublesRegistry {
     @Mod.EventBusSubscriber
     public static class ModItems {
         public static final Item Ring = new ItemRing().setRegistryName("ring");
-        public static final Item Tyre = new ItemTyre().setRegistryName("tyre");
+        public static final Item Tire = new ItemTire().setRegistryName("tire");
 
         @SubscribeEvent
         public static void registerItems(RegistryEvent.Register<Item> event) {
             event.getRegistry().register(Ring);
-            if (Config.ModItems.testItem) event.getRegistry().register(Tyre);
+            if (Config.ModItems.testItem) event.getRegistry().register(Tire);
         }
     }
 }
