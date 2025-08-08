@@ -2,7 +2,7 @@ package baubles.common.util.command.sub;
 
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.api.util.TypesData;
+import baubles.api.registries.TypesData;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
 import baubles.common.util.command.CommandBaubles;

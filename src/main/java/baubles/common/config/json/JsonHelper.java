@@ -1,7 +1,7 @@
 package baubles.common.config.json;
 
 import baubles.api.BaubleTypeEx;
-import baubles.api.util.TypesData;
+import baubles.api.registries.TypesData;
 import baubles.common.Baubles;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

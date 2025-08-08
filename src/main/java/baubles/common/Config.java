@@ -1,7 +1,7 @@
 package baubles.common;
 
 import baubles.api.BaubleType;
-import baubles.api.util.TypesData;
+import baubles.api.registries.TypesData;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;

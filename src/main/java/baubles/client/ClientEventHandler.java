@@ -3,7 +3,7 @@ package baubles.client;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.util.TypesData;
+import baubles.api.registries.TypesData;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.Baubles;
 import baubles.common.Config;

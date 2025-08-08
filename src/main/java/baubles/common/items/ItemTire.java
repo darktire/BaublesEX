@@ -4,7 +4,7 @@ import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.api.util.TypesData;
+import baubles.api.registries.TypesData;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.SoundEvents;

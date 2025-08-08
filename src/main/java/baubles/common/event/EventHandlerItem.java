@@ -2,7 +2,7 @@ package baubles.common.event;
 
 import baubles.api.BaublesApi;
 import baubles.api.cap.BaublesCapabilityProvider;
-import baubles.api.util.ItemsData;
+import baubles.api.registries.ItemsData;
 import baubles.common.Baubles;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
