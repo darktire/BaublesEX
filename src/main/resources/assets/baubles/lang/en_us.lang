@@ -20,11 +20,8 @@ name.charm=Bauble (Charm)
 name.elytra=Bauble (elytra)
 #
 # Command
-commands.baubles.error=Error command
-commands.baubles.help=§3You can also use /baub or /bau instead of /baubles.
-commands.baubles.help.view=§3Use this to view the baubles inventory of a player.%s  /baubles view <player>
-commands.baubles.help.clear=§3Use this to clear a players baubles inventory.%s§3Default is everything or you can give a slot number.%s  /baubles clear <player> [<slot>]
-commands.baubles.help.hand=§3Use this to check bauble in hand.%s  /baubles hand
+commands.baubles.error=§cError command
+commands.baubles.success=Successful execution
 commands.baubles.help.get=§cUse /baubles help to get help
 commands.baubles.args.error=§cInvalid arguments
 commands.baubles.index.out=Slot %s out of range

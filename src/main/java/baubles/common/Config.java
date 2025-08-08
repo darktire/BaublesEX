@@ -25,7 +25,7 @@ public class Config {
 //    public static boolean jsonFunction = false;
     public static boolean keepBaubles = false;
     public static int maxLevel = 1;
-    protected static String[] clickBlacklist = new String[]{"wct:wct"};
+    protected static String[] clickBlacklist = {"wct:wct"};
     public final static String BAUBLES_SLOTS = "general.slots";
     public final static String CLIENT_GUI = "client.gui";
     public final static String BAUBLES_ITEMS = "general.items";
@@ -77,7 +77,7 @@ public class Config {
         return this.blacklist;
     }
 
-    private void setupBlacklist() {
+    public void setupBlacklist() {
         for (String s : clickBlacklist) {
             Item item = Item.getByNameOrId(s);
             if (item != null) blacklist.add(item);
