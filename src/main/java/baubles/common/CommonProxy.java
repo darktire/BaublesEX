@@ -5,9 +5,12 @@ import baubles.common.container.ContainerPlayerExpanded;
 import baubles.common.event.BaublesSync;
 import baubles.common.event.EventHandlerEntity;
 import baubles.common.event.EventHandlerItem;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
 public class CommonProxy implements IGuiHandler {
@@ -28,7 +31,11 @@ public class CommonProxy implements IGuiHandler {
         return null;
     }
 
-    public World getClientWorld() {
+    public WorldServer[] getSeverWorld() {
+        return FMLClientHandler.instance().getServer().worlds;
+    }
+
+    public WorldClient getClientWorld() {
         return null;
     }
 

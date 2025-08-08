@@ -32,7 +32,7 @@ public class CommandAdd extends CommandBase {
             int modifier = Integer.parseInt(args[2]);
             IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
             baubles.modifySlot(args[1], modifier);
-            PacketHandler.INSTANCE.sendTo(new PacketModifySlots(player, args[1], modifier, true), player);
+            PacketHandler.INSTANCE.sendTo(new PacketModifySlots(player, args[1], modifier, 1), player);
             baubles.updateSlots();
         }
         else {

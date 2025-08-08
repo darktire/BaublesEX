@@ -1,5 +1,6 @@
 package baubles.common.util.command.sub;
 
+import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.util.ItemsData;
@@ -15,6 +16,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
+
+import java.util.Iterator;
 
 public class CommandDebug extends CommandBase {
     @Override
@@ -39,18 +42,21 @@ public class CommandDebug extends CommandBase {
                 int modifier = Integer.parseInt(args[2]);
                 IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
                 baubles.modifySlot(args[1], modifier);
-                PacketHandler.INSTANCE.sendTo(new PacketModifySlots((EntityPlayer) entity, args[1], modifier, false), (EntityPlayerMP) entity);
+                PacketHandler.INSTANCE.sendTo(new PacketModifySlots((EntityPlayer) entity, args[1], modifier, 0), (EntityPlayerMP) entity);
                 baubles.updateSlots();
             }
         }
-        else if (args[0].equals("reset") && entity instanceof EntityLivingBase) {
+        else if (args[0].equals("view") && entity instanceof EntityLivingBase) {
             IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
-            baubles.clearModifier();
-            PacketHandler.INSTANCE.sendTo(new PacketModifySlots((EntityPlayer) entity, "reset", 0, false), (EntityPlayerMP) entity);
-            baubles.updateSlots();
+            Iterator<BaubleTypeEx> iterator = TypesData.iterator();
+            iterator.forEachRemaining(type -> {
+                int i = baubles.getModifier(type.getTypeName());
+                sender.sendMessage(new TextComponentTranslation("" + i));
+            });
         }
         else {
             sender.sendMessage(new TextComponentTranslation("commands.baubles.error"));
+            sender.sendMessage(new TextComponentTranslation("commands.baubles.help.get"));
         }
     }
 }

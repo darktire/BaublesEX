@@ -5,9 +5,12 @@
   "mixins": [
     "ElytraMixin$EntityMixin",
     "ElytraMixin$NetMixin",
-    "EnchantmentMixin"
+    "EnchantmentMixin",
+    "RightClickMixin"
   ],
   "client": [
+    "ElytraMixin$CapeMixin",
+    "ElytraMixin$LayerMixin",
     "ElytraMixin$PlayerMixin"
   ],
   "server": [

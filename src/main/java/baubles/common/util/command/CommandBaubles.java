@@ -9,13 +9,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.server.command.CommandTreeBase;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class CommandBaubles extends CommandTreeBase {
-	private final List<String> aliases = Arrays.asList("baub", "bau");
-
 	public CommandBaubles() {
+		this.addSubcommand(new CommandHelp());
 		this.addSubcommand(new CommandView());
 		this.addSubcommand(new CommandClear());
 		this.addSubcommand(new CommandHand());
@@ -26,11 +22,6 @@ public class CommandBaubles extends CommandTreeBase {
 	@Override
 	public String getName() {
 		return "baubles";
-	}
-
-	@Override
-	public List<String> getAliases() {
-		return aliases;
 	}
 
 	@Override
@@ -50,11 +41,9 @@ public class CommandBaubles extends CommandTreeBase {
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
-			sender.sendMessage(new TextComponentTranslation("commands.baubles.help"));
-			sender.sendMessage(new TextComponentTranslation("commands.baubles.help.view","\n"));
-			sender.sendMessage(new TextComponentTranslation("commands.baubles.help.clear","\n","\n"));
-			sender.sendMessage(new TextComponentTranslation("commands.baubles.help.hand","\n"));
+		if (args.length < 1) {
+			ICommand help = this.getSubCommand("help");
+			if (help != null) help.execute(server, sender, new String[]{"help"});
 		}
 		else {
 			ICommand cmd = this.getSubCommand(args[0]);

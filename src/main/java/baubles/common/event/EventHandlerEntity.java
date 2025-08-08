@@ -1,6 +1,5 @@
 package baubles.common.event;
 
-import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesContainer;
@@ -9,7 +8,6 @@ import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.common.Baubles;
 import baubles.common.Config;
-import baubles.common.util.BaublesRegistry;
 import cofh.core.enchantment.EnchantmentSoulbound;
 import cofh.core.util.helpers.ItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -24,8 +22,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -79,30 +75,6 @@ public class EventHandlerEntity {
                 && !event.getEntity().world.getGameRules().getBoolean("keepInventory")
                 && !Config.keepBaubles) {
             dropItemsAt(event.getEntityPlayer(), event.getDrops(), event.getEntityPlayer());
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerRightClickItem(PlayerInteractEvent.RightClickItem event) {
-        ItemStack heldItem = event.getItemStack();
-        if (Baubles.config.getBlacklist().contains(heldItem.getItem())) return;
-        IBauble bauble = BaublesApi.toBauble(heldItem);
-        if (bauble != null) {
-            BaubleTypeEx type = bauble.getBaubleTypeEx();
-            EntityPlayer player = event.getEntityPlayer();
-            IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
-            for (int i = 0; i < baubles.getSlots(); i++) {
-                if (baubles.getTypeInSlot(i) != type && type != BaublesRegistry.TRINKET) continue;
-                if (baubles.getStackInSlot(i).isEmpty()) {
-                    ItemStack itemStack = heldItem.copy();
-                    baubles.setStackInSlot(i, itemStack);
-                    if (!player.capabilities.isCreativeMode) {
-                        player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
-                    }
-                    bauble.onEquipped(itemStack, player);
-                    break;
-                }
-            }
         }
     }
 
