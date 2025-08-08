@@ -15,16 +15,12 @@ public interface IBauble {
     /**
      * This method return the type of bauble this is.
      * Type is used to determine the slots it can go into.
-     * Use this method when expanding types.
      */
     default BaubleTypeEx getBaubleTypeEx() {
         return null;
     }
 
     /**
-     * This method return the type of bauble this is.
-     * Type is used to determine the slots it can go into.
-     * Keep this for old api.
      * @deprecated prefer calling {@link IBauble#getBaubleTypeEx()} wherever possible
      */
     @Deprecated

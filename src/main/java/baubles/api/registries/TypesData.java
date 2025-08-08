@@ -12,14 +12,9 @@ public class TypesData {
     private static final String DATA_ID = "baubles";
     private static final ResourceLocation BAUBLE_TYPE = new ResourceLocation(DATA_ID, "types");
     private static final ForgeRegistry<BaubleTypeEx> REGISTRY = (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>().setType(BaubleTypeEx.class).allowModification().setName(BAUBLE_TYPE).create();
-    /**
-     * Simply summarise.
-     */
+
     private static int sum = 7;
     public static boolean changed = false;
-    /**
-     * Set the lazy list of slots.
-     */
     private static final ArrayList<BaubleTypeEx> BAUBLE_SLOTS = new ArrayList<>();
 
     public static void registerBauble(BaubleTypeEx type, int amount) {
@@ -50,6 +45,9 @@ public class TypesData {
     public static void addLazySlots(BaubleTypeEx type) {
         BAUBLE_SLOTS.add(type);
     }
+    /**
+     * Get the lazy list of slots.
+     */
     public static ArrayList<BaubleTypeEx> getLazyList() {
         return BAUBLE_SLOTS;
     }

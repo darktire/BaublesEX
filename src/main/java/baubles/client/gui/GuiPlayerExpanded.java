@@ -19,6 +19,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.common.Loader;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -30,6 +32,7 @@ import java.util.List;
 public class GuiPlayerExpanded extends GuiBaublesBase {
     @Deprecated public static final ResourceLocation background = new ResourceLocation(Baubles.MODID,"textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
     private final EntityPlayer player;
+    private final boolean jeiLoaded;
     public ContainerPlayerExpanded containerEx = (ContainerPlayerExpanded) this.inventorySlots;
     public BaublesContainer baubles = (BaublesContainer) (this.containerEx).baubles;//container in sever
     public int baublesAmount = this.baubles.getSlots();
@@ -45,6 +48,7 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
         super(new ContainerPlayerExpanded(player.inventory, !player.getEntityWorld().isRemote, player));
         this.player = player;
         this.allowUserInput = true;
+        this.jeiLoaded = Loader.isModLoaded("jei");
     }
 
     public void modifyOffset(int value) {
@@ -173,7 +177,9 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
         if (xLoc - 18 * this.column < mouseX && mouseX < xLoc) {
             int yLoc = this.guiTop + 14;
             if (mouseY >= yLoc && mouseY < yLoc + 18 * 8) {
-                int dWheel = JeiPlugin.JEI_COMPAT.getIngredientUnderMouse(this, mouseX, mouseY);
+                int dWheel;
+                if (this.jeiLoaded) dWheel = JeiPlugin.JEI_COMPAT.getIngredientUnderMouse(this, mouseX, mouseY);
+                else dWheel = Mouse.getDWheel();
                 if (dWheel != 0) {
                     int value = dWheel / 120;
                     this.modifyOffset(value);
