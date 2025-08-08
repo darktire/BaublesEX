@@ -8,20 +8,29 @@ import net.minecraft.item.Item;
 import java.util.HashMap;
 
 public class ItemsData {
-    /**
-     * Dynamic bauble items.
-     */
+
     private static final HashMap<Item, BaublesWrapper> BAUBLE_ITEMS = new HashMap<>();
 
+    /**
+     * Link items and the bauble which is a instance of IBauble
+     * @param item item instanceof IBauble
+     */
     public static void registerBauble(Item item) {
         BaublesWrapper wrapper = new BaublesWrapper(item);
         BAUBLE_ITEMS.put(item, wrapper);
     }
 
+    /**
+     * Link items and the bauble which is a instance of IBauble
+     * @param wrapper wrapper of item and bauble
+     */
     public static void registerBauble(BaublesWrapper wrapper) {
         BAUBLE_ITEMS.put(wrapper.getItem(), wrapper);
     }
 
+    /**
+     * Simply register item as a bauble
+     */
     public static void registerBauble(Item item, BaubleTypeEx type) {
         registerBauble(new BaublesWrapper(item, new BaubleItem(type)));
     }

@@ -4,14 +4,20 @@ import baubles.api.BaubleTypeEx;
 
 public interface IBaublesModifiable extends IBaublesItemHandler{
 
+    /**
+     * Set the modifier if this type
+     */
     void modifySlot(String typeName, int modifier);
 
+    /**
+     * Modify on the original modifier
+     */
     void modifySlotOA(String typeName, int modifier);
 
     void clearModifier();
 
     /**
-     * Update container when edit config in game
+     * Update stacks in container
      */
     void updateSlots();
 

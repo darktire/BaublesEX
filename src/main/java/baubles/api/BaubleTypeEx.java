@@ -30,9 +30,6 @@ public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> {
     public void addOriSlots(int slots) {
         oriSlots.add(slots);
     }
-    public void addOriSlots(ArrayList<Integer> slots) {
-        oriSlots.addAll(slots);
-    }
     public void addOriSlots(BaubleTypeEx type) {
         oriSlots.addAll(type.getOriSlots());
     }

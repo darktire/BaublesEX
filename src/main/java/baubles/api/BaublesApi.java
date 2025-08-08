@@ -25,6 +25,11 @@ public class BaublesApi {
         if (handler != null) handler.updateSlots();
         return handler;
     }
+
+    /**
+     * @deprecated prefer calling {@link BaublesApi#getBaublesHandler(EntityLivingBase)} wherever possible
+     */
+    @Deprecated
     public static IBaublesItemHandler getBaublesHandler(EntityPlayer player) {
         return getBaublesHandler((EntityLivingBase) player);
     }
@@ -50,6 +55,11 @@ public class BaublesApi {
         }
         return -1;
     }
+
+    /**
+     * @deprecated prefer calling {@link BaublesApi#isBaubleEquipped(EntityLivingBase, Item)} wherever possible
+     */
+    @Deprecated
     public static int isBaubleEquipped(EntityPlayer player, Item bauble) {
         return isBaubleEquipped((EntityLivingBase) player, bauble);
     }
@@ -58,6 +68,10 @@ public class BaublesApi {
         return stack.hasCapability(CAPABILITY_ITEM_BAUBLE, null);
     }
 
+    /**
+     * Use this method to get cap from stack
+     * @return null when stack doesn't have baubles:item_cap
+     */
     public static IBauble toBauble(ItemStack stack) {
         return stack.getCapability(CAPABILITY_ITEM_BAUBLE, null);
     }

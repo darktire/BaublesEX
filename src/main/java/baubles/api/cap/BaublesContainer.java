@@ -276,6 +276,9 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
                 modifySlot(typeName, modifier.getInteger(typeName));
             }
             setSize(MODIFIED_SLOTS.size());
+            this.PREVIOUS_SLOTS.clear();
+            this.PREVIOUS_SLOTS.addAll(this.MODIFIED_SLOTS);
+            this.slotsUpdated = true;
         }
 
         NBTTagList itemList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
