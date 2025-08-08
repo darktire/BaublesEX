@@ -1,11 +1,11 @@
 package baubles.common;
 
+import baubles.api.BaublesWrapper;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
 import baubles.api.cap.BaublesCapabilities.CapabilityItemBaubleStorage;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.api.util.BaublesWrapper;
 import baubles.common.network.PacketHandler;
 import baubles.common.util.BaublesRegistry;
 import baubles.common.util.command.CommandBaubles;

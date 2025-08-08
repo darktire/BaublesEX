@@ -1,6 +1,6 @@
 package baubles.mixin;
 
-import baubles.api.util.ItemsData;
+import baubles.api.registries.ItemsData;
 import net.minecraft.block.BlockPumpkin;
 import net.minecraft.item.*;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,8 +1,8 @@
 package baubles.api.cap;
 
 import baubles.api.BaubleTypeEx;
-import baubles.api.util.BaublesWrapper;
-import baubles.api.util.ItemsData;
+import baubles.api.BaublesWrapper;
+import baubles.api.registries.ItemsData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;

@@ -1,4 +1,4 @@
-package baubles.api.util;
+package baubles.api.registries;
 
 import baubles.api.BaubleTypeEx;
 import net.minecraft.util.ResourceLocation;
@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class TypesData {
-    private static final String BAUBLES_ID = "baubles";
-    private static final ResourceLocation BAUBLE_TYPE = new ResourceLocation(BAUBLES_ID, "type");
-    private static final ForgeRegistry<BaubleTypeEx> Registry = (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>().setType(BaubleTypeEx.class).allowModification().setName(BAUBLE_TYPE).create();
+    private static final String DATA_ID = "baubles";
+    private static final ResourceLocation BAUBLE_TYPE = new ResourceLocation(DATA_ID, "types");
+    private static final ForgeRegistry<BaubleTypeEx> REGISTRY = (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>().setType(BaubleTypeEx.class).allowModification().setName(BAUBLE_TYPE).create();
     /**
      * Simply summarise.
      */
@@ -34,7 +34,7 @@ public class TypesData {
     }
 
     public static void registerBauble(BaubleTypeEx type) {
-        Registry.register(type);
+        REGISTRY.register(type);
     }
 
     public static void setSum(int value) {
@@ -55,20 +55,20 @@ public class TypesData {
     }
 
     public static BaubleTypeEx getTypeByName(String typeName) {
-        return Registry.getValue(new ResourceLocation(BAUBLES_ID, typeName));
+        return REGISTRY.getValue(new ResourceLocation(DATA_ID, typeName));
     }
     public static BaubleTypeEx getTypeById(int id) {
-        return Registry.getValue(id);
+        return REGISTRY.getValue(id);
     }
     public static int getId(BaubleTypeEx type) {
-        return Registry.getID(type);
+        return REGISTRY.getID(type);
     }
 
     public static boolean hasType(String typeName) {
-        return Registry.containsKey(new ResourceLocation(BAUBLES_ID, typeName));
+        return REGISTRY.containsKey(new ResourceLocation(DATA_ID, typeName));
     }
 
     public static Iterator<BaubleTypeEx> iterator() {
-        return Registry.iterator();
+        return REGISTRY.iterator();
     }
 }

@@ -1,13 +1,10 @@
-package baubles.api.util;
+package baubles.api;
 
-import baubles.api.BaubleType;
-import baubles.api.BaubleTypeEx;
-import baubles.api.IBauble;
-import baubles.api.cap.BaubleItem;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 
@@ -17,21 +14,24 @@ public class BaublesWrapper implements IBauble {
     private IBauble bauble;
     private BaubleTypeEx mainType;
     private ArrayList<BaubleTypeEx> type;// todo types
+    private ResourceLocation registryName;
 
     public BaublesWrapper() {}
 
     public BaublesWrapper(Item item) {
+        this(item, (IBauble) item);
+    }
+
+    public BaublesWrapper(Item item, IBauble bauble) {
         this.item = item;
-        this.bauble = (IBauble) item;
+        this.bauble = bauble;
         this.mainType = bauble.getBaubleTypeEx();
         if (mainType == null) this.mainType = bauble.getBaubleType(ItemStack.EMPTY).getNewType();
         if (mainType == null) this.mainType = new BaubleTypeEx("NO_TYPE", 0);
     }
 
-    public BaublesWrapper(BaubleItem bauble) {
-        this.item = bauble.getItem();
-        this.bauble = bauble;
-        this.mainType = bauble.getBaubleTypeEx();
+    public Item getItem() {
+        return this.item;
     }
 
     public void setType(BaubleTypeEx type) {

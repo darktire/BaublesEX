@@ -1,6 +1,7 @@
-package baubles.api.util;
+package baubles.api.registries;
 
 import baubles.api.BaubleTypeEx;
+import baubles.api.BaublesWrapper;
 import baubles.api.cap.BaubleItem;
 import net.minecraft.item.Item;
 
@@ -13,15 +14,16 @@ public class ItemsData {
     private static final HashMap<Item, BaublesWrapper> BAUBLE_ITEMS = new HashMap<>();
 
     public static void registerBauble(Item item) {
-        BAUBLE_ITEMS.put(item, new BaublesWrapper(item));
+        BaublesWrapper wrapper = new BaublesWrapper(item);
+        BAUBLE_ITEMS.put(item, wrapper);
     }
 
-    public static void registerBauble(BaubleItem baubleItem) {
-        BAUBLE_ITEMS.put(baubleItem.getItem(), new BaublesWrapper(baubleItem));
+    public static void registerBauble(BaublesWrapper wrapper) {
+        BAUBLE_ITEMS.put(wrapper.getItem(), wrapper);
     }
 
     public static void registerBauble(Item item, BaubleTypeEx type) {
-        registerBauble(new BaubleItem(item, type));
+        registerBauble(new BaublesWrapper(item, new BaubleItem(type)));
     }
 
     public static BaublesWrapper toBauble(Item item) {

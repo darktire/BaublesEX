@@ -5,7 +5,7 @@ import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.api.util.TypesData;
+import baubles.api.registries.TypesData;
 import baubles.common.Config;
 import baubles.common.util.BaublesRegistry;
 import net.minecraft.creativetab.CreativeTabs;

@@ -3,7 +3,7 @@ package baubles.common.network;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.api.util.TypesData;
+import baubles.api.registries.TypesData;
 import baubles.common.Baubles;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;

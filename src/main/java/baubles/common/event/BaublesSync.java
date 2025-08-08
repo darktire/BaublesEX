@@ -5,7 +5,7 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.api.util.TypesData;
+import baubles.api.registries.TypesData;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
 import baubles.common.network.PacketSync;
