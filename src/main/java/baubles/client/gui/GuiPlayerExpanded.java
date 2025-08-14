@@ -1,6 +1,7 @@
 package baubles.client.gui;
 
 import baubles.api.cap.BaublesContainer;
+import baubles.client.gui.element.GUIBaublesButton;
 import baubles.client.gui.element.GUIBaublesController;
 import baubles.client.gui.element.GUIBaublesScroller;
 import baubles.common.Baubles;
@@ -15,6 +16,7 @@ import net.minecraft.client.gui.achievement.GuiStats;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -32,6 +34,7 @@ import java.util.List;
 public class GuiPlayerExpanded extends GuiBaublesBase {
     @Deprecated public static final ResourceLocation background = new ResourceLocation(Baubles.MODID,"textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
     private final EntityPlayer player;
+    private final EntityLivingBase entity;
     private final boolean jeiLoaded;
     public ContainerPlayerExpanded containerEx = (ContainerPlayerExpanded) this.inventorySlots;
     public BaublesContainer baubles = (BaublesContainer) (this.containerEx).baubles;//container in sever
@@ -45,8 +48,13 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
     private final List<Rectangle> extraArea = new LinkedList<>();
 
     public GuiPlayerExpanded(EntityPlayer player) {
-        super(new ContainerPlayerExpanded(player.inventory, !player.getEntityWorld().isRemote, player));
+        this(player, player);
+    }
+
+    public GuiPlayerExpanded(EntityPlayer player, EntityLivingBase entity) {
+        super(new ContainerPlayerExpanded(player, entity));
         this.player = player;
+        this.entity = entity;
         this.allowUserInput = true;
         this.jeiLoaded = Loader.isModLoaded("jei");
     }
@@ -115,6 +123,7 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
     public void initGui() {
         this.buttonList.clear();
         super.initGui();
+        if (this.entity instanceof EntityPlayer) this.buttonList.add(new GUIBaublesButton(55, this, 64, 9, I18n.format("button.normal")));
         this.buttonList.add(new GUIBaublesController(56, this, this.guiLeft - 24, this.guiTop + 5, 1));
         this.buttonList.add(new GUIBaublesController(57, this, this.guiLeft - 14, this.guiTop + 5, 2));
         this.scroller = new GUIBaublesScroller(58, this, this.guiLeft - 30 - 18 * this.column, this.guiTop, Config.Gui.scrollerBar);
@@ -225,7 +234,7 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
         if (this.wider) drawWideSlots(left, top);
         else drawSlimSlots(left, top);
 
-        GuiInventory.drawEntityOnScreen(left + 51, top + 75, 30, (left + 51) - mouseX, (top + 75 - 50) - mouseY, mc.player);
+        GuiInventory.drawEntityOnScreen(left + 51, top + 75, 30, (left + 51) - mouseX, (top + 75 - 50) - mouseY, this.player);
     }
 
     private void drawSlimSlots(int left, int top) {
@@ -269,7 +278,6 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
     public void displayNormalInventory() {
         GuiInventory gui = new GuiInventory(this.mc.player);
         this.mc.displayGuiScreen(gui);
-        //todo uncheck
     }
 
     public List<Rectangle> getExtraArea() {

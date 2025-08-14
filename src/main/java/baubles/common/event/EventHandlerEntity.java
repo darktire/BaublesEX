@@ -8,20 +8,25 @@ import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.common.Baubles;
 import baubles.common.Config;
+import baubles.common.util.BaublesRegistry;
+import baubles.common.util.IPlayerTarget;
 import cofh.core.enchantment.EnchantmentSoulbound;
 import cofh.core.util.helpers.ItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -31,6 +36,34 @@ import static cofh.core.init.CoreEnchantments.soulbound;
 
 public class EventHandlerEntity {
     private static final ResourceLocation BAUBLES_CAP = new ResourceLocation(Baubles.MODID, "container");
+
+    @SubscribeEvent
+    public void openEntityGui(PlayerInteractEvent.EntityInteractSpecific event) {
+        if (Config.ModItems.testItem) {
+            Entity target = event.getTarget();
+            if (target instanceof EntityLivingBase && BaublesApi.canEquipBaubles((EntityLivingBase) target)) {
+                EntityPlayer player = event.getEntityPlayer();
+                if (player.getHeldItem(event.getHand()).isEmpty()) {
+                    IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
+                    boolean flag = false;
+                    for (int i = 0; i < baubles.getSlots(); i++) {
+                        if (baubles.getStackInSlot(i).getItem() == BaublesRegistry.ModItems.Tire) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if (flag) {
+                        ((IPlayerTarget) player).setTarget((EntityLivingBase) target);
+                        if (!event.getWorld().isRemote) {
+                            player.openGui(Baubles.instance, Baubles.GUI_A, event.getWorld(), 0, 0, 0);
+                        }
+                        event.setCancellationResult(EnumActionResult.SUCCESS);
+                        event.setCanceled(true);
+                    }
+                }
+            }
+        }
+    }
 
     @SubscribeEvent
     public void cloneCapabilitiesEvent(PlayerEvent.Clone event) {
@@ -44,11 +77,13 @@ public class EventHandlerEntity {
         }
     }
 
-    //todo for more entity.
     @SubscribeEvent
     public void attachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof EntityPlayer) {
-            event.addCapability(BAUBLES_CAP, new BaublesContainerProvider(new BaublesContainer((EntityPlayer) event.getObject())));
+        if (event.getObject() instanceof EntityPlayer || event.getObject() instanceof EntityArmorStand) {
+            event.addCapability(BAUBLES_CAP, new BaublesContainerProvider(new BaublesContainer((EntityLivingBase) event.getObject())));
+        }
+        else if (Config.ModItems.testItem && event.getObject() instanceof EntityArmorStand) {
+            event.addCapability(BAUBLES_CAP, new BaublesContainerProvider(new BaublesContainer((EntityLivingBase) event.getObject())));
         }
     }
 

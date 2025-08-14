@@ -16,7 +16,7 @@
 - [x] customizable bauble slots
   - [x] customize bauble types and quantities
   - [x] item can be defined as bauble
-  - [ ] various abilities for each entity
+  - [x] various abilities for each entity
 - [x] more apis
   - [x] provide the method to add specific baubles for player
   - [x] provide register for bauble type

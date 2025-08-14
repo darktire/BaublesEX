@@ -4,13 +4,15 @@ import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.common.Config;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 
-public class FlyingHelper {
-    public static ItemStack elytraInBaubles(ItemStack stack, EntityLivingBase player) {
-        if (Config.ModItems.elytraBauble && (!(stack.getItem() instanceof ItemElytra) || stack.getItem() instanceof ItemElytra && !ItemElytra.isUsable(stack))) {
-            IBaublesModifiable baubles = BaublesApi.getBaublesHandler(player);
+public class ElytraHelper {
+    public static ItemStack elytraInBaubles(ItemStack stack, EntityLivingBase entity) {
+        if (Config.ModItems.elytraBauble && (entity instanceof EntityPlayer || entity instanceof EntityArmorStand) && ((!(stack.getItem() instanceof ItemElytra) || stack.getItem() instanceof ItemElytra && !ItemElytra.isUsable(stack)))) {
+            IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
             if (baubles != null) {
                 for (int i = 0; i < baubles.getSlots(); i++) {
                     ItemStack stack1 = baubles.getStackInSlot(i);

@@ -19,10 +19,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ItemStack.class)
-public abstract class RightClickMixin {
+public abstract class MixinStack {
 
     @Inject(method = "useItemRightClick", at = @At("RETURN"), cancellable = true)
     public void playerRightClickItem(World worldIn, EntityPlayer playerIn, EnumHand hand, CallbackInfoReturnable<ActionResult<ItemStack>> cir) {
+        if (playerIn.isSneaking()) return;
         if (cir.getReturnValue().getType() == EnumActionResult.SUCCESS) return;
         ItemStack heldItem = (ItemStack) (Object) this;
         if (Baubles.config.getBlacklist().contains(heldItem.getItem())) return;

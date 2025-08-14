@@ -1,6 +1,7 @@
 package baubles.mixin;
 
-import baubles.common.util.FlyingHelper;
+import baubles.common.Config;
+import baubles.common.util.ElytraHelper;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.entity.layers.LayerCape;
@@ -22,39 +23,39 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-public abstract class ElytraMixin {
+public abstract class MixinElytra {
     @Mixin(EntityPlayerSP.class)
-    public abstract static class PlayerMixin extends EntityLivingBase {
-        public PlayerMixin(World worldIn) { super(worldIn); }
+    public abstract static class MixinPlayerSP extends EntityLivingBase {
+        public MixinPlayerSP(World worldIn) { super(worldIn); }
 
         @ModifyVariable(method = "onLivingUpdate", at = @At("STORE"), ordinal = 0)
         private ItemStack injected(ItemStack stack) {
-            return FlyingHelper.elytraInBaubles(stack, this);
+            return ElytraHelper.elytraInBaubles(stack, this);
         }
     }
 
     @Mixin(EntityLivingBase.class)
-    public abstract static class EntityMixin extends Entity {
-        public EntityMixin(World worldIn) { super(worldIn); }
+    public abstract static class MixinEntityBase extends Entity {
+        public MixinEntityBase(World worldIn) { super(worldIn); }
 
         @ModifyVariable(method = "updateElytra", at = @At("STORE"), ordinal = 0)
         private ItemStack injected(ItemStack stack) {
-            return FlyingHelper.elytraInBaubles(stack, (EntityLivingBase) (Entity) this);
+            return ElytraHelper.elytraInBaubles(stack, (EntityLivingBase) (Entity) this);
         }
     }
 
     @Mixin(NetHandlerPlayServer.class)
-    public abstract static class NetMixin implements INetHandlerPlayServer, ITickable {
+    public abstract static class MixinNetHandler implements INetHandlerPlayServer, ITickable {
         @Shadow public EntityPlayerMP player;
 
         @ModifyVariable(method = "processEntityAction", at = @At("STORE"), ordinal = 0)
         private ItemStack injected(ItemStack stack) {
-            return FlyingHelper.elytraInBaubles(stack, this.player);
+            return ElytraHelper.elytraInBaubles(stack, this.player);
         }
     }
 
     @Mixin(LayerCape.class)
-    public abstract static class CapeMixin implements LayerRenderer<AbstractClientPlayer> {
+    public abstract static class MixinCape implements LayerRenderer<AbstractClientPlayer> {
         @Unique private AbstractClientPlayer CapeMixin$player;
 
         @Inject(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At("HEAD"))
@@ -65,12 +66,13 @@ public abstract class ElytraMixin {
 
         @ModifyVariable(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At("STORE"), ordinal = 0)
         private ItemStack injected(ItemStack stack) {
-            return FlyingHelper.elytraInBaubles(stack, this.CapeMixin$player);
+            if (Config.renderElytra) return ElytraHelper.elytraInBaubles(stack, this.CapeMixin$player);
+            else return stack;
         }
     }
 
     @Mixin(LayerElytra.class)
-    public abstract static class LayerMixin implements LayerRenderer<AbstractClientPlayer> {
+    public abstract static class MixinLayer implements LayerRenderer<AbstractClientPlayer> {
         @Unique private EntityLivingBase LayerMixin$player;
 
         @Inject(method = "doRenderLayer", at = @At("HEAD"))
@@ -80,7 +82,8 @@ public abstract class ElytraMixin {
 
         @ModifyVariable(method = "doRenderLayer", at = @At("STORE"), ordinal = 0)
         private ItemStack injected(ItemStack stack) {
-            return FlyingHelper.elytraInBaubles(stack, this.LayerMixin$player);
+            if (Config.renderElytra) return ElytraHelper.elytraInBaubles(stack, this.LayerMixin$player);
+            else return stack;
         }
     }
 }

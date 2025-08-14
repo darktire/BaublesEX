@@ -32,7 +32,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        return ((IBaublesItemHandler)getItemHandler()).isItemValidForSlot(index, stack, entity);
+        return ((IBaublesItemHandler)getItemHandler()).isItemValidForSlot(index, stack, this.entity);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
     public ItemStack onTake(EntityPlayer playerIn, ItemStack stack) {
         if (!stack.isEmpty() && !((IBaublesItemHandler)getItemHandler()).isEventBlocked()) {
             IBauble bauble = BaublesApi.toBauble(stack);
-            if (bauble != null) bauble.onUnequipped(stack, playerIn);
+            if (bauble != null) bauble.onUnequipped(stack, this.entity);
         }
 
         this.onSlotChanged();
@@ -57,7 +57,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
     @Override
     public void putStack(ItemStack stack) {
         if (getHasStack() && !ItemStack.areItemStacksEqual(stack, getStack()) && !((IBaublesItemHandler) getItemHandler()).isEventBlocked() && BaublesApi.isBauble(getStack())) {
-            BaublesApi.toBauble(getStack()).onUnequipped(getStack(), entity);
+            BaublesApi.toBauble(getStack()).onUnequipped(getStack(), this.entity);
         }
 
         ItemStack oldStack = getStack().copy();
@@ -66,8 +66,12 @@ public class SlotBaubleHandler extends SlotItemHandler {
         this.onSlotChanged();//no effect
 
         if (getHasStack() && !ItemStack.areItemStacksEqual(oldStack, getStack()) && !((IBaublesItemHandler) getItemHandler()).isEventBlocked()) {
-            BaublesApi.toBauble(getStack()).onEquipped(getStack(), entity);
+            BaublesApi.toBauble(getStack()).onEquipped(getStack(), this.entity);
         }
+    }
+
+    public void setStack(ItemStack stack) {
+        super.putStack(stack);
     }
 
     @Override

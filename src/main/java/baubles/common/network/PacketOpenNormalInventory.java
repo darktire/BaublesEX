@@ -23,7 +23,7 @@ public class PacketOpenNormalInventory implements IMessage {
         public IMessage onMessage(PacketOpenNormalInventory message, MessageContext ctx) {
             IThreadListener mainThread = (WorldServer) ctx.getServerHandler().player.world;
             mainThread.addScheduledTask(() -> {
-                ctx.getServerHandler().player.openContainer.onContainerClosed(ctx.getServerHandler().player);
+                ctx.getServerHandler().player.closeContainer();
                 ctx.getServerHandler().player.openContainer = ctx.getServerHandler().player.inventoryContainer;
             });
             return null;

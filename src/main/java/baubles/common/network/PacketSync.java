@@ -7,9 +7,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -20,43 +18,39 @@ import java.io.IOException;
 
 public class PacketSync implements IMessage {
 
-    private int playerId;
+    private int entityId;
     private int slot = 0;
     private ItemStack bauble;
 
     public PacketSync() {}
 
-    public PacketSync(EntityPlayer p, int slot, ItemStack bauble) {
+    public PacketSync(EntityLivingBase entity, int slot, ItemStack bauble) {
         this.slot = slot;
         this.bauble = bauble;
-        this.playerId = p.getEntityId();
+        this.entityId = entity.getEntityId();
     }
 
     @Override
     public void toBytes(ByteBuf buffer) {
-        buffer.writeInt(playerId);
+        buffer.writeInt(entityId);
         buffer.writeInt(slot);
         writeItemStack(buffer, bauble);
     }
 
     @Override
     public void fromBytes(ByteBuf buffer) {
-        playerId = buffer.readInt();
+        entityId = buffer.readInt();
         slot = buffer.readInt();
         bauble = readItemStack(buffer);
     }
 
     public void writeItemStack(ByteBuf to, ItemStack stack) {
-        new PacketBuffer(to).writeCompoundTag(stack.serializeNBT());
+        new PacketBuffer(to).writeItemStack(stack);
     }
 
     public ItemStack readItemStack(ByteBuf to) {
         PacketBuffer buffer = new PacketBuffer(to);
-        try {
-            NBTTagCompound compound = buffer.readCompoundTag();
-            if (compound != null) return new ItemStack(compound);
-            return buffer.readItemStack();
-        }
+        try { return buffer.readItemStack(); }
         catch (IOException e) { throw new RuntimeException(e); }
     }
 
@@ -70,7 +64,7 @@ public class PacketSync implements IMessage {
         private void execute(PacketSync message) {
             World world = Baubles.proxy.getClientWorld();
             if (world == null) return;
-            Entity entity = world.getEntityByID(message.playerId);
+            Entity entity = world.getEntityByID(message.entityId);
             if (entity instanceof EntityLivingBase) {
                 IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
                 baubles.setStackInSlot(message.slot, message.bauble);

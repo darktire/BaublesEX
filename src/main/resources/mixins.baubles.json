@@ -3,15 +3,16 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "mixins.baubles.refmap.json",
   "mixins": [
-    "ElytraMixin$EntityMixin",
-    "ElytraMixin$NetMixin",
-    "EnchantmentMixin",
-    "RightClickMixin"
+    "MixinElytra$MixinEntityBase",
+    "MixinElytra$MixinNetHandler",
+    "MixinEnchantment",
+    "MixinPlayer",
+    "MixinStack"
   ],
   "client": [
-    "ElytraMixin$CapeMixin",
-    "ElytraMixin$LayerMixin",
-    "ElytraMixin$PlayerMixin"
+    "MixinElytra$MixinCape",
+    "MixinElytra$MixinLayer",
+    "MixinElytra$MixinPlayerSP"
   ],
   "server": [
   ],

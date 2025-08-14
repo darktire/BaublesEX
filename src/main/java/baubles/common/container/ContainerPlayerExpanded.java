@@ -13,25 +13,26 @@ import net.minecraft.inventory.*;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
+import java.util.List;
+
 public class ContainerPlayerExpanded extends Container {
+    private final EntityPlayer player;
+    private final EntityLivingBase entity;
     public IBaublesModifiable baubles;
     private int slotsAmount;
-    /**
-     * The crafting matrix inventory.
-     */
     public final InventoryCrafting craftMatrix = new InventoryCrafting(this, 2, 2);
     public final InventoryCraftResult craftResult = new InventoryCraftResult();
-    /**
-     * Determines if inventory manipulation should be handled.
-     */
-    public boolean isLocalWorld;
-    private final EntityPlayer player;
     private static final EntityEquipmentSlot[] equipmentSlots = new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
 
-    public ContainerPlayerExpanded(InventoryPlayer playerInv, boolean world, EntityPlayer player) {
-        this.isLocalWorld = world;
+    public ContainerPlayerExpanded(EntityPlayer player) {
+        this(player, player);
+    }
+
+    public ContainerPlayerExpanded(EntityPlayer player, EntityLivingBase entity) {
         this.player = player;
-        this.baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
+        this.entity = entity;
+        this.baubles = BaublesApi.getBaublesHandler(entity);
+        InventoryPlayer playerInv = player.inventory;
 
         //add craftResult (1) [0,1)
         this.addSlotToContainer(new SlotCrafting(player, this.craftMatrix, this.craftResult, 0, 154, 28));
@@ -110,7 +111,7 @@ public class ContainerPlayerExpanded extends Container {
     public void addSlimBauble() {
         this.slotsAmount = this.baubles.getSlots();
         for (int i = 0; i < this.slotsAmount; i++) {
-            this.addSlotToContainer(new SlotBaubleHandler(this.player, this.baubles, i, -23, 16 + i * 18));
+            this.addSlotToContainer(new SlotBaubleHandler(this.entity, this.baubles, i, -23, 16 + i * 18));
         }
     }
 
@@ -119,7 +120,7 @@ public class ContainerPlayerExpanded extends Container {
         for (int i = 0; i < this.slotsAmount; i++) {
             int j = i / Config.Gui.column;
             int k = i % Config.Gui.column;
-            this.addSlotToContainer(new SlotBaubleHandler(this.player, this.baubles, i, -23 + (k - Config.Gui.column + 1) * 18, 16 + j * 18));
+            this.addSlotToContainer(new SlotBaubleHandler(this.entity, this.baubles, i, -23 + (k - Config.Gui.column + 1) * 18, 16 + j * 18));
         }
     }
 
@@ -246,5 +247,33 @@ public class ContainerPlayerExpanded extends Container {
     @Override
     public boolean canMergeSlot(ItemStack stack, Slot slot) {
         return slot.inventory != this.craftResult && super.canMergeSlot(stack, slot);
+    }
+
+    @Override
+    public void setAll(List<ItemStack> list) {
+        for (int i = 0; i < list.size(); ++i) {
+            Slot slot = this.getSlot(i);
+            if (slot instanceof SlotBaubleHandler) ((SlotBaubleHandler) slot).setStack(list.get(i));
+            else slot.putStack(list.get(i));
+        }
+    }
+
+    @Override
+    public void detectAndSendChanges() {
+        for (int i = 0; i < this.inventorySlots.size(); ++i) {
+            ItemStack itemstack = this.inventorySlots.get(i).getStack();
+            ItemStack itemstack1 = this.inventoryItemStacks.get(i);
+
+            if (!ItemStack.areItemStacksEqual(itemstack1, itemstack)) {
+                boolean clientStackChanged = !ItemStack.areItemStacksEqualUsingNBTShareTag(itemstack1, itemstack);
+                itemstack1 = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy();
+                this.inventoryItemStacks.set(i, itemstack1);
+
+                if (clientStackChanged)
+                    for (IContainerListener listener : this.listeners) {
+                        listener.sendSlotContents(this, i, itemstack1);
+                    }
+            }
+        }
     }
 }

@@ -14,22 +14,26 @@ public class TypesData {
     private static final ForgeRegistry<BaubleTypeEx> REGISTRY = (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>().setType(BaubleTypeEx.class).allowModification().setName(BAUBLE_TYPE).create();
 
     private static int sum = 7;
-    public static boolean changed = false;
     private static final ArrayList<BaubleTypeEx> BAUBLE_SLOTS = new ArrayList<>();
 
     public static void registerBauble(BaubleTypeEx type, int amount) {
-        if (amount < 0) amount = 0;
+        if (amount < 0) return;
         type.setAmount(amount);
         registerBauble(type);
     }
 
     public static void registerBauble(String typeName, int amount) {
-        if (amount < 0) amount = 0;
+        if (amount < 0) return;
         registerBauble(new BaubleTypeEx(typeName, amount));
     }
 
     public static void registerBauble(BaubleTypeEx type) {
-        REGISTRY.register(type);
+        if (REGISTRY.getValue(type.getRegistryName()) != null) {
+            REGISTRY.getValue(type.getRegistryName()).setAmount(type.getAmount());
+        }
+        else {
+            REGISTRY.register(type);
+        }
     }
 
     public static void setSum(int value) {

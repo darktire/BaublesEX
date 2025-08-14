@@ -17,9 +17,9 @@ public class GuiEvents {
 		GuiScreen gui = event.getGui();
 		if (gui instanceof GuiContainer) {
 			GuiContainer guiContainer = (GuiContainer) gui;
-			if (gui instanceof GuiInventory || gui instanceof GuiPlayerExpanded) {
+			if (gui instanceof GuiInventory) {
 				if (Config.Gui.baublesButton) {
-					event.getButtonList().add(new GUIBaublesButton(55, guiContainer, 64, 9, I18n.format((guiContainer instanceof GuiInventory) ? "button.baubles" : "button.normal")));
+					event.getButtonList().add(new GUIBaublesButton(55, guiContainer, 64, 9, I18n.format("button.baubles")));
 				}
 			}
 			if (gui instanceof GuiContainerCreative) {

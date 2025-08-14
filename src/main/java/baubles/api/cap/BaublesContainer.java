@@ -14,21 +14,19 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class BaublesContainer extends ItemStackHandler implements IBaublesModifiable {
 
     private boolean blockEvents = false;
     private static final BaubleTypeEx TRINKET = TypesData.getTypeByName("trinket");
     private EntityLivingBase entity;
-    private final HashMap<Integer, Boolean> changed = new HashMap<>();
-    /**
-     * Set the modified list of slots.
-     */
     private final ArrayList<BaubleTypeEx> MODIFIED_SLOTS = new ArrayList<>();
     private final ArrayList<BaubleTypeEx> PREVIOUS_SLOTS = new ArrayList<>();
 //    private final HashMap<String, Integer> MODIFIER_FACTOR = new HashMap<>();
     private final HashMap<String, Integer> BAUBLE_MODIFIER = new HashMap<>();
 
+    public static final HashSet<BaublesContainer> listener = new HashSet<>();
     public boolean slotsUpdated = true;
     public boolean guiUpdated = true;
 
@@ -38,64 +36,67 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         super(TypesData.getSum());
         this.entity = entity;
         this.MODIFIED_SLOTS.addAll(TypesData.getLazyList());
+        listener.add(this);
     }
 
     @Override
     public void modifySlot(String typeName, int modifier) {
-        int original = BAUBLE_MODIFIER.getOrDefault(typeName, 0);
+        int original = this.BAUBLE_MODIFIER.getOrDefault(typeName, 0);
         modifySlotOA(typeName, modifier - original);
     }
 
     @Override
     public void modifySlotOA(String typeName, int modifier) {
         if (modifier == 0) return;
-        PREVIOUS_SLOTS.clear();
-        PREVIOUS_SLOTS.addAll(MODIFIED_SLOTS);
+        this.PREVIOUS_SLOTS.clear();
+        this.PREVIOUS_SLOTS.addAll(this.MODIFIED_SLOTS);
         BaubleTypeEx type = TypesData.getTypeByName(typeName);
         if (type == null) throw new RuntimeException("No such bauble type");
-        int original = BAUBLE_MODIFIER.getOrDefault(typeName, 0);
+        int original = this.BAUBLE_MODIFIER.getOrDefault(typeName, 0);
         if (modifier > 0) {
-            int index = MODIFIED_SLOTS.indexOf(type);
-            if (index == -1 && original == 0) {
+            int index = this.MODIFIED_SLOTS.indexOf(type);
+            if (index == -1) {
                 for (int i = 1;; i++) {
                     int id = TypesData.getId(type);
                     BaubleTypeEx previous = TypesData.getTypeById(id - i);
-                    index = MODIFIED_SLOTS.indexOf(previous) + 1;
+                    index = this.MODIFIED_SLOTS.lastIndexOf(previous) + 1;
                     if (index != 0) break;
                     if (id - i == 0) break;
                 }
             }
             for (int i = 0; i < modifier; i++) {
-                MODIFIED_SLOTS.add(index, type);
+                this.MODIFIED_SLOTS.add(index, type);
             }
         }
         else {
-            int lastIndex = MODIFIED_SLOTS.lastIndexOf(type);
+            int lastIndex = this.MODIFIED_SLOTS.lastIndexOf(type);
             if (lastIndex == -1) return;
             if (modifier + type.getAmount() + original < 0) modifier = -type.getAmount() - original;
-            MODIFIED_SLOTS.subList(lastIndex + modifier + 1, lastIndex + 1).clear();
+            this.MODIFIED_SLOTS.subList(lastIndex + modifier + 1, lastIndex + 1).clear();
         }
 
-        BAUBLE_MODIFIER.put(typeName, original + modifier);
-        if (slotsUpdated) slotsUpdated = false;
+        this.BAUBLE_MODIFIER.put(typeName, original + modifier);
+        if (this.slotsUpdated) this.slotsUpdated = false;
     }
 
     @Override
     public void clearModifier() {
-        PREVIOUS_SLOTS.clear();
-        PREVIOUS_SLOTS.addAll(MODIFIED_SLOTS);
-        MODIFIED_SLOTS.clear();
-        MODIFIED_SLOTS.addAll(TypesData.getLazyList());
-        BAUBLE_MODIFIER.clear();
-        slotsUpdated = false;
+        this.PREVIOUS_SLOTS.clear();
+        this.PREVIOUS_SLOTS.addAll(this.MODIFIED_SLOTS);
+        this.MODIFIED_SLOTS.clear();
+        this.MODIFIED_SLOTS.addAll(TypesData.getLazyList());
+        this.BAUBLE_MODIFIER.clear();
+        this.slotsUpdated = false;
     }
 
     @Override
     public void updateSlots() {
-        if (TypesData.changed) onConfigChanged();
-        if (slotsUpdated) return;
-        NonNullList<ItemStack> stacks1 = stacks;
-        setSize(MODIFIED_SLOTS.size());
+        if (!this.slotsUpdated) onSlotChanged();
+    }
+
+    private void onSlotChanged() {
+        NonNullList<ItemStack> stacks1 = this.stacks;
+        setSize(this.MODIFIED_SLOTS.size());
         int move1 = 0;
         boolean drop;
         for (int i = 0; i < stacks1.size(); i++) {
@@ -105,42 +106,41 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
             BaubleTypeEx type = bauble.getBaubleTypeEx();
             if (type == TRINKET) {
                 int newIndex = i + move1;
-                if (newIndex < MODIFIED_SLOTS.size()) {
-                    stacks.set(newIndex, stack);
+                if (newIndex < this.MODIFIED_SLOTS.size()) {
+                    this.stacks.set(newIndex, stack);
                     continue;
                 }
             }
-            int start = MODIFIED_SLOTS.indexOf(type);
+            int start = this.MODIFIED_SLOTS.indexOf(type);
             drop = false;
             if (start == -1) drop = true;
             else {
-                int move = start - PREVIOUS_SLOTS.indexOf(type);
+                int move = start - this.PREVIOUS_SLOTS.indexOf(type);
                 int newIndex = i + move;
-                if (newIndex < MODIFIED_SLOTS.size() && MODIFIED_SLOTS.get(newIndex) == type) {
-                    stacks.set(newIndex, stack);
+                if (newIndex < this.MODIFIED_SLOTS.size() && this.MODIFIED_SLOTS.get(newIndex) == type) {
+                    this.stacks.set(newIndex, stack);
                     move1 = move;
                 }
                 else drop = true;
             }
-            if (drop && !entity.world.isRemote) {
-                entity.entityDropItem(stack, 0);
-                bauble.onUnequipped(stack, entity);
+            if (drop && !this.entity.world.isRemote) {
+                this.entity.entityDropItem(stack, 0);
+                bauble.onUnequipped(stack, this.entity);
             }
         }
-        if (!slotsUpdated) slotsUpdated = true;
-        if (guiUpdated) guiUpdated = false;
+        if (!this.slotsUpdated) this.slotsUpdated = true;
+        if (this.guiUpdated) this.guiUpdated = false;
     }
 
-    private void onConfigChanged() {
-        PREVIOUS_SLOTS.clear();
-        PREVIOUS_SLOTS.addAll(MODIFIED_SLOTS);
-        MODIFIED_SLOTS.clear();
-        MODIFIED_SLOTS.addAll(TypesData.getLazyList());
-        for (String typeName: BAUBLE_MODIFIER.keySet()) {
-            modifySlotOA(typeName, BAUBLE_MODIFIER.get(typeName));
+    public void onConfigChanged() {
+        this.PREVIOUS_SLOTS.clear();
+        this.PREVIOUS_SLOTS.addAll(this.MODIFIED_SLOTS);
+        this.MODIFIED_SLOTS.clear();
+        this.MODIFIED_SLOTS.addAll(TypesData.getLazyList());
+        for (String typeName: this.BAUBLE_MODIFIER.keySet()) {
+            modifySlotOA(typeName, this.BAUBLE_MODIFIER.get(typeName));
         }
-        TypesData.changed = false;
-        slotsUpdated = false;
+        this.slotsUpdated = false;
     }
 
     @Override
@@ -196,14 +196,11 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
 
     @Override
     public void setStackInSlot(int slot, ItemStack stack) {
-        if (stack.isEmpty() || this.isItemValidForSlot(slot, stack, entity)) {
-            super.setStackInSlot(slot, stack);
-        }
+        super.setStackInSlot(slot, stack);
     }
 
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        if (!this.isItemValidForSlot(slot, stack, entity)) return stack;
         return super.insertItem(slot, stack, simulate);
     }
 
@@ -229,13 +226,11 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
 
     @Override
     public boolean isChanged(int slot) {
-        return changed.getOrDefault(slot, false);
+        return false;
     }
 
     @Override
-    public void setChanged(int slot, boolean change) {
-        this.changed.put(slot, change);
-    }
+    public void setChanged(int slot, boolean change) {}
 
 	@Override
 	public void setPlayer(EntityLivingBase entity) {
@@ -288,7 +283,9 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
             if (slot >= 0 && slot < stacks.size()) {
                 stacks.set(slot, new ItemStack(itemTags));
             }
-            //todo item out of size
+            else {
+                this.entity.entityDropItem(new ItemStack(itemTags), 0);
+            }
         }
     }
 }

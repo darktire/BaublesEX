@@ -1,7 +1,7 @@
 package baubles.common;
 
 import baubles.api.BaubleType;
-import baubles.api.registries.TypesData;
+import baubles.api.cap.BaublesContainer;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -22,6 +22,7 @@ public class Config {
 
 //    Configuration Options
     public static boolean renderBaubles = true;
+    public static boolean renderElytra = false;
 //    public static boolean jsonFunction = false;
     public static boolean keepBaubles = false;
     public static int maxLevel = 1;
@@ -57,6 +58,7 @@ public class Config {
 
     public void loadData() {
         renderBaubles = configFile.getBoolean("baubleRender", CATEGORY_CLIENT, renderBaubles, "Set this to false to disable rendering of baubles in the player.");
+        renderElytra = configFile.getBoolean("renderElytra", CATEGORY_CLIENT, renderElytra, "Whether elytra in baubles will be rendered");
 
         maxLevel = configFile.getInt("maxLevel", CATEGORY_GENERAL, maxLevel, 0, 255, "Max level of haste given by Miner's Ring");
 
@@ -149,9 +151,9 @@ public class Config {
 
         @Override
         public void loadData() {
-            testItem = configFile.getBoolean("testItem", BAUBLES_ITEMS, testItem, "");
-            elytraBauble = configFile.getBoolean("elytraBauble", BAUBLES_ITEMS, elytraBauble, "");
-            elytraSlot = configFile.getString("elytraSlot", BAUBLES_ITEMS, elytraSlot, "", elytraValidSlot);
+            testItem = configFile.getBoolean("testItem", BAUBLES_ITEMS, testItem, "For test, or you want");
+            elytraBauble = configFile.getBoolean("elytraBauble", BAUBLES_ITEMS, elytraBauble, "Set elytra as bauble");
+            elytraSlot = configFile.getString("elytraSlot", BAUBLES_ITEMS, elytraSlot, "Get a specific slot for elytra", elytraValidSlot);
             configFile.getCategory(BAUBLES_ITEMS).requiresMcRestart();
         }
     }
@@ -168,7 +170,9 @@ public class Config {
                 Baubles.config.setupBlacklist();
                 Baubles.registry.registerBaubles();
                 Baubles.registry.loadValidSlots();
-                TypesData.changed = true;
+                for (BaublesContainer container: BaublesContainer.listener) {
+                    container.onConfigChanged();
+                }
             }
         }
     }

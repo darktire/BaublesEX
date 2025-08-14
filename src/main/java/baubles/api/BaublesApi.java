@@ -10,8 +10,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
-
 /**
  * @author Azanor
  */
@@ -64,8 +62,12 @@ public class BaublesApi {
         return isBaubleEquipped((EntityLivingBase) player, bauble);
     }
 
-    public static Boolean isBauble(ItemStack stack) {
-        return stack.hasCapability(CAPABILITY_ITEM_BAUBLE, null);
+    public static boolean canEquipBaubles(EntityLivingBase entity) {
+        return entity.hasCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
+    }
+
+    public static boolean isBauble(ItemStack stack) {
+        return stack.hasCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
     }
 
     /**
@@ -73,6 +75,6 @@ public class BaublesApi {
      * @return null when stack doesn't have baubles:item_cap
      */
     public static IBauble toBauble(ItemStack stack) {
-        return stack.getCapability(CAPABILITY_ITEM_BAUBLE, null);
+        return stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
     }
 }
