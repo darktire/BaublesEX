@@ -3,10 +3,12 @@ package baubles.common.container;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
+import baubles.api.event.BaublesChangeEvent;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
@@ -45,6 +47,9 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     public ItemStack onTake(EntityPlayer playerIn, ItemStack stack) {
+        BaublesChangeEvent event = new BaublesChangeEvent(this.entity, this.index, stack, ItemStack.EMPTY);
+        MinecraftForge.EVENT_BUS.post(event);
+
         if (!stack.isEmpty() && !((IBaublesItemHandler)getItemHandler()).isEventBlocked()) {
             IBauble bauble = BaublesApi.toBauble(stack);
             if (bauble != null) bauble.onUnequipped(stack, this.entity);
@@ -56,6 +61,8 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     public void putStack(ItemStack stack) {
+        MinecraftForge.EVENT_BUS.post(new BaublesChangeEvent(this.entity, this.index, ItemStack.EMPTY, stack));
+
         if (getHasStack() && !ItemStack.areItemStacksEqual(stack, getStack()) && !((IBaublesItemHandler) getItemHandler()).isEventBlocked() && BaublesApi.isBauble(getStack())) {
             BaublesApi.toBauble(getStack()).onUnequipped(getStack(), this.entity);
         }
@@ -76,8 +83,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         return -2 < yPos && yPos <= 142;
     }//visible
 

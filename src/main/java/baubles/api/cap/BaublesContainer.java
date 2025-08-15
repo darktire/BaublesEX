@@ -90,7 +90,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     }
 
     @Override
-    public void updateSlots() {
+    public void updateSlots() {// todo may have a better way
         if (!this.slotsUpdated) onSlotChanged();
     }
 
