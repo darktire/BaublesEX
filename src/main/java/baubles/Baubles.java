@@ -1,4 +1,4 @@
-package baubles.common;
+package baubles;
 
 import baubles.api.BaublesWrapper;
 import baubles.api.IBauble;
@@ -6,6 +6,8 @@ import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
 import baubles.api.cap.BaublesCapabilities.CapabilityItemBaubleStorage;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesModifiable;
+import baubles.common.CommonProxy;
+import baubles.common.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.util.BaublesRegistry;
 import baubles.common.util.command.CommandBaubles;
