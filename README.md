@@ -14,13 +14,16 @@
 
 ## Add ~~and wait to add~~ some new functions:
 - [x] customizable bauble slots
-  - [x] customize bauble types and quantities
+  - [x] customize default types and quantities in baubles container
   - [x] item can be defined as bauble
-  - [x] various abilities for each entity
+  - [x] modify baubles container of each entity independently
 - [x] more apis
-  - [x] provide the method to add specific baubles for player
+  - [x] provide the method to add bauble slots for specific  player
   - [x] provide register for bauble type
   - [x] provide register for existed item
+  - [x] provide baubles ability for more entity (like armor stand)
+  - [x] provide event when exchange baubles
+  - [x] provide multiple types for one bauble
 - [x] more configure
 - [x] more command
 - [x] add bauble button in creative tab
@@ -29,6 +32,7 @@
 - [x] right click to equip baubles
 - [x] enchantment support for baubles
 - [ ] visibility of each bauble
+- [ ] support for CraftTweaker
 - [ ] ...
 - [ ] waiting for more suggestions
 
@@ -37,10 +41,10 @@
 ## More Details:
 
 - ### customizable bauble slots in the config:
-  - customize bauble types and quantities ![img_0.png](https://i.imgur.com/JhJC0yM.png)
+  - customize bauble types and quantities ![](https://i.imgur.com/JhJC0yM.png)
 
 - ### new style of bauble slots:
-  - now the bauble button can open new slots for baubles beside survival inventory. ![img_1.png](https://i.imgur.com/3ri5oKX.png)
+  - now the bauble button can open new slots for baubles beside survival inventory. ![](https://i.imgur.com/3ri5oKX.png)
 
 ---
 

@@ -10,14 +10,15 @@ button.normal=Normal
 key.categories.baubles=Baubles
 #
 # Description
-name.amulet=Bauble (Amulet)
-name.ring=Bauble (Ring)
-name.belt=Bauble (Belt)
-name.trinket=Bauble (Any)
-name.head=Bauble (Head)
-name.body=Bauble (Body)
-name.charm=Bauble (Charm)
-name.elytra=Bauble (elytra)
+baubles.tooltip=Bauble
+name.amulet=Amulet
+name.ring=Ring
+name.belt=Belt
+name.trinket=Any
+name.head=Head
+name.body=Body
+name.charm=Charm
+name.elytra=Elytra
 #
 # Command
 commands.baubles.error=§cError command

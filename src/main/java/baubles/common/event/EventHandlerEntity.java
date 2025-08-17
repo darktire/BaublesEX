@@ -82,7 +82,7 @@ public class EventHandlerEntity {
         if (event.getObject() instanceof EntityPlayer || event.getObject() instanceof EntityArmorStand) {
             event.addCapability(BAUBLES_CAP, new BaublesContainerProvider(new BaublesContainer((EntityLivingBase) event.getObject())));
         }
-        else if (Config.ModItems.testItem && event.getObject() instanceof EntityArmorStand) {
+        else if (Config.armorStand && event.getObject() instanceof EntityArmorStand) {
             event.addCapability(BAUBLES_CAP, new BaublesContainerProvider(new BaublesContainer((EntityLivingBase) event.getObject())));
         }
     }

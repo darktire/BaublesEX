@@ -35,7 +35,7 @@ public class BaublesCapabilityProvider implements ICapabilityProvider, INBTSeria
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
         if (!nbt.hasKey("type_name")) {
-            BaubleTypeEx type = wrapper.getBaubleTypeEx();
+            BaubleTypeEx type = wrapper.getBaubleType();
             if (type != null) {
                 nbt.setString("type_name", type.getTypeName());
             }

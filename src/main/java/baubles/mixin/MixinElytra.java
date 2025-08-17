@@ -1,6 +1,5 @@
 package baubles.mixin;
 
-import baubles.common.Config;
 import baubles.common.util.ElytraHelper;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -66,8 +65,7 @@ public abstract class MixinElytra {
 
         @ModifyVariable(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At("STORE"), ordinal = 0)
         private ItemStack injected(ItemStack stack) {
-            if (Config.renderElytra) return ElytraHelper.elytraInBaubles(stack, this.CapeMixin$player);
-            else return stack;
+            return ElytraHelper.elytraInBaubles(stack, this.CapeMixin$player);
         }
     }
 
@@ -82,8 +80,7 @@ public abstract class MixinElytra {
 
         @ModifyVariable(method = "doRenderLayer", at = @At("STORE"), ordinal = 0)
         private ItemStack injected(ItemStack stack) {
-            if (Config.renderElytra) return ElytraHelper.elytraInBaubles(stack, this.LayerMixin$player);
-            else return stack;
+            return ElytraHelper.elytraInBaubles(stack, this.LayerMixin$player);
         }
     }
 }

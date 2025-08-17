@@ -128,11 +128,15 @@ tasks.register('copyResource', Copy) {
     inputs.files sourceSets.main.resources.srcDirs
 
     from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*.bak', '**/*.psd', 'mcmod.info'
+    }
+    into 'build/classes/java/main'
+}
+
+tasks.register('copyInfo', Copy) {
+    from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
         expand mod_id:mod_id, mod_name:mod_name, version:version, mcversion:minecraft_version
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude '**/*.bak', '**/*.psd', 'mcmod.info'
     }
     into 'build/classes/java/main'
 }
@@ -146,12 +150,11 @@ processResources.enabled = false
 //processResources {}
 
 classes.configure {
+    dependsOn(copyInfo)
     dependsOn(copyResource)
 }
 
 jar {
-//    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
-
     from { configurations.embed.collect { it.isDirectory() ? it : zipTree(it) } } {
         exclude 'LICENSE.txt', 'META-INF/MANIFSET.MF', 'META-INF/maven/**', 'META-INF/*.RSA', 'META-INF/*.SF'
     }

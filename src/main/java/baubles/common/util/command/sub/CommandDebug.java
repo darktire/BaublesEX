@@ -35,7 +35,7 @@ public class CommandDebug extends CommandBase {
         Entity entity = sender.getCommandSenderEntity();
         if (args[0].equals("change")) {
             Item item = Item.getByNameOrId(args[1]);
-            ItemsData.toBauble(item).setType(TypesData.getTypeByName(args[2]));
+            ItemsData.toBauble(item).setMainType(TypesData.getTypeByName(args[2]));
         }
         else if (args[0].equals("mod")) {
             if (entity instanceof EntityLivingBase && TypesData.hasType(args[1]) && args[2].matches("-?\\d+")) {

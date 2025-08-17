@@ -6,7 +6,7 @@ import baubles.api.IBauble;
 import net.minecraft.item.ItemStack;
 
 public class BaubleItem implements IBauble {
-	private BaubleTypeEx type;
+	private final BaubleTypeEx type;
 
 	public BaubleItem(BaubleTypeEx type) {
         this.type = type;
@@ -17,12 +17,8 @@ public class BaubleItem implements IBauble {
         this.type = type.getNewType();
 	}
 
-	public void setType(BaubleTypeEx type) {
-		this.type = type;
-	}
-
 	@Override
-	public BaubleTypeEx getBaubleTypeEx() {
+	public BaubleTypeEx getBaubleType() {
 		return type;
 	}
 

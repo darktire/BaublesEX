@@ -6,14 +6,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class BaublesWrapper implements IBauble {
 
     private Item item;
     private IBauble bauble;
     private BaubleTypeEx mainType;
-    private ArrayList<BaubleTypeEx> type;// todo types
+    private List<BaubleTypeEx> types;
     private ResourceLocation registryName;
 
     public BaublesWrapper() {}
@@ -25,22 +26,41 @@ public class BaublesWrapper implements IBauble {
     public BaublesWrapper(Item item, IBauble bauble) {
         this.item = item;
         this.bauble = bauble;
-        this.mainType = bauble.getBaubleTypeEx();
-        if (mainType == null) this.mainType = bauble.getBaubleType(ItemStack.EMPTY).getNewType();
-        if (mainType == null) this.mainType = new BaubleTypeEx("NO_TYPE", 0);
+        this.mainType = bauble.getBaubleType();
+        this.types = bauble.getBaubleTypes();
+        if (this.types == null) {
+            if (this.mainType == null) {
+                this.mainType = bauble.getBaubleType(item.getDefaultInstance()).getNewType();
+                if (this.mainType == null) throw new RuntimeException(item.getRegistryName() + " have no type");
+            }
+            this.types = new LinkedList<>();
+            this.types.add(this.mainType);
+        }
+        else if (this.mainType == null) {
+            this.mainType = this.types.get(0);
+        }
     }
 
     public Item getItem() {
         return this.item;
     }
 
-    public void setType(BaubleTypeEx type) {
+    public void setMainType(BaubleTypeEx type) {
         this.mainType = type;
     }
 
+    public void setTypes(List<BaubleTypeEx> types) {
+        this.types = types;
+    }
+
     @Override
-    public BaubleTypeEx getBaubleTypeEx() {
+    public BaubleTypeEx getBaubleType() {
         return mainType;
+    }
+
+    @Override
+    public List<BaubleTypeEx> getBaubleTypes() {
+        return this.types;
     }
 
     @Override
@@ -83,3 +103,4 @@ public class BaublesWrapper implements IBauble {
         return bauble.canDrop(itemstack, entity);
     }
 }
+// todo commands edit type

@@ -2,6 +2,7 @@ package baubles.client;
 
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
+import baubles.api.BaublesWrapper;
 import baubles.api.IBauble;
 import baubles.api.registries.TypesData;
 import baubles.client.gui.GuiPlayerExpanded;
@@ -42,10 +43,19 @@ public class ClientEventHandler {
     public void tooltipEvent(ItemTooltipEvent event) {
         if (!event.getItemStack().isEmpty() && BaublesApi.isBauble(event.getItemStack())) {
             IBauble bauble = BaublesApi.toBauble(event.getItemStack());
-            if (bauble != null) {
-                String bt = "name." + bauble.getBaubleTypeEx().getTypeName();
-                event.getToolTip().add(TextFormatting.GOLD + I18n.format(bt));
+            StringBuilder tooltip = new StringBuilder(TextFormatting.GOLD + I18n.format("baubles.tooltip") + ": ");
+            if (bauble instanceof BaublesWrapper) {
+                Iterator<BaubleTypeEx> types = bauble.getBaubleTypes().iterator();
+                while (types.hasNext()) {
+                    tooltip.append(I18n.format(types.next().getTranslateKey()));
+                    if (types.hasNext()) tooltip.append(", ");
+                }
             }
+            else {
+                Baubles.log.warn("bauble cap on " + event.getItemStack().getTranslationKey() + " registered incorrect");
+                tooltip.append(I18n.format("name." + bauble.getBaubleType(event.getItemStack()).toString().toLowerCase()));
+            }
+            event.getToolTip().add(tooltip.toString());
         }
     }
 

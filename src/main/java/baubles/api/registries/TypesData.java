@@ -7,6 +7,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class TypesData {
     private static final String DATA_ID = "baubles";
@@ -14,7 +15,7 @@ public class TypesData {
     private static final ForgeRegistry<BaubleTypeEx> REGISTRY = (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>().setType(BaubleTypeEx.class).allowModification().setName(BAUBLE_TYPE).create();
 
     private static int sum = 7;
-    private static final ArrayList<BaubleTypeEx> BAUBLE_SLOTS = new ArrayList<>();
+    private static final List<BaubleTypeEx> BAUBLE_SLOTS = new ArrayList<>();
 
     public static void registerBauble(BaubleTypeEx type, int amount) {
         if (amount < 0) return;
@@ -52,7 +53,7 @@ public class TypesData {
     /**
      * Get the lazy list of slots.
      */
-    public static ArrayList<BaubleTypeEx> getLazyList() {
+    public static List<BaubleTypeEx> getLazyList() {
         return BAUBLE_SLOTS;
     }
 

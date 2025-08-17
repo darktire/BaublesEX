@@ -13,7 +13,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class ItemTire extends Item implements IBauble {
+	private final String[] typesName = {"head", "amulet", "body"};
+	private final List<BaubleTypeEx> types = new LinkedList<>();
 
 	public ItemTire() {
 		super();
@@ -22,6 +27,13 @@ public class ItemTire extends Item implements IBauble {
 		this.setMaxDamage(0);
 		this.setCreativeTab(CreativeTabs.TOOLS);
 		this.setTranslationKey("Tire");
+		this.setTypes();
+	}
+
+	private void setTypes() {
+		for (String name: typesName) {
+			types.add(TypesData.getTypeByName(name));
+		}
 	}
 
 	@Override
@@ -32,8 +44,8 @@ public class ItemTire extends Item implements IBauble {
 	}
 
 	@Override
-	public BaubleTypeEx getBaubleTypeEx() {
-		return TypesData.getTypeByName("trinket");
+	public List<BaubleTypeEx> getBaubleTypes() {
+		return this.types;
 	}
 
 	@Override

@@ -10,14 +10,15 @@ button.normal=普通
 key.categories.baubles=饰品
 #
 # Description
-name.amulet=饰品 (护身符)
-name.ring=饰品 (指环)
-name.belt=饰品 (腰带)
-name.trinket=饰品 (任意)
-name.head=饰品 (头部)
-name.body=饰品 (身体)
-name.charm=饰品 (坠饰)
-name.elytra=饰品 (鞘翅)
+baubles.tooltip=饰品
+name.amulet=护身符
+name.ring=指环
+name.belt=腰带
+name.trinket=任意
+name.head=头部
+name.body=身体
+name.charm=坠饰
+name.elytra=鞘翅
 #
 # Command
 commands.baubles.error=§c错误的命令

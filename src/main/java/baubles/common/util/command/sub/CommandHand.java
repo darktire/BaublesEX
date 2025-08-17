@@ -30,7 +30,7 @@ public class CommandHand extends CommandBase {
                 IBauble bauble = BaublesApi.toBauble(heldItem);
                 String type = "undefined";
                 if (bauble != null) {
-                    type = bauble.getBaubleTypeEx().getTypeName();
+                    type = bauble.getBaubleType().getTypeName();
                 }
                 int meta = heldItem.getMetadata();
                 String metaInfo = meta == 0 ? "" : ":" + meta;

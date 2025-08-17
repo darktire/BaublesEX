@@ -47,12 +47,12 @@ public class GUIBaublesButton extends ElementBase {
             glPush();
             mc.getTextureManager().bindTexture(GuiBaublesBase.BAUBLES_TEX);
             if (this.hovered) {
-                drawTexturedModalRect(this.x, this.y, 6, 217, 10, 10);
+                drawTexturedModalRect(this.x, this.y, 16, 217, 10, 10);
                 FontRenderer fontrenderer = mc.fontRenderer;
                 drawCenteredString(fontrenderer, I18n.format(this.displayString), this.x + 5, this.y + this.height, 0xffffff);
             }
             else {
-                drawTexturedModalRect(this.x, this.y, 16, 217, 10, 10);
+                drawTexturedModalRect(this.x, this.y, 6, 217, 10, 10);
             }
             glPop();
         }

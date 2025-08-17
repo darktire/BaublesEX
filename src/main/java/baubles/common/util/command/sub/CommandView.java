@@ -36,7 +36,7 @@ public class CommandView extends CommandBase {
             ItemStack stack = baubles.getStackInSlot(i);
             if (!stack.isEmpty() && BaublesApi.isBauble(stack)) {
                 IBauble bauble = BaublesApi.toBauble(stack);
-                sender.sendMessage(new TextComponentTranslation("commands.baubles.view", i, stack.getDisplayName(), bauble.getBaubleTypeEx().getTypeName()));
+                sender.sendMessage(new TextComponentTranslation("commands.baubles.view", i, stack.getDisplayName(), bauble.getBaubleType().getTypeName()));
             }
         }
     }

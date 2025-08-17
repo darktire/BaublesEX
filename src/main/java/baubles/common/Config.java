@@ -22,11 +22,12 @@ public class Config {
 
 //    Configuration Options
     public static boolean renderBaubles = true;
-    public static boolean renderElytra = false;
 //    public static boolean jsonFunction = false;
     public static boolean keepBaubles = false;
     public static int maxLevel = 1;
-    protected static String[] clickBlacklist = {"wct:wct"};
+    public static boolean armorStand = false;
+    private static String[] clickBlacklist = {"wct:wct"};
+
     public final static String BAUBLES_SLOTS = "general.slots";
     public final static String CLIENT_GUI = "client.gui";
     public final static String BAUBLES_ITEMS = "general.items";
@@ -58,13 +59,13 @@ public class Config {
 
     public void loadData() {
         renderBaubles = configFile.getBoolean("baubleRender", CATEGORY_CLIENT, renderBaubles, "Set this to false to disable rendering of baubles in the player.");
-        renderElytra = configFile.getBoolean("renderElytra", CATEGORY_CLIENT, renderElytra, "Whether elytra in baubles will be rendered");
 
         maxLevel = configFile.getInt("maxLevel", CATEGORY_GENERAL, maxLevel, 0, 255, "Max level of haste given by Miner's Ring");
 
 //        jsonFunction = configFile.getBoolean("jsonFunction", CATEGORY_GENERAL ,jsonFunction, "Activate json function or not. (experimental function)");
 
         keepBaubles = configFile.getBoolean("keepBaubles", CATEGORY_GENERAL, keepBaubles, "Whether baubles can drop when player dies.");
+        armorStand = configFile.getBoolean("armorStand", CATEGORY_GENERAL, armorStand, "Whether armorStand has baubles container (need to place armorStand again)");
 
         clickBlacklist = configFile.getStringList("clickBlacklist", CATEGORY_GENERAL, clickBlacklist, "");
 
@@ -102,19 +103,23 @@ public class Config {
 
         @Override
         public void loadData() {
-            AMULET = getCfgAmount(configFile, "amuletSlot", BaubleType.AMULET.amount);
-            RING = getCfgAmount(configFile, "ringSlot", BaubleType.RING.amount);// no less than 2 or incompatible with artifact
-            BELT = getCfgAmount(configFile, "beltSlot", BaubleType.BELT.amount);
-            TRINKET = getCfgAmount(configFile, "trinketSlot", BaubleType.TRINKET.amount);
-            HEAD = getCfgAmount(configFile, "headSlot", BaubleType.HEAD.amount);
-            BODY = getCfgAmount(configFile, "bodySlot", BaubleType.BODY.amount);
-            CHARM = getCfgAmount(configFile, "charmSlot", BaubleType.CHARM.amount);
+            AMULET = getCfgAmount("amuletSlot", BaubleType.AMULET.amount);
+            RING = getCfgAmount("ringSlot", BaubleType.RING.amount);// no less than 2 or incompatible with artifact
+            BELT = getCfgAmount("beltSlot", BaubleType.BELT.amount);
+            TRINKET = getCfgAmount("trinketSlot", BaubleType.TRINKET.amount, "Number of slots only for trinket is equal to the difference between the value you set and all other slots.");
+            HEAD = getCfgAmount("headSlot", BaubleType.HEAD.amount);
+            BODY = getCfgAmount("bodySlot", BaubleType.BODY.amount);
+            CHARM = getCfgAmount("charmSlot", BaubleType.CHARM.amount);
 
             configFile.getCategory(BAUBLES_SLOTS).setComment("Modify the quantity of initial baubles.");
         }
 
-        private int getCfgAmount(Configuration cfgFile, String key, int value) {
-            return cfgFile.getInt(key, BAUBLES_SLOTS, value, 0, 100, "");
+        private int getCfgAmount(String key, int value) {
+            return getCfgAmount(key , value,"");
+        }
+
+        private int getCfgAmount(String key, int value, String comment) {
+            return configFile.getInt(key, BAUBLES_SLOTS, value, 0, 100, comment);
         }
 
         public static int getCfgAmount(String key){
@@ -154,6 +159,7 @@ public class Config {
             testItem = configFile.getBoolean("testItem", BAUBLES_ITEMS, testItem, "For test, or you want");
             elytraBauble = configFile.getBoolean("elytraBauble", BAUBLES_ITEMS, elytraBauble, "Set elytra as bauble");
             elytraSlot = configFile.getString("elytraSlot", BAUBLES_ITEMS, elytraSlot, "Get a specific slot for elytra", elytraValidSlot);
+            configFile.getCategory(BAUBLES_ITEMS).setComment("Item modified by BaublesEX. (need to restart)");
             configFile.getCategory(BAUBLES_ITEMS).requiresMcRestart();
         }
     }

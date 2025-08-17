@@ -29,7 +29,7 @@ public abstract class MixinStack {
         if (Baubles.config.getBlacklist().contains(heldItem.getItem())) return;
         if (!BaublesApi.isBauble(heldItem)) return;
         IBauble bauble = BaublesApi.toBauble(heldItem);
-        BaubleTypeEx type = bauble.getBaubleTypeEx();
+        BaubleTypeEx type = bauble.getBaubleType();
         IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) playerIn);
         for (int i = 0; i < baubles.getSlots(); i++) {
             if (baubles.getTypeInSlot(i) != type && type != BaublesRegistry.TRINKET) continue;

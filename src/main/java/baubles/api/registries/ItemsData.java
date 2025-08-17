@@ -6,10 +6,11 @@ import baubles.api.cap.BaubleItem;
 import net.minecraft.item.Item;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ItemsData {
 
-    private static final HashMap<Item, BaublesWrapper> BAUBLE_ITEMS = new HashMap<>();
+    private static final Map<Item, BaublesWrapper> BAUBLE_ITEMS = new HashMap<>();
 
     /**
      * Link items and the bauble which is a instance of IBauble

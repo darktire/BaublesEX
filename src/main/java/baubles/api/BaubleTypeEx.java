@@ -3,11 +3,12 @@ package baubles.api;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> {
     private final String typeName;
     private int amount;
-    private final ArrayList<Integer> oriSlots;
+    private final List<Integer> oriSlots;
 
     public BaubleTypeEx(String typeName, int amount) {
         this.typeName = typeName;
@@ -33,7 +34,7 @@ public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> {
     public void addOriSlots(BaubleTypeEx type) {
         oriSlots.addAll(type.getOriSlots());
     }
-    public ArrayList<Integer> getOriSlots() {
+    public List<Integer> getOriSlots() {
         return oriSlots;
     }
 
@@ -42,6 +43,10 @@ public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> {
     }
     public String getTexture() {
         return "gui/slots/" + typeName;
+    }
+
+    public String getTranslateKey() {
+        return "name." + typeName;
     }
 
     public boolean hasSlot(int slot) {

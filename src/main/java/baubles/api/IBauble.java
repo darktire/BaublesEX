@@ -3,6 +3,8 @@ package baubles.api;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
+import java.util.List;
+
 /**
  *
  * This interface should be extended by items that can be worn in bauble slots
@@ -13,15 +15,23 @@ import net.minecraft.item.ItemStack;
 public interface IBauble {
 
     /**
-     * This method return the type of bauble this is.
+     * This method return the type or the main type of bauble this is.
      * Type is used to determine the slots it can go into.
      */
-    default BaubleTypeEx getBaubleTypeEx() {
+    default BaubleTypeEx getBaubleType() {
         return null;
     }
 
     /**
-     * @deprecated prefer calling {@link IBauble#getBaubleTypeEx()} wherever possible
+     * If bauble has more than on types, use this method.
+     * Type is used to determine the slots it can go into.
+     */
+    default List<BaubleTypeEx> getBaubleTypes() {
+        return null;
+    }
+
+    /**
+     * @deprecated prefer calling {@link IBauble#getBaubleType()} wherever possible
      */
     @Deprecated
     default BaubleType getBaubleType(ItemStack itemStack) {
@@ -65,6 +75,7 @@ public interface IBauble {
      * Default is off, so override and set to true if you want to auto sync.
      * This sync is not instant, but occurs every 10 ticks (.5 seconds).
      */
+    @Deprecated
     default boolean willAutoSync(ItemStack itemstack, EntityLivingBase entity) {
         return false;
     }

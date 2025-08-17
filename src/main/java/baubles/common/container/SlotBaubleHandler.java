@@ -3,6 +3,7 @@ package baubles.common.container;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
+import baubles.api.cap.IBaublesModifiable;
 import baubles.api.event.BaublesChangeEvent;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,8 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class SlotBaubleHandler extends SlotItemHandler {
@@ -34,7 +33,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        return ((IBaublesItemHandler)getItemHandler()).isItemValidForSlot(index, stack, this.entity);
+        return getItemHandler().isItemValidForSlot(index, stack, this.entity);
     }
 
     @Override
@@ -47,32 +46,34 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     public ItemStack onTake(EntityPlayer playerIn, ItemStack stack) {
-        BaublesChangeEvent event = new BaublesChangeEvent(this.entity, this.index, stack, ItemStack.EMPTY);
+        BaublesChangeEvent event = new BaublesChangeEvent(this.entity, this.getItemHandler(), this.index, stack, ItemStack.EMPTY);
         MinecraftForge.EVENT_BUS.post(event);
 
-        if (!stack.isEmpty() && !((IBaublesItemHandler)getItemHandler()).isEventBlocked()) {
+        if (!stack.isEmpty() && !event.isBlocked()) {
             IBauble bauble = BaublesApi.toBauble(stack);
             if (bauble != null) bauble.onUnequipped(stack, this.entity);
+            this.onSlotChanged();
         }
 
-        this.onSlotChanged();
         return stack;
     }
 
     @Override
     public void putStack(ItemStack stack) {
-        MinecraftForge.EVENT_BUS.post(new BaublesChangeEvent(this.entity, this.index, ItemStack.EMPTY, stack));
+        BaublesChangeEvent event = new BaublesChangeEvent(this.entity, this.getItemHandler(), this.index, getStack(), stack);
+        MinecraftForge.EVENT_BUS.post(event);
+        if (event.isBlocked()) return;
 
-        if (getHasStack() && !ItemStack.areItemStacksEqual(stack, getStack()) && !((IBaublesItemHandler) getItemHandler()).isEventBlocked() && BaublesApi.isBauble(getStack())) {
+        if (getHasStack() && !ItemStack.areItemStacksEqual(stack, getStack()) && BaublesApi.isBauble(getStack())) {
             BaublesApi.toBauble(getStack()).onUnequipped(getStack(), this.entity);
         }
 
         ItemStack oldStack = getStack().copy();
 
-        ((IItemHandlerModifiable) this.getItemHandler()).setStackInSlot(index, stack);
+        this.getItemHandler().setStackInSlot(index, stack);
         this.onSlotChanged();//no effect
 
-        if (getHasStack() && !ItemStack.areItemStacksEqual(oldStack, getStack()) && !((IBaublesItemHandler) getItemHandler()).isEventBlocked()) {
+        if (getHasStack() && !ItemStack.areItemStacksEqual(oldStack, getStack())) {
             BaublesApi.toBauble(getStack()).onEquipped(getStack(), this.entity);
         }
     }
@@ -117,9 +118,10 @@ public class SlotBaubleHandler extends SlotItemHandler {
         return super.decrStackSize(amount);
     }
 
+
     @Override
-    public IItemHandler getItemHandler() {
-        return super.getItemHandler();
+    public IBaublesModifiable getItemHandler() {
+        return (IBaublesModifiable) super.getItemHandler();
     }
 
     @Override
