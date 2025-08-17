@@ -25,7 +25,7 @@ public class Config {
 //    public static boolean jsonFunction = false;
     public static boolean keepBaubles = false;
     public static int maxLevel = 1;
-    public static boolean armorStand = false;
+//    public static boolean armorStand = false;
     private static String[] clickBlacklist = {"wct:wct"};
 
     public final static String BAUBLES_SLOTS = "general.slots";
@@ -65,7 +65,7 @@ public class Config {
 //        jsonFunction = configFile.getBoolean("jsonFunction", CATEGORY_GENERAL ,jsonFunction, "Activate json function or not. (experimental function)");
 
         keepBaubles = configFile.getBoolean("keepBaubles", CATEGORY_GENERAL, keepBaubles, "Whether baubles can drop when player dies.");
-        armorStand = configFile.getBoolean("armorStand", CATEGORY_GENERAL, armorStand, "Whether armorStand has baubles container (need to place armorStand again)");
+//        armorStand = configFile.getBoolean("armorStand", CATEGORY_GENERAL, armorStand, "Whether armorStand has baubles container (need to place armorStand again)");
 
         clickBlacklist = configFile.getStringList("clickBlacklist", CATEGORY_GENERAL, clickBlacklist, "");
 

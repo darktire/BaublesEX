@@ -4,7 +4,6 @@ import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.common.Config;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemElytra;
@@ -13,7 +12,7 @@ import net.minecraft.item.ItemStack;
 public class ElytraHelper {
     public static ItemStack elytraInBaubles(EntityLivingBase entity, EntityEquipmentSlot slot) {
         ItemStack stack = entity.getItemStackFromSlot(slot);
-        if (Config.ModItems.elytraBauble && (entity instanceof EntityPlayer || entity instanceof EntityArmorStand) && ((!(stack.getItem() instanceof ItemElytra) || stack.getItem() instanceof ItemElytra && !ItemElytra.isUsable(stack)))) {
+        if (Config.ModItems.elytraBauble && entity instanceof EntityPlayer && ((!(stack.getItem() instanceof ItemElytra) || stack.getItem() instanceof ItemElytra && !ItemElytra.isUsable(stack)))) {
             IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
             if (baubles != null) {
                 for (int i = 0; i < baubles.getSlots(); i++) {

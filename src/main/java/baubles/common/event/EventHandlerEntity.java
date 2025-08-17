@@ -8,25 +8,20 @@ import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.common.Baubles;
 import baubles.common.Config;
-import baubles.common.util.BaublesRegistry;
-import baubles.common.util.IPlayerTarget;
 import cofh.core.enchantment.EnchantmentSoulbound;
 import cofh.core.util.helpers.ItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -37,7 +32,7 @@ import static cofh.core.init.CoreEnchantments.soulbound;
 public class EventHandlerEntity {
     private static final ResourceLocation BAUBLES_CAP = new ResourceLocation(Baubles.MODID, "container");
 
-    @SubscribeEvent
+/*    @SubscribeEvent
     public void openEntityGui(PlayerInteractEvent.EntityInteractSpecific event) {
         if (Config.ModItems.testItem) {
             Entity target = event.getTarget();
@@ -63,7 +58,7 @@ public class EventHandlerEntity {
                 }
             }
         }
-    }
+    }*/
 
     @SubscribeEvent
     public void cloneCapabilitiesEvent(PlayerEvent.Clone event) {
@@ -80,10 +75,6 @@ public class EventHandlerEntity {
     @SubscribeEvent
     public void attachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof EntityPlayer) {
-            event.addCapability(BAUBLES_CAP, new BaublesContainerProvider(new BaublesContainer((EntityLivingBase) event.getObject())));
-        }
-        else if (Config.armorStand && event.getObject() instanceof EntityArmorStand) {
-            if (BaublesApi.canEquipBaubles((EntityLivingBase) event.getObject())) return;
             event.addCapability(BAUBLES_CAP, new BaublesContainerProvider(new BaublesContainer((EntityLivingBase) event.getObject())));
         }
     }
