@@ -11,6 +11,7 @@
   ],
   "client": [
     "MixinElytra$MixinCape",
+    "MixinElytra$MixinCustom",
     "MixinElytra$MixinLayer",
     "MixinElytra$MixinPlayerSP"
   ],

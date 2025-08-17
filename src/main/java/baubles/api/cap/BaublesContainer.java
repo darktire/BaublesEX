@@ -45,9 +45,15 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
 
     @Override
     public void modifySlotOA(String typeName, int modifier) {
-        if (modifier == 0) return;
-        this.PREVIOUS_SLOTS.clear();
-        this.PREVIOUS_SLOTS.addAll(this.MODIFIED_SLOTS);
+        if (modifier != 0) {
+            this.storeSlots();
+            int input = this.modifySlotOL(typeName, modifier);
+            this.BAUBLE_MODIFIER.put(typeName, input);
+            if (this.slotsUpdated) this.slotsUpdated = false;
+        }
+    }
+
+    private int modifySlotOL(String typeName, int modifier) {
         BaubleTypeEx type = TypesData.getTypeByName(typeName);
         if (type == null) throw new RuntimeException("No such bauble type");
         int original = this.BAUBLE_MODIFIER.getOrDefault(typeName, 0);
@@ -68,19 +74,17 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         }
         else {
             int lastIndex = this.MODIFIED_SLOTS.lastIndexOf(type);
-            if (lastIndex == -1) return;
+            if (lastIndex == -1) return original;
             if (modifier + type.getAmount() + original < 0) modifier = -type.getAmount() - original;
             this.MODIFIED_SLOTS.subList(lastIndex + modifier + 1, lastIndex + 1).clear();
         }
 
-        this.BAUBLE_MODIFIER.put(typeName, original + modifier);
-        if (this.slotsUpdated) this.slotsUpdated = false;
+        return original + modifier;
     }
 
     @Override
     public void clearModifier() {
-        this.PREVIOUS_SLOTS.clear();
-        this.PREVIOUS_SLOTS.addAll(this.MODIFIED_SLOTS);
+        this.storeSlots();
         this.MODIFIED_SLOTS.clear();
         this.MODIFIED_SLOTS.addAll(TypesData.getLazyList());
         this.BAUBLE_MODIFIER.clear();
@@ -89,7 +93,14 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
 
     @Override
     public void updateSlots() {// todo may have a better way
-        if (!this.slotsUpdated) onSlotChanged();
+        if (!this.slotsUpdated) {
+            this.onSlotChanged();
+        }
+    }
+
+    private void storeSlots() {
+        this.PREVIOUS_SLOTS.clear();
+        this.PREVIOUS_SLOTS.addAll(this.MODIFIED_SLOTS);
     }
 
     private void onSlotChanged() {
@@ -121,14 +132,14 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     }
 
     public void onConfigChanged() {
-        this.PREVIOUS_SLOTS.clear();
-        this.PREVIOUS_SLOTS.addAll(this.MODIFIED_SLOTS);
+        this.storeSlots();
         this.MODIFIED_SLOTS.clear();
         this.MODIFIED_SLOTS.addAll(TypesData.getLazyList());
         for (String typeName: this.BAUBLE_MODIFIER.keySet()) {
-            modifySlotOA(typeName, this.BAUBLE_MODIFIER.get(typeName));
+            this.modifySlotOL(typeName, this.BAUBLE_MODIFIER.get(typeName));
         }
         this.slotsUpdated = false;
+        this.updateSlots();
     }
 
     @Override
@@ -259,8 +270,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
                 modifySlot(typeName, modifier.getInteger(typeName));
             }
             setSize(MODIFIED_SLOTS.size());
-            this.PREVIOUS_SLOTS.clear();
-            this.PREVIOUS_SLOTS.addAll(this.MODIFIED_SLOTS);
+            this.storeSlots();
             this.slotsUpdated = true;
         }
 

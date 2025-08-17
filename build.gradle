@@ -113,6 +113,8 @@ dependencies {
     implementation fg.deobf("curse.maven:the-one-probe-community-edition-885670:6736118")
 //    runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:2667280")
 
+    compileOnly fg.deobf("curse.maven:mo-bends-231347:3573346")
+//    runtimeOnly fg.deobf("curse.maven:mo-bends-231347:3573346")
     implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:2503041")
 }
 

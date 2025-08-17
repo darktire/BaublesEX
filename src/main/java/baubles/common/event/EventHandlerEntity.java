@@ -79,10 +79,11 @@ public class EventHandlerEntity {
 
     @SubscribeEvent
     public void attachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof EntityPlayer || event.getObject() instanceof EntityArmorStand) {
+        if (event.getObject() instanceof EntityPlayer) {
             event.addCapability(BAUBLES_CAP, new BaublesContainerProvider(new BaublesContainer((EntityLivingBase) event.getObject())));
         }
         else if (Config.armorStand && event.getObject() instanceof EntityArmorStand) {
+            if (BaublesApi.canEquipBaubles((EntityLivingBase) event.getObject())) return;
             event.addCapability(BAUBLES_CAP, new BaublesContainerProvider(new BaublesContainer((EntityLivingBase) event.getObject())));
         }
     }

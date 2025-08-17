@@ -26,6 +26,7 @@ public class BaublesWrapper implements IBauble {
     public BaublesWrapper(Item item, IBauble bauble) {
         this.item = item;
         this.bauble = bauble;
+        if (bauble == null) throw new RuntimeException(item.getRegistryName() + " have not registered");
         this.mainType = bauble.getBaubleType();
         this.types = bauble.getBaubleTypes();
         if (this.types == null) {

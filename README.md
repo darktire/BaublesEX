@@ -31,6 +31,7 @@
 - [x] new style of bauble slots (redraw again)
 - [x] right click to equip baubles
 - [x] enchantment support for baubles
+- [ ] json function
 - [ ] visibility of each bauble
 - [ ] support for CraftTweaker
 - [ ] ...

@@ -1,86 +1,69 @@
 package baubles.mixin;
 
 import baubles.common.util.ElytraHelper;
+import goblinbob.mobends.standard.client.renderer.entity.layers.LayerCustomCape;
+import goblinbob.mobends.standard.client.renderer.entity.layers.LayerCustomElytra;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.entity.layers.LayerCape;
 import net.minecraft.client.renderer.entity.layers.LayerElytra;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.play.INetHandlerPlayServer;
-import net.minecraft.util.ITickable;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 public abstract class MixinElytra {
     @Mixin(EntityPlayerSP.class)
-    public abstract static class MixinPlayerSP extends EntityLivingBase {
-        public MixinPlayerSP(World worldIn) { super(worldIn); }
-
-        @ModifyVariable(method = "onLivingUpdate", at = @At("STORE"), ordinal = 0)
-        private ItemStack injected(ItemStack stack) {
-            return ElytraHelper.elytraInBaubles(stack, this);
+    public abstract static class MixinPlayerSP {
+        @Redirect(method = "onLivingUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/EntityPlayerSP;getItemStackFromSlot(Lnet/minecraft/inventory/EntityEquipmentSlot;)Lnet/minecraft/item/ItemStack;"))
+        private ItemStack injected(EntityPlayerSP entity, EntityEquipmentSlot slot) {
+            return ElytraHelper.elytraInBaubles(entity, slot);
         }
     }
 
     @Mixin(EntityLivingBase.class)
-    public abstract static class MixinEntityBase extends Entity {
-        public MixinEntityBase(World worldIn) { super(worldIn); }
-
-        @ModifyVariable(method = "updateElytra", at = @At("STORE"), ordinal = 0)
-        private ItemStack injected(ItemStack stack) {
-            return ElytraHelper.elytraInBaubles(stack, (EntityLivingBase) (Entity) this);
+    public abstract static class MixinEntityBase {
+        @Redirect(method = "updateElytra", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityLivingBase;getItemStackFromSlot(Lnet/minecraft/inventory/EntityEquipmentSlot;)Lnet/minecraft/item/ItemStack;"))
+        private ItemStack injected(EntityLivingBase entity, EntityEquipmentSlot slot) {
+            return ElytraHelper.elytraInBaubles(entity, slot);
         }
     }
 
     @Mixin(NetHandlerPlayServer.class)
-    public abstract static class MixinNetHandler implements INetHandlerPlayServer, ITickable {
-        @Shadow public EntityPlayerMP player;
-
-        @ModifyVariable(method = "processEntityAction", at = @At("STORE"), ordinal = 0)
-        private ItemStack injected(ItemStack stack) {
-            return ElytraHelper.elytraInBaubles(stack, this.player);
+    public abstract static class MixinNetHandler {
+        @Redirect(method = "processEntityAction", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayerMP;getItemStackFromSlot(Lnet/minecraft/inventory/EntityEquipmentSlot;)Lnet/minecraft/item/ItemStack;"))
+        private ItemStack injected(EntityPlayerMP entity, EntityEquipmentSlot slot) {
+            return ElytraHelper.elytraInBaubles(entity, slot);
         }
     }
 
     @Mixin(LayerCape.class)
-    public abstract static class MixinCape implements LayerRenderer<AbstractClientPlayer> {
-        @Unique private AbstractClientPlayer CapeMixin$player;
-
-        @Inject(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At("HEAD"))
-        private void getPlayer(AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, CallbackInfo ci) {
-            this.CapeMixin$player = entitylivingbaseIn;
-        }
-
-
-        @ModifyVariable(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At("STORE"), ordinal = 0)
-        private ItemStack injected(ItemStack stack) {
-            return ElytraHelper.elytraInBaubles(stack, this.CapeMixin$player);
+    public abstract static class MixinCape {
+        @Redirect(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/AbstractClientPlayer;getItemStackFromSlot(Lnet/minecraft/inventory/EntityEquipmentSlot;)Lnet/minecraft/item/ItemStack;"))
+        private ItemStack injected(AbstractClientPlayer entity, EntityEquipmentSlot slot) {
+            return ElytraHelper.elytraInBaubles(entity, slot);
         }
     }
 
     @Mixin(LayerElytra.class)
-    public abstract static class MixinLayer implements LayerRenderer<AbstractClientPlayer> {
-        @Unique private EntityLivingBase LayerMixin$player;
-
-        @Inject(method = "doRenderLayer", at = @At("HEAD"))
-        private void getPlayer(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, CallbackInfo ci) {
-            this.LayerMixin$player = entitylivingbaseIn;
+    public abstract static class MixinLayer {
+        @Redirect(method = "doRenderLayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityLivingBase;getItemStackFromSlot(Lnet/minecraft/inventory/EntityEquipmentSlot;)Lnet/minecraft/item/ItemStack;"))
+        private ItemStack injected(EntityLivingBase entity, EntityEquipmentSlot slot) {
+            return ElytraHelper.elytraInBaubles(entity, slot);
         }
+    }
 
-        @ModifyVariable(method = "doRenderLayer", at = @At("STORE"), ordinal = 0)
-        private ItemStack injected(ItemStack stack) {
-            return ElytraHelper.elytraInBaubles(stack, this.LayerMixin$player);
+    @Pseudo
+    @Mixin({LayerCustomElytra.class, LayerCustomCape.class})
+    public abstract static class MixinCustom {
+        @Redirect(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/AbstractClientPlayer;getItemStackFromSlot(Lnet/minecraft/inventory/EntityEquipmentSlot;)Lnet/minecraft/item/ItemStack;"))
+        private ItemStack injected(AbstractClientPlayer entity, EntityEquipmentSlot slot) {
+            return ElytraHelper.elytraInBaubles(entity, slot);
         }
     }
 }

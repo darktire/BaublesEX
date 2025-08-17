@@ -1,5 +1,6 @@
 package baubles.common.event;
 
+import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.cap.BaublesCapabilityProvider;
 import baubles.api.registries.ItemsData;
@@ -39,7 +40,7 @@ public class EventHandlerItem {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void itemBaubleWrap(RegistryEvent.Register<Item> event) {
+    public void itemBaubleWrap(RegistryEvent.Register<BaubleTypeEx> event) {
         Baubles.registry.registerItems();
         Baubles.config.setupBlacklist();
     }
