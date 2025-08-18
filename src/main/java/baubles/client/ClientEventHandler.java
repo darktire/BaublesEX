@@ -6,7 +6,7 @@ import baubles.api.BaublesWrapper;
 import baubles.api.IBauble;
 import baubles.api.registries.TypesData;
 import baubles.client.gui.GuiPlayerExpanded;
-import baubles.common.Baubles;
+import baubles.Baubles;
 import baubles.common.Config;
 import baubles.common.config.KeyBindings;
 import baubles.common.util.BaublesRegistry;

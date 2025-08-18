@@ -4,7 +4,7 @@ import baubles.api.cap.BaublesContainer;
 import baubles.client.gui.element.GUIBaublesButton;
 import baubles.client.gui.element.GUIBaublesController;
 import baubles.client.gui.element.GUIBaublesScroller;
-import baubles.common.Baubles;
+import baubles.Baubles;
 import baubles.common.Config;
 import baubles.common.compat.JeiPlugin;
 import baubles.common.container.ContainerPlayerExpanded;

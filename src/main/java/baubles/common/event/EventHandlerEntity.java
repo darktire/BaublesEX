@@ -6,7 +6,7 @@ import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.BaublesContainerProvider;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.common.Baubles;
+import baubles.Baubles;
 import baubles.common.Config;
 import cofh.core.enchantment.EnchantmentSoulbound;
 import cofh.core.util.helpers.ItemHelper;

@@ -4,7 +4,7 @@ import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.registries.TypesData;
-import baubles.common.Baubles;
+import baubles.Baubles;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;

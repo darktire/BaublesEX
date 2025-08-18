@@ -1,5 +1,6 @@
 package baubles.common;
 
+import baubles.Baubles;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.container.ContainerPlayerExpanded;
 import baubles.common.event.BaublesSync;

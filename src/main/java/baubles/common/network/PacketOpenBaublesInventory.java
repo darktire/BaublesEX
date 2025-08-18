@@ -1,6 +1,6 @@
 package baubles.common.network;
 
-import baubles.common.Baubles;
+import baubles.Baubles;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.WorldServer;
