@@ -1,6 +1,6 @@
 package baubles.client.gui.config;
 
-import baubles.common.Baubles;
+import baubles.Baubles;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
@@ -10,7 +10,7 @@ import net.minecraftforge.fml.client.config.IConfigElement;
 import java.util.ArrayList;
 import java.util.List;
 
-import static baubles.common.Baubles.config;
+import static baubles.Baubles.config;
 
 public class BaublesConfigGui extends GuiConfig {
 

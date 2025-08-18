@@ -1,6 +1,6 @@
 package baubles.client.gui.config;
 
-import baubles.common.Baubles;
+import baubles.Baubles;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.DefaultGuiFactory;
 

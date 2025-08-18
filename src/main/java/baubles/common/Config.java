@@ -1,5 +1,6 @@
 package baubles.common;
 
+import baubles.Baubles;
 import baubles.api.BaubleType;
 import baubles.api.cap.BaublesContainer;
 import net.minecraft.item.Item;

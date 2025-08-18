@@ -1,6 +1,6 @@
 package baubles.client.gui;
 
-import baubles.common.Baubles;
+import baubles.Baubles;
 import baubles.common.config.KeyBindings;
 import com.google.common.collect.Ordering;
 import net.minecraft.client.gui.inventory.GuiContainer;
