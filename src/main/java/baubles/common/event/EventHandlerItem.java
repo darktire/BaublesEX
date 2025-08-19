@@ -1,10 +1,10 @@
 package baubles.common.event;
 
+import baubles.Baubles;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.cap.BaublesCapabilityProvider;
 import baubles.api.registries.ItemsData;
-import baubles.Baubles;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -29,7 +29,9 @@ public class EventHandlerItem {
 
         if (!(ItemsData.isBauble(item))) return;
 
-        if (BaublesApi.isBauble(stack)) {
+        if (ItemsData.toBauble(item).getBauble() == null) return;
+
+        if (BaublesApi.isBauble(stack)) {// todo remove other cap
             ((BaublesCapabilityProvider)event.getCapabilities().get(ITEM_CAP)).serializeNBT();
             return;
         }

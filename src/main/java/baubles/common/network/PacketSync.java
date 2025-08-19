@@ -1,12 +1,13 @@
 package baubles.common.network;
 
+import baubles.Baubles;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.Baubles;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
@@ -23,6 +24,10 @@ public class PacketSync implements IMessage {
     private ItemStack bauble;
 
     public PacketSync() {}
+
+    public PacketSync(EntityPlayer p, int slot, ItemStack bauble) {
+        this((EntityLivingBase) p, slot, bauble);
+    }
 
     public PacketSync(EntityLivingBase entity, int slot, ItemStack bauble) {
         this.slot = slot;

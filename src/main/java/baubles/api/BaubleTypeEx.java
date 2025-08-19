@@ -42,7 +42,7 @@ public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> {
         return typeName;
     }
     public String getTexture() {
-        return "gui/slots/" + typeName;
+        return "baubles:gui/slots/" + typeName;
     }
 
     public String getTranslateKey() {

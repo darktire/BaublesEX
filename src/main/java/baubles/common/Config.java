@@ -3,6 +3,7 @@ package baubles.common;
 import baubles.Baubles;
 import baubles.api.BaubleType;
 import baubles.api.cap.BaublesContainer;
+import baubles.common.config.json.JsonHelper;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -19,11 +20,11 @@ import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
 public class Config {
     private static Configuration configFile;
+    public static JsonHelper json;
     public File modDir;
 
 //    Configuration Options
     public static boolean renderBaubles = true;
-//    public static boolean jsonFunction = false;
     public static boolean keepBaubles = false;
     public static int maxLevel = 1;
 //    public static boolean armorStand = false;
@@ -41,7 +42,7 @@ public class Config {
     }
 
     public void loadConfig(FMLPreInitializationEvent event) {
-        modDir = event.getModConfigurationDirectory();
+        this.modDir = event.getModConfigurationDirectory();
         try {
             configFile = new Configuration(event.getSuggestedConfigurationFile());
             configFile.load();
@@ -50,6 +51,7 @@ public class Config {
             new Gui();
             new ModItems();
             loadData();
+            json = new JsonHelper(this.modDir);
         } catch (Exception e) {
             Baubles.log.error("BAUBLES has a problem loading it's configuration");
         } finally {
@@ -62,8 +64,6 @@ public class Config {
         renderBaubles = configFile.getBoolean("baubleRender", CATEGORY_CLIENT, renderBaubles, "Set this to false to disable rendering of baubles in the player.");
 
         maxLevel = configFile.getInt("maxLevel", CATEGORY_GENERAL, maxLevel, 0, 255, "Max level of haste given by Miner's Ring");
-
-//        jsonFunction = configFile.getBoolean("jsonFunction", CATEGORY_GENERAL ,jsonFunction, "Activate json function or not. (experimental function)");
 
         keepBaubles = configFile.getBoolean("keepBaubles", CATEGORY_GENERAL, keepBaubles, "Whether baubles can drop when player dies.");
 //        armorStand = configFile.getBoolean("armorStand", CATEGORY_GENERAL, armorStand, "Whether armorStand has baubles container (need to place armorStand again)");
@@ -125,11 +125,8 @@ public class Config {
 
         public static int getCfgAmount(String key){
             Property property = configFile.getCategory(BAUBLES_SLOTS).get(key.toLowerCase() + "Slot");
-            if (property != null) {
-                return property.getInt();
-            } else {
-                return 0;
-            }
+            if (property != null) return property.getInt();
+            else return 0;
         }
     }
 

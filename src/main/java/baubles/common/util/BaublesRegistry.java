@@ -2,6 +2,7 @@ package baubles.common.util;
 
 import baubles.api.BaubleType;
 import baubles.api.BaubleTypeEx;
+import baubles.api.BaublesWrapper;
 import baubles.api.IBauble;
 import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
@@ -14,7 +15,9 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 public class BaublesRegistry {
     public static BaubleTypeEx TRINKET = BaubleType.TRINKET.getNewType();
@@ -27,10 +30,21 @@ public class BaublesRegistry {
     public void registerItems() {
         for (Item item : Item.REGISTRY) {
             if (item instanceof IBauble) {
-                ItemsData.registerBauble(item);
+                ItemsData.registerBauble(item, (IBauble) item);
             }
         }
         if (Config.ModItems.elytraBauble) ItemsData.registerBauble(Items.ELYTRA, TypesData.getTypeByName(Config.ModItems.elytraSlot));
+
+        try {
+            List<BaublesWrapper> items = Config.json.jsonToItem();
+            if (items != null && !items.isEmpty()) {
+                for (BaublesWrapper wrapper: items) {
+                    ItemsData.registerBauble(wrapper.getItem(), wrapper);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void registerBaubles() {
@@ -47,7 +61,18 @@ public class BaublesRegistry {
             TypesData.registerBauble(BaubleType.TRINKET.getNewType(), trinket - amount);
         }
 
-        if (Config.ModItems.elytraBauble && Config.ModItems.elytraSlot.equals("elytra")) TypesData.registerBauble("elytra", 1);
+        TypesData.registerBauble("elytra", (Config.ModItems.elytraBauble && Config.ModItems.elytraSlot.equals("elytra")) ? 1 : 0);
+
+        try {
+            List<BaubleTypeEx> types = Config.json.jsonToType();
+            if (types != null && !types.isEmpty()) {
+                for (BaubleTypeEx type : types) {
+                    TypesData.registerBauble(type);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void loadValidSlots() {

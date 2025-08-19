@@ -1,10 +1,10 @@
 package baubles.common.config.json;
 
 import baubles.api.BaubleTypeEx;
-import baubles.api.registries.TypesData;
-import baubles.Baubles;
+import baubles.api.BaublesWrapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -12,64 +12,50 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 
 
 public class JsonHelper {
 
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private final File jsonDir;
-    private final File typeDir;
-    private final File itemDir;
+    private static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapterFactory(new CustomTypeAdapterFactory())
+            .setPrettyPrinting()
+            .create();
+    private final File typeJson;
+    private final File itemJson;
 
-    public JsonHelper() {
-        this.jsonDir = new File(Baubles.config.modDir, "baubles");
-        this.typeDir = new File(jsonDir, "bauble_type");
-        this.itemDir = new File(jsonDir, "bauble_item");
+    public final TypeToken<List<BaubleTypeEx>> token1 = new TypeToken<List<BaubleTypeEx>>() {};
+    public final TypeToken<List<BaublesWrapper>> token2 = new TypeToken<List<BaublesWrapper>>() {};
+
+    public JsonHelper(File modDir) {
+        File jsonDir = new File(modDir, "baubles");
+        this.typeJson = new File(jsonDir, "type_data.json");
+        this.itemJson = new File(jsonDir, "item_data.json");
     }
 
-    public void typesToJson() throws IOException {
-        Iterator<BaubleTypeEx> types = TypesData.iterator();
-        while (types.hasNext()) {
-            BaubleTypeEx type = types.next();
-            File jsonFile = new File(typeDir, type.getTypeName() + ".json");
-
-            FileUtils.write(jsonFile, GSON.toJson(type), StandardCharsets.UTF_8);
-        }
+    public void typeToJson(List<BaubleTypeEx> types) throws IOException {
+        FileUtils.write(this.typeJson, GSON.toJson(types, this.token1.getType()), StandardCharsets.UTF_8);
     }
 
-    public void jsonToType() throws FileNotFoundException {
-        Collection<File> files = FileUtils.listFiles(typeDir, new String[]{"json"}, true);
-        if (files.isEmpty()) throw new FileNotFoundException();
+    public List<BaubleTypeEx> jsonToType() throws IOException {
         try {
-            for (File jsonFile : files) {
-                    BaubleTypeEx type = GSON.fromJson(new FileReader(jsonFile), BaubleTypeEx.class);
-                    TypesData.registerBauble(type);
-            }
+            return GSON.fromJson(new FileReader(this.typeJson), token1.getType());
         } catch (FileNotFoundException e) {
-            //Impossible?
-            throw new RuntimeException(e);
+            FileUtils.write(this.typeJson, null, StandardCharsets.UTF_8, true);
         }
+        return null;
     }
 
-    public void itemToJson(Object obj) {
-        File jsonFile = new File(itemDir, "item.json");
-
-        try {
-            FileUtils.write(jsonFile, GSON.toJson(obj), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void itemToJson(List<BaublesWrapper> items) throws IOException {
+        FileUtils.write(this.itemJson, GSON.toJson(items, this.token2.getType()), StandardCharsets.UTF_8);
     }
 
-    public void jsonToItem() {
-/*        File jsonFile = new File(itemDir, "item.json");
-        Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+    public List<BaublesWrapper> jsonToItem() throws IOException {
         try {
-            ItemsData.setRegHelper(GSON.fromJson(new FileReader(jsonFile), type));
+            return GSON.fromJson(new FileReader(this.itemJson), this.token2.getType());
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }*/
+            FileUtils.write(this.itemJson, null, StandardCharsets.UTF_8);
+        }
+        return null;
     }
 }

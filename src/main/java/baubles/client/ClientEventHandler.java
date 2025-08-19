@@ -1,12 +1,12 @@
 package baubles.client;
 
+import baubles.Baubles;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.BaublesWrapper;
 import baubles.api.IBauble;
 import baubles.api.registries.TypesData;
 import baubles.client.gui.GuiPlayerExpanded;
-import baubles.Baubles;
 import baubles.common.Config;
 import baubles.common.config.KeyBindings;
 import baubles.common.util.BaublesRegistry;
@@ -63,7 +63,7 @@ public class ClientEventHandler {
     public void registerTextures(TextureStitchEvent.Pre event) {
         TextureMap map = event.getMap();
         Iterator<BaubleTypeEx> types = TypesData.iterator();
-        types.forEachRemaining((type)->registerTexture(map, type));
+        types.forEachRemaining((type)-> map.registerSprite(new ResourceLocation(type.getTexture())));
     }
 
     @SubscribeEvent
@@ -73,9 +73,5 @@ public class ClientEventHandler {
         if (KeyBindings.KEY_BAUBLES.isPressed()) {
             mc.displayGuiScreen(new GuiPlayerExpanded(player));
         }
-    }
-
-    private void registerTexture(TextureMap map, BaubleTypeEx type) {
-        map.registerSprite(new ResourceLocation(Baubles.MODID, type.getTexture()));
     }
 }

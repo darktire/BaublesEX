@@ -2,10 +2,12 @@ package baubles.api.registries;
 
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesWrapper;
+import baubles.api.IBauble;
 import baubles.api.cap.BaubleItem;
 import net.minecraft.item.Item;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class ItemsData {
@@ -13,27 +15,37 @@ public class ItemsData {
     private static final Map<Item, BaublesWrapper> BAUBLE_ITEMS = new HashMap<>();
 
     /**
-     * Link items and the bauble which is a instance of IBauble
-     * @param item item instanceof IBauble
+     * Link items and the bauble which is an instance of IBauble.
+     * You can copy capability from an existed bauble to a item.
+     * @param item target item
+     * @param bauble bauble instanceof IBauble
      */
-    public static void registerBauble(Item item) {
-        BaublesWrapper wrapper = new BaublesWrapper(item);
-        BAUBLE_ITEMS.put(item, wrapper);
+    public static void registerBauble(Item item, IBauble bauble) {
+        registerBauble(item, new BaublesWrapper(item, bauble));
     }
 
     /**
-     * Link items and the bauble which is a instance of IBauble
+     * Link items and the bauble which is an instance of IBauble.
+     * @param item target item
      * @param wrapper wrapper of item and bauble
      */
-    public static void registerBauble(BaublesWrapper wrapper) {
-        BAUBLE_ITEMS.put(wrapper.getItem(), wrapper);
+    public static void registerBauble(Item item, BaublesWrapper wrapper) {
+        if (wrapper.getBauble() == null || wrapper.isCopy()) {
+            BAUBLE_ITEMS.put(item, wrapper);
+        }
+        else if (BAUBLE_ITEMS.containsKey(item)) {
+            BAUBLE_ITEMS.get(item).setTypes(wrapper.getBaubleTypes());
+        }
+        else {
+            BAUBLE_ITEMS.put(item, wrapper);
+        }
     }
 
     /**
-     * Simply register item as a bauble
+     * Simply register item as a bauble. (only with types)
      */
-    public static void registerBauble(Item item, BaubleTypeEx type) {
-        registerBauble(new BaublesWrapper(item, new BaubleItem(type)));
+    public static void registerBauble(Item item, BaubleTypeEx... types) {
+        registerBauble(item, new BaublesWrapper(item, new BaubleItem(types)));
     }
 
     public static BaublesWrapper toBauble(Item item) {
@@ -42,5 +54,9 @@ public class ItemsData {
 
     public static boolean isBauble(Item item) {
         return BAUBLE_ITEMS.containsKey(item);
+    }
+
+    public static Iterator<BaublesWrapper> iterator() {
+        return BAUBLE_ITEMS.values().iterator();
     }
 }

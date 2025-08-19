@@ -21,7 +21,7 @@
   - [x] provide the method to add bauble slots for specific  player
   - [x] provide register for bauble type
   - [x] provide register for existed item
-  - [x] provide baubles ability for more entity (like armor stand)
+  - [x] provide baubles ability for more entity (may have problems)
   - [x] provide event when exchange baubles
   - [x] provide multiple types for one bauble
 - [x] more configure

@@ -50,15 +50,14 @@ public class TypesData {
     public static void addLazySlots(BaubleTypeEx type) {
         BAUBLE_SLOTS.add(type);
     }
-    /**
-     * Get the lazy list of slots.
-     */
     public static List<BaubleTypeEx> getLazyList() {
         return BAUBLE_SLOTS;
     }
 
     public static BaubleTypeEx getTypeByName(String typeName) {
-        return REGISTRY.getValue(new ResourceLocation(DATA_ID, typeName));
+        BaubleTypeEx type = REGISTRY.getValue(new ResourceLocation(DATA_ID, typeName));
+        if (type == null) type = REGISTRY.getValue(new ResourceLocation(typeName));
+        return type;
     }
     public static BaubleTypeEx getTypeById(int id) {
         return REGISTRY.getValue(id);
@@ -68,7 +67,9 @@ public class TypesData {
     }
 
     public static boolean hasType(String typeName) {
-        return REGISTRY.containsKey(new ResourceLocation(DATA_ID, typeName));
+        boolean contained = REGISTRY.containsKey(new ResourceLocation(DATA_ID, typeName));
+        if (!contained) contained = REGISTRY.containsKey(new ResourceLocation(typeName));
+        return contained;
     }
 
     public static Iterator<BaubleTypeEx> iterator() {

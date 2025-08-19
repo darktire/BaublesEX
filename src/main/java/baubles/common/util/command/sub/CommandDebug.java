@@ -5,6 +5,7 @@ import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
+import baubles.common.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
 import net.minecraft.command.CommandBase;
@@ -17,7 +18,10 @@ import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 
+import java.io.IOException;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class CommandDebug extends CommandBase {
     @Override
@@ -35,7 +39,7 @@ public class CommandDebug extends CommandBase {
         Entity entity = sender.getCommandSenderEntity();
         if (args[0].equals("change")) {
             Item item = Item.getByNameOrId(args[1]);
-            ItemsData.toBauble(item).setMainType(TypesData.getTypeByName(args[2]));
+            ItemsData.toBauble(item).setType(TypesData.getTypeByName(args[2]));
         }
         else if (args[0].equals("mod")) {
             if (entity instanceof EntityLivingBase && TypesData.hasType(args[1]) && args[2].matches("-?\\d+")) {
@@ -54,9 +58,23 @@ public class CommandDebug extends CommandBase {
                 sender.sendMessage(new TextComponentTranslation("" + i));
             });
         }
+        else if (args[0].equals("dump")) {
+            try {
+                Config.json.typeToJson(this.getList(TypesData.iterator()));
+                Config.json.itemToJson(this.getList(ItemsData.iterator()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         else {
             sender.sendMessage(new TextComponentTranslation("commands.baubles.error"));
             sender.sendMessage(new TextComponentTranslation("commands.baubles.help.get"));
         }
+    }
+
+    private <T> List<T> getList(Iterator<T> iterator) {
+        List<T> list = new LinkedList<>();
+        iterator.forEachRemaining(list::add);
+        return list;
     }
 }
