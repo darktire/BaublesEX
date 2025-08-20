@@ -135,9 +135,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         this.storeSlots();
         this.MODIFIED_SLOTS.clear();
         this.MODIFIED_SLOTS.addAll(TypesData.getLazyList());
-        for (String typeName: this.BAUBLE_MODIFIER.keySet()) {
-            this.modifySlotOL(typeName, this.BAUBLE_MODIFIER.get(typeName));
-        }
+        this.BAUBLE_MODIFIER.forEach(this::modifySlotOL);
         this.slotsUpdated = false;
         this.updateSlots();
     }
@@ -251,10 +249,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         }
         // modifier persistence
         NBTTagCompound modifier = new NBTTagCompound();
-        for (String typeName: BAUBLE_MODIFIER.keySet()) {
-            int value = BAUBLE_MODIFIER.get(typeName);
-            if (value != 0) modifier.setInteger(typeName, value);
-        }
+        this.BAUBLE_MODIFIER.forEach(modifier::setInteger);
 
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setTag("Items", itemList);
@@ -266,7 +261,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     public void deserializeNBT(NBTTagCompound nbt) {
         if (nbt.hasKey("Modifier")) {
             NBTTagCompound modifier = nbt.getCompoundTag("Modifier");
-            for (String typeName: modifier.getKeySet()) {
+            for (String typeName: modifier.getKeySet()) {// todo uncheck
                 modifySlot(typeName, modifier.getInteger(typeName));
             }
             setSize(MODIFIED_SLOTS.size());

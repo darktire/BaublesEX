@@ -63,7 +63,7 @@ public class ClientEventHandler {
     public void registerTextures(TextureStitchEvent.Pre event) {
         TextureMap map = event.getMap();
         Iterator<BaubleTypeEx> types = TypesData.iterator();
-        types.forEachRemaining((type)-> map.registerSprite(new ResourceLocation(type.getTexture())));
+        types.forEachRemaining(type -> map.registerSprite(new ResourceLocation(type.getTexture())));
     }
 
     @SubscribeEvent

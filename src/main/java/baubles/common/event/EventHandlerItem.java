@@ -2,16 +2,24 @@ package baubles.common.event;
 
 import baubles.Baubles;
 import baubles.api.BaubleTypeEx;
-import baubles.api.BaublesApi;
+import baubles.api.BaublesWrapper;
+import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilityProvider;
 import baubles.api.registries.ItemsData;
+import baubles.common.Config;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 
 @SuppressWarnings("unused") // gets used by Forge event handler
 public class EventHandlerItem {
@@ -25,18 +33,24 @@ public class EventHandlerItem {
         ItemStack stack = event.getObject();
 
         if (stack.isEmpty()) return;
+
+        Map<ResourceLocation, ICapabilityProvider> capabilities = event.getCapabilities();
         Item item = stack.getItem();
+
+        AtomicBoolean flag = new AtomicBoolean(false);
+        capabilities.forEach((loc, provider) -> {
+            IBauble bauble = provider.getCapability(CAPABILITY_ITEM_BAUBLE, null);
+            if (bauble != null && !(bauble instanceof BaublesWrapper)) {
+                capabilities.remove(loc);
+                ItemsData.registerBauble(item, bauble);
+            }
+            else flag.set(true);
+        });
+        if (flag.get()) return;
 
         if (!(ItemsData.isBauble(item))) return;
 
         if (ItemsData.toBauble(item).getBauble() == null) return;
-
-        if (BaublesApi.isBauble(stack)) {// todo remove other cap
-            ((BaublesCapabilityProvider)event.getCapabilities().get(ITEM_CAP)).serializeNBT();
-            return;
-        }
-
-//        if (event.getCapabilities().values().stream().anyMatch(c -> c.hasCapability(CAPABILITY_ITEM_BAUBLE, null)))
 
         event.addCapability(ITEM_CAP, new BaublesCapabilityProvider(stack));
     }
@@ -44,6 +58,6 @@ public class EventHandlerItem {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void itemBaubleWrap(RegistryEvent.Register<BaubleTypeEx> event) {
         Baubles.registry.registerItems();
-        Baubles.config.setupBlacklist();
+        if (Config.rightClick) Baubles.config.setupBlacklist();
     }
 }

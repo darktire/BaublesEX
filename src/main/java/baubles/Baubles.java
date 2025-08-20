@@ -32,7 +32,7 @@ public class Baubles {
 
     public static final String MODID = "baubles";
     public static final String MODNAME = "BaublesEX";
-    public static final String VERSION = "2.2.1";
+    public static final String VERSION = "2.2.2";
     public static final String FACTORY = "baubles.client.gui.config.BaublesGuiFactory";
 
     public static Config config;

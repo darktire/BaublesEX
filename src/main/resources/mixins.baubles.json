@@ -3,17 +3,18 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "mixins.baubles.refmap.json",
   "mixins": [
-    "MixinElytra$MixinEntityBase",
-    "MixinElytra$MixinNetHandler",
-    "MixinEnchantment",
-    "MixinPlayer",
-    "MixinStack"
+    "baubles.MixinElytra$MixinEntityBase",
+    "baubles.MixinElytra$MixinNetHandler",
+    "baubles.MixinEnchantment",
+    "baubles.MixinPlayer",
+    "baubles.MixinStack",
+    "extrautils2.MixinItem"
   ],
   "client": [
-    "MixinElytra$MixinCape",
-    "MixinElytra$MixinCustom",
-    "MixinElytra$MixinLayer",
-    "MixinElytra$MixinPlayerSP"
+    "baubles.MixinElytra$MixinCape",
+    "baubles.MixinElytra$MixinLayer",
+    "baubles.MixinElytra$MixinPlayerSP",
+    "mobends.MixinCustom"
   ],
   "server": [
   ],

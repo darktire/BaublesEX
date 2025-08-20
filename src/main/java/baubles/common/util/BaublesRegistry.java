@@ -37,10 +37,8 @@ public class BaublesRegistry {
 
         try {
             List<BaublesWrapper> items = Config.json.jsonToItem();
-            if (items != null && !items.isEmpty()) {
-                for (BaublesWrapper wrapper: items) {
-                    ItemsData.registerBauble(wrapper.getItem(), wrapper);
-                }
+            if (items != null) {
+                items.forEach(wrapper -> ItemsData.registerBauble(wrapper.getItem(), wrapper));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -65,10 +63,8 @@ public class BaublesRegistry {
 
         try {
             List<BaubleTypeEx> types = Config.json.jsonToType();
-            if (types != null && !types.isEmpty()) {
-                for (BaubleTypeEx type : types) {
-                    TypesData.registerBauble(type);
-                }
+            if (types != null) {
+                types.forEach(TypesData::registerBauble);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

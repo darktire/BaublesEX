@@ -1,6 +1,7 @@
 package baubles.api.registries;
 
 import baubles.api.BaubleTypeEx;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
@@ -51,7 +52,7 @@ public class TypesData {
         BAUBLE_SLOTS.add(type);
     }
     public static List<BaubleTypeEx> getLazyList() {
-        return BAUBLE_SLOTS;
+        return ImmutableList.copyOf(BAUBLE_SLOTS);
     }
 
     public static BaubleTypeEx getTypeByName(String typeName) {

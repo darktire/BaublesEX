@@ -26,6 +26,7 @@ public class Config {
 //    Configuration Options
     public static boolean renderBaubles = true;
     public static boolean keepBaubles = false;
+    public static boolean rightClick = true;
     public static int maxLevel = 1;
 //    public static boolean armorStand = false;
     private static String[] clickBlacklist = {"wct:wct"};
@@ -66,6 +67,7 @@ public class Config {
         maxLevel = configFile.getInt("maxLevel", CATEGORY_GENERAL, maxLevel, 0, 255, "Max level of haste given by Miner's Ring");
 
         keepBaubles = configFile.getBoolean("keepBaubles", CATEGORY_GENERAL, keepBaubles, "Whether baubles can drop when player dies.");
+        rightClick = configFile.getBoolean("rightClick", CATEGORY_GENERAL, rightClick, "Whether player can use right click to equip baubles.");
 //        armorStand = configFile.getBoolean("armorStand", CATEGORY_GENERAL, armorStand, "Whether armorStand has baubles container (need to place armorStand again)");
 
         clickBlacklist = configFile.getStringList("clickBlacklist", CATEGORY_GENERAL, clickBlacklist, "");
@@ -171,7 +173,7 @@ public class Config {
                 new Gui();
                 new ModItems();
                 Baubles.config.loadData();
-                Baubles.config.setupBlacklist();
+                if (Config.rightClick) Baubles.config.setupBlacklist();
                 Baubles.registry.registerBaubles();
                 Baubles.registry.loadValidSlots();
                 for (BaublesContainer container: BaublesContainer.listener) {

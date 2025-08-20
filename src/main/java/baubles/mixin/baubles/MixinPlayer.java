@@ -1,4 +1,4 @@
-package baubles.mixin;
+package baubles.mixin.baubles;
 
 import baubles.common.util.IPlayerTarget;
 import net.minecraft.entity.EntityLivingBase;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(EntityPlayer.class)
 @Implements(@Interface(iface = IPlayerTarget.class, prefix = "baubles$"))
-public class MixinPlayer {
+public abstract class MixinPlayer {
     @Unique
     private EntityLivingBase baubles$target;
 

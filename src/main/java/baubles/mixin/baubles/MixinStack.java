@@ -1,10 +1,11 @@
-package baubles.mixin;
+package baubles.mixin.baubles;
 
+import baubles.Baubles;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.Baubles;
+import baubles.common.Config;
 import baubles.common.util.BaublesRegistry;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,12 +23,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinStack {
 
     @Inject(method = "useItemRightClick", at = @At("RETURN"), cancellable = true)
-    public void playerRightClickItem(World worldIn, EntityPlayer playerIn, EnumHand hand, CallbackInfoReturnable<ActionResult<ItemStack>> cir) {
-        if (playerIn.isSneaking()) return;
-        if (cir.getReturnValue().getType() == EnumActionResult.SUCCESS) return;
+    private void playerRightClickItem(World worldIn, EntityPlayer playerIn, EnumHand hand, CallbackInfoReturnable<ActionResult<ItemStack>> cir) {
+        if (cir.getReturnValue().getType() == EnumActionResult.SUCCESS || !Config.rightClick || playerIn.isSneaking()) return;
         ItemStack heldItem = (ItemStack) (Object) this;
-        if (Baubles.config.getBlacklist().contains(heldItem.getItem())) return;
-        if (!BaublesApi.isBauble(heldItem)) return;
+        if (Baubles.config.getBlacklist().contains(heldItem.getItem()) || !BaublesApi.isBauble(heldItem)) return;
         IBauble bauble = BaublesApi.toBauble(heldItem);
         BaubleTypeEx type = bauble.getBaubleType();
         IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) playerIn);

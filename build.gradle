@@ -4,19 +4,23 @@ buildscript {
         maven { url = 'https://maven.gofancy.wtf/releases' }
         maven { url = 'https://files.minecraftforge.net/maven' }
         maven { url = 'https://repo.spongepowered.org/maven' }
+//        gradlePluginPortal()
 //        flatDir { dirs "libs" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:6.+'
         classpath 'wtf.gofancy.fancygradle:wtf.gofancy.fancygradle.gradle.plugin:1.1.+'
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+//        classpath 'com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:8.1.1'
     }
 }
-        
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'wtf.gofancy.fancygradle'
-apply plugin: 'org.spongepowered.mixin'
-//apply plugin: 'idea'
+
+apply {
+    plugin 'net.minecraftforge.gradle'
+    plugin 'wtf.gofancy.fancygradle'
+    plugin 'org.spongepowered.mixin'
+//    plugin 'com.github.johnrengelman.shadow'
+}
 
 version = "${version_major}.${version_minor}.${version_patch}"
 group = ''
@@ -103,8 +107,9 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}")
     //CoFH
-    runtimeOnly fg.deobf("curse.maven:redstone-flux-270789:2920436")
-    implementation fg.deobf("curse.maven:cofh-core-69162:2920433")
+//    runtimeOnly fg.deobf("curse.maven:redstone-flux-270789:2920436")
+//    runtimeOnly fg.deobf("curse.maven:cofh-core-69162:2920433")
+    compileOnly fg.deobf("curse.maven:cofh-core-69162:2920433")
     //Hwyla
 //    runtimeOnly fg.deobf("curse.maven:hwyla-253449:2568751")
 //    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
@@ -119,6 +124,9 @@ dependencies {
     implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:2503041")
     //Botania
 //    runtimeOnly fg.deobf("curse.maven:botania-225643:3330934")
+    //ExU2
+    compileOnly fg.deobf("curse.maven:extra-utilities-225561:2678374")
+//    runtimeOnly fg.deobf("curse.maven:extra-utilities-225561:2678374")
 }
 
 mixin {
@@ -130,6 +138,7 @@ mixin {
 }
 
 tasks.register('copyResource', Copy) {
+    group("custom tasks")
     inputs.files sourceSets.main.resources.srcDirs
 
     from(sourceSets.main.resources.srcDirs) {
@@ -139,6 +148,7 @@ tasks.register('copyResource', Copy) {
 }
 
 tasks.register('copyInfo', Copy) {
+    group("custom tasks")
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
         expand mod_id:mod_id, mod_name:mod_name, version:version, mcversion:minecraft_version
@@ -147,12 +157,14 @@ tasks.register('copyInfo', Copy) {
 }
 
 tasks.register('cleanLogs', Delete) {
+    group("custom tasks")
     delete("run/crash-reports")
     delete("run/logs")
 }
 
-processResources.enabled = false
-//processResources {}
+processResources {
+    enabled = false
+}
 
 classes.configure {
     dependsOn(copyInfo)
@@ -160,6 +172,22 @@ classes.configure {
 }
 
 jar {
+    manifest {
+        attributes(
+                'ForceLoadAsMod': 'true',
+                'FMLCorePluginContainsFMLMod': 'true',
+                'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+                'TweakOrder': '0'
+        )
+    }
+
+    finalizedBy('reobfJar')
+}
+
+tasks.register('jarWithMixin', Jar) {
+    group("custom tasks")
+    archiveClassifier = 'mixin'
+    from sourceSets.main.output
     from { configurations.embed.collect { it.isDirectory() ? it : zipTree(it) } } {
         exclude 'LICENSE.txt', 'META-INF/MANIFSET.MF', 'META-INF/maven/**', 'META-INF/*.RSA', 'META-INF/*.SF'
     }
