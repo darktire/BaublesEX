@@ -1,20 +1,22 @@
 {
   "package": "baubles.mixin",
+  "plugin": "baubles.mixin.MixinPlugin",
   "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8-SNAPSHOT",
   "refmap": "mixins.baubles.refmap.json",
   "mixins": [
-    "baubles.MixinElytra$MixinEntityBase",
-    "baubles.MixinElytra$MixinNetHandler",
-    "baubles.MixinEnchantment",
-    "baubles.MixinPlayer",
-    "baubles.MixinStack",
-    "extrautils2.MixinItem"
+    "extrautils2.MixinItem",
+    "vanilla.MixinElytra$MixinEntityBase",
+    "vanilla.MixinElytra$MixinNetHandler",
+    "vanilla.MixinEnchantment",
+    "vanilla.MixinPlayer",
+    "vanilla.MixinStack"
   ],
   "client": [
-    "baubles.MixinElytra$MixinCape",
-    "baubles.MixinElytra$MixinLayer",
-    "baubles.MixinElytra$MixinPlayerSP",
-    "mobends.MixinCustom"
+    "mobends.MixinCustom",
+    "vanilla.MixinElytra$MixinCape",
+    "vanilla.MixinElytra$MixinLayer",
+    "vanilla.MixinElytra$MixinPlayerSP"
   ],
   "server": [
   ],

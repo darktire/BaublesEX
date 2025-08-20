@@ -1,4 +1,4 @@
-package baubles.mixin.baubles;
+package baubles.mixin.vanilla;
 
 import baubles.common.util.ElytraHelper;
 import net.minecraft.client.entity.AbstractClientPlayer;

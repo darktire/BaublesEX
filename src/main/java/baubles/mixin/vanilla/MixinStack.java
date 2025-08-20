@@ -1,4 +1,4 @@
-package baubles.mixin.baubles;
+package baubles.mixin.vanilla;
 
 import baubles.Baubles;
 import baubles.api.BaubleTypeEx;
