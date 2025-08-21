@@ -1,10 +1,10 @@
 package baubles.common.network;
 
+import baubles.Baubles;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.registries.TypesData;
-import baubles.Baubles;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -92,7 +92,7 @@ public class PacketModifySlots implements IMessage {
         }
 
         private void syncModifier(PacketModifySlots message, IBaublesModifiable baublesCL) {
-            WorldServer[] worlds = Baubles.proxy.getSeverWorld();
+            WorldServer[] worlds = (WorldServer[]) Baubles.proxy.getSeverWorld();//todo improve
             Entity entity = null;
             for (WorldServer world1 : worlds) {
                 entity = world1.getEntityByID(message.playerId);

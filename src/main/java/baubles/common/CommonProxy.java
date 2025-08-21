@@ -7,10 +7,8 @@ import baubles.common.event.BaublesSync;
 import baubles.common.event.EventHandlerEntity;
 import baubles.common.event.EventHandlerItem;
 import baubles.common.util.IPlayerTarget;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.server.FMLServerHandler;
@@ -39,11 +37,11 @@ public class CommonProxy implements IGuiHandler {
         return null;
     }
 
-    public WorldServer[] getSeverWorld() {
+    public World[] getSeverWorld() {
         return FMLServerHandler.instance().getServer().worlds;
     }
 
-    public WorldClient getClientWorld() {
+    public World getClientWorld() {
         return null;
     }
 
