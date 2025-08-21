@@ -78,6 +78,8 @@ repositories {
         url "https://maven.covers1624.net"
     }
 //    maven { url "https://maven.tehnut.info" }
+    //Bookshelf
+    maven { url 'https://maven.blamejared.com' }
 }
 
 configurations {
@@ -103,6 +105,8 @@ dependencies {
     runtimeOnly fileTree(dir: 'libs', includes: ['*.jar'])
 //    implementation fileTree(dir: 'libs', includes: ['*.jar'])
 
+    //Bookshelf
+//    runtimeOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-${minecraft_version}:${bookshelf_version}")
     //JEI
     compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}")

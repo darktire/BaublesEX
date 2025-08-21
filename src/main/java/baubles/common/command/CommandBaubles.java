@@ -1,6 +1,6 @@
-package baubles.common.util.command;
+package baubles.common.command;
 
-import baubles.common.util.command.sub.*;
+import baubles.common.command.sub.*;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;

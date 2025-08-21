@@ -6,6 +6,7 @@
   "refmap": "mixins.baubles.refmap.json",
   "mixins": [
     "extrautils2.MixinItem",
+    "vanilla.MixinCapability",
     "vanilla.MixinElytra$MixinEntityBase",
     "vanilla.MixinElytra$MixinNetHandler",
     "vanilla.MixinEnchantment",

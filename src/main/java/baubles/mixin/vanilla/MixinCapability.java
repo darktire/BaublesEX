@@ -1,0 +1,20 @@
+package baubles.mixin.vanilla;
+
+import baubles.common.util.ICapabilityRemove;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import org.spongepowered.asm.mixin.*;
+
+import java.util.Map;
+
+@Mixin(AttachCapabilitiesEvent.class)
+@Implements(@Interface(iface = ICapabilityRemove.class, prefix = "baubles$"))
+public class MixinCapability {
+    @Shadow @Final private Map<ResourceLocation, ICapabilityProvider> caps;
+
+    @Unique
+    public void baubles$removeCap(ResourceLocation key) {
+        this.caps.remove(key);
+    }
+}

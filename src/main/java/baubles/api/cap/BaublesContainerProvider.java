@@ -23,8 +23,7 @@ public class BaublesContainerProvider implements ICapabilityProvider, INBTSerial
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capability == CAPABILITY_BAUBLES) return CAPABILITY_BAUBLES.cast(this.container);
-        return null;
+        return capability == CAPABILITY_BAUBLES ? CAPABILITY_BAUBLES.cast(this.container) : null;
     }
 
     @Override

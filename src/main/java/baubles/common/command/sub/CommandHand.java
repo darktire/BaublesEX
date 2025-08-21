@@ -1,4 +1,4 @@
-package baubles.common.util.command.sub;
+package baubles.common.command.sub;
 
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;

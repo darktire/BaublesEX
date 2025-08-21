@@ -25,7 +25,7 @@ public final class BaublesWrapper implements IBauble {
         if (bauble != null) {
             this.type = bauble.getBaubleType();
             this.types = bauble.getBaubleTypes();
-            if (this.types == null) {
+            if (this.types == null || this.types.isEmpty()) {
                 if (this.type == null) {
                     this.type = bauble.getBaubleType(item.getDefaultInstance()).getNewType();
                     if (this.type == null) throw new RuntimeException(item.getRegistryName() + " have no type");

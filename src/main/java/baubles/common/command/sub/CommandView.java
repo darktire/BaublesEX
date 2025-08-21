@@ -1,9 +1,9 @@
-package baubles.common.util.command.sub;
+package baubles.common.command.sub;
 
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.common.util.command.CommandBaubles;
+import baubles.common.command.CommandBaubles;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

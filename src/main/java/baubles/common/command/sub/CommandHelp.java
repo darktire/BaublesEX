@@ -1,4 +1,4 @@
-package baubles.common.util.command.sub;
+package baubles.common.command.sub;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;

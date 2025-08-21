@@ -3,6 +3,7 @@ package baubles.api.cap;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesWrapper;
 import baubles.api.registries.ItemsData;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -13,12 +14,14 @@ import net.minecraftforge.common.util.INBTSerializable;
 import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 
 public class BaublesCapabilityProvider implements ICapabilityProvider, INBTSerializable<NBTTagCompound> {
-    private final ItemStack stack;
     private final BaublesWrapper wrapper;
 
     public BaublesCapabilityProvider(ItemStack itemStack) {
-        this.stack = itemStack;
         this.wrapper = ItemsData.toBauble(itemStack.getItem());
+    }
+
+    public BaublesCapabilityProvider(Item item) {
+        this.wrapper = ItemsData.toBauble(item);
     }
 
     @Override

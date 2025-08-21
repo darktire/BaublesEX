@@ -7,6 +7,7 @@ import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilityProvider;
 import baubles.api.registries.ItemsData;
 import baubles.common.Config;
+import baubles.common.util.ICapabilityRemove;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -17,7 +18,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 
@@ -37,22 +37,22 @@ public class EventHandlerItem {
         Map<ResourceLocation, ICapabilityProvider> capabilities = event.getCapabilities();
         Item item = stack.getItem();
 
-        AtomicBoolean flag = new AtomicBoolean(false);
-        capabilities.forEach((loc, provider) -> {
-            IBauble bauble = provider.getCapability(CAPABILITY_ITEM_BAUBLE, null);
-            if (bauble != null && !(bauble instanceof BaublesWrapper)) {
-                capabilities.remove(loc);
-                ItemsData.registerBauble(item, bauble);
-            }
-            else flag.set(true);
-        });
-        if (flag.get()) return;
+        ResourceLocation key = capabilities.keySet().stream().filter(loc -> {
+            IBauble bauble = capabilities.get(loc).getCapability(CAPABILITY_ITEM_BAUBLE, null);
+            ItemsData.registerBauble(item, bauble);
+            return bauble != null && !(bauble instanceof BaublesWrapper);
+        }).findAny().orElse(null);
+
+        if (key == null) return;
+        else {
+            ((ICapabilityRemove) event).removeCap(key);
+        }
 
         if (!(ItemsData.isBauble(item))) return;
 
         if (ItemsData.toBauble(item).getBauble() == null) return;
 
-        event.addCapability(ITEM_CAP, new BaublesCapabilityProvider(stack));
+        event.addCapability(ITEM_CAP, new BaublesCapabilityProvider(item));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
