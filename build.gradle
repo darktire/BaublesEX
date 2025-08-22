@@ -4,14 +4,24 @@ buildscript {
         maven { url = 'https://maven.gofancy.wtf/releases' }
         maven { url = 'https://files.minecraftforge.net/maven' }
         maven { url = 'https://repo.spongepowered.org/maven' }
-//        gradlePluginPortal()
+//        maven {
+//            // RetroFuturaGradle
+//            name 'GTNH Maven'
+//            url = "https://nexus.gtnewhorizons.com/repository/public/"
+//            mavenContent {
+//                includeGroup 'com.gtnewhorizons'
+//                includeGroup 'com.gtnewhorizons.retrofuturagradle'
+//            }
+//        }
+        gradlePluginPortal()
 //        flatDir { dirs "libs" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:6.+'
         classpath 'wtf.gofancy.fancygradle:wtf.gofancy.fancygradle.gradle.plugin:1.1.+'
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-//        classpath 'com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:8.1.1'
+        classpath 'com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:8.1.1'
+//        classpath 'com.gtnewhorizons:retrofuturagradle:1.4.1'
     }
 }
 
@@ -19,7 +29,8 @@ apply {
     plugin 'net.minecraftforge.gradle'
     plugin 'wtf.gofancy.fancygradle'
     plugin 'org.spongepowered.mixin'
-//    plugin 'com.github.johnrengelman.shadow'
+    plugin 'com.github.johnrengelman.shadow'
+//    plugin 'com.gtnewhorizons.retrofuturagradle'
 }
 
 version = "${version_major}.${version_minor}.${version_patch}"
@@ -37,6 +48,7 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             arg '-torg.spongepowered.asm.launch.MixinTweaker'
+            jvmArgs '-Dfml.coreMods.load=baubles.coremod.CoreModPlugin'
         }
 
         client {
@@ -58,10 +70,7 @@ fancyGradle {
 }
 
 repositories {
-    maven {
-        name 'Garden of Fancy'
-        url 'https://maven.gofancy.wtf/releases'
-    }
+    mavenCentral()
     maven {
         name "Curse Maven"
         url "https://www.cursemaven.com"
@@ -78,8 +87,8 @@ repositories {
         url "https://maven.covers1624.net"
     }
 //    maven { url "https://maven.tehnut.info" }
-    //Bookshelf
     maven { url 'https://maven.blamejared.com' }
+    maven { url 'https://maven.cleanroommc.com' }
 }
 
 configurations {
@@ -94,16 +103,27 @@ dependencies {
         version: "${minecraft_version}-${forge_version}"
     )
 
-    embed('org.spongepowered:mixin:0.8.+') {
+    embed ('org.spongepowered:mixin:0.8.+') {
         exclude module: 'guava'
         exclude module: 'commons-io'
         exclude module: 'gson'
     }
-    implementation 'org.spongepowered:mixin:0.8.+'
+    compileOnly 'org.spongepowered:mixin:0.8.+'
     annotationProcessor 'org.spongepowered:mixin:0.8.+:processor'
+    runtimeOnly ('zone.rong:mixinbooter:10.6')
+
+//    annotationProcessor 'org.ow2.asm:asm-debug-all:5.2'
+//    annotationProcessor 'com.google.guava:guava:32.1.2-jre'
+//    annotationProcessor 'com.google.code.gson:gson:2.8.9'
+//    implementation ('zone.rong:mixinbooter:10.6') {
+//        transitive = false
+//    }
+//    annotationProcessor ('zone.rong:mixinbooter:10.6') {
+//        transitive = false
+//    }
 
     runtimeOnly fileTree(dir: 'libs', includes: ['*.jar'])
-//    implementation fileTree(dir: 'libs', includes: ['*.jar'])
+//    compileOnly fileTree(dir: 'libs', includes: ['*.jar'])
 
     //Bookshelf
 //    runtimeOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-${minecraft_version}:${bookshelf_version}")
@@ -128,8 +148,9 @@ dependencies {
     implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:2503041")
     //Botania
 //    runtimeOnly fg.deobf("curse.maven:botania-225643:3330934")
+    runtimeOnly fg.deobf("curse.maven:botania-ceu-1179448:6900692")
     //ExU2
-    compileOnly fg.deobf("curse.maven:extra-utilities-225561:2678374")
+//    compileOnly fg.deobf("curse.maven:extra-utilities-225561:2678374")
 //    runtimeOnly fg.deobf("curse.maven:extra-utilities-225561:2678374")
 }
 
@@ -178,6 +199,7 @@ classes.configure {
 jar {
     manifest {
         attributes(
+                "FMLCorePlugin": "baubles.coremod.CoreModPlugin",
                 'ForceLoadAsMod': 'true',
                 'FMLCorePluginContainsFMLMod': 'true',
                 'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
@@ -188,22 +210,30 @@ jar {
     finalizedBy('reobfJar')
 }
 
-tasks.register('jarWithMixin', Jar) {
-    group("custom tasks")
-    archiveClassifier = 'mixin'
-    from sourceSets.main.output
-    from { configurations.embed.collect { it.isDirectory() ? it : zipTree(it) } } {
-        exclude 'LICENSE.txt', 'META-INF/MANIFSET.MF', 'META-INF/maven/**', 'META-INF/*.RSA', 'META-INF/*.SF'
-    }
+//tasks.register('jarWithMixin', Jar) {
+//    group("custom tasks")
+//    archiveClassifier = 'mixin'
+//    from sourceSets.main.output
+//    from { configurations.embed.collect { it.isDirectory() ? it : zipTree(it) } } {
+//        exclude 'LICENSE.txt', 'META-INF/MANIFSET.MF', 'META-INF/maven/**', 'META-INF/*.RSA', 'META-INF/*.SF'
+//    }
+//
+//    manifest {
+//        attributes(
+//                "FMLCorePlugin": "baubles.coremod.CoreModPlugin",
+//                'ForceLoadAsMod': 'true',
+//                'FMLCorePluginContainsFMLMod': 'true',
+//                'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+//                'TweakOrder': '0'
+//        )
+//    }
+//
+//    finalizedBy('reobfJar')
+//}
 
-    manifest {
-        attributes(
-                'ForceLoadAsMod': 'true',
-                'FMLCorePluginContainsFMLMod': 'true',
-                'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-                'TweakOrder': '0'
-        )
-    }
-
-    finalizedBy('reobfJar')
-}
+//shadowJar {
+//    dependencies {
+//        include(dependency('org.spongepowered:mixin:0.8.+'))
+//    }
+//    finalizedBy('reobfJar')
+//}

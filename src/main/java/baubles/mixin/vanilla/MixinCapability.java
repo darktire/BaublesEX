@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.*;
 
 import java.util.Map;
 
-@Mixin(AttachCapabilitiesEvent.class)
+@Mixin(value = AttachCapabilitiesEvent.class, remap = false)
 @Implements(@Interface(iface = ICapabilityRemove.class, prefix = "baubles$"))
 public class MixinCapability {
     @Shadow @Final private Map<ResourceLocation, ICapabilityProvider> caps;

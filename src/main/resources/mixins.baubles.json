@@ -5,7 +5,6 @@
   "minVersion": "0.8-SNAPSHOT",
   "refmap": "mixins.baubles.refmap.json",
   "mixins": [
-    "extrautils2.MixinItem",
     "vanilla.MixinCapability",
     "vanilla.MixinElytra$MixinEntityBase",
     "vanilla.MixinElytra$MixinNetHandler",

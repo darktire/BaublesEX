@@ -48,11 +48,21 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         if (modifier != 0) {
             this.storeSlots();
             int input = this.modifySlotOL(typeName, modifier);
-            this.BAUBLE_MODIFIER.put(typeName, input);
+            if (input != 0) {
+                this.BAUBLE_MODIFIER.put(typeName, input);
+            }
+            else {
+                this.BAUBLE_MODIFIER.remove(typeName);
+            }
             if (this.slotsUpdated) this.slotsUpdated = false;
         }
     }
 
+    /**
+     * Only modify slots without storing previous slots or updating {@link BaublesContainer#BAUBLE_MODIFIER}.
+     * Also will not trigger {@link BaublesContainer#updateSlots()}.
+     * @return current modifier
+     */
     private int modifySlotOL(String typeName, int modifier) {
         BaubleTypeEx type = TypesData.getTypeByName(typeName);
         if (type == null) throw new RuntimeException("No such bauble type");
@@ -92,7 +102,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     }
 
     @Override
-    public void updateSlots() {// todo may have a better way
+    public void updateSlots() {
         if (!this.slotsUpdated) {
             this.onSlotChanged();
         }
@@ -262,11 +272,12 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         if (nbt.hasKey("Modifier")) {
             NBTTagCompound modifier = nbt.getCompoundTag("Modifier");
             for (String typeName: modifier.getKeySet()) {// todo uncheck
-                modifySlot(typeName, modifier.getInteger(typeName));
+                int input = modifier.getInteger(typeName);
+                this.modifySlotOL(typeName, input);
+                this.BAUBLE_MODIFIER.put(typeName, input);
             }
-            setSize(MODIFIED_SLOTS.size());
             this.storeSlots();
-            this.slotsUpdated = true;
+            this.setSize(MODIFIED_SLOTS.size());
         }
 
         NBTTagList itemList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);

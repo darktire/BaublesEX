@@ -18,6 +18,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 
@@ -26,7 +27,7 @@ public class EventHandlerItem {
     private static final ResourceLocation ITEM_CAP = new ResourceLocation(Baubles.MODID, "item_cap");
     /**
      * Attach bauble capability only for baubles do not already have the capability when creating stacks.
-     * Some baubles get the capability by another event handler earlier in the chain may cause unexpected crash.
+     * Some baubles get the capability by another event handler earlier will be removed and attach the capability provided by BaublesEX.
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void itemCapabilityAttach(AttachCapabilitiesEvent<ItemStack> event) {
@@ -37,16 +38,17 @@ public class EventHandlerItem {
         Map<ResourceLocation, ICapabilityProvider> capabilities = event.getCapabilities();
         Item item = stack.getItem();
 
-        ResourceLocation key = capabilities.keySet().stream().filter(loc -> {
+        AtomicBoolean hadCap = new AtomicBoolean(false);
+        capabilities.keySet().stream().filter(loc -> {
             IBauble bauble = capabilities.get(loc).getCapability(CAPABILITY_ITEM_BAUBLE, null);
-            ItemsData.registerBauble(item, bauble);
-            return bauble != null && !(bauble instanceof BaublesWrapper);
-        }).findAny().orElse(null);
-
-        if (key == null) return;
-        else {
-            ((ICapabilityRemove) event).removeCap(key);
-        }
+            if (bauble instanceof BaublesWrapper) hadCap.set(true);
+            else if (bauble != null) {
+                ItemsData.registerBauble(item, bauble);
+                return true;
+            }
+            return false;
+        }).findAny().ifPresent(loc -> ((ICapabilityRemove) event).removeCap(loc));
+        if (hadCap.get()) return;
 
         if (!(ItemsData.isBauble(item))) return;
 

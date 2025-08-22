@@ -24,6 +24,10 @@ public class BaublesCapabilityProvider implements ICapabilityProvider, INBTSeria
         this.wrapper = ItemsData.toBauble(item);
     }
 
+    public static ICapabilityProvider getProvider(ItemStack itemStack) {
+        return new BaublesCapabilityProvider(itemStack);
+    }
+
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
         return capability == CAPABILITY_ITEM_BAUBLE;
