@@ -148,10 +148,14 @@ dependencies {
     implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:2503041")
     //Botania
 //    runtimeOnly fg.deobf("curse.maven:botania-225643:3330934")
-    runtimeOnly fg.deobf("curse.maven:botania-ceu-1179448:6900692")
+//    runtimeOnly fg.deobf("curse.maven:botania-ceu-1179448:6900692")
     //ExU2
 //    compileOnly fg.deobf("curse.maven:extra-utilities-225561:2678374")
 //    runtimeOnly fg.deobf("curse.maven:extra-utilities-225561:2678374")
+    //Wings
+    compileOnly fg.deobf("curse.maven:wings-302584:2829351")
+//    runtimeOnly fg.deobf("curse.maven:wings-302584:2829351")
+
 }
 
 mixin {

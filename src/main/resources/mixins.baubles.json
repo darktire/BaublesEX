@@ -10,7 +10,8 @@
     "vanilla.MixinElytra$MixinNetHandler",
     "vanilla.MixinEnchantment",
     "vanilla.MixinPlayer",
-    "vanilla.MixinStack"
+    "vanilla.MixinStack",
+    "wings.MixinWings"
   ],
   "client": [
     "mobends.MixinCustom",

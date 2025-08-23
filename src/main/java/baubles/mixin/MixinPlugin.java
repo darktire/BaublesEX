@@ -1,5 +1,7 @@
 package baubles.mixin;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -8,6 +10,9 @@ import java.util.List;
 import java.util.Set;
 
 public class MixinPlugin implements IMixinConfigPlugin {
+    private final ClassLoader loader = this.getClass().getClassLoader();
+    private static final Logger log = LogManager.getLogger("BAUBLES_MIXIN");
+
     @Override
     public void onLoad(String mixinPackage) {
 
@@ -20,7 +25,13 @@ public class MixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        return this.hasTargetClass(targetClassName);
+        String modId = MixinInfo.getTargetModId(mixinClassName);
+        boolean flag = false;
+        if (modId != null) {
+            flag = MixinInfo.isModLoaded(modId, this.loader);
+        }
+        if (!flag) warn("Mixin for " + targetClassName + " loading failed");
+        return flag;
     }
 
     @Override
@@ -43,9 +54,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
 
     }
 
-    private boolean hasTargetClass(String targetClassName) {
-        try { Class.forName(targetClassName, false, ClassLoader.getSystemClassLoader()); }
-        catch (ClassNotFoundException e) { return false; }
-        return true;
+    private static void warn(String s) {
+        log.warn(s);
     }
 }

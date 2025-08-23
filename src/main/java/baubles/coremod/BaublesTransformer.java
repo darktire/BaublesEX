@@ -8,7 +8,8 @@ import baubles.api.registries.ItemsData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.common.FMLLog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -18,10 +19,12 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 public class BaublesTransformer implements IClassTransformer, Opcodes {
+    private static final Logger log = LogManager.getLogger("BAUBLES_ASM");
+
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         if (transformedName.matches(".*Item(Angel|Chicken)Ring")) {
-            log("tansforming " + transformedName);
+            info("tansforming " + transformedName);
             return redirectBaublesCap(basicClass);
         }
         return basicClass;
@@ -57,7 +60,6 @@ public class BaublesTransformer implements IClassTransformer, Opcodes {
 
     public static ICapabilityProvider hook(ICapabilityProvider provider, ItemStack stack) {
         IBauble bauble = provider.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
-        provider.getClass();
         if (!(bauble instanceof BaublesWrapper)) {
             if (!ItemsData.isBauble(stack.getItem())) {
                 ItemsData.registerBauble(stack.getItem(), bauble.getBaubleType(stack).getNewType());
@@ -67,7 +69,7 @@ public class BaublesTransformer implements IClassTransformer, Opcodes {
         return provider;
     }
 
-    private static void log(String s) {
-        FMLLog.info("[Baubles ASM] %s", s);
+    private static void info(String s) {
+        log.info(s);
     }
 }

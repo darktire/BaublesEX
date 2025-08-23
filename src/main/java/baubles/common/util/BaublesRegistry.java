@@ -9,9 +9,11 @@ import baubles.api.registries.TypesData;
 import baubles.common.Config;
 import baubles.common.items.ItemRing;
 import baubles.common.items.ItemTire;
+import me.paulf.wings.server.item.ItemWings;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -31,6 +33,9 @@ public class BaublesRegistry {
         for (Item item : Item.REGISTRY) {
             if (item instanceof IBauble) {
                 ItemsData.registerBauble(item, (IBauble) item);
+            }
+            else if (Loader.isModLoaded("wings") && item instanceof ItemWings) {
+                ItemsData.registerBauble(item, TypesData.getTypeByName("body"));
             }
         }
         if (Config.ModItems.elytraBauble) ItemsData.registerBauble(Items.ELYTRA, TypesData.getTypeByName(Config.ModItems.elytraSlot));
