@@ -25,6 +25,10 @@
   - [x] provide event when exchange baubles
   - [x] provide multiple types for one bauble
 - [x] more configure
+  - [x] json support, use json to:
+    - edit type of baubles
+    - register your type for baubles
+    - see Json Helper below for help
 - [x] more command
 - [x] add bauble button in creative tab
 - [x] elytra can be a bauble in the config
@@ -46,6 +50,49 @@
 
 - ### new style of bauble slots:
   - now the bauble button can open new slots for baubles beside survival inventory. ![](https://i.imgur.com/3ri5oKX.png)
+
+---
+
+## Json Helper:
+  - locate in `your_minecraft_floder/config/baubles/*`
+  - `items_data.json` and `types_data.json` will be auto created, or you can also create it yourself
+  - use command `/baubles debug dump` to get all existed items and types into `items_data.json` and `types_data.json`. remember to backup your json if you have edited, though the dumping will not clear your editions.
+
+### items_data.json:
+
+To set bauble's type/types:
+```json
+{
+  "minecraft:elytra": {
+    "types": [
+      "baubles:body",
+      "baubles:elytra"
+    ]
+  }
+}
+```
+
+To make an item not a bauble:
+```json
+{
+  "minecraft:elytra": {
+    "addition": "remove"
+  }
+}
+```
+
+### types_data.json:
+
+To set a new type:
+```json
+{
+  "baubles:elytra": {
+    "typeName": "elytra",
+    "amount": 1
+  }
+}
+```
+You can use the resource pack to add textures and i18n names.
 
 ---
 

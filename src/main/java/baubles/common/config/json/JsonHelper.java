@@ -29,8 +29,8 @@ public class JsonHelper {
 
     public JsonHelper(File modDir) {
         File jsonDir = new File(modDir, "baubles");
-        this.typeJson = new File(jsonDir, "type_data.json");
-        this.itemJson = new File(jsonDir, "item_data.json");
+        this.typeJson = new File(jsonDir, "types_data.json");
+        this.itemJson = new File(jsonDir, "items_data.json");
     }
 
     public void typeToJson(List<BaubleTypeEx> types) throws IOException {
