@@ -1,0 +1,27 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url = 'https://maven.gofancy.wtf/releases' }
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://repo.spongepowered.org/maven' }
+//        maven {
+//            // RetroFuturaGradle
+//            name 'GTNH Maven'
+//            url = "https://nexus.gtnewhorizons.com/repository/public/"
+//            mavenContent {
+//                includeGroup 'com.gtnewhorizons'
+//                includeGroup 'com.gtnewhorizons.retrofuturagradle'
+//            }
+//        }
+//        flatDir { dirs "libs" }
+    }
+}
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+}
+
+// Due to an IntelliJ bug, this has to be done
+rootProject.name = rootProject.projectDir.getName()

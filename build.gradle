@@ -1,36 +1,9 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url = 'https://maven.gofancy.wtf/releases' }
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        maven { url = 'https://repo.spongepowered.org/maven' }
-//        maven {
-//            // RetroFuturaGradle
-//            name 'GTNH Maven'
-//            url = "https://nexus.gtnewhorizons.com/repository/public/"
-//            mavenContent {
-//                includeGroup 'com.gtnewhorizons'
-//                includeGroup 'com.gtnewhorizons.retrofuturagradle'
-//            }
-//        }
-        gradlePluginPortal()
-//        flatDir { dirs "libs" }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:6.+'
-        classpath 'wtf.gofancy.fancygradle:wtf.gofancy.fancygradle.gradle.plugin:1.1.+'
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-        classpath 'com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:8.1.1'
-//        classpath 'com.gtnewhorizons:retrofuturagradle:1.4.1'
-    }
-}
-
-apply {
-    plugin 'net.minecraftforge.gradle'
-    plugin 'wtf.gofancy.fancygradle'
-    plugin 'org.spongepowered.mixin'
-    plugin 'com.github.johnrengelman.shadow'
-//    plugin 'com.gtnewhorizons.retrofuturagradle'
+plugins {
+    id 'net.minecraftforge.gradle' version "6.+"
+    id 'wtf.gofancy.fancygradle' version '1.1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+//    id 'com.gtnewhorizons.retrofuturagradle' version '1.4.1'
 }
 
 version = "${version_major}.${version_minor}.${version_patch}"
@@ -93,7 +66,7 @@ repositories {
 
 configurations {
     embed
-    compile.extendsFrom(embed)
+    compileOnly.extendsFrom(embed)
 }
 
 dependencies {
@@ -108,7 +81,6 @@ dependencies {
         exclude module: 'commons-io'
         exclude module: 'gson'
     }
-    compileOnly 'org.spongepowered:mixin:0.8.+'
     annotationProcessor 'org.spongepowered:mixin:0.8.+:processor'
     runtimeOnly ('zone.rong:mixinbooter:10.6')
 
@@ -134,12 +106,11 @@ dependencies {
 //    runtimeOnly fg.deobf("curse.maven:redstone-flux-270789:2920436")
 //    runtimeOnly fg.deobf("curse.maven:cofh-core-69162:2920433")
     compileOnly fg.deobf("curse.maven:cofh-core-69162:2920433")
-    //Hwyla
-//    runtimeOnly fg.deobf("curse.maven:hwyla-253449:2568751")
-//    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
-//    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
+    //geckolib
+    runtimeOnly fg.deobf("curse.maven:geckolib-388172:4020277")
+
     //TOP
-    implementation fg.deobf("curse.maven:the-one-probe-community-edition-885670:6736118")
+    runtimeOnly fg.deobf("curse.maven:the-one-probe-community-edition-885670:6736118")
 //    runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:2667280")
     //Mo' Bends
     compileOnly fg.deobf("curse.maven:mo-bends-231347:3573346")
@@ -155,7 +126,9 @@ dependencies {
     //Wings
     compileOnly fg.deobf("curse.maven:wings-302584:2829351")
 //    runtimeOnly fg.deobf("curse.maven:wings-302584:2829351")
-
+    //cqrepoured
+    runtimeOnly fg.deobf("curse.maven:reach-fix-556777:6327271")
+    runtimeOnly fg.deobf("curse.maven:cqrepoured-303422:6327280")
 }
 
 mixin {
@@ -214,30 +187,19 @@ jar {
     finalizedBy('reobfJar')
 }
 
-//tasks.register('jarWithMixin', Jar) {
-//    group("custom tasks")
-//    archiveClassifier = 'mixin'
-//    from sourceSets.main.output
-//    from { configurations.embed.collect { it.isDirectory() ? it : zipTree(it) } } {
-//        exclude 'LICENSE.txt', 'META-INF/MANIFSET.MF', 'META-INF/maven/**', 'META-INF/*.RSA', 'META-INF/*.SF'
-//    }
-//
-//    manifest {
-//        attributes(
-//                "FMLCorePlugin": "baubles.coremod.CoreModPlugin",
-//                'ForceLoadAsMod': 'true',
-//                'FMLCorePluginContainsFMLMod': 'true',
-//                'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-//                'TweakOrder': '0'
-//        )
-//    }
-//
-//    finalizedBy('reobfJar')
-//}
+shadowJar {
+    configurations = [project.configurations.embed]
+    mergeServiceFiles()
+    dependencies {
+        exclude 'LICENSE.txt'
+        exclude 'org/spongepowered/asm/launch/MixinLaunchPlugin*'
+        exclude 'org/spongepowered/asm/launch/MixinTransformationService*'
+        exclude 'org/spongepowered/asm/launch/platform/container/ContainerHandleModLauncherEx*'
+    }
 
-//shadowJar {
-//    dependencies {
-//        include(dependency('org.spongepowered:mixin:0.8.+'))
-//    }
-//    finalizedBy('reobfJar')
-//}
+    finalizedBy('reobfShadowJar')
+}
+
+reobf {
+    shadowJar {}
+}
