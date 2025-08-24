@@ -1,8 +1,7 @@
 {
   "package": "baubles.mixin",
-  "plugin": "baubles.mixin.MixinPlugin",
   "compatibilityLevel": "JAVA_8",
-  "minVersion": "0.8-SNAPSHOT",
+  "minVersion": "0.8",
   "refmap": "mixins.baubles.refmap.json",
   "mixins": [
     "vanilla.MixinCapability",
@@ -14,7 +13,6 @@
     "wings.MixinWings"
   ],
   "client": [
-    "mobends.MixinCustom",
     "vanilla.MixinElytra$MixinCape",
     "vanilla.MixinElytra$MixinLayer",
     "vanilla.MixinElytra$MixinPlayerSP"

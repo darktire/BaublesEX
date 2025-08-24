@@ -16,10 +16,14 @@ public class CustomTypeAdapterFactory implements TypeAdapterFactory {
         ParameterizedType pType = (ParameterizedType) type.getType();
         Type actualArg = pType.getActualTypeArguments()[0];
         if (actualArg == BaubleTypeEx.class) {
-            return (TypeAdapter<T>) new TypeDataAdapter();
+            @SuppressWarnings("unchecked")
+            TypeAdapter<T> typeDataAdapter = (TypeAdapter<T>) new TypeDataAdapter();
+            return typeDataAdapter;
         }
         else if (actualArg == BaublesWrapper.class) {
-            return (TypeAdapter<T>) new ItemDataAdapter();
+            @SuppressWarnings("unchecked")
+            TypeAdapter<T> itemDataAdapter = (TypeAdapter<T>) new ItemDataAdapter();
+            return itemDataAdapter;
         }
         return null;
     }

@@ -1,13 +1,6 @@
 package baubles.coremod;
 
-import baubles.api.BaublesWrapper;
-import baubles.api.IBauble;
-import baubles.api.cap.BaublesCapabilities;
-import baubles.api.cap.BaublesCapabilityProvider;
-import baubles.api.registries.ItemsData;
-import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
@@ -23,14 +16,18 @@ public class BaublesTransformer implements IClassTransformer, Opcodes {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
-        if (transformedName.matches(".*Item(Angel|Chicken)Ring")) {
-            info("tansforming " + transformedName);
-            return redirectBaublesCap(basicClass);
+        if (transformedName.matches("com.rwtema.extrautils2.items.Item(Angel|Chicken)Ring")) {
+            this.debug(transformedName);
+            return this.redirectBaublesCap(basicClass);
+        }
+        else if (transformedName.matches("goblinbob.mobends.standard.client.renderer.entity.layers.LayerCustom(Cape|Elytra)")) {
+            this.debug(transformedName);
+            return this.elytraInBaubles(basicClass);
         }
         return basicClass;
     }
 
-    public static byte[] redirectBaublesCap(byte[] basicClass) {
+    private byte[] redirectBaublesCap(byte[] basicClass) {
         ClassNode classNode = new ClassNode();
         new ClassReader(basicClass).accept(classNode, 0);
 
@@ -41,8 +38,8 @@ public class BaublesTransformer implements IClassTransformer, Opcodes {
                         method.instructions.insert(insn, new VarInsnNode(Opcodes.ALOAD, 1));
                         MethodInsnNode newCall = new MethodInsnNode(
                                 Opcodes.INVOKESTATIC,
-                                "baubles/coremod/BaublesTransformer",
-                                "hook",
+                                "baubles/common/util/HookHelper",
+                                "redirectBaublesCap",
                                 "(Lnet/minecraftforge/common/capabilities/ICapabilityProvider;Lnet/minecraft/item/ItemStack;)Lnet/minecraftforge/common/capabilities/ICapabilityProvider;",
                                 false);
 
@@ -58,18 +55,35 @@ public class BaublesTransformer implements IClassTransformer, Opcodes {
         return writer.toByteArray();
     }
 
-    public static ICapabilityProvider hook(ICapabilityProvider provider, ItemStack stack) {
-        IBauble bauble = provider.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
-        if (!(bauble instanceof BaublesWrapper)) {
-            if (!ItemsData.isBauble(stack.getItem())) {
-                ItemsData.registerBauble(stack.getItem(), bauble.getBaubleType(stack).getExpansion());
+    private byte[] elytraInBaubles(byte[] basicClass) {
+        ClassNode classNode = new ClassNode();
+        new ClassReader(basicClass).accept(classNode, 0);
+
+        classNode.methods.forEach(method -> {
+            if (method.name.equals("doRenderLayer")) {
+                for (AbstractInsnNode insn = method.instructions.getFirst(); insn != null; insn = insn.getNext()) {
+                    if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode) insn).name.equals("getItemStackFromSlot")) {
+                        MethodInsnNode newCall = new MethodInsnNode(
+                                Opcodes.INVOKESTATIC,
+                                "baubles/common/util/HookHelper",
+                                "elytraInBaubles",
+                                "(Lnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/inventory/EntityEquipmentSlot;)Lnet/minecraft/item/ItemStack;",
+                                false);
+
+                        method.instructions.insertBefore(insn, newCall);
+                        method.instructions.remove(insn);
+                        break;
+                    }
+                }
             }
-            return BaublesCapabilityProvider.getProvider(stack);
-        }
-        return provider;
+        });
+
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        classNode.accept(writer);
+        return writer.toByteArray();
     }
 
-    private static void info(String s) {
-        log.info(s);
+    private void debug(String s) {
+        log.debug(String.format("transforming %s",s));
     }
 }
