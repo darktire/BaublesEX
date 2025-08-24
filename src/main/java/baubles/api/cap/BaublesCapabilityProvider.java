@@ -1,6 +1,5 @@
 package baubles.api.cap;
 
-import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesWrapper;
 import baubles.api.registries.ItemsData;
 import net.minecraft.item.Item;
@@ -41,12 +40,12 @@ public class BaublesCapabilityProvider implements ICapabilityProvider, INBTSeria
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
-        if (!nbt.hasKey("type_name")) {
-            BaubleTypeEx type = wrapper.getBaubleType();
-            if (type != null) {
-                nbt.setString("type_name", type.getTypeName());
-            }
-        }
+//        if (!nbt.hasKey("type_name")) {
+//            BaubleTypeEx type = wrapper.getBaubleType();
+//            if (type != null) {
+//                nbt.setString("type_name", type.getTypeName());
+//            }
+//        }
         return nbt;
     }
 

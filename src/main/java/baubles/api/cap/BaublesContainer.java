@@ -271,7 +271,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     public void deserializeNBT(NBTTagCompound nbt) {
         if (nbt.hasKey("Modifier")) {
             NBTTagCompound modifier = nbt.getCompoundTag("Modifier");
-            for (String typeName: modifier.getKeySet()) {// todo uncheck
+            for (String typeName: modifier.getKeySet()) {
                 int input = modifier.getInteger(typeName);
                 this.modifySlotOL(typeName, input);
                 this.BAUBLE_MODIFIER.put(typeName, input);
@@ -284,11 +284,19 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         for (int i = 0; i < itemList.tagCount(); i++) {
             NBTTagCompound itemTags = itemList.getCompoundTagAt(i);
             int slot = itemTags.getInteger("Slot");
-            if (slot >= 0 && slot < stacks.size()) {
-                stacks.set(slot, new ItemStack(itemTags));
+            boolean flag = false;
+            ItemStack stack = new ItemStack(itemTags);
+            if (slot >= 0 && slot < stacks.size()
+                    && BaublesApi.isBauble(stack)
+                    && BaublesApi.toBauble(stack).getBaubleTypes().contains(getTypeInSlot(slot))) {
+                flag = true;
+            }
+            if (flag) {
+                stacks.set(slot, stack);
             }
             else {
-                this.entity.entityDropItem(new ItemStack(itemTags), 0);
+                this.entity.entityDropItem(stack, 0);
+                if (BaublesApi.isBauble(stack)) BaublesApi.toBauble(stack).onUnequipped(stack, entity);
             }
         }
     }

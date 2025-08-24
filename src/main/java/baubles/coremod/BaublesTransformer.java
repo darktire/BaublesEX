@@ -62,7 +62,7 @@ public class BaublesTransformer implements IClassTransformer, Opcodes {
         IBauble bauble = provider.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
         if (!(bauble instanceof BaublesWrapper)) {
             if (!ItemsData.isBauble(stack.getItem())) {
-                ItemsData.registerBauble(stack.getItem(), bauble.getBaubleType(stack).getNewType());
+                ItemsData.registerBauble(stack.getItem(), bauble.getBaubleType(stack).getExpansion());
             }
             return BaublesCapabilityProvider.getProvider(stack);
         }

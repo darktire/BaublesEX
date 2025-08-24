@@ -29,7 +29,7 @@ public final class BaublesWrapper implements IBauble {
                 if (this.type == null) {
                     this.type = bauble.getBaubleType(
                             (bauble instanceof Item) ? new ItemStack((Item) bauble) : ItemStack.EMPTY
-                    ).getNewType();
+                    ).getExpansion();
                     if (this.type == null) throw new RuntimeException(item.getRegistryName() + " have no type");
                 }
                 this.types = new LinkedList<>();
@@ -116,4 +116,4 @@ public final class BaublesWrapper implements IBauble {
         return this.bauble.canDrop(itemstack, entity);
     }
 }
-// todo commands edit type
+// todo commands edit type, also the data persistence

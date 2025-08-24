@@ -18,6 +18,7 @@ public class TypeDataAdapter extends TypeAdapter<List<BaubleTypeEx>> {
             out.beginObject();
             out.name("typeName").value(type.getTypeName());
             out.name("amount").value(type.getAmount());
+            out.name("priority").value(type.getPriority());
             out.name("texture").value(type.getTexture());
             out.name("translateKey").value(type.getTranslateKey());
             out.endObject();
@@ -31,18 +32,21 @@ public class TypeDataAdapter extends TypeAdapter<List<BaubleTypeEx>> {
         in.beginObject();
         while (in.hasNext()) {
             String typeName = null;
-            int amount = 1;
+            int amount = 1, priority = 0;
             in.nextName();
             in.beginObject();
             while (in.hasNext()) {
                 switch (in.nextName()) {
                     case "typeName": typeName = in.nextString().toLowerCase(); break;
                     case "amount": amount = in.nextInt(); break;
+                    case "priority": priority = in.nextInt(); break;
                     default: in.skipValue(); break;
                 }
             }
             in.endObject();
-            if (typeName!= null) types.add(new BaubleTypeEx(typeName, amount));
+            if (typeName!= null) {
+                types.add(new BaubleTypeEx(typeName, amount).setPriority(priority));
+            }
         }
         in.endObject();
         return types;

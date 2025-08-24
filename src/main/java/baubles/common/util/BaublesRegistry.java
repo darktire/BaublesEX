@@ -18,11 +18,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 public class BaublesRegistry {
-    public static BaubleTypeEx TRINKET = BaubleType.TRINKET.getNewType();
+    public static BaubleTypeEx TRINKET = BaubleType.TRINKET.getExpansion();
 
     public BaublesRegistry() {
         registerBaubles();
@@ -51,20 +53,13 @@ public class BaublesRegistry {
     }
 
     public void registerBaubles() {
-        int amount = 0;
         for (BaubleType type : BaubleType.values()) {
             int value = Config.Slots.getCfgAmount(type.toString());
-            if (type == BaubleType.TRINKET) value = 0;
-            TypesData.registerBauble(type.getNewType(), value);
-            amount += value;
+            TypesData.registerBauble(type.getExpansion().setAmount(value));
         }
-
-        int trinket = Config.Slots.getCfgAmount(BaubleType.TRINKET.toString());
-        if (trinket > amount) {
-            TypesData.registerBauble(BaubleType.TRINKET.getNewType(), trinket - amount);
+        if (Config.ModItems.elytraBauble && Config.ModItems.elytraSlot.equals("elytra")) {
+            BaubleType.ELYTRA.getExpansion().setAmount(1);
         }
-
-        TypesData.registerBauble("elytra", (Config.ModItems.elytraBauble && Config.ModItems.elytraSlot.equals("elytra")) ? 1 : 0);
 
         try {
             List<BaubleTypeEx> types = Config.json.jsonToType();
@@ -78,10 +73,12 @@ public class BaublesRegistry {
 
     public void loadValidSlots() {
         int pointer = 0;
+        List<BaubleTypeEx> types = new ArrayList<>();
         Iterator<BaubleTypeEx> iterator = TypesData.iterator();
+        iterator.forEachRemaining(types::add);
+        types.sort(Collections.reverseOrder());
         TypesData.initLazyList();
-        while (iterator.hasNext()) {
-            BaubleTypeEx type = iterator.next();
+        for (BaubleTypeEx type : types) {
             int amount = type.getAmount();
             for (int i = 0; i < amount; i++) {
                 type.addOriSlots(pointer + i);
@@ -93,7 +90,6 @@ public class BaublesRegistry {
 
         BaubleTypeEx trinket = TRINKET;
         iterator.forEachRemaining(trinket::addOriSlots);
-
     }
 
     @Mod.EventBusSubscriber

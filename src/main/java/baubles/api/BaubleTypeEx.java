@@ -5,15 +5,17 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> {
+public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> implements Comparable<BaubleTypeEx> {
     private final String typeName;
     private int amount;
+    private int priority;
     private final List<Integer> oriSlots;
 
     public BaubleTypeEx(String typeName, int amount) {
         this.typeName = typeName;
         this.setRegistryName(typeName);
         this.amount = amount;
+        this.priority = 0;
         this.oriSlots = new ArrayList<>();
     }
 
@@ -21,11 +23,20 @@ public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> {
         return BaubleType.valueOf(typeName.toUpperCase());
     }
 
-    public void setAmount(int x) {
+    public BaubleTypeEx setAmount(int x) {
         amount = x;
+        return this;
     }
     public int getAmount() {
         return amount;
+    }
+
+    public BaubleTypeEx setPriority(int priority) {
+        this.priority = priority;
+        return this;
+    }
+    public int getPriority() {
+        return this.priority;
     }
 
     public void addOriSlots(int slots) {
@@ -51,5 +62,10 @@ public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> {
 
     public boolean hasSlot(int slot) {
         return oriSlots.contains(slot);
+    }
+
+    @Override
+    public int compareTo(BaubleTypeEx to) {
+        return Integer.compare(this.priority, to.getPriority());
     }
 }

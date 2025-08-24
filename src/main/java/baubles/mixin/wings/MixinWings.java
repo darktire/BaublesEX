@@ -41,7 +41,6 @@ public abstract class MixinWings extends CapabilityHolder.PresentState<ItemStack
                 if (!stack1.isEmpty() && Arrays.asList(WingsConfig.wearObstructions).contains(Util.getName(stack1.getItem()).toString())) {
                     break;
                 }
-
             }
         }
         cir.setReturnValue(ItemStack.EMPTY);

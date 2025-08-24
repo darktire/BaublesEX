@@ -5,23 +5,24 @@ package baubles.api;
  **/
 public enum BaubleType {
 
-	HEAD(1),
-	AMULET(1),
-	BODY(1),
-	RING(2),
-	BELT(1),
-	CHARM(1),
-	TRINKET(0);
+	HEAD(1, 10),
+	AMULET(1, 10),
+	BODY(1, 10),
+	RING(2, 0),
+	BELT(1, 0),
+	CHARM(1, 0),
+	TRINKET(0, -1),
+	ELYTRA(0, 5);
 
 	public final int amount;
     private final BaubleTypeEx baubleTypeEx;
 
-	BaubleType(int amount) {
+	BaubleType(int amount, int priority) {
 		this.amount = amount;
-		this.baubleTypeEx = new BaubleTypeEx(this.toString().toLowerCase(), amount);
-	}
+		this.baubleTypeEx = new BaubleTypeEx(this.toString().toLowerCase(), amount).setPriority(priority);
+    }
 
-	public BaubleTypeEx getNewType() {
+	public BaubleTypeEx getExpansion() {
 		return baubleTypeEx;
 	}
 

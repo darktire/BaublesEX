@@ -2,26 +2,37 @@ package baubles.mixin;
 
 import com.google.common.collect.ImmutableMap;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class MixinInfo {
+
     public static boolean isModLoaded(String modId, ClassLoader loader) {
-        if (modId.equals("baubles")) return true;
-        else {
+        Boolean flag = isModLoaded.get(modId);
+        if (flag == null) {
             String className = modMainClass.get(modId);
             if (className != null) {
                 try {
                     Class.forName(className, false, loader);
+                    isModLoaded.put(modId, true);
                     return true;
                 }
-                catch (ClassNotFoundException ignored) {}
+                catch (ClassNotFoundException ignored) {
+                    isModLoaded.put(modId, false);
+                }
             }
             return false;
         }
+        else return flag;
     }
 
     public static String getTargetModId(String mixinClassName) {
         return mixinTargetMod.get(mixinClassName);
+    }
+
+    private static final Map<String, Boolean> isModLoaded = new HashMap<>();
+    static {
+        isModLoaded.put("baubles", true);
     }
 
     private static final Map<String, String> mixinTargetMod = ImmutableMap.<String, String>builder()

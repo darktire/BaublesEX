@@ -18,10 +18,9 @@ public class TypesData {
     private static int sum = 7;
     private static final List<BaubleTypeEx> BAUBLE_SLOTS = new ArrayList<>();
 
-    public static void registerBauble(BaubleTypeEx type, int amount) {
+    public static void registerBauble(String typeName, int amount, int priority) {
         if (amount < 0) return;
-        type.setAmount(amount);
-        registerBauble(type);
+        registerBauble(new BaubleTypeEx(typeName, amount).setPriority(priority));
     }
 
     public static void registerBauble(String typeName, int amount) {
@@ -30,8 +29,10 @@ public class TypesData {
     }
 
     public static void registerBauble(BaubleTypeEx type) {
-        if (REGISTRY.getValue(type.getRegistryName()) != null) {
-            REGISTRY.getValue(type.getRegistryName()).setAmount(type.getAmount());
+        BaubleTypeEx get = REGISTRY.getValue(type.getRegistryName());
+        if (get != null) {
+            get.setAmount(type.getAmount());
+            get.setPriority(type.getPriority());
         }
         else {
             REGISTRY.register(type);

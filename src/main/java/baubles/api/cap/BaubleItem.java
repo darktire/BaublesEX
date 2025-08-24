@@ -25,7 +25,7 @@ public class BaubleItem implements IBauble {
 
 	@SuppressWarnings("unused")// for old api
 	public BaubleItem(BaubleType type) {
-        this.type = type.getNewType();
+        this.type = type.getExpansion();
 	}
 
 	@Override

@@ -88,7 +88,8 @@ To set a new type:
 {
   "baubles:elytra": {
     "typeName": "elytra",
-    "amount": 1
+    "amount": 1,
+    "priority": 5
   }
 }
 ```
