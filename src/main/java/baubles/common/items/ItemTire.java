@@ -17,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ItemTire extends Item implements IBauble {
-	private final String[] typesName = {"head", "amulet", "body"};
+	private final String[] typesName = {"head", "amulet", "body", "charm"};
 	private final List<BaubleTypeEx> types = new LinkedList<>();
 
 	public ItemTire() {
@@ -55,7 +55,9 @@ public class ItemTire extends Item implements IBauble {
 
 	@Override
 	public void onEquipped(ItemStack itemstack, EntityLivingBase entity) {
-		entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 1.9f);
+		if (!entity.world.isRemote) {
+			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 1.9f);
+		}
 		IBaublesModifiable handler = BaublesApi.getBaublesHandler(entity);
 		handler.modifySlotOA("charm", 2);
 		handler.updateSlots();
@@ -63,7 +65,6 @@ public class ItemTire extends Item implements IBauble {
 
 	@Override
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase entity) {
-		entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 2f);
 		IBaublesModifiable handler = BaublesApi.getBaublesHandler(entity);
 		handler.modifySlotOA("charm", -2);
 		handler.updateSlots();

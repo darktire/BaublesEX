@@ -11,7 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.IGuiHandler;
-import net.minecraftforge.fml.server.FMLServerHandler;
 
 public class CommonProxy implements IGuiHandler {
 
@@ -35,10 +34,6 @@ public class CommonProxy implements IGuiHandler {
             return new ContainerPlayerExpanded(player, ((IPlayerTarget) player).getTarget());
         }
         return null;
-    }
-
-    public World[] getSeverWorld() {
-        return FMLServerHandler.instance().getServer().worlds;
     }
 
     public World getClientWorld() {

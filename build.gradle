@@ -29,6 +29,12 @@ minecraft {
         }
 
         server {}
+
+
+    }
+
+    legacy {
+        attachMappings = true
     }
 }
 
@@ -107,14 +113,12 @@ dependencies {
 //    runtimeOnly fg.deobf("curse.maven:redstone-flux-270789:2920436")
 //    runtimeOnly fg.deobf("curse.maven:cofh-core-69162:2920433")
     compileOnly fg.deobf("curse.maven:cofh-core-69162:2920433")
-    //geckolib
-//    runtimeOnly fg.deobf("curse.maven:geckolib-388172:4020277")
 
     //TOP
     runtimeOnly fg.deobf("curse.maven:the-one-probe-community-edition-885670:6736118")
 //    runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:2667280")
     //Mo' Bends
-    runtimeOnly fg.deobf("curse.maven:mo-bends-231347:3573346")
+//    runtimeOnly fg.deobf("curse.maven:mo-bends-231347:3573346")
     //Test dummy
     implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:2503041")
     //Botania
@@ -125,9 +129,6 @@ dependencies {
     //Wings
     compileOnly fg.deobf("curse.maven:wings-302584:2829351")
 //    runtimeOnly fg.deobf("curse.maven:wings-302584:2829351")
-    //cqrepoured
-//    runtimeOnly fg.deobf("curse.maven:reach-fix-556777:6327271")
-//    runtimeOnly fg.deobf("curse.maven:cqrepoured-303422:6327280")
 }
 
 mixin {

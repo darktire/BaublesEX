@@ -19,6 +19,8 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     private boolean blockEvents = false;
     private static final BaubleTypeEx TRINKET = TypesData.getTypeByName("trinket");
     private EntityLivingBase entity;
+    private final Deque<ItemStack> droppingItem = new ArrayDeque<>();
+
     private final List<BaubleTypeEx> MODIFIED_SLOTS = new ArrayList<>();
     private final List<BaubleTypeEx> PREVIOUS_SLOTS = new ArrayList<>();
 //    private final HashMap<String, Integer> MODIFIER_FACTOR = new HashMap<>();
@@ -245,6 +247,16 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
 	}
 
     @Override
+    public boolean haveDroppingItem() {
+        return !this.droppingItem.isEmpty();
+    }
+
+    @Override
+    public ItemStack getDroppingItem() {
+        return this.droppingItem.pop();
+    }
+
+    @Override
     public NBTTagCompound serializeNBT() {
         // item persistence
         NBTTagList itemList = new NBTTagList();
@@ -295,8 +307,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
                 stacks.set(slot, stack);
             }
             else {
-                this.entity.entityDropItem(stack, 0);
-                if (BaublesApi.isBauble(stack)) BaublesApi.toBauble(stack).onUnequipped(stack, entity);
+                this.droppingItem.push(stack);
             }
         }
     }

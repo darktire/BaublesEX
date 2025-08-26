@@ -21,4 +21,7 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 
 	@Deprecated
     void setPlayer(EntityLivingBase entity);
+
+	boolean haveDroppingItem();
+	ItemStack getDroppingItem();
 }
