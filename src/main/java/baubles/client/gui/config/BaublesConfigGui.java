@@ -1,6 +1,7 @@
 package baubles.client.gui.config;
 
 import baubles.Baubles;
+import baubles.common.Config;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
@@ -9,8 +10,6 @@ import net.minecraftforge.fml.client.config.IConfigElement;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static baubles.Baubles.config;
 
 public class BaublesConfigGui extends GuiConfig {
 
@@ -21,8 +20,8 @@ public class BaublesConfigGui extends GuiConfig {
     private static List<IConfigElement> getConfigElements() {
         List<IConfigElement> list = new ArrayList<>();
 
-        list.add(new ConfigElement(config.getConfigFile().getCategory(Configuration.CATEGORY_GENERAL)));
-        list.add(new ConfigElement(config.getConfigFile().getCategory(Configuration.CATEGORY_CLIENT)));
+        list.add(new ConfigElement(Config.getConfigFile().getCategory(Configuration.CATEGORY_GENERAL)));
+        list.add(new ConfigElement(Config.getConfigFile().getCategory(Configuration.CATEGORY_CLIENT)));
 
         return list;
     }
@@ -32,6 +31,6 @@ public class BaublesConfigGui extends GuiConfig {
     }
 
     private static String getTitle(GuiScreen parent) {
-        return GuiConfig.getAbridgedConfigPath(config.getConfigFile().toString());
+        return GuiConfig.getAbridgedConfigPath(Config.getConfigFile().toString());
     }
 }

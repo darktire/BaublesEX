@@ -7,6 +7,7 @@ import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilityProvider;
 import baubles.api.registries.ItemsData;
 import baubles.common.Config;
+import baubles.common.util.BaublesRegistry;
 import baubles.common.util.ICapabilityRemove;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -59,7 +60,7 @@ public class EventHandlerItem {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void itemBaubleWrap(RegistryEvent.Register<BaubleTypeEx> event) {
-        Baubles.registry.registerItems();
-        if (Config.rightClick) Baubles.config.setupBlacklist();
+        BaublesRegistry.registerItems();
+        if (Config.rightClick) Config.setupBlacklist();
     }
 }

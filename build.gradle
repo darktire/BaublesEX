@@ -25,6 +25,7 @@ minecraft {
         }
 
         client {
+            args "--username=InDev"
             workingDirectory file('run')
         }
 
@@ -129,6 +130,8 @@ dependencies {
     //Wings
     compileOnly fg.deobf("curse.maven:wings-302584:2829351")
 //    runtimeOnly fg.deobf("curse.maven:wings-302584:2829351")
+    //RLArtifacts
+    implementation fg.deobf("curse.maven:rl-artifacts-819886:4475428")
 }
 
 mixin {

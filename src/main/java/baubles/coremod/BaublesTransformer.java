@@ -17,17 +17,17 @@ public class BaublesTransformer implements IClassTransformer, Opcodes {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         if (transformedName.matches("com.rwtema.extrautils2.items.Item(Angel|Chicken)Ring")) {
-            this.debug(transformedName);
-            return this.redirectBaublesCap(basicClass);
+            debug(transformedName);
+            return redirectBaublesCap(basicClass);
         }
         else if (transformedName.matches("goblinbob.mobends.standard.client.renderer.entity.layers.LayerCustom(Cape|Elytra)")) {
-            this.debug(transformedName);
-            return this.elytraInBaubles(basicClass);
+            debug(transformedName);
+            return elytraInBaubles(basicClass);
         }
         return basicClass;
     }
 
-    private byte[] redirectBaublesCap(byte[] basicClass) {
+    private static byte[] redirectBaublesCap(byte[] basicClass) {
         ClassNode classNode = new ClassNode();
         new ClassReader(basicClass).accept(classNode, 0);
 
@@ -55,7 +55,7 @@ public class BaublesTransformer implements IClassTransformer, Opcodes {
         return writer.toByteArray();
     }
 
-    private byte[] elytraInBaubles(byte[] basicClass) {
+    private static byte[] elytraInBaubles(byte[] basicClass) {
         ClassNode classNode = new ClassNode();
         new ClassReader(basicClass).accept(classNode, 0);
 
@@ -83,7 +83,7 @@ public class BaublesTransformer implements IClassTransformer, Opcodes {
         return writer.toByteArray();
     }
 
-    private void debug(String s) {
+    private static void debug(String s) {
         log.debug(String.format("transforming %s",s));
     }
 }

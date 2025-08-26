@@ -1,5 +1,6 @@
 package baubles.client;
 
+import baubles.api.render.BaublesRenderLayer;
 import baubles.client.gui.GuiEvents;
 import baubles.common.CommonProxy;
 import baubles.common.config.KeyBindings;

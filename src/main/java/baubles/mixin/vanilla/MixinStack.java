@@ -1,6 +1,5 @@
 package baubles.mixin.vanilla;
 
-import baubles.Baubles;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
@@ -26,7 +25,7 @@ public abstract class MixinStack {
     private void playerRightClickItem(World worldIn, EntityPlayer playerIn, EnumHand hand, CallbackInfoReturnable<ActionResult<ItemStack>> cir) {
         if (cir.getReturnValue().getType() == EnumActionResult.SUCCESS || !Config.rightClick || playerIn.isSneaking()) return;
         ItemStack heldItem = (ItemStack) (Object) this;
-        if (Baubles.config.getBlacklist().contains(heldItem.getItem()) || !BaublesApi.isBauble(heldItem)) return;
+        if (Config.getBlacklist().contains(heldItem.getItem()) || !BaublesApi.isBauble(heldItem)) return;
         IBauble bauble = BaublesApi.toBauble(heldItem);
         BaubleTypeEx type = bauble.getBaubleType();
         IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) playerIn);

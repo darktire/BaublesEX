@@ -3,9 +3,10 @@ package baubles.common;
 import baubles.Baubles;
 import baubles.api.BaubleType;
 import baubles.api.cap.BaublesContainer;
+import baubles.common.config.PartialConfig;
 import baubles.common.config.json.JsonHelper;
+import baubles.common.util.BaublesRegistry;
 import net.minecraft.item.Item;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -18,12 +19,11 @@ import java.util.LinkedList;
 import static net.minecraftforge.common.config.Configuration.CATEGORY_CLIENT;
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
-public class Config {
+public class Config extends PartialConfig {
     private static Configuration configFile;
     public static JsonHelper json;
-    public File modDir;
 
-//    Configuration Options
+    //    Configuration Options
     public static boolean renderBaubles = true;
     public static boolean keepBaubles = false;
     public static boolean rightClick = true;
@@ -35,29 +35,24 @@ public class Config {
     public final static String CLIENT_GUI = "client.gui";
     public final static String BAUBLES_ITEMS = "general.items";
 
-    private final LinkedList<Item> blacklist = new LinkedList<>();
+    private static final LinkedList<Item> blacklist = new LinkedList<>();
 
-    public Config(FMLPreInitializationEvent event) {
-        loadConfig(event);
-        MinecraftForge.EVENT_BUS.register(Config.ConfigChangeListener.class);
-    }
-
-    public void loadConfig(FMLPreInitializationEvent event) {
-        this.modDir = event.getModConfigurationDirectory();
+    public static void loadConfig(FMLPreInitializationEvent event) {
+        File modDir = event.getModConfigurationDirectory();
         try {
             configFile = new Configuration(event.getSuggestedConfigurationFile());
             configFile.load();
 
-            new Slots();
-            new Gui();
-            new ModItems();
-            loadData();
-            json = new JsonHelper(this.modDir);
+            PartialConfig.create(Slots.class);
+            PartialConfig.create(Gui.class);
+            PartialConfig.create(ModItems.class);
+            PartialConfig.create(Config.class);
+            json = new JsonHelper(modDir);
         } catch (Exception e) {
             Baubles.log.error("BAUBLES has a problem loading it's configuration");
-        } finally {
-            if (Config.configFile != null) configFile.save();
         }
+        saveConfig();
+
     }
 
 
@@ -71,31 +66,30 @@ public class Config {
 //        armorStand = configFile.getBoolean("armorStand", CATEGORY_GENERAL, armorStand, "Whether armorStand has baubles container (need to place armorStand again)");
 
         clickBlacklist = configFile.getStringList("clickBlacklist", CATEGORY_GENERAL, clickBlacklist, "");
-
-        configFile.save();
     }
 
-    public Configuration getConfigFile() {
+    private static void saveConfig() {
+        if (Config.configFile != null) {
+            configFile.save();
+        }
+    }
+
+    public static Configuration getConfigFile() {
         return configFile;
     }
 
-    public LinkedList<Item> getBlacklist() {
-        return this.blacklist;
+    public static LinkedList<Item> getBlacklist() {
+        return blacklist;
     }
 
-    public void setupBlacklist() {
+    public static void setupBlacklist() {
         for (String s : clickBlacklist) {
             Item item = Item.getByNameOrId(s);
             if (item != null) blacklist.add(item);
         }
     }
 
-    public abstract static class Base {
-        public Base(){ loadData(); }
-        public abstract void loadData();
-    }
-
-    public static class Slots extends Base {
+    public static class Slots extends PartialConfig {
         public static int AMULET;
         public static int RING;
         public static int BELT;
@@ -132,7 +126,7 @@ public class Config {
         }
     }
 
-    public static class Gui extends Base {
+    public static class Gui extends PartialConfig {
         public static boolean baublesButton = true;
         public static boolean scrollerBar = true;
         public static boolean widerBar = false;
@@ -148,7 +142,7 @@ public class Config {
         }
     }
 
-    public static class ModItems extends Base {
+    public static class ModItems extends PartialConfig {
         public static boolean testItem = false;
         public static boolean elytraBauble = false;
         public static String elytraSlot = "elytra";
@@ -169,13 +163,14 @@ public class Config {
         @SubscribeEvent
         public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
             if (eventArgs.getModID().equals(Baubles.MODID)) {
-                new Slots();
-                new Gui();
-                new ModItems();
-                Baubles.config.loadData();
-                if (Config.rightClick) Baubles.config.setupBlacklist();
-                Baubles.registry.registerBaubles();
-                Baubles.registry.loadValidSlots();
+                PartialConfig.create(Slots.class);
+                PartialConfig.create(Gui.class);
+                PartialConfig.create(ModItems.class);
+                PartialConfig.create(Config.class);
+                Config.saveConfig();
+                if (Config.rightClick) Config.setupBlacklist();
+                BaublesRegistry.registerBaubles();
+                BaublesRegistry.loadValidSlots();
                 for (BaublesContainer container: BaublesContainer.listener) {
                     container.onConfigChanged();
                 }

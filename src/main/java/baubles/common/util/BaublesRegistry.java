@@ -27,11 +27,9 @@ public class BaublesRegistry {
     public static BaubleTypeEx TRINKET = BaubleType.TRINKET.getExpansion();
 
     public BaublesRegistry() {
-        registerBaubles();
-        loadValidSlots();
     }
 
-    public void registerItems() {
+    public static void registerItems() {
         for (Item item : Item.REGISTRY) {
             if (item instanceof IBauble) {
                 ItemsData.registerBauble(item, (IBauble) item);
@@ -52,7 +50,7 @@ public class BaublesRegistry {
         }
     }
 
-    public void registerBaubles() {
+    public static void registerBaubles() {
         for (BaubleType type : BaubleType.values()) {
             int value = Config.Slots.getCfgAmount(type.toString());
             TypesData.registerBauble(type.getExpansion().setAmount(value));
@@ -71,7 +69,7 @@ public class BaublesRegistry {
         }
     }
 
-    public void loadValidSlots() {
+    public static void loadValidSlots() {
         int pointer = 0;
         List<BaubleTypeEx> types = new ArrayList<>();
         Iterator<BaubleTypeEx> iterator = TypesData.iterator();
