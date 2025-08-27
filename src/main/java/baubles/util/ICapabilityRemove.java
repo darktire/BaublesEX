@@ -1,4 +1,4 @@
-package baubles.common.util;
+package baubles.util;
 
 import net.minecraft.util.ResourceLocation;
 

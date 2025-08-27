@@ -1,4 +1,4 @@
-package baubles.mixin.vanilla;
+package baubles.mixin.early.vanilla;
 
 import baubles.api.registries.ItemsData;
 import net.minecraft.block.BlockPumpkin;

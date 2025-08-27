@@ -1,6 +1,6 @@
-package baubles.mixin.vanilla;
+package baubles.mixin.early.vanilla;
 
-import baubles.common.util.HookHelper;
+import baubles.util.HookHelper;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.entity.layers.LayerCape;

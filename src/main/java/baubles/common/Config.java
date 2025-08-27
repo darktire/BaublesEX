@@ -5,7 +5,7 @@ import baubles.api.BaubleType;
 import baubles.api.cap.BaublesContainer;
 import baubles.common.config.PartialConfig;
 import baubles.common.config.json.JsonHelper;
-import baubles.common.util.BaublesRegistry;
+import baubles.util.BaublesRegistry;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -16,7 +16,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.io.File;
 import java.util.LinkedList;
 
-import static net.minecraftforge.common.config.Configuration.CATEGORY_CLIENT;
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
 public class Config extends PartialConfig {
@@ -24,7 +23,6 @@ public class Config extends PartialConfig {
     public static JsonHelper json;
 
     //    Configuration Options
-    public static boolean renderBaubles = true;
     public static boolean keepBaubles = false;
     public static boolean rightClick = true;
     public static int maxLevel = 1;
@@ -57,8 +55,6 @@ public class Config extends PartialConfig {
 
 
     public void loadData() {
-        renderBaubles = configFile.getBoolean("baubleRender", CATEGORY_CLIENT, renderBaubles, "Set this to false to disable rendering of baubles in the player.");
-
         maxLevel = configFile.getInt("maxLevel", CATEGORY_GENERAL, maxLevel, 0, 255, "Max level of haste given by Miner's Ring");
 
         keepBaubles = configFile.getBoolean("keepBaubles", CATEGORY_GENERAL, keepBaubles, "Whether baubles can drop when player dies.");

@@ -1,7 +1,5 @@
 package baubles.api.cap;
 
-import baubles.api.BaubleTypeEx;
-
 public interface IBaublesModifiable extends IBaublesItemHandler{
 
     /**
@@ -22,6 +20,4 @@ public interface IBaublesModifiable extends IBaublesItemHandler{
     void updateSlots();
 
     int getModifier(String typeName);
-
-    BaubleTypeEx getTypeInSlot(int index);
 }

@@ -21,7 +21,7 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             arg '-torg.spongepowered.asm.launch.MixinTweaker'
-            jvmArgs '-Dfml.coreMods.load=baubles.coremod.CoreModPlugin'
+            jvmArgs '-Dfml.coreMods.load=baubles.coremod.BaublesPlugin'
         }
 
         client {
@@ -71,36 +71,24 @@ repositories {
     maven { url 'https://maven.cleanroommc.com' }
 }
 
-configurations {
-    embed
-    compileOnly.extendsFrom(embed)
-}
-
 dependencies {
     minecraft(
         group  : "${forge_group}",
         name   : "forge",
         version: "${minecraft_version}-${forge_version}"
     )
+//    shadow 'zone.rong:mixinbooter:10.6'
 
-    embed ('org.spongepowered:mixin:0.8.+') {
-        exclude module: 'guava'
-        exclude module: 'commons-io'
-        exclude module: 'gson'
+    annotationProcessor 'org.ow2.asm:asm-debug-all:5.2'
+    annotationProcessor 'com.google.guava:guava:32.1.2-jre'
+    annotationProcessor 'com.google.code.gson:gson:2.8.9'
+
+    implementation ('zone.rong:mixinbooter:10.6') {
+        transitive = false
     }
-    annotationProcessor 'org.spongepowered:mixin:0.8.+:processor'
-//    runtimeOnly 'org.spongepowered:mixin:0.8.+'
-    runtimeOnly 'zone.rong:mixinbooter:10.6'
-
-//    annotationProcessor 'org.ow2.asm:asm-debug-all:5.2'
-//    annotationProcessor 'com.google.guava:guava:32.1.2-jre'
-//    annotationProcessor 'com.google.code.gson:gson:2.8.9'
-//    implementation ('zone.rong:mixinbooter:10.6') {
-//        transitive = false
-//    }
-//    annotationProcessor ('zone.rong:mixinbooter:10.6') {
-//        transitive = false
-//    }
+    annotationProcessor ('zone.rong:mixinbooter:10.6') {
+        transitive = false
+    }
 
     runtimeOnly fileTree(dir: 'libs', includes: ['*.jar'])
 //    compileOnly fileTree(dir: 'libs', includes: ['*.jar'])
@@ -119,6 +107,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:the-one-probe-community-edition-885670:6736118")
 //    runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:2667280")
     //Mo' Bends
+    compileOnly fg.deobf("curse.maven:mo-bends-231347:3573346")
 //    runtimeOnly fg.deobf("curse.maven:mo-bends-231347:3573346")
     //Test dummy
     implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:2503041")
@@ -126,6 +115,7 @@ dependencies {
 //    runtimeOnly fg.deobf("curse.maven:botania-225643:3330934")
 //    runtimeOnly fg.deobf("curse.maven:botania-ceu-1179448:6900692")
     //ExU2
+    compileOnly fg.deobf("curse.maven:extra-utilities-225561:2678374")
 //    runtimeOnly fg.deobf("curse.maven:extra-utilities-225561:2678374")
     //Wings
     compileOnly fg.deobf("curse.maven:wings-302584:2829351")
@@ -136,7 +126,6 @@ dependencies {
 
 mixin {
     add sourceSets.main, refmap_configs.replace('${mod_id}', mod_id)
-    config mixin_configs.replace('${mod_id}', mod_id)
 
     debug.verbose = true
     debug.export = true
@@ -181,7 +170,7 @@ classes.configure {
 jar {
     manifest {
         attributes(
-                "FMLCorePlugin": "baubles.coremod.CoreModPlugin",
+                "FMLCorePlugin": "baubles.coremod.BaublesPlugin",
                 'ForceLoadAsMod': 'true',
                 'FMLCorePluginContainsFMLMod': 'true',
                 'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
@@ -193,7 +182,7 @@ jar {
 }
 
 shadowJar {
-    configurations = [project.configurations.embed]
+    configurations = [project.configurations.shadow]
     mergeServiceFiles()
     dependencies {
         exclude 'LICENSE.txt'

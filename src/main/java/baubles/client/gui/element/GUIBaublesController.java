@@ -3,7 +3,10 @@ package baubles.client.gui.element;
 import baubles.client.gui.GuiBaublesBase;
 import baubles.client.gui.GuiPlayerExpanded;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GUIBaublesController extends ElementBase {
 
     private final GuiPlayerExpanded parentGui;

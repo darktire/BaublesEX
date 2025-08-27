@@ -47,7 +47,7 @@ public class BaublesApi {
      * @return -1 if not found and slot number if it is found
      */
     public static int isBaubleEquipped(EntityLivingBase entity, Item bauble) {
-        IBaublesItemHandler handler = getBaublesHandler(entity);
+        IBaublesModifiable handler = getBaublesHandler(entity);
         for (int a = 0; a < handler.getSlots(); a++) {
             if (!handler.getStackInSlot(a).isEmpty() && handler.getStackInSlot(a).getItem() == bauble) return a;
         }
@@ -74,7 +74,7 @@ public class BaublesApi {
      * Use this method to get cap from stack
      * @return null when stack doesn't have baubles:item_cap
      */
-    public static IBauble toBauble(ItemStack stack) {
+    public static IWrapper toBauble(ItemStack stack) {
         return stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
     }
 }

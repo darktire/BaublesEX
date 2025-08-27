@@ -1,7 +1,7 @@
 package baubles;
 
 import baubles.api.BaublesWrapper;
-import baubles.api.IBauble;
+import baubles.api.IWrapper;
 import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
 import baubles.api.cap.BaublesCapabilities.CapabilityItemBaubleStorage;
 import baubles.api.cap.BaublesContainer;
@@ -10,7 +10,7 @@ import baubles.common.CommonProxy;
 import baubles.common.Config;
 import baubles.common.command.CommandBaubles;
 import baubles.common.network.PacketHandler;
-import baubles.common.util.BaublesRegistry;
+import baubles.util.BaublesRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
@@ -33,7 +33,7 @@ public class Baubles {
 
     public static final String MODID = "baubles";
     public static final String MODNAME = "BaublesEX";
-    public static final String VERSION = "2.2.2";
+    public static final String VERSION = "2.2.3";
     public static final String FACTORY = "baubles.client.gui.config.BaublesGuiFactory";
 
     public static Config config;
@@ -60,7 +60,7 @@ public class Baubles {
                 new CapabilityBaubles(),
                 BaublesContainer::new);
         CapabilityManager.INSTANCE.register(
-                IBauble.class,
+                IWrapper.class,
                 new CapabilityItemBaubleStorage(),
                 BaublesWrapper::new);
 

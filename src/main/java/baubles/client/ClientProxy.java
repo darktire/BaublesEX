@@ -1,7 +1,7 @@
 package baubles.client;
 
-import baubles.api.render.BaublesRenderLayer;
 import baubles.client.gui.GuiEvents;
+import baubles.client.render.BaublesRenderLayer;
 import baubles.common.CommonProxy;
 import baubles.common.config.KeyBindings;
 import net.minecraft.client.Minecraft;
@@ -16,6 +16,7 @@ import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
+    public static BaublesRenderLayer NORMAL_LAYER, SLIM_LAYER;
 
     @Override
     public void registerEventHandlers() {
@@ -33,11 +34,14 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init() {
         Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
-        RenderPlayer render;
-        render = skinMap.get("default");
-        render.addLayer(new BaublesRenderLayer());
 
-        render = skinMap.get("slim");
-        render.addLayer(new BaublesRenderLayer());
+        NORMAL_LAYER = addLayersToSkin(skinMap.get("default"), false);
+        SLIM_LAYER = addLayersToSkin(skinMap.get("slim"), true);
+    }
+
+    private static BaublesRenderLayer addLayersToSkin(RenderPlayer renderPlayer, boolean slim) {
+        BaublesRenderLayer layer = new BaublesRenderLayer(renderPlayer.getMainModel(), slim);
+        renderPlayer.addLayer(layer);
+        return layer;
     }
 }

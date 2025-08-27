@@ -1,4 +1,4 @@
-package baubles.mixin.wings;
+package baubles.mixin.late.wings;
 
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;

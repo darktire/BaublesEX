@@ -4,9 +4,12 @@ import baubles.client.gui.GuiBaublesBase;
 import baubles.client.gui.GuiPlayerExpanded;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.awt.*;
 
+@SideOnly(Side.CLIENT)
 public class GUIBaublesScroller extends ElementBase {
 
     public Rectangle area;

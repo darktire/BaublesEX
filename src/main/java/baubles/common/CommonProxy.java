@@ -6,7 +6,7 @@ import baubles.common.container.ContainerPlayerExpanded;
 import baubles.common.event.BaublesSync;
 import baubles.common.event.EventHandlerEntity;
 import baubles.common.event.EventHandlerItem;
-import baubles.common.util.IPlayerTarget;
+import baubles.util.IPlayerTarget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;

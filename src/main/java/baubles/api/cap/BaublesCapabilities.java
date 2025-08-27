@@ -1,6 +1,6 @@
 package baubles.api.cap;
 
-import baubles.api.IBauble;
+import baubles.api.IWrapper;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -17,8 +17,8 @@ public class BaublesCapabilities {
     /**
      * Access to the bauble items capability.
      **/
-    @CapabilityInject(IBauble.class)
-    public static Capability<IBauble> CAPABILITY_ITEM_BAUBLE;
+    @CapabilityInject(IWrapper.class)
+    public static Capability<IWrapper> CAPABILITY_ITEM_BAUBLE;
 
     public static class CapabilityBaubles implements IStorage<IBaublesModifiable> {
 
@@ -32,15 +32,15 @@ public class BaublesCapabilities {
         }
     }
 
-    public static class CapabilityItemBaubleStorage implements IStorage<IBauble> {
+    public static class CapabilityItemBaubleStorage implements IStorage<IWrapper> {
 
         @Override
-        public NBTBase writeNBT(Capability<IBauble> capability, IBauble instance, EnumFacing side) {
+        public NBTBase writeNBT(Capability<IWrapper> capability, IWrapper instance, EnumFacing side) {
             return null;
         }
 
         @Override
-        public void readNBT(Capability<IBauble> capability, IBauble instance, EnumFacing side, NBTBase nbt) {
+        public void readNBT(Capability<IWrapper> capability, IWrapper instance, EnumFacing side, NBTBase nbt) {
         }
     }
 }

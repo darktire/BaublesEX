@@ -162,6 +162,15 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         return MODIFIED_SLOTS.get(slot);
     }
 
+    @Override
+    public List<ItemStack> getStacksInSlot(BaubleTypeEx type) {
+        LinkedList<ItemStack> stacks = new LinkedList<>();
+        for (int i = 0; i < this.getSlots(); i++) {
+            if (this.MODIFIED_SLOTS.get(i) == type) stacks.add(this.stacks.get(i));
+        }
+        return stacks;
+    }
+
 //    @Override
 //    public LinkedList<Integer> getValidSlots(BaubleTypeEx type) {
 //        LinkedList<Integer> list = new LinkedList<>();

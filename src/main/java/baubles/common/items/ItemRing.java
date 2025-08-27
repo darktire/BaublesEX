@@ -7,7 +7,7 @@ import baubles.api.IBauble;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.registries.TypesData;
 import baubles.common.Config;
-import baubles.common.util.BaublesRegistry;
+import baubles.util.BaublesRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;

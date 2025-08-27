@@ -1,5 +1,5 @@
 {
-  "package": "baubles.mixin",
+  "package": "baubles.mixin.early",
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.8",
   "refmap": "mixins.baubles.refmap.json",
@@ -9,8 +9,7 @@
     "vanilla.MixinElytra$MixinNetHandler",
     "vanilla.MixinEnchantment",
     "vanilla.MixinPlayer",
-    "vanilla.MixinStack",
-    "wings.MixinWings"
+    "vanilla.MixinStack"
   ],
   "client": [
     "vanilla.MixinElytra$MixinCape",

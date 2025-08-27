@@ -1,19 +1,17 @@
-package baubles.common.util;
+package baubles.util;
 
 import baubles.api.BaublesApi;
-import baubles.api.BaublesWrapper;
-import baubles.api.IBauble;
-import baubles.api.cap.BaublesCapabilities;
-import baubles.api.cap.BaublesCapabilityProvider;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.api.registries.ItemsData;
 import baubles.common.Config;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.common.Loader;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class HookHelper {
     public static ItemStack elytraInBaubles(EntityLivingBase entity, EntityEquipmentSlot slot) {
@@ -30,14 +28,13 @@ public class HookHelper {
         return stack;
     }
 
-    public static ICapabilityProvider redirectBaublesCap(ICapabilityProvider provider, ItemStack stack) {
-        IBauble bauble = provider.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
-        if (!(bauble instanceof BaublesWrapper)) {
-            if (!ItemsData.isBauble(stack.getItem())) {
-                ItemsData.registerBauble(stack.getItem(), bauble.getBaubleType(stack).getExpansion());
-            }
-            return BaublesCapabilityProvider.getProvider(stack);
+    private static final Map<String, Boolean> isModLoaded = new HashMap<>();
+    public static boolean isModLoaded(String modName) {
+        Boolean flag = isModLoaded.get(modName);
+        if (flag == null) {
+            flag = Loader.instance().getModList().stream().anyMatch(mod -> mod.getName().equals(modName));
+            isModLoaded.put(modName, flag);
         }
-        return provider;
+        return flag;
     }
 }

@@ -41,20 +41,17 @@ public interface IBauble {
     /**
      * This method is called once per tick if the bauble is being worn by a player
      */
-    default void onWornTick(ItemStack itemstack, EntityLivingBase entity) {
-    }
+    default void onWornTick(ItemStack itemstack, EntityLivingBase entity) {}
 
     /**
      * This method is called when the bauble is equipped by a entity
      */
-    default void onEquipped(ItemStack itemstack, EntityLivingBase entity) {
-    }
+    default void onEquipped(ItemStack itemstack, EntityLivingBase entity) {}
 
     /**
      * This method is called when the bauble is unequipped by a entity
      */
-    default void onUnequipped(ItemStack itemstack, EntityLivingBase entity) {
-    }
+    default void onUnequipped(ItemStack itemstack, EntityLivingBase entity) {}
 
     /**
      * can this bauble be placed in a bauble slot

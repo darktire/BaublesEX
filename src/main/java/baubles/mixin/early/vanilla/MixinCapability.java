@@ -1,6 +1,6 @@
-package baubles.mixin.vanilla;
+package baubles.mixin.early.vanilla;
 
-import baubles.common.util.ICapabilityRemove;
+import baubles.util.ICapabilityRemove;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Mixin(value = AttachCapabilitiesEvent.class, remap = false)
 @Implements(@Interface(iface = ICapabilityRemove.class, prefix = "baubles$"))
-public class MixinCapability {
+public abstract class MixinCapability {
     @Shadow @Final private Map<ResourceLocation, ICapabilityProvider> caps;
 
     @Unique

@@ -1,6 +1,6 @@
-package baubles.mixin.vanilla;
+package baubles.mixin.early.vanilla;
 
-import baubles.common.util.IPlayerTarget;
+import baubles.util.IPlayerTarget;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import org.spongepowered.asm.mixin.Implements;

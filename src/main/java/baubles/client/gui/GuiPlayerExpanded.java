@@ -1,10 +1,10 @@
 package baubles.client.gui;
 
+import baubles.Baubles;
 import baubles.api.cap.BaublesContainer;
 import baubles.client.gui.element.GUIBaublesButton;
 import baubles.client.gui.element.GUIBaublesController;
 import baubles.client.gui.element.GUIBaublesScroller;
-import baubles.Baubles;
 import baubles.common.Config;
 import baubles.common.compat.JeiPlugin;
 import baubles.common.container.ContainerPlayerExpanded;
@@ -22,15 +22,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.*;
 
+@SideOnly(Side.CLIENT)
 public class GuiPlayerExpanded extends GuiBaublesBase {
     @Deprecated public static final ResourceLocation background = new ResourceLocation(Baubles.MODID,"textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
     private final EntityPlayer player;
@@ -46,6 +48,7 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
     private int preOffset = 0;
     public GUIBaublesScroller scroller;
     private final List<Rectangle> extraArea = new LinkedList<>();
+    private final Map<Integer, Boolean> BAUBLE_RENDER = new HashMap<>();
 
     public GuiPlayerExpanded(EntityPlayer player) {
         this(player, player);

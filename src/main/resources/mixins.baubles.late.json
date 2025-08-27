@@ -1,0 +1,29 @@
+{
+  "package": "baubles.mixin.late",
+  "plugin": "baubles.coremod.MixinLate",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "refmap": "mixins.baubles.refmap.json",
+  "mixins": [
+    "artifacts.MixinAttributeModifierBauble",
+    "artifacts.MixinBaubleAmulet",
+    "artifacts.MixinBaubleAntidoteVessel",
+    "artifacts.MixinBaubleBase",
+    "artifacts.MixinBaubleBottledCloud",
+    "artifacts.MixinBaubleBubbleWrap",
+    "artifacts.MixinBaubleObsidianSkull",
+    "artifacts.MixinBaublePotionEffect",
+    "artifacts.MixinBaubleStarCloak",
+    "artifacts.MixinProxy",
+    "extrautils2.MixinItem",
+    "wings.MixinWings"
+  ],
+  "client": [
+    "mobends.MixinCustom"
+  ],
+  "server": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

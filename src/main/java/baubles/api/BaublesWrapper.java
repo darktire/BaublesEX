@@ -1,5 +1,7 @@
 package baubles.api;
 
+import baubles.api.render.IRenderBauble;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
@@ -8,11 +10,13 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-public final class BaublesWrapper implements IBauble {
+public final class BaublesWrapper implements IWrapper {
 
     private Item item;
     private IBauble bauble;
+    private IRenderBauble render;
     private BaubleTypeEx type;
     private List<BaubleTypeEx> types;
     private ResourceLocation registryName;
@@ -22,6 +26,11 @@ public final class BaublesWrapper implements IBauble {
     public BaublesWrapper(Item item, IBauble bauble) {
         this.item = item;
         this.bauble = bauble;
+        this.registerBauble(item, bauble);
+        this.registerRender(item);
+    }
+
+    private void registerBauble(Item item, IBauble bauble) {
         if (bauble != null) {
             this.type = bauble.getBaubleType();
             this.types = bauble.getBaubleTypes();
@@ -40,6 +49,12 @@ public final class BaublesWrapper implements IBauble {
         }
     }
 
+    private void registerRender(Item item) {
+        if (item instanceof IRenderBauble) {
+            this.render = (IRenderBauble) item;
+        }
+    }
+
     public Item getItem() {
         return this.item;
     }
@@ -48,13 +63,16 @@ public final class BaublesWrapper implements IBauble {
         return this.bauble;
     }
 
-    public void setType(BaubleTypeEx type) {
+    public BaublesWrapper setType(BaubleTypeEx type) {
         this.type = type;
+        this.types.add(type);
+        return this;
     }
 
-    public void setTypes(List<BaubleTypeEx> types) {
+    public BaublesWrapper setTypes(List<BaubleTypeEx> types) {
         this.type = this.types.get(0);
         this.types = types;
+        return this;
     }
 
     public void addTypes(List<BaubleTypeEx> types) {
@@ -107,13 +125,38 @@ public final class BaublesWrapper implements IBauble {
     }
 
     @Override
-    public boolean willAutoSync(ItemStack itemstack, EntityLivingBase entity) {
-        return this.bauble.willAutoSync(itemstack, entity);
+    public boolean canDrop(ItemStack itemstack, EntityLivingBase entity) {
+        return this.bauble.canDrop(itemstack, entity);
     }
 
     @Override
-    public boolean canDrop(ItemStack itemstack, EntityLivingBase entity) {
-        return this.bauble.canDrop(itemstack, entity);
+    public Map<ModelBase, RenderType> getRenderMap(boolean slim) {
+        if (this.render == null) return null;
+        return this.render.getRenderMap(slim);
+    }
+
+    @Override
+    public ModelBase getModel(boolean slim) {
+        if (this.render == null) return null;
+        return this.render.getModel(slim);
+    }
+
+    @Override
+    public ResourceLocation getTexture(boolean slim) {
+        if (this.render == null) return null;
+        return this.render.getTexture(slim);
+    }
+
+    @Override
+    public ResourceLocation getLuminousTexture(boolean slim) {
+        if (this.render == null) return null;
+        return this.render.getLuminousTexture(slim);
+    }
+
+    @Override
+    public RenderType getRenderType() {
+        if (this.render == null) return null;
+        return this.render.getRenderType();
     }
 }
 // todo commands edit type, also the data persistence

@@ -1,8 +1,11 @@
 package baubles.api.cap;
 
+import baubles.api.BaubleTypeEx;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
+
+import java.util.List;
 
 public interface IBaublesItemHandler extends IItemHandlerModifiable {
 
@@ -21,6 +24,10 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 
 	@Deprecated
     void setPlayer(EntityLivingBase entity);
+
+	BaubleTypeEx getTypeInSlot(int index);
+
+	List<ItemStack> getStacksInSlot(BaubleTypeEx type);
 
 	boolean haveDroppingItem();
 	ItemStack getDroppingItem();

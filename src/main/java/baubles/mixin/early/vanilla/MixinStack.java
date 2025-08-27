@@ -1,11 +1,11 @@
-package baubles.mixin.vanilla;
+package baubles.mixin.early.vanilla;
 
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.common.Config;
-import baubles.common.util.BaublesRegistry;
+import baubles.util.BaublesRegistry;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
