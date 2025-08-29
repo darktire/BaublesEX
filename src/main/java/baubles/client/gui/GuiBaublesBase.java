@@ -18,7 +18,7 @@ import java.util.Collection;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiBaublesBase extends GuiContainer {
-    public static final ResourceLocation BAUBLES_TEX = new ResourceLocation(Baubles.MODID, "textures/gui/baubles_container.png");
+    public static final ResourceLocation BAUBLES_TEX = new ResourceLocation(Baubles.MOD_ID, "textures/gui/baubles_container.png");
 
     public GuiBaublesBase(Container inventorySlotsIn) {
         super(inventorySlotsIn);

@@ -12,8 +12,7 @@
     "vanilla.MixinStack"
   ],
   "client": [
-    "vanilla.MixinElytra$MixinCape",
-    "vanilla.MixinElytra$MixinLayer",
+    "vanilla.MixinCape",
     "vanilla.MixinElytra$MixinPlayerSP"
   ],
   "server": [

@@ -1,7 +1,7 @@
 package baubles.api;
 
+import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
@@ -49,9 +49,9 @@ public final class BaublesWrapper implements IWrapper {
         }
     }
 
-    private void registerRender(Item item) {
-        if (item instanceof IRenderBauble) {
-            this.render = (IRenderBauble) item;
+    public void registerRender(Object object) {
+        if (object instanceof IRenderBauble) {
+            this.render = (IRenderBauble) object;
         }
     }
 
@@ -130,27 +130,27 @@ public final class BaublesWrapper implements IWrapper {
     }
 
     @Override
-    public Map<ModelBase, RenderType> getRenderMap(boolean slim) {
+    public Map<ModelBauble, RenderType> getRenderMap(boolean slim) {
         if (this.render == null) return null;
         return this.render.getRenderMap(slim);
     }
 
     @Override
-    public ModelBase getModel(boolean slim) {
+    public ModelBauble getModel(boolean slim) {
         if (this.render == null) return null;
         return this.render.getModel(slim);
     }
 
     @Override
-    public ResourceLocation getTexture(boolean slim) {
+    public ResourceLocation getTexture(boolean slim, EntityLivingBase entity) {
         if (this.render == null) return null;
-        return this.render.getTexture(slim);
+        return this.render.getTexture(slim, entity);
     }
 
     @Override
-    public ResourceLocation getLuminousTexture(boolean slim) {
+    public ResourceLocation getEmissiveMap(boolean slim, EntityLivingBase entity) {
         if (this.render == null) return null;
-        return this.render.getLuminousTexture(slim);
+        return this.render.getEmissiveMap(slim, entity);
     }
 
     @Override

@@ -1,11 +1,10 @@
-package baubles.common;
+package baubles.common.config;
 
 import baubles.Baubles;
+import baubles.BaublesRegister;
 import baubles.api.BaubleType;
 import baubles.api.cap.BaublesContainer;
-import baubles.common.config.PartialConfig;
 import baubles.common.config.json.JsonHelper;
-import baubles.util.BaublesRegistry;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -158,15 +157,15 @@ public class Config extends PartialConfig {
     public static class ConfigChangeListener {
         @SubscribeEvent
         public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-            if (eventArgs.getModID().equals(Baubles.MODID)) {
+            if (eventArgs.getModID().equals(Baubles.MOD_ID)) {
                 PartialConfig.create(Slots.class);
                 PartialConfig.create(Gui.class);
                 PartialConfig.create(ModItems.class);
                 PartialConfig.create(Config.class);
                 Config.saveConfig();
                 if (Config.rightClick) Config.setupBlacklist();
-                BaublesRegistry.registerBaubles();
-                BaublesRegistry.loadValidSlots();
+                BaublesRegister.registerBaubles();
+                BaublesRegister.loadValidSlots();
                 for (BaublesContainer container: BaublesContainer.listener) {
                     container.onConfigChanged();
                 }

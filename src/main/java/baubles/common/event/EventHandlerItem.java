@@ -1,13 +1,13 @@
 package baubles.common.event;
 
 import baubles.Baubles;
+import baubles.BaublesRegister;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesWrapper;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilityProvider;
 import baubles.api.registries.ItemsData;
-import baubles.common.Config;
-import baubles.util.BaublesRegistry;
+import baubles.common.config.Config;
 import baubles.util.ICapabilityRemove;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,7 +25,7 @@ import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 
 @SuppressWarnings("unused") // gets used by Forge event handler
 public class EventHandlerItem {
-    private static final ResourceLocation ITEM_CAP = new ResourceLocation(Baubles.MODID, "item_cap");
+    private static final ResourceLocation ITEM_CAP = new ResourceLocation(Baubles.MOD_ID, "item_cap");
     /**
      * Attach bauble capability only for baubles do not already have the capability when creating stacks.
      * Some baubles get the capability by another event handler earlier will be removed and attach the capability provided by BaublesEX.
@@ -60,7 +60,7 @@ public class EventHandlerItem {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void itemBaubleWrap(RegistryEvent.Register<BaubleTypeEx> event) {
-        BaublesRegistry.registerItems();
+        BaublesRegister.registerItems();
         if (Config.rightClick) Config.setupBlacklist();
     }
 }

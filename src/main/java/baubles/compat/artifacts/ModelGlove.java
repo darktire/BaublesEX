@@ -1,12 +1,11 @@
-package baubles.client.model;
+package baubles.compat.artifacts;
 
 import artifacts.common.init.ModItems;
+import baubles.api.model.ModelBauble;
 import baubles.client.ClientProxy;
-import baubles.util.ArtifactsResource;
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
@@ -15,18 +14,17 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ModelGlove extends ModelBase {
+public class ModelGlove extends ModelBauble {
     private static final Map<Map.Entry<Item, Boolean>, ModelGlove> instances = new HashMap<>();
-    private final Item item;
     private final ModelPlayer modelPlayer;
     private final ResourceLocation texture;
-    private final ResourceLocation luminous;
+    private final ResourceLocation emissive;
     private EnumHandSide hand = initHand();
 
     public ModelGlove(Item item, boolean slim) {
-        this.item = item;
+        super(item, slim, null);
         this.texture = getResourceLocation(switchTex(item), slim);
-        this.luminous = getResourceLocation(switchLum(item), slim);
+        this.emissive = getResourceLocation(switchLum(item), slim);
         this.modelPlayer = slim ? ClientProxy.SLIM_LAYER.getModelPlayer() : ClientProxy.NORMAL_LAYER.getModelPlayer();
     }
 
@@ -41,13 +39,12 @@ public class ModelGlove extends ModelBase {
     }
 
     public static ModelGlove instance(Item item, boolean slim) {
-        for (Map.Entry<Map.Entry<Item, Boolean>, ModelGlove> entry : instances.entrySet()) {
-            Map.Entry<Item, Boolean> entry1 = entry.getKey();
-            if (entry1.getKey() == item && entry1.getValue() == slim) return entry.getValue();
-        }
-        ModelGlove model = new ModelGlove(item, slim);
         Map.Entry<Item, Boolean> pair = new AbstractMap.SimpleEntry<>(item, slim);
-        instances.put(pair, model);
+        ModelGlove model = instances.get(pair);
+        if (model == null) {
+            model = new ModelGlove(item, slim);
+            instances.put(pair, model);
+        }
         return model;
     }
 
@@ -61,16 +58,16 @@ public class ModelGlove extends ModelBase {
     }
 
     private static ResourceLocation switchTex(Item item) {
-        if (item == ModItems.POWER_GLOVE) return ArtifactsResource.POWER_GLOVE_TEXTURES;
-        else if(item == ModItems.FERAL_CLAWS) return ArtifactsResource.FERAL_CLAWS_TEXTURES;
-        else if(item == ModItems.MECHANICAL_GLOVE) return ArtifactsResource.MECHANICAL_GLOVE_TEXTURES;
-        else if(item == ModItems.FIRE_GAUNTLET) return ArtifactsResource.FIRE_GAUNTLET_TEXTURES;
-        else if(item == ModItems.POCKET_PISTON) return ArtifactsResource.POCKET_PISTON_TEXTURES;
+        if (item == ModItems.POWER_GLOVE) return Resource.POWER_GLOVE_TEXTURES;
+        else if(item == ModItems.FERAL_CLAWS) return Resource.FERAL_CLAWS_TEXTURES;
+        else if(item == ModItems.MECHANICAL_GLOVE) return Resource.MECHANICAL_GLOVE_TEXTURES;
+        else if(item == ModItems.FIRE_GAUNTLET) return Resource.FIRE_GAUNTLET_TEXTURES;
+        else if(item == ModItems.POCKET_PISTON) return Resource.POCKET_PISTON_TEXTURES;
         return null;
     }
 
     private static ResourceLocation switchLum(Item item) {
-        if(item == ModItems.FIRE_GAUNTLET || item == ModItems.MAGMA_STONE) return ArtifactsResource.FIRE_GAUNTLET_OVERLAY_TEXTURES;
+        if(item == ModItems.FIRE_GAUNTLET || item == ModItems.MAGMA_STONE) return Resource.FIRE_GAUNTLET_OVERLAY_TEXTURES;
         return null;
     }
 
@@ -78,19 +75,25 @@ public class ModelGlove extends ModelBase {
         return this.texture;
     }
 
-    public ResourceLocation getLuminous() {
-        return this.luminous;
+    public ResourceLocation getEmissive() {
+        return this.emissive;
     }
 
     @Override
-    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        GlStateManager.popMatrix();
-        GlStateManager.popMatrix();
+    public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         this.switchSide();
-        this.modelPlayer.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        this.modelPlayer.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
         this.callback();
-        GlStateManager.pushMatrix();
-        GlStateManager.pushMatrix();
+    }
+
+    @Override
+    public void render(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        this.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+    }
+
+    @Override
+    public boolean needLocating() {
+        return false;
     }
 
     private void switchSide() {
@@ -106,6 +109,14 @@ public class ModelGlove extends ModelBase {
             modelPlayer.bipedRightArm.showModel = true;
             modelPlayer.bipedRightArmwear.showModel = true;
         }
+        modelPlayer.bipedHead.showModel = false;
+        modelPlayer.bipedHeadwear.showModel = false;
+        modelPlayer.bipedBody.showModel = false;
+        modelPlayer.bipedBodyWear.showModel = false;
+        modelPlayer.bipedRightLeg.showModel = false;
+        modelPlayer.bipedRightLegwear.showModel = false;
+        modelPlayer.bipedLeftLeg.showModel = false;
+        modelPlayer.bipedLeftLegwear.showModel = false;
     }
 
     private void callback() {

@@ -4,6 +4,7 @@ import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesWrapper;
 import baubles.api.IBauble;
 import baubles.api.cap.BaubleItem;
+import baubles.api.render.IRenderBauble;
 import net.minecraft.item.Item;
 
 import java.util.HashMap;
@@ -16,6 +17,20 @@ public class ItemsData {
 
     /**
      * Link items and the bauble which is an instance of IBauble.
+     * @param item target item
+     * @param wrapper wrapper of item and bauble
+     */
+    public static void registerBauble(Item item, BaublesWrapper wrapper) {
+        if (BAUBLE_ITEMS.containsKey(item) && wrapper.getBauble() != null && !wrapper.isCopy()) {
+            BAUBLE_ITEMS.get(item).setTypes(wrapper.getBaubleTypes());
+        }
+        else {
+            BAUBLE_ITEMS.put(item, wrapper);
+        }
+    }
+
+    /**
+     * Link items and the bauble which is an instance of IBauble.
      * You can copy capability from an existed bauble to a item.
      * @param item target item
      * @param bauble bauble instanceof IBauble
@@ -25,27 +40,14 @@ public class ItemsData {
     }
 
     /**
-     * Link items and the bauble which is an instance of IBauble.
-     * @param item target item
-     * @param wrapper wrapper of item and bauble
-     */
-    public static void registerBauble(Item item, BaublesWrapper wrapper) {
-        if (wrapper.getBauble() == null || wrapper.isCopy()) {
-            BAUBLE_ITEMS.put(item, wrapper);
-        }
-        else if (BAUBLE_ITEMS.containsKey(item)) {
-            BAUBLE_ITEMS.get(item).setTypes(wrapper.getBaubleTypes());
-        }
-        else {
-            BAUBLE_ITEMS.put(item, wrapper);
-        }
-    }
-
-    /**
      * Simply register item as a bauble. (only with types)
      */
     public static void registerBauble(Item item, BaubleTypeEx... types) {
         registerBauble(item, new BaublesWrapper(item, new BaubleItem(types)));
+    }
+
+    public static void registerBauble(Item item, IRenderBauble render) {
+        BAUBLE_ITEMS.get(item).registerRender(render);
     }
 
     public static BaublesWrapper toBauble(Item item) {

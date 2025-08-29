@@ -6,7 +6,9 @@ import baubles.common.container.ContainerPlayerExpanded;
 import baubles.common.event.BaublesSync;
 import baubles.common.event.EventHandlerEntity;
 import baubles.common.event.EventHandlerItem;
-import baubles.util.IPlayerTarget;
+import baubles.compat.artifacts.ArtifactsHandler;
+import baubles.util.HookHelper;
+import baubles.util.IHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -20,7 +22,7 @@ public class CommonProxy implements IGuiHandler {
             return new GuiPlayerExpanded(player);
         }
         else if (ID == Baubles.GUI_A) {
-            return new GuiPlayerExpanded(player, ((IPlayerTarget) player).getTarget());
+            return new GuiPlayerExpanded(player, ((IHelper) player).getTarget());
         }
         return null;
     }
@@ -31,7 +33,7 @@ public class CommonProxy implements IGuiHandler {
             return new ContainerPlayerExpanded(player);
         }
         else if (ID == Baubles.GUI_A) {
-            return new ContainerPlayerExpanded(player, ((IPlayerTarget) player).getTarget());
+            return new ContainerPlayerExpanded(player, ((IHelper) player).getTarget());
         }
         return null;
     }
@@ -44,6 +46,7 @@ public class CommonProxy implements IGuiHandler {
         MinecraftForge.EVENT_BUS.register(new EventHandlerEntity());
         MinecraftForge.EVENT_BUS.register(new EventHandlerItem());
         MinecraftForge.EVENT_BUS.register(new BaublesSync());
+        if (HookHelper.isModLoaded("RLArtifacts")) MinecraftForge.EVENT_BUS.register(new ArtifactsHandler());
     }
 
     public void init() {

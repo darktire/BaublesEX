@@ -1,19 +1,14 @@
-package baubles.util;
+package baubles.compat.artifacts;
 
 import artifacts.Artifacts;
 import artifacts.client.model.*;
-import artifacts.common.init.ModItems;
-import artifacts.common.util.RenderHelper;
-import baubles.api.BaublesApi;
-import net.minecraft.client.model.ModelBase;
+import baubles.api.model.ModelBauble;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class ArtifactsResource {
+public class Resource {
     public static final ResourceLocation SHOCK_TEXTURE = new ResourceLocation(Artifacts.MODID, "textures/entity/layer/shock_pendant.png");
     public static final ResourceLocation FLAME_TEXTURE = new ResourceLocation(Artifacts.MODID, "textures/entity/layer/flame_pendant.png");
     public static final ResourceLocation THORN_TEXTURE = new ResourceLocation(Artifacts.MODID, "textures/entity/layer/thorn_pendant.png");
@@ -30,6 +25,9 @@ public class ArtifactsResource {
     public static final ResourceLocation CLOAK_NORMAL = new ResourceLocation(Artifacts.MODID, "textures/entity/layer/star_cloak.png");
     public static final ResourceLocation CLOAK_OVERLAY = new ResourceLocation(Artifacts.MODID, "textures/entity/layer/star_cloak_overlay.png");
 
+    public static final ResourceLocation HAT_TEXTURES = new ResourceLocation(Artifacts.MODID, "textures/entity/layer/drinking_hat.png");
+    public static final ResourceLocation HAT_SPECIAL_TEXTURES = new ResourceLocation(Artifacts.MODID, "textures/entity/layer/drinking_hat_special.png");
+
     public static final ResourceLocation FERAL_CLAWS_TEXTURES = new ResourceLocation(Artifacts.MODID, "textures/entity/layer/feral_claws_normal.png");
     public static final ResourceLocation POWER_GLOVE_TEXTURES = new ResourceLocation(Artifacts.MODID, "textures/entity/layer/power_glove_normal.png");
     public static final ResourceLocation MECHANICAL_GLOVE_TEXTURES = new ResourceLocation(Artifacts.MODID, "textures/entity/layer/mechanical_glove_normal.png");
@@ -37,40 +35,52 @@ public class ArtifactsResource {
     public static final ResourceLocation FIRE_GAUNTLET_OVERLAY_TEXTURES = new ResourceLocation(Artifacts.MODID, "textures/entity/layer/fire_gauntlet_overlay_normal.png");
     public static final ResourceLocation POCKET_PISTON_TEXTURES = new ResourceLocation(Artifacts.MODID, "textures/entity/layer/pocket_piston_normal.png");
 
-    public static final ModelBase AMULET_MODEL = new ModelAmulet();
-    public static final ModelBase PANIC_MODEL = new ModelPanicNecklace();
-    public static final ModelBase ULTIMATE_MODEL = new ModelUltimatePendant();
+    public static final ModelBauble AMULET_MODEL = new ModelBauble(new ModelAmulet());
+    public static final ModelBauble PANIC_MODEL = new ModelBauble(new ModelPanicNecklace());
+    public static final ModelBauble ULTIMATE_MODEL = new ModelBauble(new ModelUltimatePendant());
 
-    public static final ModelBase BOTTLE_MODEL = new ModelBottledCloud();
-    public static final ModelBase ANTIDOTE_MODEL = new ModelAntidoteVessel();
-    public static final ModelBase BUBBLE_MODEL = new ModelBubbleWrap();
-    public static final ModelBase SKULL_MODEL = new ModelObsidianSkull();
+    public static final ModelBauble BOTTLE_MODEL = new ModelBauble(new ModelBottledCloud());
+    public static final ModelBauble ANTIDOTE_MODEL = new ModelBauble(new ModelAntidoteVessel());
+    public static final ModelBauble BUBBLE_MODEL = new ModelBauble(new ModelBubbleWrap());
+    public static final ModelBauble SKULL_MODEL = new ModelBauble(new ModelObsidianSkull());
 
-    public static final ModelCloak CLOAK_MODEL_UP = new ModelCloak() {
+    public static final ModelBauble CLOAK_MODEL_UP = new ModelBauble(new ModelCloak() {
         @Override
-        public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-            renderHood(entity, f, f1, f2, f3, f4, f5, renderHood);
+        public void render(Entity entity, float f1, float f2, float f3, float f4, float f5, float scale) {
+            this.renderHood(entity, 0, 0, 0, 0, 0, scale, renderHood);
         }
-    };
-    public static final ModelCloak CLOAK_MODEL_DOWN = new ModelCloak() {
+    });
+    public static final ModelBauble CLOAK_MODEL_DOWN = new ModelBauble(new ModelCloak() {
         @Override
-        public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-            renderCloak(entity, f, f1, f2, f3, f4, f5, renderHood);
+        public void render(Entity entity, float f1, float f2, float f3, float f4, float f5, float scale) {
+            this.renderCloak(entity, 0, 0, 0, 0, 0, scale, renderHood);
         }
-    };
+    });
 
-    public static final ModelBase HAT_MODEL = new ModelDrinkingHat();
+    public static final ModelBauble HAT_MODEL = new ModelBauble(new ModelDrinkingHat() {
+        @Override
+        public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+            if (entity instanceof EntityPlayer) {
+                if (entity.getName().equals("wouterke")) {
+                    this.hatShade.showModel = ((EntityPlayer) entity).getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty();
+                } else {
+                    this.hatShade.showModel = false;
+                }
+            }
+            this.hat.render(scale);
+        }
+    });
 
-    public static final ModelNightVisionGoggles GOGGLES = new ModelNightVisionGoggles();
+    public static final ModelBauble GOGGLES = new ModelBauble(new ModelNightVisionGoggles());
 
-    public static final ModelSnorkel SNORKEL = new ModelSnorkel();
+    public static final ModelBauble SNORKEL = new ModelBauble(new ModelSnorkel());
 
     private static boolean renderHood = true;
-    public static void updateHoodState(EntityPlayer player, ItemStack stack) {
-        if (stack.getItem() == ModItems.STAR_CLOAK) {
-            renderHood = RenderHelper.shouldRenderInSlot(player, EntityEquipmentSlot.HEAD)
-                    && (BaublesApi.isBaubleEquipped((EntityLivingBase) player, ModItems.DRINKING_HAT) == -1);
-        }
+    public static void setHoodState(boolean render) {
+        renderHood = render;
+    }
+    public static boolean getHoodState() {
+        return renderHood;
     }
 
 }

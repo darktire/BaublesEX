@@ -1,4 +1,4 @@
-package baubles.util;
+package baubles;
 
 import baubles.api.BaubleType;
 import baubles.api.BaubleTypeEx;
@@ -6,7 +6,9 @@ import baubles.api.BaublesWrapper;
 import baubles.api.IBauble;
 import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
-import baubles.common.Config;
+import baubles.api.render.IRenderBauble;
+import baubles.common.config.Config;
+import baubles.common.items.BaubleElytra;
 import baubles.common.items.ItemRing;
 import baubles.common.items.ItemTire;
 import me.paulf.wings.server.item.ItemWings;
@@ -23,22 +25,27 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class BaublesRegistry {
+public class BaublesRegister {
+    private static final boolean WINGS = Loader.isModLoaded("wings");
     public static BaubleTypeEx TRINKET = BaubleType.TRINKET.getExpansion();
 
-    public BaublesRegistry() {
+    public BaublesRegister() {
     }
 
     public static void registerItems() {
-        for (Item item : Item.REGISTRY) {
+        Item.REGISTRY.iterator().forEachRemaining(item -> {
             if (item instanceof IBauble) {
                 ItemsData.registerBauble(item, (IBauble) item);
             }
-            else if (Loader.isModLoaded("wings") && item instanceof ItemWings) {
+            else if (WINGS && item instanceof ItemWings) {
                 ItemsData.registerBauble(item, TypesData.getTypeByName("body"));
             }
+        });
+        if (Config.ModItems.elytraBauble) {
+            BaubleElytra elytra = new BaubleElytra();
+            ItemsData.registerBauble(Items.ELYTRA, (IBauble) elytra);
+            ItemsData.registerBauble(Items.ELYTRA, (IRenderBauble) elytra);
         }
-        if (Config.ModItems.elytraBauble) ItemsData.registerBauble(Items.ELYTRA, TypesData.getTypeByName(Config.ModItems.elytraSlot));
 
         try {
             List<BaublesWrapper> items = Config.json.jsonToItem();

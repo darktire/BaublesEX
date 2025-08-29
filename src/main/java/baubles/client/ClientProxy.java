@@ -40,7 +40,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     private static BaublesRenderLayer addLayersToSkin(RenderPlayer renderPlayer, boolean slim) {
-        BaublesRenderLayer layer = new BaublesRenderLayer(renderPlayer.getMainModel(), slim);
+        BaublesRenderLayer layer = new BaublesRenderLayer(renderPlayer, slim);
         renderPlayer.addLayer(layer);
         return layer;
     }

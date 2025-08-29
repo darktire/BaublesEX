@@ -1,4 +1,4 @@
-package baubles.common.compat;
+package baubles.compat.jei;
 
 import baubles.client.gui.GuiPlayerExpanded;
 import mezz.jei.api.IModPlugin;

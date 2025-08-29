@@ -7,7 +7,8 @@ import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.BaublesContainerProvider;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.common.Config;
+import baubles.api.event.BaublesRenderEvent;
+import baubles.common.config.Config;
 import cofh.core.enchantment.EnchantmentSoulbound;
 import cofh.core.util.helpers.ItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -15,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -30,7 +32,14 @@ import java.util.List;
 import static cofh.core.init.CoreEnchantments.soulbound;
 
 public class EventHandlerEntity {
-    private static final ResourceLocation BAUBLES_CAP = new ResourceLocation(Baubles.MODID, "container");
+    private static final ResourceLocation BAUBLES_CAP = new ResourceLocation(Baubles.MOD_ID, "container");
+
+    @SubscribeEvent
+    public void equipmentRenderEvent(BaublesRenderEvent.InEquipments event) {
+        if (!(event.getStack().getItem() instanceof ItemElytra)) {
+            event.setCanceled();
+        }
+    }
 
 /*    @SubscribeEvent
     public void openEntityGui(PlayerInteractEvent.EntityInteractSpecific event) {
@@ -42,13 +51,13 @@ public class EventHandlerEntity {
                     IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
                     boolean flag = false;
                     for (int i = 0; i < baubles.getSlots(); i++) {
-                        if (baubles.getStackInSlot(i).getItem() == BaublesRegistry.ModItems.Tire) {
+                        if (baubles.getStackInSlot(i).getItem() == BaublesRegister.ModItems.Tire) {
                             flag = true;
                             break;
                         }
                     }
                     if (flag) {
-                        ((IPlayerTarget) player).setTarget((EntityLivingBase) target);
+                        ((IHelper) player).setTarget((EntityLivingBase) target);
                         if (!event.getWorld().isRemote) {
                             player.openGui(Baubles.instance, Baubles.GUI_A, event.getWorld(), 0, 0, 0);
                         }

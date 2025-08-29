@@ -1,7 +1,7 @@
 package baubles.client.gui;
 
 import baubles.client.gui.element.GUIBaublesButton;
-import baubles.common.Config;
+import baubles.common.config.Config;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;

@@ -8,7 +8,7 @@ import net.minecraftforge.fml.client.DefaultGuiFactory;
 public class BaublesGuiFactory extends DefaultGuiFactory {
 
     public BaublesGuiFactory() {
-        super(Baubles.MODID, Baubles.MODNAME);
+        super(Baubles.MOD_ID, Baubles.MOD_NAME);
     }
 
     @Override

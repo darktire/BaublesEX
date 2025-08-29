@@ -1,6 +1,7 @@
 package baubles.api.render;
 
-import net.minecraft.client.model.ModelBase;
+import baubles.api.model.ModelBauble;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -12,19 +13,19 @@ import java.util.Map;
  */
 public interface IRenderBauble {
 
-    default Map<ModelBase, RenderType> getRenderMap(boolean slim) {
+    default Map<ModelBauble, RenderType> getRenderMap(boolean slim) {
         return null;
     }
 
-    default ModelBase getModel(boolean slim) {
+    default ModelBauble getModel(boolean slim) {
         return null;
     }
 
-    default ResourceLocation getTexture(boolean slim) {
+    default ResourceLocation getTexture(boolean slim, EntityLivingBase entity) {
         return null;
     }
 
-    default ResourceLocation getLuminousTexture(boolean slim) {
+    default ResourceLocation getEmissiveMap(boolean slim, EntityLivingBase entity) {
         return null;
     }
 

@@ -5,7 +5,7 @@ import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
-import baubles.common.Config;
+import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
 import net.minecraft.command.CommandBase;

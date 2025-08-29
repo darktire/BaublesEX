@@ -5,10 +5,10 @@ import baubles.api.cap.BaublesContainer;
 import baubles.client.gui.element.GUIBaublesButton;
 import baubles.client.gui.element.GUIBaublesController;
 import baubles.client.gui.element.GUIBaublesScroller;
-import baubles.common.Config;
-import baubles.common.compat.JeiPlugin;
+import baubles.common.config.Config;
 import baubles.common.container.ContainerPlayerExpanded;
 import baubles.common.container.SlotBaubleHandler;
+import baubles.compat.jei.JeiPlugin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -34,10 +34,10 @@ import java.util.*;
 
 @SideOnly(Side.CLIENT)
 public class GuiPlayerExpanded extends GuiBaublesBase {
-    @Deprecated public static final ResourceLocation background = new ResourceLocation(Baubles.MODID,"textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
+    @Deprecated public static final ResourceLocation background = new ResourceLocation(Baubles.MOD_ID,"textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
     private final EntityPlayer player;
     private final EntityLivingBase entity;
-    private final boolean jeiLoaded;
+    private final static boolean jeiLoaded = Loader.isModLoaded("jei");
     public ContainerPlayerExpanded containerEx = (ContainerPlayerExpanded) this.inventorySlots;
     public BaublesContainer baubles = (BaublesContainer) (this.containerEx).baubles;//container in sever
     public int baublesAmount = this.baubles.getSlots();
@@ -59,7 +59,6 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
         this.player = player;
         this.entity = entity;
         this.allowUserInput = true;
-        this.jeiLoaded = Loader.isModLoaded("jei");
     }
 
     public void modifyOffset(int value) {
@@ -190,7 +189,7 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
             int yLoc = this.guiTop + 14;
             if (mouseY >= yLoc && mouseY < yLoc + 18 * 8) {
                 int dWheel;
-                if (this.jeiLoaded) dWheel = JeiPlugin.JEI_COMPAT.getIngredientUnderMouse(this, mouseX, mouseY);
+                if (jeiLoaded) dWheel = JeiPlugin.JEI_COMPAT.getIngredientUnderMouse(this, mouseX, mouseY);
                 else dWheel = Mouse.getDWheel();
                 if (dWheel != 0) {
                     int value = dWheel / 120;

@@ -1,10 +1,7 @@
 package baubles.mixin.early.vanilla;
 
 import baubles.util.HookHelper;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.entity.layers.LayerCape;
-import net.minecraft.client.renderer.entity.layers.LayerElytra;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -35,22 +32,6 @@ public abstract class MixinElytra {
     public abstract static class MixinNetHandler {
         @Redirect(method = "processEntityAction", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayerMP;getItemStackFromSlot(Lnet/minecraft/inventory/EntityEquipmentSlot;)Lnet/minecraft/item/ItemStack;"))
         private ItemStack injected(EntityPlayerMP entity, EntityEquipmentSlot slot) {
-            return HookHelper.elytraInBaubles(entity, slot);
-        }
-    }
-
-    @Mixin(LayerCape.class)
-    public abstract static class MixinCape {
-        @Redirect(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/AbstractClientPlayer;getItemStackFromSlot(Lnet/minecraft/inventory/EntityEquipmentSlot;)Lnet/minecraft/item/ItemStack;"))
-        private ItemStack injected(AbstractClientPlayer entity, EntityEquipmentSlot slot) {
-            return HookHelper.elytraInBaubles(entity, slot);
-        }
-    }
-
-    @Mixin(LayerElytra.class)
-    public abstract static class MixinLayer {
-        @Redirect(method = "doRenderLayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityLivingBase;getItemStackFromSlot(Lnet/minecraft/inventory/EntityEquipmentSlot;)Lnet/minecraft/item/ItemStack;"))
-        private ItemStack injected(EntityLivingBase entity, EntityEquipmentSlot slot) {
             return HookHelper.elytraInBaubles(entity, slot);
         }
     }

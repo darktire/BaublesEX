@@ -1,27 +1,21 @@
 package baubles.client;
 
-import artifacts.common.util.RenderHelper;
 import baubles.Baubles;
+import baubles.BaublesRegister;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.BaublesWrapper;
 import baubles.api.IBauble;
-import baubles.api.event.BaublesRenderEvent;
 import baubles.api.registries.TypesData;
 import baubles.client.gui.GuiPlayerExpanded;
-import baubles.common.Config;
+import baubles.common.config.Config;
 import baubles.common.config.KeyBindings;
-import baubles.util.ArtifactsResource;
-import baubles.util.BaublesRegistry;
-import baubles.util.HookHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemElytra;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -36,30 +30,9 @@ import java.util.Iterator;
 public class ClientEventHandler {
 
     @SubscribeEvent
-    public void applyArtifactsRender(BaublesRenderEvent event) {
-        EntityPlayer player = event.getEntityPlayer();
-        ItemStack stack = event.getStack();
-        if (HookHelper.isModLoaded("RLArtifacts")) {
-            if (RenderHelper.shouldItemStackRender(player, stack)) {
-                if (!event.inBaubleSlots()) {
-                    if (!RenderHelper.shouldRenderInSlot(player, event.getSlotIn())) {
-                        event.setCanceled();
-                        return;
-                    }
-                }
-                ArtifactsResource.updateHoodState(player, stack);
-            }
-            else event.setCanceled();
-        }
-        if (!event.inBaubleSlots() && !(event.getStack().getItem() instanceof ItemElytra)) {
-            event.setCanceled();
-        }
-    }
-
-    @SubscribeEvent
     public void registerItemModels(ModelRegistryEvent event) {
-        registerModel(BaublesRegistry.ModItems.Ring);
-        if (Config.ModItems.testItem) registerModel(BaublesRegistry.ModItems.Tire);
+        registerModel(BaublesRegister.ModItems.Ring);
+        if (Config.ModItems.testItem) registerModel(BaublesRegister.ModItems.Tire);
     }
 
     private void registerModel(Item item) {

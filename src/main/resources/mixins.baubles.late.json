@@ -19,7 +19,7 @@
     "wings.MixinWings"
   ],
   "client": [
-    "mobends.MixinCustom"
+    "mobends.MixinCustomCape"
   ],
   "server": [
   ],

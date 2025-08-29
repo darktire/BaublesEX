@@ -4,12 +4,14 @@ import baubles.api.BaublesApi;
 import baubles.api.IWrapper;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.event.BaublesRenderEvent;
+import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,12 +25,13 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
-
+    private final RenderPlayer renderPlayer;
     private final ModelPlayer modelPlayer;
     private final boolean slim;
 
-    public BaublesRenderLayer(ModelPlayer modelPlayer, boolean slim) {
-        this.modelPlayer = modelPlayer;
+    public BaublesRenderLayer(RenderPlayer renderPlayer, boolean slim) {
+        this.renderPlayer = renderPlayer;
+        this.modelPlayer = renderPlayer.getMainModel();
         this.slim = slim;
     }
 
@@ -36,79 +39,87 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
     public void doRenderLayer(@Nonnull EntityPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (player.getActivePotionEffect(MobEffects.INVISIBILITY) == null) {
             IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
+            QueryCtx ctx = new QueryCtx(player, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
             for (int i = 0; i < baubles.getSlots(); i++) {
                 ItemStack stack = baubles.getStackInSlot(i);
                 if (!stack.isEmpty()) {
-                    BaublesRenderEvent event = new BaublesRenderEvent(player, this.slim, stack, true, i);
+                    BaublesRenderEvent.InBaubles event = new BaublesRenderEvent.InBaubles(player, this.slim, stack, i);
                     MinecraftForge.EVENT_BUS.post(event);
                     if (event.isCanceled()) continue;
-                    this.renderLayer(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, stack);
+                    this.renderLayer(ctx, stack);
                 }
             }
             for (EntityEquipmentSlot slotIn : EntityEquipmentSlot.values()) {
                 if (slotIn.getSlotType() == EntityEquipmentSlot.Type.ARMOR) {
                     ItemStack stack = player.getItemStackFromSlot(slotIn);
                     if (!stack.isEmpty()) {
-                        BaublesRenderEvent event = new BaublesRenderEvent(player, this.slim, stack, false, slotIn);
+                        BaublesRenderEvent.InEquipments event = new BaublesRenderEvent.InEquipments(player, this.slim, stack, slotIn);
                         MinecraftForge.EVENT_BUS.post(event);
                         if (event.isCanceled()) continue;
-                        this.renderLayer(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, stack);
+                        this.renderLayer(ctx, stack);
                     }
                 }
             }
         }
     }
 
-    private void renderLayer(EntityPlayer player, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, ItemStack stack) {
+    private void renderLayer(QueryCtx ctx, ItemStack stack) {
+        ctx.setStack(stack);
         IWrapper wrapper = BaublesApi.toBauble(stack);
-        Map<ModelBase, IRenderBauble.RenderType> collection = wrapper.getRenderMap(this.slim);
+        ctx.setWrapper(wrapper);
+        Map<ModelBauble, IRenderBauble.RenderType> collection = wrapper.getRenderMap(this.slim);
         if (collection == null) {
-            ModelBase model = wrapper.getModel(this.slim);
+            ModelBauble model = wrapper.getModel(this.slim);
             IRenderBauble.RenderType render = wrapper.getRenderType();
-            renderPart(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, model, render, wrapper);
+            renderModelPart(ctx, model, render);
         }
         else {
-            collection.forEach((model, render) -> renderPart(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, model, render, wrapper));
+            collection.forEach((model, render) -> renderModelPart(ctx, model, render));
         }
     }
 
-    private void renderPart(EntityPlayer player, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, ModelBase model, IRenderBauble.RenderType render, IWrapper wrapper) {
+    private void renderModelPart(QueryCtx ctx, ModelBauble model, IRenderBauble.RenderType render) {
         if (model != null && render != null) {
             GlStateManager.pushMatrix();
+            GlStateManager.enableRescaleNormal();
             GlStateManager.color(1F, 1F, 1F, 1F);
             GlStateManager.enableLighting();
-            GlStateManager.enableRescaleNormal();
-            if (player.isSneaking()) GlStateManager.translate(0, 0.2F, 0);
-            ResourceLocation texture = wrapper.getTexture(this.slim);
-            renderEach(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, render, texture, model);
-            texture = wrapper.getLuminousTexture(this.slim);
+            if (ctx.entity.isSneaking() && model.needLocating()) GlStateManager.translate(0, 0.2F, 0);
+
+            ResourceLocation texture = ctx.wrapper.getTexture(this.slim, ctx.entity);
+            if (texture != null) renderEachTexture(ctx, render, texture, model, true);
+
+            texture = ctx.wrapper.getEmissiveMap(this.slim, ctx.entity);
             if (texture != null) {
-                float lastLightmapX = OpenGlHelper.lastBrightnessX;
-                float lastLightmapY = OpenGlHelper.lastBrightnessY;
-                int light = 15728880;
-                int lightmapX = light % 65536;
-                int lightmapY = light / 65536;
-                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapX, lightmapY);
+                float lastSky = OpenGlHelper.lastBrightnessX;
+                float lastBlock = OpenGlHelper.lastBrightnessY;
+
+                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
                 GlStateManager.disableLighting();
-                renderEach(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, render, texture, model);
+                renderEachTexture(ctx, render, texture, model, false);
                 GlStateManager.enableLighting();
-                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastLightmapX, lastLightmapY);
+                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastSky, lastBlock);
+            }
+
+            if (ctx.stack.isItemEnchanted()) {
+                LayerArmorBase.renderEnchantedGlint(this.renderPlayer, ctx.entity, model, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale);
             }
 
             GlStateManager.popMatrix();
         }
     }
 
-    private void renderEach(EntityPlayer player, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, IRenderBauble.RenderType render, ResourceLocation texture, ModelBase model) {
-        GlStateManager.pushMatrix();
-        this.switchTex(texture);
-        this.switchBip(render, scale);
-        model.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-        GlStateManager.popMatrix();
+    private void renderEachTexture(QueryCtx ctx, IRenderBauble.RenderType render, ResourceLocation texture, ModelBauble model, boolean flag) {
+        this.switchTex(ctx.entity, ctx.stack, texture);
+        if (flag && model.needLocating()) this.switchBip(render, ctx.scale);
+        model.render(ctx.entity, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale);
     }
 
-    private void switchTex(ResourceLocation texture) {
+    private void switchTex(EntityLivingBase entity, ItemStack stack, ResourceLocation texture) {
         if (texture != null) {
+            BaublesRenderEvent.SwitchTexture event = new BaublesRenderEvent.SwitchTexture(entity, this.slim, stack, texture);
+            MinecraftForge.EVENT_BUS.post(event);
+            if (event.isChanged()) texture = event.getTexture();
             Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
         }
     }
@@ -130,13 +141,42 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
         }
     }
 
-    public ModelPlayer getModelPlayer() {
-        return this.modelPlayer;
-    }
-
     @Override
     public boolean shouldCombineTextures() {
         return false;
     }
+
+    public ModelPlayer getModelPlayer() {
+        return this.modelPlayer;
+    }
+
+    public RenderPlayer getRenderPlayer() {
+        return renderPlayer;
+    }
+
+    public static final class QueryCtx {
+        private final EntityLivingBase entity;
+        private final float limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale;
+        private ItemStack stack;
+        private IWrapper wrapper;
+
+        private QueryCtx(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+            this.entity = entity;
+            this.limbSwing = limbSwing;
+            this.limbSwingAmount = limbSwingAmount;
+            this.partialTicks = partialTicks;
+            this.ageInTicks = ageInTicks;
+            this.netHeadYaw = netHeadYaw;
+            this.headPitch = headPitch;
+            this.scale = scale;
+        }
+
+        public void setStack(ItemStack stack) {
+            this.stack = stack;
+        }
+
+        public void setWrapper(IWrapper wrapper) {
+            this.wrapper = wrapper;
+        }
+    }
 }
-//todo switcher for render

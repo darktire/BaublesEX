@@ -2,7 +2,8 @@ package baubles.util;
 
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.common.Config;
+import baubles.common.config.Config;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -24,6 +25,23 @@ public class HookHelper {
                     if (stack1.getItem() instanceof ItemElytra && ItemElytra.isUsable(stack1)) return stack1;
                 }
             }
+        }
+        return stack;
+    }
+
+    public static ItemStack capeJudgment(AbstractClientPlayer entity, EntityEquipmentSlot slot) {
+        ItemStack stack = entity.getItemStackFromSlot(slot);
+        if (Config.ModItems.elytraBauble && ((IHelper) entity).getFlag() && !(stack.getItem() instanceof ItemElytra)) {
+            IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
+            if (baubles != null) {
+                for (int i = 0; i < baubles.getSlots(); i++) {
+                    ItemStack stack1 = baubles.getStackInSlot(i);
+                    if (stack1.getItem() instanceof ItemElytra) {
+                        return stack1;
+                    }
+                }
+            }
+            ((IHelper) entity).setFlag(false);
         }
         return stack;
     }

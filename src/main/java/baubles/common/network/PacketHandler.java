@@ -7,7 +7,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketHandler {
     private static int START_ID = 0;
-    public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Baubles.MODID);
+    public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Baubles.MOD_ID);
 
     public static void init() {
         INSTANCE.registerMessage(PacketOpenBaublesInventory.Handler.class, PacketOpenBaublesInventory.class, START_ID++, Side.SERVER);

@@ -1,13 +1,13 @@
 package baubles.common.items;
 
+import baubles.BaublesRegister;
 import baubles.api.BaubleType;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.registries.TypesData;
-import baubles.common.Config;
-import baubles.util.BaublesRegistry;
+import baubles.common.config.Config;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
@@ -95,7 +95,7 @@ public class ItemRing extends Item implements IBauble {
 		updatePotionStatus(entity);
 	}
 
-	public void updatePotionStatus(EntityLivingBase entity) {
+	public static void updatePotionStatus(EntityLivingBase entity) {
 		int level = -1;
 		IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
 		Potion potion = Potion.REGISTRY.getObject(new ResourceLocation("haste"));
@@ -105,7 +105,7 @@ public class ItemRing extends Item implements IBauble {
 			if (baubles.getTypeInSlot(i) != target) continue;
 			ItemStack ring1 = baubles.getStackInSlot(i);
 			if (level >= Config.maxLevel - 1) break;
-			if (ring1.getItem() == BaublesRegistry.ModItems.Ring) level++;
+			if (ring1.getItem() == BaublesRegister.ModItems.Ring) level++;
 		}
 		if (potion != null) {
 			PotionEffect currentEffect = entity.getActivePotionEffect(potion);
