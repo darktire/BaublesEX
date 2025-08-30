@@ -1,5 +1,6 @@
 package baubles.client.gui.element;
 
+import baubles.client.gui.GuiPlayerExpanded;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.*;
@@ -11,8 +12,11 @@ import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class ElementBase extends GuiButton {
-    public ElementBase(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
+    protected final GuiPlayerExpanded parentGui;
+
+    public ElementBase(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText, GuiPlayerExpanded parentGui) {
         super(buttonId, x, y, widthIn, heightIn, buttonText);
+        this.parentGui = parentGui;
     }
 
     @Override
@@ -35,7 +39,7 @@ public class ElementBase extends GuiButton {
     }
 
     public void glPush() {
-//        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
         GlStateManager.translate(0, 0, 200);
     }

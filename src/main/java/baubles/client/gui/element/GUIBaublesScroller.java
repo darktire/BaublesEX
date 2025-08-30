@@ -14,14 +14,12 @@ public class GUIBaublesScroller extends ElementBase {
 
     public Rectangle area;
 
-    private final GuiPlayerExpanded parentGui;
     private int barPos, dragStartY, movement;
     private boolean dragging;
     private final int rest = 142 - 89;
 
     public GUIBaublesScroller(int id, GuiPlayerExpanded parentGui, int x, int y, boolean visible) {
-        super(id, x, y, 18, 166, "");
-        this.parentGui = parentGui;
+        super(id, x, y, 18, 166, "", parentGui);
         this.visible = visible;
         this.barPos = 0;
         this.area = new Rectangle(this.x, this.y, 18, 166);

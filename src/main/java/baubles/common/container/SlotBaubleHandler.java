@@ -46,7 +46,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     public ItemStack onTake(EntityPlayer playerIn, ItemStack stack) {
-        BaublesChangeEvent event = new BaublesChangeEvent(this.entity, this.getItemHandler(), this.index, stack, ItemStack.EMPTY);
+        BaublesChangeEvent event = new BaublesChangeEvent(this.entity, this.getItemHandler().isEventBlocked(), this.index, stack, ItemStack.EMPTY);
         MinecraftForge.EVENT_BUS.post(event);
 
         if (!stack.isEmpty() && !event.isBlocked()) {
@@ -60,7 +60,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     public void putStack(ItemStack stack) {
-        BaublesChangeEvent event = new BaublesChangeEvent(this.entity, this.getItemHandler(), this.index, getStack(), stack);
+        BaublesChangeEvent event = new BaublesChangeEvent(this.entity, this.getItemHandler().isEventBlocked(), this.index, getStack(), stack);
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isBlocked()) return;
 

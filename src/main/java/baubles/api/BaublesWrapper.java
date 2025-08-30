@@ -1,5 +1,7 @@
 package baubles.api;
 
+import baubles.api.event.BaublesEvent;
+import baubles.api.event.BaublesRenderEvent;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -7,6 +9,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -36,9 +39,7 @@ public final class BaublesWrapper implements IWrapper {
             this.types = bauble.getBaubleTypes();
             if (this.types == null || this.types.isEmpty()) {
                 if (this.type == null) {
-                    this.type = bauble.getBaubleType(
-                            (bauble instanceof Item) ? new ItemStack((Item) bauble) : ItemStack.EMPTY
-                    ).getExpansion();
+                    this.type = bauble.getBaubleType(new ItemStack(item)).getExpansion();
                     if (this.type == null) throw new RuntimeException(item.getRegistryName() + " have no type");
                 }
                 this.types = new LinkedList<>();
@@ -101,16 +102,25 @@ public final class BaublesWrapper implements IWrapper {
 
     @Override
     public void onWornTick(ItemStack itemstack, EntityLivingBase entity) {
+        BaublesEvent.WearingTick event = new BaublesEvent.WearingTick(entity, itemstack);
+        MinecraftForge.EVENT_BUS.post(event);
+        if (event.isCanceled()) return;
         this.bauble.onWornTick(itemstack, entity);
     }
 
     @Override
     public void onEquipped(ItemStack itemstack, EntityLivingBase entity) {
+        BaublesEvent.Equip event = new BaublesRenderEvent.Equip(entity, itemstack);
+        MinecraftForge.EVENT_BUS.post(event);
+        if (event.isCanceled()) return;
         this.bauble.onEquipped(itemstack, entity);
     }
 
     @Override
     public void onUnequipped(ItemStack itemstack, EntityLivingBase entity) {
+        BaublesEvent.Unequip event = new BaublesEvent.Unequip(entity, itemstack);
+        MinecraftForge.EVENT_BUS.post(event);
+        if (event.isCanceled()) return;
         this.bauble.onUnequipped(itemstack, entity);
     }
 

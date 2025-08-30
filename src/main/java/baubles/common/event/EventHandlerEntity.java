@@ -90,7 +90,7 @@ public class EventHandlerEntity {
 
     @SubscribeEvent
     public void playerTick(TickEvent.PlayerTickEvent event) {
-        // player events
+        // todo onWornTick
         if (event.phase == TickEvent.Phase.END) {
             EntityPlayer player = event.player;
             IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);

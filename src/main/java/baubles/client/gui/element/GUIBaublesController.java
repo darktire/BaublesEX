@@ -9,13 +9,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GUIBaublesController extends ElementBase {
 
-    private final GuiPlayerExpanded parentGui;
     private final int buttonID;
     private boolean pressed;
 
     public GUIBaublesController(int id, GuiPlayerExpanded parentGui, int x, int y, int buttonID) {
-        super(id, x, y, 8, 8, "");
-        this.parentGui = parentGui;
+        super(id, x, y, 8, 8, "", parentGui);
         this.buttonID = buttonID;
     }
 

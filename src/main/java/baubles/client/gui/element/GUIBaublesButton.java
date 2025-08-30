@@ -20,7 +20,7 @@ public class GUIBaublesButton extends ElementBase {
     private final GuiContainer parentGui;
 
     public GUIBaublesButton(int buttonId, GuiContainer parentGui, int x, int y, String buttonText) {
-        super(buttonId, parentGui.getGuiLeft() + x, parentGui.getGuiTop() + y, 10, 10, buttonText);
+        super(buttonId, parentGui.getGuiLeft() + x, parentGui.getGuiTop() + y, 10, 10, buttonText, null);
         this.parentGui = parentGui;
     }
 

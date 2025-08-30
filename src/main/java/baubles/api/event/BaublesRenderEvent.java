@@ -5,33 +5,17 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.entity.living.LivingEvent;
 
-public class BaublesRenderEvent extends LivingEvent {
+public class BaublesRenderEvent extends BaublesEvent {
     private final boolean slim;
-    private final ItemStack stack;
 
     public BaublesRenderEvent(EntityLivingBase entity, boolean slim, ItemStack stack) {
-        super(entity);
+        super(entity, stack);
         this.slim = slim;
-        this.stack = stack;
-    }
-
-    public boolean isCancelable()
-    {
-        return true;
-    }
-
-    public void setCanceled() {
-        this.setCanceled(true);
     }
 
     public boolean isSlim() {
         return this.slim;
-    }
-
-    public ItemStack getStack() {
-        return stack;
     }
 
     public static class InBaubles extends BaublesRenderEvent {
@@ -63,10 +47,12 @@ public class BaublesRenderEvent extends LivingEvent {
     public static class SwitchTexture extends BaublesRenderEvent {
         private ResourceLocation texture;
         private boolean changed;
+        private final boolean isEmissiveMap;
 
-        public SwitchTexture(EntityLivingBase entity, boolean slim, ItemStack stack, ResourceLocation texture) {
+        public SwitchTexture(EntityLivingBase entity, boolean slim, ItemStack stack, ResourceLocation texture, boolean flag) {
             super(entity, slim, stack);
             this.texture = texture;
+            this.isEmissiveMap = flag;
             this.changed = false;
         }
 
@@ -81,6 +67,10 @@ public class BaublesRenderEvent extends LivingEvent {
 
         public boolean isChanged() {
             return this.changed;
+        }
+
+        public boolean isEmissiveMap() {
+            return this.isEmissiveMap;
         }
     }
 }

@@ -42,35 +42,38 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
             QueryCtx ctx = new QueryCtx(player, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
             for (int i = 0; i < baubles.getSlots(); i++) {
                 ItemStack stack = baubles.getStackInSlot(i);
-                if (!stack.isEmpty()) {
+                IWrapper wrapper = BaublesApi.toBauble(stack);
+                if (wrapper != null) {
+                    ctx.setStack(stack);
+                    ctx.setWrapper(wrapper);
                     BaublesRenderEvent.InBaubles event = new BaublesRenderEvent.InBaubles(player, this.slim, stack, i);
                     MinecraftForge.EVENT_BUS.post(event);
                     if (event.isCanceled()) continue;
-                    this.renderLayer(ctx, stack);
+                    this.renderLayer(ctx);
                 }
             }
             for (EntityEquipmentSlot slotIn : EntityEquipmentSlot.values()) {
                 if (slotIn.getSlotType() == EntityEquipmentSlot.Type.ARMOR) {
                     ItemStack stack = player.getItemStackFromSlot(slotIn);
-                    if (!stack.isEmpty()) {
+                    IWrapper wrapper = BaublesApi.toBauble(stack);
+                    if (wrapper != null) {
+                        ctx.setStack(stack);
+                        ctx.setWrapper(wrapper);
                         BaublesRenderEvent.InEquipments event = new BaublesRenderEvent.InEquipments(player, this.slim, stack, slotIn);
                         MinecraftForge.EVENT_BUS.post(event);
                         if (event.isCanceled()) continue;
-                        this.renderLayer(ctx, stack);
+                        this.renderLayer(ctx);
                     }
                 }
             }
         }
     }
 
-    private void renderLayer(QueryCtx ctx, ItemStack stack) {
-        ctx.setStack(stack);
-        IWrapper wrapper = BaublesApi.toBauble(stack);
-        ctx.setWrapper(wrapper);
-        Map<ModelBauble, IRenderBauble.RenderType> collection = wrapper.getRenderMap(this.slim);
+    private void renderLayer(QueryCtx ctx) {
+        Map<ModelBauble, IRenderBauble.RenderType> collection = ctx.wrapper.getRenderMap(this.slim);
         if (collection == null) {
-            ModelBauble model = wrapper.getModel(this.slim);
-            IRenderBauble.RenderType render = wrapper.getRenderType();
+            ModelBauble model = ctx.wrapper.getModel(this.slim);
+            IRenderBauble.RenderType render = ctx.wrapper.getRenderType();
             renderModelPart(ctx, model, render);
         }
         else {
@@ -110,14 +113,14 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
     }
 
     private void renderEachTexture(QueryCtx ctx, IRenderBauble.RenderType render, ResourceLocation texture, ModelBauble model, boolean flag) {
-        this.switchTex(ctx.entity, ctx.stack, texture);
+        this.switchTex(ctx, texture, flag);
         if (flag && model.needLocating()) this.switchBip(render, ctx.scale);
         model.render(ctx.entity, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale);
     }
 
-    private void switchTex(EntityLivingBase entity, ItemStack stack, ResourceLocation texture) {
+    private void switchTex(QueryCtx ctx, ResourceLocation texture, boolean flag) {
         if (texture != null) {
-            BaublesRenderEvent.SwitchTexture event = new BaublesRenderEvent.SwitchTexture(entity, this.slim, stack, texture);
+            BaublesRenderEvent.SwitchTexture event = new BaublesRenderEvent.SwitchTexture(ctx.entity, this.slim, ctx.stack, texture, flag);
             MinecraftForge.EVENT_BUS.post(event);
             if (event.isChanged()) texture = event.getTexture();
             Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
