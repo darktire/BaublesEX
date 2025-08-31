@@ -166,6 +166,7 @@ public class Config extends PartialConfig {
                 if (Config.rightClick) Config.setupBlacklist();
                 BaublesRegister.registerBaubles();
                 BaublesRegister.loadValidSlots();
+                //todo wrong
                 for (BaublesContainer container: BaublesContainer.listener) {
                     container.onConfigChanged();
                 }

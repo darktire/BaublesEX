@@ -58,16 +58,16 @@ public class ModelGlove extends ModelBauble {
     }
 
     private static ResourceLocation switchTex(Item item) {
-        if (item == ModItems.POWER_GLOVE) return Resource.POWER_GLOVE_TEXTURES;
-        else if(item == ModItems.FERAL_CLAWS) return Resource.FERAL_CLAWS_TEXTURES;
-        else if(item == ModItems.MECHANICAL_GLOVE) return Resource.MECHANICAL_GLOVE_TEXTURES;
-        else if(item == ModItems.FIRE_GAUNTLET) return Resource.FIRE_GAUNTLET_TEXTURES;
-        else if(item == ModItems.POCKET_PISTON) return Resource.POCKET_PISTON_TEXTURES;
+        if (item == ModItems.POWER_GLOVE) return Resource.POWER_GLOVE_TEXTURE;
+        else if(item == ModItems.FERAL_CLAWS) return Resource.FERAL_CLAWS_TEXTURE;
+        else if(item == ModItems.MECHANICAL_GLOVE) return Resource.MECHANICAL_GLOVE_TEXTURE;
+        else if(item == ModItems.FIRE_GAUNTLET) return Resource.FIRE_GAUNTLET_TEXTURE;
+        else if(item == ModItems.POCKET_PISTON) return Resource.POCKET_PISTON_TEXTURE;
         return null;
     }
 
     private static ResourceLocation switchLum(Item item) {
-        if(item == ModItems.FIRE_GAUNTLET || item == ModItems.MAGMA_STONE) return Resource.FIRE_GAUNTLET_OVERLAY_TEXTURES;
+        if(item == ModItems.FIRE_GAUNTLET || item == ModItems.MAGMA_STONE) return Resource.FIRE_GAUNTLET_OVERLAY_TEXTURE;
         return null;
     }
 

@@ -12,20 +12,20 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(BaubleObsidianSkull.class)
-@Implements(@Interface(iface = IRenderBauble.class, prefix = "baubles$"))
+@Implements(@Interface(iface = IRenderBauble.class, prefix = "brs$"))
 public abstract class MixinBaubleObsidianSkull {
     @Unique
-    public ModelBauble baubles$getModel(boolean slim) {
+    public ModelBauble brs$getModel(boolean slim) {
         return Resource.SKULL_MODEL;
     }
 
     @Unique
-    public ResourceLocation baubles$getTexture(boolean slim, EntityLivingBase entity) {
+    public ResourceLocation brs$getTexture(boolean slim, EntityLivingBase entity) {
         return Resource.OBSIDIAN_SKULL;
     }
 
     @Unique
-    public IRenderBauble.RenderType baubles$getRenderType() {
+    public IRenderBauble.RenderType brs$getRenderType() {
         return IRenderBauble.RenderType.BODY;
     }
 }

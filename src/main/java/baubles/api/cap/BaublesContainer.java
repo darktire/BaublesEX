@@ -25,6 +25,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     private final List<BaubleTypeEx> PREVIOUS_SLOTS = new ArrayList<>();
 //    private final HashMap<String, Integer> MODIFIER_FACTOR = new HashMap<>();
     private final Map<String, Integer> BAUBLE_MODIFIER = new HashMap<>();
+    private final List<Boolean> BAUBLE_RENDER = new ArrayList<>();
 
     public static final Set<BaublesContainer> listener = new HashSet<>();
     public boolean slotsUpdated = true;

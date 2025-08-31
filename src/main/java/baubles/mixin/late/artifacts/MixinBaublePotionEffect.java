@@ -5,6 +5,8 @@ import artifacts.common.item.BaublePotionEffect;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
 import baubles.compat.artifacts.Resource;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,6 +19,13 @@ public abstract class MixinBaublePotionEffect {
     public ModelBauble brs$getModel(boolean slim) {
         if ((Object) this == ModItems.NIGHT_VISION_GOGGLES) return Resource.GOGGLES;
         else if ((Object) this == ModItems.SNORKEL) return Resource.SNORKEL;
+        return null;
+    }
+
+    @Unique
+    public ResourceLocation brs$getTexture(boolean slim, EntityLivingBase entity) {
+        if ((Object) this == ModItems.NIGHT_VISION_GOGGLES) return Resource.GOGGLES_TEXTURE;
+        else if ((Object) this == ModItems.SNORKEL) return Resource.SNORKEL_TEXTURE;
         return null;
     }
 

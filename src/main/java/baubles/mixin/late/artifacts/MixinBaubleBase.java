@@ -30,9 +30,9 @@ public abstract class MixinBaubleBase {
     public ResourceLocation brs$getTexture(boolean slim, EntityLivingBase entity) {
         if ((Object) this == ModItems.DRINKING_HAT) {
             if (entity instanceof EntityPlayer && entity.getName().equals("wouterke")) {
-                return Resource.HAT_SPECIAL_TEXTURES;
+                return Resource.HAT_SPECIAL_TEXTURE;
             }
-            else return Resource.HAT_TEXTURES;
+            else return Resource.HAT_TEXTURE;
         }
         else if ((Object) this == ModItems.POCKET_PISTON) return ModelGlove.instance((Item) (Object) this, slim).getTexture();
         return null;

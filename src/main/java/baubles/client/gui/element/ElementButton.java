@@ -1,6 +1,6 @@
 package baubles.client.gui.element;
 
-import baubles.client.gui.GuiBaublesBase;
+import baubles.client.gui.GuiBase;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketOpenBaublesInventory;
@@ -15,11 +15,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GUIBaublesButton extends ElementBase {
+public class ElementButton extends ElementBase {
 
     private final GuiContainer parentGui;
 
-    public GUIBaublesButton(int buttonId, GuiContainer parentGui, int x, int y, String buttonText) {
+    public ElementButton(int buttonId, GuiContainer parentGui, int x, int y, String buttonText) {
         super(buttonId, parentGui.getGuiLeft() + x, parentGui.getGuiTop() + y, 10, 10, buttonText, null);
         this.parentGui = parentGui;
     }
@@ -48,7 +48,7 @@ public class GUIBaublesButton extends ElementBase {
             updateHovered(mouseX, mouseY);
 
             glPush();
-            mc.getTextureManager().bindTexture(GuiBaublesBase.BAUBLES_TEX);
+            mc.getTextureManager().bindTexture(GuiBase.BAUBLES_TEX);
             if (this.hovered) {
                 drawTexturedModalRect(this.x, this.y, 16, 217, 10, 10);
                 FontRenderer fontrenderer = mc.fontRenderer;

@@ -14,7 +14,7 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 
 minecraft {
     mappings channel: "${mappings_channel}", version: "${mappings_version}"
-//    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
         configureEach {
@@ -25,7 +25,7 @@ minecraft {
         }
 
         client {
-            args "--username=InDev"
+            args '--username=InDev'
             workingDirectory file('run')
         }
 
@@ -34,9 +34,9 @@ minecraft {
 
     }
 
-    legacy {
-        attachMappings = true
-    }
+//    legacy {
+//        attachMappings = true
+//    }
 }
 
 fancyGradle {

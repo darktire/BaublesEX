@@ -97,25 +97,28 @@ public class ContainerPlayerExpanded extends Container {
         });
 
         //add bauble slots (amount)
-        if (Config.Gui.widerBar) this.addWideBauble();
-        else this.addSlimBauble();
+        if (Config.Gui.widerBar) this.addWideSlots(false);
+        else this.addSlimSlots(false);
 
         this.onCraftMatrixChanged(this.craftMatrix);
     }
 
-    public void removeBauble() {
+    public void addSlimSlots(boolean flag) {
+        if (flag) {
         this.inventorySlots.subList(46, 46 + this.slotsAmount).clear();
         this.inventoryItemStacks.subList(46, 46 + this.slotsAmount).clear();
     }
-
-    public void addSlimBauble() {
         this.slotsAmount = this.baubles.getSlots();
         for (int i = 0; i < this.slotsAmount; i++) {
             this.addSlotToContainer(new SlotBaubleHandler(this.entity, this.baubles, i, -23, 16 + i * 18));
         }
     }
 
-    public void addWideBauble() {
+    public void addWideSlots(boolean flag) {
+        if (flag) {
+            this.inventorySlots.subList(46, 46 + this.slotsAmount).clear();
+            this.inventoryItemStacks.subList(46, 46 + this.slotsAmount).clear();
+        }
         this.slotsAmount = this.baubles.getSlots();
         for (int i = 0; i < this.slotsAmount; i++) {
             int j = i / Config.Gui.column;

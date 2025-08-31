@@ -2,22 +2,23 @@ package baubles.client.gui;
 
 import baubles.Baubles;
 import baubles.api.cap.BaublesContainer;
-import baubles.client.gui.element.GUIBaublesButton;
-import baubles.client.gui.element.GUIBaublesController;
-import baubles.client.gui.element.GUIBaublesScroller;
+import baubles.client.gui.element.ElementButton;
+import baubles.client.gui.element.ElementController;
+import baubles.client.gui.element.ElementScroller;
+import baubles.client.gui.element.ElementSwitchers;
 import baubles.common.config.Config;
 import baubles.common.container.ContainerPlayerExpanded;
 import baubles.common.container.SlotBaubleHandler;
 import baubles.compat.jei.JeiPlugin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.achievement.GuiStats;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiUtils;
@@ -29,26 +30,26 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.*;
 
 @SideOnly(Side.CLIENT)
-public class GuiPlayerExpanded extends GuiBaublesBase {
+public class GuiPlayerExpanded extends GuiBase {
     @Deprecated public static final ResourceLocation background = new ResourceLocation(Baubles.MOD_ID,"textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
     private final EntityPlayer player;
     private final EntityLivingBase entity;
     private final static boolean jeiLoaded = Loader.isModLoaded("jei");
-    public ContainerPlayerExpanded containerEx = (ContainerPlayerExpanded) this.inventorySlots;
+    private final ContainerPlayerExpanded containerEx = (ContainerPlayerExpanded) this.inventorySlots;
     public BaublesContainer baubles = (BaublesContainer) (this.containerEx).baubles;//container in sever
     public int baublesAmount = this.baubles.getSlots();
     public boolean wider = Config.Gui.widerBar;
     public int column = this.wider ? Config.Gui.column : 1;
-    public int offset = 0;
-    public boolean updated = true;
-    private int preOffset = 0;
-    public GUIBaublesScroller scroller;
+    private int row = this.initRow();
+    private int offset = 0;
+    public ElementScroller scroller;
+    public ElementSwitchers switchers;
     private final List<Rectangle> extraArea = new LinkedList<>();
-    private final Map<Integer, Boolean> BAUBLE_RENDER = new HashMap<>();
 
     public GuiPlayerExpanded(EntityPlayer player) {
         this(player, player);
@@ -61,61 +62,79 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
         this.allowUserInput = true;
     }
 
-    public void modifyOffset(int value) {
-        if (value == 0) return;
+    private int initRow() {
+        int i = this.baublesAmount / this.column;
+        if (this.baublesAmount % this.column != 0) i += 1;
+        return i;
+    }
+
+    public int getRow() {
+        return this.row;
+    }
+
+    public int getOffset() {
+        return this.offset;
+    }
+
+    public void moveSlots(int value) {
         int offset1 = this.offset + value;
-        if (offset1 > 0) value = -this.offset;
-        int allRow = this.baublesAmount / this.column;
-        if (this.baublesAmount % this.column != 0) allRow += 1;
-        if (allRow < 9) value = 0;
-        else if (offset1 < 8 - allRow) value = 8 - this.offset - allRow;
+        if (offset1 > 0 || this.row < 9) value = -this.offset;
+        else if (offset1 < 8 - this.row) value = 8 - this.offset - this.row;
         this.offset += value;
+        this.setSlotsPos();
     }
 
-    public boolean needMoveSlots() {
-        return this.preOffset != this.offset;
-    }
-
-    public void moveSlots() {
+    private void setSlotsPos() {
         for (int i = 46; i < 46 + this.baublesAmount; i++) {
             SlotBaubleHandler baubleSlots = ((SlotBaubleHandler) this.inventorySlots.inventorySlots.get(i));
             baubleSlots.setYPos(18 * this.offset);
         }
-        this.preOffset = this.offset;
+        this.switchers.updateSwitchers();
     }
 
     /**
      * Called from the main game loop to update the screen.
      */
     @Override
-    public void updateScreen() {
-        if (!this.baubles.guiUpdated || !this.updated) {
-            this.baublesAmount = this.baubles.getSlots();
-            this.containerEx.removeBauble();
-            if (this.wider) {
-                this.column = Config.Gui.column;
-                this.containerEx.addWideBauble();
-            }
-            else {
-                this.column = 1;
-                this.containerEx.addSlimBauble();
-            }
-            this.moveSlots();
-            if (!this.updated) {
-                this.extraArea.clear();
-                int xx = 18 * this.column;
-                this.extraArea.add(new Rectangle(this.guiLeft - 11 - xx, this.guiTop, 10 + xx, 166));
-                this.buttonList.remove(this.scroller);
-                boolean v = this.scroller.visible;
-                this.scroller = new GUIBaublesScroller(58, this, this.guiLeft - 30 - xx, this.guiTop, v);
-                this.buttonList.add(this.scroller);
-                this.updated = true;
-            }
-            this.scroller.setBarPos(this.offset);
-            this.baubles.guiUpdated = true;
+    public void updateScreen() {// todo sever container
+        if (!this.baubles.guiUpdated) {
+            onBaublesChange();
         }
-//        baubles.setEventBlock(false);
         super.updateScreen();
+    }
+
+    private void onBaublesChange() {
+        this.baublesAmount = this.baubles.getSlots();
+        if (this.wider) {
+            this.column = Config.Gui.column;
+            this.containerEx.addWideSlots(true);
+        }
+        else {
+            this.column = 1;
+            this.containerEx.addSlimSlots(true);
+        }
+        this.row = initRow();
+        this.scroller.setBarPos(this.offset);
+        this.switchers.initSwitchers(true);
+        this.setSlotsPos();
+        this.baubles.guiUpdated = true;
+    }
+
+    public void handleWider() {
+        this.offset = 0;
+        if (this.wider) {
+            this.column = Config.Gui.column;
+            this.containerEx.addWideSlots(true);
+        }
+        else {
+            this.column = 1;
+            this.containerEx.addSlimSlots(true);
+        }
+        this.extraArea.clear();
+        int x = 18 * this.column;
+        this.extraArea.add(new Rectangle(this.guiLeft - 11 - x, this.guiTop, 10 + x, 166));
+        this.scroller.handleWider();
+        this.switchers.initSwitchers(true);
     }
 
     /**
@@ -125,11 +144,11 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
     public void initGui() {
         this.buttonList.clear();
         super.initGui();
-        if (this.entity instanceof EntityPlayer) this.buttonList.add(new GUIBaublesButton(55, this, 64, 9, I18n.format("button.normal")));
-        this.buttonList.add(new GUIBaublesController(56, this, this.guiLeft - 24, this.guiTop + 5, 1));
-        this.buttonList.add(new GUIBaublesController(57, this, this.guiLeft - 14, this.guiTop + 5, 2));
-        this.scroller = new GUIBaublesScroller(58, this, this.guiLeft - 30 - 18 * this.column, this.guiTop, Config.Gui.scrollerBar);
-        this.buttonList.add(this.scroller);
+        this.addButton(new ElementButton(55, this, 64, 9, I18n.format("button.normal")));
+        this.addButton(new ElementController.e(56, this, this.guiLeft - 24, this.guiTop + 5, 1));
+        this.addButton(new ElementController.h(57, this, this.guiLeft - 14, this.guiTop + 5, 2));
+        this.scroller = this.addButton(new ElementScroller(58, this, this.guiLeft - 30 - 18 * this.column, this.guiTop, Config.Gui.scrollerBar));
+        this.switchers = this.addButton(new ElementSwitchers(59, this, this.guiLeft - 10, this.guiTop + 14));
         this.extraArea.add(new Rectangle(this.guiLeft - 29, this.guiTop, 10 + 18 * this.column, 166));
     }
 
@@ -139,31 +158,34 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         this.fontRenderer.drawString(I18n.format("container.crafting"), 97, 8, 4210752);
-        int xLoc = this.guiLeft - 4;
-        if (xLoc - 18 * this.column < mouseX && mouseX < xLoc) {
-            int yLoc = this.guiTop + 14;
+        int xLoc = this.guiLeft - 7;
+        if (xLoc - 18 * this.column < mouseX && mouseX <= xLoc) {
+            int yLoc = this.guiTop + 15;
             if (mouseY >= yLoc && mouseY < yLoc + 18 * this.baublesAmount) {
-                int indexY = (mouseY - yLoc) / 18 - this.offset;
-                int index = indexY * this.column + (mouseX - xLoc) / 18 + this.column - 1;
-                if (index >= this.baublesAmount) return;
-                BaublesContainer container = this.baubles;
-                ItemStack stack = container.getStackInSlot(index);
-                if (!stack.isEmpty()) return;
-
-                FontRenderer renderer = Minecraft.getMinecraft().fontRenderer;
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                GlStateManager.enableBlend();
-                GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-                GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(0, 0, 200);
-                String str = I18n.format("name." + this.baubles.getTypeInSlot(index).getTypeName());
-
-                GuiUtils.drawHoveringText(Collections.singletonList(str), mouseX - this.guiLeft, mouseY - this.guiTop + 7, this.width, this.height, 300, renderer);
-                GlStateManager.popMatrix();
+                drawHoveringText(mouseX, mouseY, yLoc, xLoc);
             }
         }
+    }
+
+    private void drawHoveringText(int mouseX, int mouseY, int yLoc, int xLoc) {
+        int indexY = (mouseY - yLoc) / 18 - this.offset;
+        int index = indexY * this.column + (mouseX - xLoc) / 18 + this.column - 1;
+        if (index >= this.baublesAmount) return;
+        ItemStack stack = this.baubles.getStackInSlot(index);
+        if (!stack.isEmpty()) return;
+
+        FontRenderer renderer = Minecraft.getMinecraft().fontRenderer;
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0, 0, 200);
+        String str = I18n.format("name." + this.baubles.getTypeInSlot(index).getTypeName());
+
+        GuiUtils.drawHoveringText(Collections.singletonList(str), mouseX - this.guiLeft, mouseY - this.guiTop + 7, this.width, this.height, 300, renderer);
+        GlStateManager.popMatrix();
     }
 
     /**
@@ -175,7 +197,7 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
         super.drawScreen(mouseX, mouseY, partialTicks);
         renderHoveredToolTip(mouseX, mouseY);
         //jei compat
-        handleMouse(mouseX, mouseY);
+        handleMouseInput(mouseX, mouseY);
     }
 
     @Override
@@ -183,18 +205,17 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
         super.handleMouseInput();
     }
 
-    private void handleMouse(int mouseX, int mouseY) {
-        int xLoc = this.guiLeft - 4;
+    private void handleMouseInput(int mouseX, int mouseY) {
+        int xLoc = this.guiLeft - 7;
         if (xLoc - 18 * this.column < mouseX && mouseX < xLoc) {
-            int yLoc = this.guiTop + 14;
+            int yLoc = this.guiTop + 15;
             if (mouseY >= yLoc && mouseY < yLoc + 18 * 8) {
                 int dWheel;
                 if (jeiLoaded) dWheel = JeiPlugin.JEI_COMPAT.getIngredientUnderMouse(this, mouseX, mouseY);
                 else dWheel = Mouse.getDWheel();
-                if (dWheel != 0) {
-                    int value = dWheel / 120;
-                    this.modifyOffset(value);
-                    if (this.needMoveSlots()) this.moveSlots();
+                int value = dWheel / 120;
+                if (value != 0) {
+                    this.moveSlots(value);
                     this.scroller.moveScrollerBar(value);
                 }
             }
@@ -267,7 +288,7 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
 //    }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
+    protected void actionPerformed(net.minecraft.client.gui.GuiButton button) {
         if (button.id == 0) {
 //            this.mc.displayGuiScreen(new GuiAchievements(this, this.mc.player.getStatFileWriter()));
         }
@@ -275,6 +296,22 @@ public class GuiPlayerExpanded extends GuiBaublesBase {
         if (button.id == 1) {
             this.mc.displayGuiScreen(new GuiStats(this, this.mc.player.getStatFileWriter()));
         }
+    }
+
+    @Override
+    protected boolean isMouseOverSlot(Slot slotIn, int mouseX, int mouseY) {
+        if (this instanceof GuiPlayerExpanded && slotIn instanceof SlotBaubleHandler) {
+            int pointX = mouseX - this.guiLeft;
+            int pointY = mouseY - this.guiTop;
+            int rectX = slotIn.xPos;
+            int rectY = slotIn.yPos;
+            boolean flag = pointX >= rectX - 1 && pointX < rectX + 17 && pointY >= rectY - 1 && pointY < rectY + 17;
+            if (flag) {
+                flag = !(pointX > rectX + 12 && pointY < rectY + 3);
+            }
+            return flag;
+        }
+        return super.isMouseOverSlot(slotIn, mouseX, mouseY);
     }
 
     public void displayNormalInventory() {

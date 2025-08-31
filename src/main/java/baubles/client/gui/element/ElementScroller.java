@@ -1,6 +1,6 @@
 package baubles.client.gui.element;
 
-import baubles.client.gui.GuiBaublesBase;
+import baubles.client.gui.GuiBase;
 import baubles.client.gui.GuiPlayerExpanded;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
@@ -10,7 +10,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.awt.*;
 
 @SideOnly(Side.CLIENT)
-public class GUIBaublesScroller extends ElementBase {
+public class ElementScroller extends ElementBase {
 
     public Rectangle area;
 
@@ -18,7 +18,7 @@ public class GUIBaublesScroller extends ElementBase {
     private boolean dragging;
     private final int rest = 142 - 89;
 
-    public GUIBaublesScroller(int id, GuiPlayerExpanded parentGui, int x, int y, boolean visible) {
+    public ElementScroller(int id, GuiPlayerExpanded parentGui, int x, int y, boolean visible) {
         super(id, x, y, 18, 166, "", parentGui);
         this.visible = visible;
         this.barPos = 0;
@@ -29,7 +29,7 @@ public class GUIBaublesScroller extends ElementBase {
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
         if (visible) {
-            if (parentGui.baublesAmount > 8 * this.parentGui.column) dragging = getHovered(mouseX, mouseY, x + 6, y + 16 + barPos, 6, 89);
+            dragging = getHovered(mouseX, mouseY, x + 6, y + 16 + barPos, 6, 89);
             if (dragging) dragStartY = mouseY;
         }
         return super.mousePressed(mc, mouseX, mouseY);
@@ -50,7 +50,7 @@ public class GUIBaublesScroller extends ElementBase {
             updateHovered(mouseX, mouseY);
             handleDrag(mouseY);
             glPush();
-            mc.getTextureManager().bindTexture(GuiBaublesBase.BAUBLES_TEX);
+            mc.getTextureManager().bindTexture(GuiBase.BAUBLES_TEX);
             drawTexturedModalRect(x, y, 0, 0, 18, 166);
             drawTexturedModalRect(x + 6, y + 16 + barPos + movement, 0, 167, 6, 52 + 36);
             drawTexturedModalRect(x + 6, y + 16 + 52 + 36 + barPos + movement, 0, 167 + 52 + 36, 6, 1);
@@ -61,8 +61,33 @@ public class GUIBaublesScroller extends ElementBase {
     @Override
     public void playPressSound(SoundHandler soundHandlerIn) {}
 
+    public void handleWider() {
+        this.x = this.parentGui.getGuiLeft() - 30 - 18 * this.parentGui.column;
+        this.barPos = 0;
+        this.area = new Rectangle(this.x, this.y, 18, 166);
+        if (this.visible) this.parentGui.getExtraArea().add( this.area);
+    }
+
+    public void switchVisible() {
+        if (this.visible) {
+            this.visible = false;
+            this.parentGui.getExtraArea().remove(this.area);
+        }
+        else {
+            this.visible = true;
+            this.parentGui.getExtraArea().add(this.area);
+        }
+    }
+
     private void handleDrag(int mouseY) {
         if (dragging) {
+            if (this.parentGui.getRow() < 9) {
+                if (this.parentGui.getOffset() != 0) {
+                    this.parentGui.moveSlots(0);
+                    this.barPos = 0;
+                }
+                return;
+            }
             movement = mouseY - dragStartY;
             if (barPos + movement < 0) {
                 movement = -barPos;
@@ -74,28 +99,25 @@ public class GUIBaublesScroller extends ElementBase {
             }
             float pixelPerSlot = (float) rest / (parentGui.baublesAmount - 8 * this.parentGui.column);
             int offset = -Math.round((this.barPos + this.movement) / pixelPerSlot);
-            int value = offset - parentGui.offset;
+            int value = offset - parentGui.getOffset();
             if (value != 0) {
-                this.parentGui.modifyOffset(value);
-                if (this.parentGui.needMoveSlots()) this.parentGui.moveSlots();
+                this.parentGui.moveSlots(value);
             }
         }
     }
 
     public void moveScrollerBar(int value) {
-        int i = parentGui.baublesAmount / this.parentGui.column - 8;
-        if (parentGui.baublesAmount % this.parentGui.column != 0) i += 1;
-        if (i < 1) return;
-        barPos -= (int) (value * ((float) rest / i));
+        int i = this.parentGui.getRow();
+        if (i < 9) return;
+        barPos -= (int) (value * ((float) rest / (i - 8)));
         if (barPos < 0) barPos = 0;
         if (barPos > rest) barPos = rest;
     }
 
     public void setBarPos(int value) {
-        int i = parentGui.baublesAmount / this.parentGui.column - 8;
-        if (parentGui.baublesAmount % this.parentGui.column != 0) i += 1;
-        if (i < 1) return;
-        barPos = (int) (-value * ((float) rest / i));
+        int i = this.parentGui.getRow();
+        if (i < 9) return;
+        barPos = (int) (-value * ((float) rest / (i - 8)));
     }
 
     public boolean getDragging() {
