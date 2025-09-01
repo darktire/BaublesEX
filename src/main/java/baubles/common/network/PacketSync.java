@@ -8,72 +8,114 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import java.io.IOException;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketSync implements IMessage {
 
+    private int id;
     private int entityId;
-    private int slot = 0;
-    private ItemStack bauble;
+    private int slot;
+    private ItemStack stack;
+    private boolean visible;
 
     public PacketSync() {}
 
-    public PacketSync(EntityPlayer p, int slot, ItemStack bauble) {
-        this((EntityLivingBase) p, slot, bauble);
+    public PacketSync(EntityPlayer p, int slot, ItemStack bauble) {}
+
+    public PacketSync(EntityLivingBase entity, int slot, ItemStack stack, boolean visible) {
+        this.id = 0;
+        this.entityId = entity.getEntityId();
+        this.slot = slot;
+        this.stack = stack;
+        this.visible = visible;
     }
 
-    public PacketSync(EntityLivingBase entity, int slot, ItemStack bauble) {
-        this.slot = slot;
-        this.bauble = bauble;
+    public PacketSync(EntityLivingBase entity, int slot, boolean visible) {
+        this.id = 1;
         this.entityId = entity.getEntityId();
+        this.slot = slot;
+        this.visible = visible;
     }
+
+    public PacketSync(int slot, boolean visible) {
+        this.id = -1;
+        this.slot = slot;
+        this.visible = visible;
+    }
+
 
     @Override
     public void toBytes(ByteBuf buffer) {
-        buffer.writeInt(entityId);
-        buffer.writeInt(slot);
-        writeItemStack(buffer, bauble);
+        buffer.writeInt(this.id);
+        if (this.id == -1) {
+            buffer.writeInt(this.slot);
+            buffer.writeBoolean(this.visible);
+        }
+        else if (this.id == 0) {
+            buffer.writeInt(this.entityId);
+            buffer.writeInt(this.slot);
+            ByteBufUtils.writeItemStack(buffer, this.stack);
+            buffer.writeBoolean(this.visible);
+        }
+        else if (this.id == 1) {
+            buffer.writeInt(this.entityId);
+            buffer.writeInt(this.slot);
+            buffer.writeBoolean(this.visible);
+        }
     }
 
     @Override
     public void fromBytes(ByteBuf buffer) {
-        entityId = buffer.readInt();
-        slot = buffer.readInt();
-        bauble = readItemStack(buffer);
-    }
-
-    public void writeItemStack(ByteBuf to, ItemStack stack) {
-        new PacketBuffer(to).writeItemStack(stack);
-    }
-
-    public ItemStack readItemStack(ByteBuf to) {
-        PacketBuffer buffer = new PacketBuffer(to);
-        try { return buffer.readItemStack(); }
-        catch (IOException e) { throw new RuntimeException(e); }
+        this.id = buffer.readInt();
+        if (this.id == -1) {
+            this.slot = buffer.readInt();
+            this.visible = buffer.readBoolean();
+        }
+        else if (this.id == 0) {
+            this.entityId = buffer.readInt();
+            this.slot = buffer.readInt();
+            this.stack = ByteBufUtils.readItemStack(buffer);
+            this.visible = buffer.readBoolean();
+        }
+        else if (this.id == 1) {
+            this.entityId = buffer.readInt();
+            this.slot = buffer.readInt();
+            this.visible = buffer.readBoolean();
+        }
     }
 
     public static class Handler implements IMessageHandler<PacketSync, IMessage> {
         @Override
-        public IMessage onMessage(PacketSync message, MessageContext ctx) {
-            Minecraft.getMinecraft().addScheduledTask(() -> execute(message));
-            return null;
-        }
-
-        private void execute(PacketSync message) {
-            World world = Baubles.proxy.getClientWorld();
-            if (world == null) return;
-            Entity entity = world.getEntityByID(message.entityId);
-            if (entity instanceof EntityLivingBase) {
-                IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
-                baubles.setStackInSlot(message.slot, message.bauble);
+        public IMessage onMessage(PacketSync msg, MessageContext ctx) {
+            if (ctx.side == Side.CLIENT && msg.id >= 0) {
+                Minecraft.getMinecraft().addScheduledTask(() -> {
+                    World world = Baubles.proxy.getClientWorld();
+                    if (world == null) return;
+                    Entity entity = world.getEntityByID(msg.entityId);
+                    if (entity instanceof EntityLivingBase) {
+                        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
+                        int i = msg.slot;
+                        if (msg.id == 0) baubles.setStackInSlot(i, msg.stack);
+                        baubles.setVisible(i, msg.visible);
+                    }
+                });
             }
+            else if (ctx.side == Side.SERVER && msg.id < 0) {
+                EntityPlayerMP player = ctx.getServerHandler().player;
+                ((WorldServer) player.world).addScheduledTask(() -> {
+                    IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
+                    baubles.setVisible(msg.slot, msg.visible);
+                });
+            }
+            return null;
         }
     }
 }

@@ -2,7 +2,7 @@ package baubles.common.network;
 
 import baubles.Baubles;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.util.IThreadListener;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -22,10 +22,10 @@ public class PacketOpenBaublesInventory implements IMessage {
     public static class Handler implements IMessageHandler<PacketOpenBaublesInventory, IMessage> {
         @Override
         public IMessage onMessage(PacketOpenBaublesInventory message, MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().player.world;
-            mainThread.addScheduledTask(() -> {
-                ctx.getServerHandler().player.closeContainer();
-                ctx.getServerHandler().player.openGui(Baubles.instance, Baubles.GUI, ctx.getServerHandler().player.world, 0, 0, 0);
+            EntityPlayerMP player = ctx.getServerHandler().player;
+            ((WorldServer) player.world).addScheduledTask(() -> {
+                player.closeContainer();
+                player.openGui(Baubles.instance, Baubles.GUI, player.world, 0, 0, 0);
             });
             return null;
         }

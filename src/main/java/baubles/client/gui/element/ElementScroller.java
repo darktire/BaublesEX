@@ -62,7 +62,7 @@ public class ElementScroller extends ElementBase {
     public void playPressSound(SoundHandler soundHandlerIn) {}
 
     public void handleWider() {
-        this.x = this.parentGui.getGuiLeft() - 30 - 18 * this.parentGui.column;
+        this.x = this.parentGui.getGuiLeft() - 30 - 18 * this.parentGui.getColumn();
         this.barPos = 0;
         this.area = new Rectangle(this.x, this.y, 18, 166);
         if (this.visible) this.parentGui.getExtraArea().add( this.area);
@@ -97,7 +97,7 @@ public class ElementScroller extends ElementBase {
                 movement = rest - barPos;
                 if (y + 16 + barPos <= mouseY && mouseY < y + 16 + 89 + barPos) dragStartY = mouseY + barPos - rest;
             }
-            float pixelPerSlot = (float) rest / (parentGui.baublesAmount - 8 * this.parentGui.column);
+            float pixelPerSlot = (float) rest / (parentGui.baublesAmount - 8 * this.parentGui.getColumn());
             int offset = -Math.round((this.barPos + this.movement) / pixelPerSlot);
             int value = offset - parentGui.getOffset();
             if (value != 0) {

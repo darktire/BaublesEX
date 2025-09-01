@@ -1,7 +1,8 @@
 package baubles.client.gui;
 
 import baubles.Baubles;
-import baubles.api.cap.BaublesContainer;
+import baubles.api.cap.IBaublesListener;
+import baubles.api.cap.IBaublesModifiable;
 import baubles.client.gui.element.ElementButton;
 import baubles.client.gui.element.ElementController;
 import baubles.client.gui.element.ElementScroller;
@@ -35,20 +36,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class GuiPlayerExpanded extends GuiBase {
+public class GuiPlayerExpanded extends GuiBase implements IBaublesListener {
     @Deprecated public static final ResourceLocation background = new ResourceLocation(Baubles.MOD_ID,"textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
     private final EntityPlayer player;
     private final EntityLivingBase entity;
     private final static boolean jeiLoaded = Loader.isModLoaded("jei");
     private final ContainerPlayerExpanded containerEx = (ContainerPlayerExpanded) this.inventorySlots;
-    public BaublesContainer baubles = (BaublesContainer) (this.containerEx).baubles;//container in sever
-    public int baublesAmount = this.baubles.getSlots();
+    public IBaublesModifiable baubles = (this.containerEx).baubles;
+    public int baublesAmount = (this.containerEx).baublesAmount;
     public boolean wider = Config.Gui.widerBar;
-    public int column = this.wider ? Config.Gui.column : 1;
+    private int column = this.wider ? Config.Gui.column : 1;
     private int row = this.initRow();
     private int offset = 0;
-    public ElementScroller scroller;
-    public ElementSwitchers switchers;
+    private ElementScroller scroller;
+    private ElementSwitchers switchers;
     private final List<Rectangle> extraArea = new LinkedList<>();
 
     public GuiPlayerExpanded(EntityPlayer player) {
@@ -60,20 +61,13 @@ public class GuiPlayerExpanded extends GuiBase {
         this.player = player;
         this.entity = entity;
         this.allowUserInput = true;
+        this.baubles.addListener(this);
     }
 
     private int initRow() {
         int i = this.baublesAmount / this.column;
         if (this.baublesAmount % this.column != 0) i += 1;
         return i;
-    }
-
-    public int getRow() {
-        return this.row;
-    }
-
-    public int getOffset() {
-        return this.offset;
     }
 
     public void moveSlots(int value) {
@@ -96,45 +90,47 @@ public class GuiPlayerExpanded extends GuiBase {
      * Called from the main game loop to update the screen.
      */
     @Override
-    public void updateScreen() {// todo sever container
-        if (!this.baubles.guiUpdated) {
-            onBaublesChange();
-        }
+    public void updateScreen() {
         super.updateScreen();
     }
 
-    private void onBaublesChange() {
+    public void updateBaubles() {
         this.baublesAmount = this.baubles.getSlots();
         if (this.wider) {
             this.column = Config.Gui.column;
-            this.containerEx.addWideSlots(true);
+            this.containerEx.addWideBaubles();
         }
         else {
             this.column = 1;
-            this.containerEx.addSlimSlots(true);
+            this.containerEx.addSlimBaubles();
         }
         this.row = initRow();
         this.scroller.setBarPos(this.offset);
         this.switchers.initSwitchers(true);
         this.setSlotsPos();
-        this.baubles.guiUpdated = true;
     }
 
     public void handleWider() {
         this.offset = 0;
+        this.containerEx.clearBaubles();
         if (this.wider) {
             this.column = Config.Gui.column;
-            this.containerEx.addWideSlots(true);
+            this.containerEx.addWideBaubles();
         }
         else {
             this.column = 1;
-            this.containerEx.addSlimSlots(true);
+            this.containerEx.addSlimBaubles();
         }
+        this.row = initRow();
         this.extraArea.clear();
         int x = 18 * this.column;
         this.extraArea.add(new Rectangle(this.guiLeft - 11 - x, this.guiTop, 10 + x, 166));
         this.scroller.handleWider();
         this.switchers.initSwitchers(true);
+    }
+
+    public void handleHide() {
+        this.scroller.switchVisible();
     }
 
     /**
@@ -244,6 +240,7 @@ public class GuiPlayerExpanded extends GuiBase {
         // draw inventory
         this.mc.getTextureManager().bindTexture(INVENTORY_BACKGROUND);
         drawTexturedModalRect(left, top, 0, 0, this.xSize, this.ySize);
+
         // draw baubles container
         this.mc.getTextureManager().bindTexture(BAUBLES_TEX);
         drawTexturedModalRect(left - 29, top, 18, 0, 28, 166);
@@ -252,11 +249,10 @@ public class GuiPlayerExpanded extends GuiBase {
                 drawTexturedModalRect(left - 29 - i * 18, top, 18, 0, 24, 166);
             }
         }
-
         // draw slots
         if (this.wider) drawWideSlots(left, top);
         else drawSlimSlots(left, top);
-
+        // draw player
         GuiInventory.drawEntityOnScreen(left + 51, top + 75, 30, (left + 51) - mouseX, (top + 75 - 50) - mouseY, this.player);
     }
 
@@ -314,9 +310,31 @@ public class GuiPlayerExpanded extends GuiBase {
         return super.isMouseOverSlot(slotIn, mouseX, mouseY);
     }
 
+    @Override
+    public void onGuiClosed() {
+        super.onGuiClosed();
+        this.baubles.removeListener(this);
+    }
+
     public void displayNormalInventory() {
         GuiInventory gui = new GuiInventory(this.mc.player);
         this.mc.displayGuiScreen(gui);
+    }
+
+
+
+
+
+    public int getRow() {
+        return this.row;
+    }
+
+    public int getColumn() {
+        return this.column;
+    }
+
+    public int getOffset() {
+        return this.offset;
     }
 
     public List<Rectangle> getExtraArea() {

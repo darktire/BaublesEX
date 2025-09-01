@@ -31,4 +31,7 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 
 	boolean haveDroppingItem();
 	ItemStack getDroppingItem();
+
+	void setVisible(int slot, boolean v);
+	boolean getVisible(int slot);
 }

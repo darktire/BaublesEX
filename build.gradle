@@ -170,7 +170,8 @@ classes.configure {
 jar {
     manifest {
         attributes(
-                "FMLCorePlugin": "baubles.coremod.BaublesPlugin",
+                'FMLAT': 'accesstransformer.cfg',
+                'FMLCorePlugin': 'baubles.coremod.BaublesPlugin',
                 'ForceLoadAsMod': 'true',
                 'FMLCorePluginContainsFMLMod': 'true',
                 'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',

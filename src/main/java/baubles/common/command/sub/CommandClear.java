@@ -44,7 +44,7 @@ public class CommandClear extends CommandBase {
         else if (args[1].equals("modifier")) {
             baubles.clearModifier();
             PacketHandler.INSTANCE.sendTo(new PacketModifySlots(player, 2), player);
-            baubles.updateSlots();
+            baubles.updateContainer();
             player.sendMessage(new TextComponentTranslation("commands.baubles.success"));
         }
         else if (args[1].matches("\\d+")) {

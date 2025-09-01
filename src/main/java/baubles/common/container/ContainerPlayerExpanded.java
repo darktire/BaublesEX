@@ -2,27 +2,36 @@ package baubles.common.container;
 
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
+import baubles.api.cap.IBaublesListener;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.common.config.Config;
+import baubles.common.network.PacketHandler;
+import baubles.common.network.PacketSync;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.WorldServer;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
-public class ContainerPlayerExpanded extends Container {
+public class ContainerPlayerExpanded extends Container implements IBaublesListener {
     private final EntityPlayer player;
     private final EntityLivingBase entity;
     public IBaublesModifiable baubles;
-    private int slotsAmount;
+    public int baublesAmount;
     public final InventoryCrafting craftMatrix = new InventoryCrafting(this, 2, 2);
     public final InventoryCraftResult craftResult = new InventoryCraftResult();
     private static final EntityEquipmentSlot[] equipmentSlots = new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
+    private final Map<Integer, Boolean> visibility = new HashMap<>();
 
     public ContainerPlayerExpanded(EntityPlayer player) {
         this(player, player);
@@ -32,6 +41,8 @@ public class ContainerPlayerExpanded extends Container {
         this.player = player;
         this.entity = entity;
         this.baubles = BaublesApi.getBaublesHandler(entity);
+        this.baublesAmount = this.baubles.getSlots();
+        this.baubles.addListener(this);
         InventoryPlayer playerInv = player.inventory;
 
         //add craftResult (1) [0,1)
@@ -97,30 +108,20 @@ public class ContainerPlayerExpanded extends Container {
         });
 
         //add bauble slots (amount)
-        if (Config.Gui.widerBar) this.addWideSlots(false);
-        else this.addSlimSlots(false);
+        if (Config.Gui.widerBar) this.addWideBaubles();
+        else this.addSlimBaubles();
 
         this.onCraftMatrixChanged(this.craftMatrix);
     }
 
-    public void addSlimSlots(boolean flag) {
-        if (flag) {
-        this.inventorySlots.subList(46, 46 + this.slotsAmount).clear();
-        this.inventoryItemStacks.subList(46, 46 + this.slotsAmount).clear();
-    }
-        this.slotsAmount = this.baubles.getSlots();
-        for (int i = 0; i < this.slotsAmount; i++) {
+    public void addSlimBaubles() {
+        for (int i = 0; i < this.baublesAmount; i++) {
             this.addSlotToContainer(new SlotBaubleHandler(this.entity, this.baubles, i, -23, 16 + i * 18));
         }
     }
 
-    public void addWideSlots(boolean flag) {
-        if (flag) {
-            this.inventorySlots.subList(46, 46 + this.slotsAmount).clear();
-            this.inventoryItemStacks.subList(46, 46 + this.slotsAmount).clear();
-        }
-        this.slotsAmount = this.baubles.getSlots();
-        for (int i = 0; i < this.slotsAmount; i++) {
+    public void addWideBaubles() {
+        for (int i = 0; i < this.baublesAmount; i++) {
             int j = i / Config.Gui.column;
             int k = i % Config.Gui.column;
             this.addSlotToContainer(new SlotBaubleHandler(this.entity, this.baubles, i, -23 + (k - Config.Gui.column + 1) * 18, 16 + j * 18));
@@ -146,6 +147,7 @@ public class ContainerPlayerExpanded extends Container {
     @Override
     public void onContainerClosed(EntityPlayer player) {
         super.onContainerClosed(player);
+        this.baubles.removeListener(this);
         this.craftResult.clear();
 
         if (!player.world.isRemote) {
@@ -185,7 +187,7 @@ public class ContainerPlayerExpanded extends Container {
                 isMerge = this.mergeItemStack(oldStack, 9, 45, false);
             }
             // baubles -> inv
-            else if (46 <= index && index < 46 + slotsAmount) {
+            else if (46 <= index && index < 46 + baublesAmount) {
                 isMerge = this.mergeItemStack(oldStack, 9, 45, false);
             }
             // inv -> armor
@@ -200,7 +202,7 @@ public class ContainerPlayerExpanded extends Container {
             // inv -> bauble
             else if (BaublesApi.isBauble(newStack)) {
                 IBauble bauble = BaublesApi.toBauble(newStack);
-                isMerge = bauble.canEquip(oldStack, player) && this.mergeItemStack(oldStack, 46, 46 + slotsAmount,false);
+                isMerge = bauble.canEquip(oldStack, player) && this.mergeItemStack(oldStack, 46, 46 + baublesAmount,false);
             }
 
             if (!isMerge) {
@@ -263,6 +265,7 @@ public class ContainerPlayerExpanded extends Container {
 
     @Override
     public void detectAndSendChanges() {
+        HashSet<EntityPlayer> receivers = null;
         for (int i = 0; i < this.inventorySlots.size(); ++i) {
             ItemStack itemstack = this.inventorySlots.get(i).getStack();
             ItemStack itemstack1 = this.inventoryItemStacks.get(i);
@@ -272,11 +275,42 @@ public class ContainerPlayerExpanded extends Container {
                 itemstack1 = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy();
                 this.inventoryItemStacks.set(i, itemstack1);
 
-                if (clientStackChanged)
+                if (clientStackChanged) {
                     for (IContainerListener listener : this.listeners) {
                         listener.sendSlotContents(this, i, itemstack1);
                     }
+                }
+            }
+            if (i > 45) {
+                int j = i - 46;
+                boolean flag = this.baubles.getVisible(j);
+                boolean flag1 = this.visibility.getOrDefault(j, true);
+                if (flag != flag1) {
+                    this.visibility.put(j, flag);
+                    if (receivers == null) {
+                        receivers = new HashSet<>(((WorldServer) this.player.world).getEntityTracker().getTrackingPlayers(this.player));
+                        receivers.add(this.player);
+                    }
+                    PacketSync pkt = new PacketSync(this.player, j, flag);
+                    for (EntityPlayer receiver : receivers) {
+                        PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) receiver);
+                    }
+                }
             }
         }
+    }
+
+    @Override
+    public void updateBaubles() {
+        this.clearBaubles();
+        this.baublesAmount = this.baubles.getSlots();
+        if (!this.entity.world.isRemote) {
+            this.addSlimBaubles();
+        }
+    }
+
+    public void clearBaubles() {
+        this.inventorySlots.subList(46, 46 + this.baublesAmount).clear();
+        this.inventoryItemStacks.subList(46, 46 + this.baublesAmount).clear();
     }
 }

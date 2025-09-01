@@ -41,15 +41,17 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
             IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
             QueryCtx ctx = new QueryCtx(player, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
             for (int i = 0; i < baubles.getSlots(); i++) {
-                ItemStack stack = baubles.getStackInSlot(i);
-                IWrapper wrapper = BaublesApi.toBauble(stack);
-                if (wrapper != null) {
-                    ctx.setStack(stack);
-                    ctx.setWrapper(wrapper);
-                    BaublesRenderEvent.InBaubles event = new BaublesRenderEvent.InBaubles(player, this.slim, stack, i);
-                    MinecraftForge.EVENT_BUS.post(event);
-                    if (event.isCanceled()) continue;
-                    this.renderLayer(ctx);
+                if (baubles.getVisible(i)) {
+                    ItemStack stack = baubles.getStackInSlot(i);
+                    IWrapper wrapper = BaublesApi.toBauble(stack);
+                    if (wrapper != null) {
+                        ctx.setStack(stack);
+                        ctx.setWrapper(wrapper);
+                        BaublesRenderEvent.InBaubles event = new BaublesRenderEvent.InBaubles(player, this.slim, stack, i);
+                        MinecraftForge.EVENT_BUS.post(event);
+                        if (event.isCanceled()) continue;
+                        this.renderLayer(ctx);
+                    }
                 }
             }
             for (EntityEquipmentSlot slotIn : EntityEquipmentSlot.values()) {

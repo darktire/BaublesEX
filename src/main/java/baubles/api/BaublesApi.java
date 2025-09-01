@@ -20,7 +20,7 @@ public class BaublesApi {
      */
     public static IBaublesModifiable getBaublesHandler(EntityLivingBase entity) {
         IBaublesModifiable handler = entity.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
-        if (handler != null) handler.updateSlots();
+        if (handler != null) handler.updateContainer();
         return handler;
     }
 
@@ -38,7 +38,7 @@ public class BaublesApi {
     @Deprecated
     public static IInventory getBaubles(EntityPlayer player) {
         IBaublesModifiable handler = player.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
-        if (handler != null) handler.updateSlots();
+        if (handler != null) handler.updateContainer();
         return new BaublesInventoryWrapper(handler, player);
     }
 

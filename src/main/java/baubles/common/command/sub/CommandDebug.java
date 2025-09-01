@@ -47,7 +47,7 @@ public class CommandDebug extends CommandBase {
                 IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
                 baubles.modifySlot(args[1], modifier);
                 PacketHandler.INSTANCE.sendTo(new PacketModifySlots((EntityPlayer) entity, args[1], modifier, 0), (EntityPlayerMP) entity);
-                baubles.updateSlots();
+                baubles.updateContainer();
             }
         }
         else if (args[0].equals("view") && entity instanceof EntityLivingBase) {

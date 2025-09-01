@@ -5,6 +5,7 @@ import baubles.api.cap.IBaublesModifiable;
 import baubles.api.registries.TypesData;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
+import baubles.common.network.PacketSync;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -12,12 +13,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.*;
 
 public class BaublesSync {
-    private final HashMap<UUID, Deque<ItemStack>> onDropping = new HashMap<>();
+    private static final HashMap<UUID, Deque<ItemStack>> onDropping = new HashMap<>();
 
     @SubscribeEvent
     public void playerJoin(EntityJoinWorldEvent event) {
@@ -25,24 +27,25 @@ public class BaublesSync {
         if (entity instanceof EntityPlayer) {
             if (entity instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) entity;
-                this.dropItem((EntityLivingBase) entity);
-                this.syncModifier(player, Collections.singletonList(player));
+                dropItem((EntityLivingBase) entity);
+                syncModifier(player, Collections.singletonList(player));
+                syncSlots(player, Collections.singletonList(player));
             }
             if (entity instanceof EntityPlayerSP) {
                 UUID uuid = entity.getUniqueID();
-                Deque<ItemStack> deque = this.onDropping.get(uuid);
+                Deque<ItemStack> deque = onDropping.get(uuid);
                 if (deque != null) {
                     while (!deque.isEmpty()) {
                         ItemStack stack = deque.pop();
                         BaublesApi.toBauble(stack).onUnequipped(stack, (EntityLivingBase) entity);
                     }
-                    this.onDropping.remove(uuid);
+                    onDropping.remove(uuid);
                 }
             }
         }
     }
 
-    private void dropItem(EntityLivingBase entity) {
+    private static void dropItem(EntityLivingBase entity) {
         IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
         Deque<ItemStack> deque = new ArrayDeque<>();
         while (baubles.haveDroppingItem()) {
@@ -53,13 +56,31 @@ public class BaublesSync {
                 deque.push(stack);
             }
         }
-        if (!deque.isEmpty()) this.onDropping.put(entity.getUniqueID(), deque);
+        if (!deque.isEmpty()) onDropping.put(entity.getUniqueID(), deque);
     }
 
     @SubscribeEvent
     public void onPlayerLoggedOut(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent event) {}
 
-    private void syncModifier(EntityLivingBase entity, Collection<? extends EntityPlayerMP> receivers) {
+    @SubscribeEvent
+    public void onStartTracking(PlayerEvent.StartTracking event) {
+        Entity target = event.getTarget();
+        if (target instanceof EntityPlayerMP) {
+            syncSlots((EntityPlayer) target, Collections.singletonList(event.getEntityPlayer()));
+        }
+    }
+
+    private static void syncSlots(EntityLivingBase entity, Collection<? extends EntityPlayer> receivers) {
+        IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
+        for (int i = 0; i < baubles.getSlots(); i++) {
+            PacketSync pkt = new PacketSync(entity, i, baubles.getStackInSlot(i), baubles.getVisible(i));
+            for (EntityPlayer receiver : receivers) {
+                PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) receiver);
+            }
+        }
+    }
+
+    private static void syncModifier(EntityLivingBase entity, Collection<? extends EntityPlayerMP> receivers) {
         IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
         TypesData.iterator().forEachRemaining(type -> {
             String typeName = type.getTypeName();

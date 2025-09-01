@@ -64,7 +64,7 @@ public class Config extends PartialConfig {
     }
 
     private static void saveConfig() {
-        if (Config.configFile != null) {
+        if (Config.configFile != null && configFile.hasChanged()) {
             configFile.save();
         }
     }
@@ -166,8 +166,7 @@ public class Config extends PartialConfig {
                 if (Config.rightClick) Config.setupBlacklist();
                 BaublesRegister.registerBaubles();
                 BaublesRegister.loadValidSlots();
-                //todo wrong
-                for (BaublesContainer container: BaublesContainer.listener) {
+                for (BaublesContainer container: BaublesContainer.CONTAINERS) {
                     container.onConfigChanged();
                 }
             }

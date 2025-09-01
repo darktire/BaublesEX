@@ -2,6 +2,9 @@ package baubles.api.cap;
 
 public interface IBaublesModifiable extends IBaublesItemHandler{
 
+    void addListener(IBaublesListener listener);
+    void removeListener(IBaublesListener listener);
+
     /**
      * Set the modifier if this type
      */
@@ -17,7 +20,7 @@ public interface IBaublesModifiable extends IBaublesItemHandler{
     /**
      * Update stacks in container
      */
-    void updateSlots();
+    void updateContainer();
 
     int getModifier(String typeName);
 }

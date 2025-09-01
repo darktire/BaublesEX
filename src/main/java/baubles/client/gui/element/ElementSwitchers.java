@@ -19,10 +19,11 @@ public class ElementSwitchers extends ElementBase {
 
     public void initSwitchers(boolean flag) {
         if (flag) this.buttonList.clear();
+        int column = this.parentGui.getColumn();
         for (int i = 0; i < this.parentGui.baublesAmount; i++) {
-            int j = i / this.parentGui.column;
-            int k = i % this.parentGui.column;
-            this.buttonList.add(new ElementSwitcher(i, this.parentGui, this.x + (k - this.parentGui.column + 1) * 18, this.y + (j * 18)));
+            int j = i / column;
+            int k = i % column;
+            this.buttonList.add(new ElementSwitcher(i, this.parentGui, this.x + (k - column + 1) * 18, this.y + (j * 18)));
         }
     }
 

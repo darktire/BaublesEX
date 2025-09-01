@@ -73,7 +73,7 @@ public class ElementController extends ElementBase {
         @Override
         public void mouseReleased(int mouseX, int mouseY) {
             super.mouseReleased(mouseX, mouseY);
-            this.parentGui.scroller.switchVisible();
+            this.parentGui.handleHide();
         }
 
         @Override
