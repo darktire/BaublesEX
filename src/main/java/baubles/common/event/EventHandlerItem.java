@@ -15,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -23,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 
-@SuppressWarnings("unused") // gets used by Forge event handler
+@Mod.EventBusSubscriber(modid = Baubles.MOD_ID)
 public class EventHandlerItem {
     private static final ResourceLocation ITEM_CAP = new ResourceLocation(Baubles.MOD_ID, "item_cap");
     /**
@@ -31,7 +32,7 @@ public class EventHandlerItem {
      * Some baubles get the capability by another event handler earlier will be removed and attach the capability provided by BaublesEX.
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void itemCapabilityAttach(AttachCapabilitiesEvent<ItemStack> event) {
+    public static void itemCapabilityAttach(AttachCapabilitiesEvent<ItemStack> event) {
         ItemStack stack = event.getObject();
 
         if (stack.isEmpty()) return;
@@ -59,7 +60,7 @@ public class EventHandlerItem {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void itemBaubleWrap(RegistryEvent.Register<BaubleTypeEx> event) {
+    public static void itemBaubleWrap(RegistryEvent.Register<BaubleTypeEx> event) {
         BaublesRegister.registerItems();
         if (Config.rightClick) Config.setupBlacklist();
     }

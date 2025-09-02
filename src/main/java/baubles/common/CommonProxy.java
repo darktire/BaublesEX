@@ -3,15 +3,9 @@ package baubles.common;
 import baubles.Baubles;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.container.ContainerPlayerExpanded;
-import baubles.common.event.BaublesSync;
-import baubles.common.event.EventHandlerEntity;
-import baubles.common.event.EventHandlerItem;
-import baubles.compat.artifacts.ArtifactsHandler;
-import baubles.util.HookHelper;
 import baubles.util.IHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
 public class CommonProxy implements IGuiHandler {
@@ -42,13 +36,7 @@ public class CommonProxy implements IGuiHandler {
         return null;
     }
 
-    public void registerEventHandlers() {
-        MinecraftForge.EVENT_BUS.register(new EventHandlerEntity());
-        MinecraftForge.EVENT_BUS.register(new EventHandlerItem());
-        MinecraftForge.EVENT_BUS.register(new BaublesSync());
-        if (HookHelper.isModLoaded("RLArtifacts")) MinecraftForge.EVENT_BUS.register(new ArtifactsHandler());
-    }
+    public void preInit() {}
 
-    public void init() {
-    }
+    public void init() {}
 }

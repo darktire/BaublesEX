@@ -1,5 +1,6 @@
 package baubles.common.event;
 
+import baubles.Baubles;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.registries.TypesData;
@@ -14,15 +15,17 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.*;
 
+@Mod.EventBusSubscriber(modid = Baubles.MOD_ID)
 public class BaublesSync {
     private static final HashMap<UUID, Deque<ItemStack>> onDropping = new HashMap<>();
 
     @SubscribeEvent
-    public void playerJoin(EntityJoinWorldEvent event) {
+    public static void playerJoin(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
         if (entity instanceof EntityPlayer) {
             if (entity instanceof EntityPlayerMP) {
@@ -60,10 +63,10 @@ public class BaublesSync {
     }
 
     @SubscribeEvent
-    public void onPlayerLoggedOut(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent event) {}
+    public static void onPlayerLoggedOut(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent event) {}
 
     @SubscribeEvent
-    public void onStartTracking(PlayerEvent.StartTracking event) {
+    public static void onStartTracking(PlayerEvent.StartTracking event) {
         Entity target = event.getTarget();
         if (target instanceof EntityPlayerMP) {
             syncSlots((EntityPlayer) target, Collections.singletonList(event.getEntityPlayer()));

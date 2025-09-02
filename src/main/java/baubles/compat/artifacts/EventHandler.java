@@ -13,33 +13,33 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class ArtifactsHandler {
+public class EventHandler {
     @SubscribeEvent
-    public void applyArtifactsRender(BaublesRenderEvent.InBaubles event) {
+    public static void applyControl(BaublesRenderEvent.InBaubles event) {
         EntityLivingBase entity = event.getEntityLiving();
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
             ItemStack stack = event.getStack();
             if (!RenderHelper.shouldItemStackRender(player, stack)) {
-                event.setCanceled();
+                event.canceled();
             }
         }
     }
 
     @SubscribeEvent
-    public void applyArtifactsRender(BaublesRenderEvent.InEquipments event) {
+    public static void applyControl(BaublesRenderEvent.InEquipments event) {
         EntityLivingBase entity = event.getEntityLiving();
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
             ItemStack stack = event.getStack();
             if (!RenderHelper.shouldItemStackRender(player, stack) || !RenderHelper.shouldRenderInSlot(player, event.getSlotIn())) {
-                event.setCanceled();
+                event.canceled();
             }
         }
     }
 
     @SubscribeEvent
-    public void updateHoodState(BaublesChangeEvent event) {
+    public static void updateHoodState(BaublesChangeEvent event) {
         EntityLivingBase entity = event.getEntityLiving();
         if (entity instanceof EntityPlayer) {
             Item itemIn = event.getStackIn().getItem();
@@ -61,7 +61,7 @@ public class ArtifactsHandler {
     }
 
     @SubscribeEvent
-    public void updateHoodState(LivingEquipmentChangeEvent event) {
+    public static void updateHoodState(LivingEquipmentChangeEvent event) {
         EntityLivingBase entity = event.getEntityLiving();
         if (entity instanceof EntityPlayer) {
             if (event.getSlot() == EntityEquipmentSlot.HEAD) {

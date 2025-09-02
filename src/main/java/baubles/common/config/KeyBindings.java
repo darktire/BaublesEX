@@ -8,12 +8,7 @@ public class KeyBindings {
     private static final String category = "key.categories.baubles";
     public static final KeyBinding KEY_BAUBLES = new KeyBinding("keybind.baublesinventory", Keyboard.KEY_B, category);
 
-
-    public KeyBindings() {
-        init();
-    }
-
-    private void init() {
+    public static void register() {
         ClientRegistry.registerKeyBinding(KEY_BAUBLES);
     }
 }

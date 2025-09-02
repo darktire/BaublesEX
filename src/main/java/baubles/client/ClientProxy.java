@@ -1,14 +1,15 @@
 package baubles.client;
 
-import baubles.client.gui.GuiEvents;
 import baubles.client.render.BaublesRenderLayer;
 import baubles.common.CommonProxy;
 import baubles.common.config.KeyBindings;
+import baubles.util.HookHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -19,16 +20,16 @@ public class ClientProxy extends CommonProxy {
     public static BaublesRenderLayer NORMAL_LAYER, SLIM_LAYER;
 
     @Override
-    public void registerEventHandlers() {
-        super.registerEventHandlers();
-        new KeyBindings();
-        MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
-        MinecraftForge.EVENT_BUS.register(new GuiEvents());
+    public WorldClient getClientWorld() {
+        return FMLClientHandler.instance().getClient().world;
     }
 
     @Override
-    public WorldClient getClientWorld() {
-        return FMLClientHandler.instance().getClient().world;
+    public void preInit() {
+        super.preInit();
+        KeyBindings.register();
+        if (HookHelper.isModLoaded("RLArtifacts")) MinecraftForge.EVENT_BUS.register(baubles.compat.artifacts.EventHandler.class);
+        if (Loader.isModLoaded("bountifulbaubles")) MinecraftForge.EVENT_BUS.register(baubles.compat.bountifulbaubles.EventHandler.class);
     }
 
     @Override

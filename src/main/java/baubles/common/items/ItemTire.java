@@ -60,7 +60,7 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 	@Override
 	public void onEquipped(ItemStack itemstack, EntityLivingBase entity) {
 		if (entity.world.isRemote) {
-			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 1.9f);
+			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 0.9f);
 		}
 		IBaublesModifiable handler = BaublesApi.getBaublesHandler(entity);
 		handler.modifySlotOA("trinket", 2);
@@ -71,7 +71,7 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 	@Override
 	public void onUnequipped(ItemStack itemstack, EntityLivingBase entity) {
 		if (entity.world.isRemote) {
-			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 1.9f);
+			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 0.9f);
 		}
 		IBaublesModifiable handler = BaublesApi.getBaublesHandler(entity);
 		handler.modifySlotOA("trinket", -2);

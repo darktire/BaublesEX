@@ -61,7 +61,7 @@ public class Baubles {
                 new CapabilityItemBaubleStorage(),
                 BaublesWrapper::new);
 
-        proxy.registerEventHandlers();
+        proxy.preInit();
         PacketHandler.init();
     }
 

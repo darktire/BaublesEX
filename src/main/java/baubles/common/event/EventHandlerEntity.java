@@ -24,6 +24,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -31,13 +32,14 @@ import java.util.List;
 
 import static cofh.core.init.CoreEnchantments.soulbound;
 
+@Mod.EventBusSubscriber(modid = Baubles.MOD_ID)
 public class EventHandlerEntity {
     private static final ResourceLocation BAUBLES_CAP = new ResourceLocation(Baubles.MOD_ID, "container");
 
     @SubscribeEvent
-    public void equipmentRenderEvent(BaublesRenderEvent.InEquipments event) {
+    public static void equipmentRenderEvent(BaublesRenderEvent.InEquipments event) {
         if (!(event.getStack().getItem() instanceof ItemElytra)) {
-            event.setCanceled();
+            event.canceled();
         }
     }
 
@@ -70,7 +72,7 @@ public class EventHandlerEntity {
     }*/
 
     @SubscribeEvent
-    public void cloneCapabilitiesEvent(PlayerEvent.Clone event) {
+    public static void cloneCapabilitiesEvent(PlayerEvent.Clone event) {
         try {
             BaublesContainer bco = (BaublesContainer) BaublesApi.getBaublesHandler(event.getOriginal());
             BaublesContainer bcn = (BaublesContainer) BaublesApi.getBaublesHandler(event.getEntityPlayer());
@@ -82,14 +84,14 @@ public class EventHandlerEntity {
     }
 
     @SubscribeEvent
-    public void attachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
+    public static void attachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof EntityPlayer) {
             event.addCapability(BAUBLES_CAP, new BaublesContainerProvider(new BaublesContainer((EntityLivingBase) event.getObject())));
         }
     }
 
     @SubscribeEvent
-    public void playerTick(TickEvent.PlayerTickEvent event) {
+    public static void playerTick(TickEvent.PlayerTickEvent event) {
         // todo onWornTick
         if (event.phase == TickEvent.Phase.END) {
             EntityPlayer player = event.player;
@@ -105,7 +107,7 @@ public class EventHandlerEntity {
     }
 
     @SubscribeEvent
-    public void playerDeath(PlayerDropsEvent event) {
+    public static void playerDeath(PlayerDropsEvent event) {
         if (event.getEntity() instanceof EntityPlayer
                 && !event.getEntity().world.isRemote
                 && !event.getEntity().world.getGameRules().getBoolean("keepInventory")
@@ -114,7 +116,7 @@ public class EventHandlerEntity {
         }
     }
 
-    public void dropItemsAt(EntityPlayer player, List<EntityItem> drops, Entity e) {
+    public static void dropItemsAt(EntityPlayer player, List<EntityItem> drops, Entity e) {
         IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
         for (int i = 0; i < baubles.getSlots(); ++i) {
             ItemStack stack = baubles.getStackInSlot(i);
@@ -142,7 +144,7 @@ public class EventHandlerEntity {
         }
     }
 
-    private void handleSoulbound(ItemStack stack) {
+    private static void handleSoulbound(ItemStack stack) {
         int level = EnchantmentHelper.getEnchantmentLevel(soulbound, stack);
         if(!EnchantmentSoulbound.permanent) {
             if(cofh.core.util.helpers.MathHelper.RANDOM.nextInt(level + 1) == 0) {

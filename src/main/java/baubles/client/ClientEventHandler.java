@@ -22,25 +22,28 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Iterator;
 
+@Mod.EventBusSubscriber(modid = Baubles.MOD_ID, value = Side.CLIENT)
 public class ClientEventHandler {
 
     @SubscribeEvent
-    public void registerItemModels(ModelRegistryEvent event) {
+    public static void registerItemModels(ModelRegistryEvent event) {
         registerModel(BaublesRegister.ModItems.Ring);
         if (Config.ModItems.testItem) registerModel(BaublesRegister.ModItems.Tire);
     }
 
-    private void registerModel(Item item) {
+    private static void registerModel(Item item) {
         ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
     }
 
     @SubscribeEvent
-    public void tooltipEvent(ItemTooltipEvent event) {
+    public static void tooltipEvent(ItemTooltipEvent event) {
         if (!event.getItemStack().isEmpty() && BaublesApi.isBauble(event.getItemStack())) {
             IBauble bauble = BaublesApi.toBauble(event.getItemStack());
             StringBuilder tooltip = new StringBuilder(TextFormatting.GOLD + I18n.format("baubles.tooltip") + ": ");
@@ -60,14 +63,14 @@ public class ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void registerTextures(TextureStitchEvent.Pre event) {
+    public static void registerTextures(TextureStitchEvent.Pre event) {
         TextureMap map = event.getMap();
         Iterator<BaubleTypeEx> types = TypesData.iterator();
         types.forEachRemaining(type -> map.registerSprite(new ResourceLocation(type.getTexture())));
     }
 
     @SubscribeEvent
-    public void onKeyInput(InputEvent.KeyInputEvent event) {
+    public static void onKeyInput(InputEvent.KeyInputEvent event) {
         EntityPlayer player = Minecraft.getMinecraft().player;
         Minecraft mc = Minecraft.getMinecraft();
         if (KeyBindings.KEY_BAUBLES.isPressed()) {

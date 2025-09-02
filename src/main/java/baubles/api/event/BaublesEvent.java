@@ -17,7 +17,7 @@ public class BaublesEvent extends LivingEvent {
         return true;
     }
 
-    public void setCanceled() {
+    public void canceled() {
         this.setCanceled(true);
     }
 
