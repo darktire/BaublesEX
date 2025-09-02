@@ -296,7 +296,7 @@ public class GuiPlayerExpanded extends GuiBase implements IBaublesListener {
 
     @Override
     protected boolean isMouseOverSlot(Slot slotIn, int mouseX, int mouseY) {
-        if (this instanceof GuiPlayerExpanded && slotIn instanceof SlotBaubleHandler) {
+        if (Config.Gui.visibleSwitchers && slotIn instanceof SlotBaubleHandler) {
             int pointX = mouseX - this.guiLeft;
             int pointY = mouseY - this.guiTop;
             int rectX = slotIn.xPos;

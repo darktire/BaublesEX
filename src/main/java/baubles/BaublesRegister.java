@@ -98,13 +98,13 @@ public class BaublesRegister {
 
     @Mod.EventBusSubscriber
     public static class ModItems {
-        public static final Item Ring = new ItemRing().setRegistryName("ring");
-        public static final Item Tire = new ItemTire().setRegistryName("tire");
+        public static final Item ring = new ItemRing().setRegistryName("ring");
+        public static final Item tire = new ItemTire().setRegistryName("tire");
 
         @SubscribeEvent
         public static void registerItems(RegistryEvent.Register<Item> event) {
-            event.getRegistry().register(Ring);
-            if (Config.ModItems.testItem) event.getRegistry().register(Tire);
+            if (Config.ModItems.itemRing) event.getRegistry().register(ring);
+            if (Config.ModItems.testItem) event.getRegistry().register(tire);
         }
     }
 }

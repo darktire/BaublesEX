@@ -30,7 +30,7 @@
     - edit type of baubles
     - register your type for baubles
     - see Json Helper below for help
-- [x] control the visibility of baubles. The following are mods that can be controlled:
+- [x] control the visibility of baubles. The following are the mods that can be controlled:
   - [x] RLArtifacts
   - [x] Bountiful Baubles
   - [ ] ...
@@ -54,6 +54,9 @@
 
 - ### new style of bauble slots:
   - now the bauble button can open new slots for baubles beside survival inventory. ![](https://i.imgur.com/3ri5oKX.png)
+
+- ### control the visibility of baubles:
+  - add switchers for each slot. ![](https://i.imgur.com/9PWpoec.png)
 
 ---
 

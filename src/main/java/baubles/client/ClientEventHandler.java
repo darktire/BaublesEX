@@ -34,8 +34,8 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public static void registerItemModels(ModelRegistryEvent event) {
-        registerModel(BaublesRegister.ModItems.Ring);
-        if (Config.ModItems.testItem) registerModel(BaublesRegister.ModItems.Tire);
+        registerModel(BaublesRegister.ModItems.ring);
+        if (Config.ModItems.testItem) registerModel(BaublesRegister.ModItems.tire);
     }
 
     private static void registerModel(Item item) {

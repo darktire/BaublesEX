@@ -104,8 +104,8 @@ public class ItemRing extends Item implements IBauble {
 		for (int i = 0; i < baubles.getSlots(); i++) {
 			if (baubles.getTypeInSlot(i) != target) continue;
 			ItemStack ring1 = baubles.getStackInSlot(i);
-			if (level >= Config.maxLevel - 1) break;
-			if (ring1.getItem() == BaublesRegister.ModItems.Ring) level++;
+			if (level >= Config.ModItems.maxLevel - 1) break;
+			if (ring1.getItem() == BaublesRegister.ModItems.ring) level++;
 		}
 		if (potion != null) {
 			PotionEffect currentEffect = entity.getActivePotionEffect(potion);

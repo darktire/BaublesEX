@@ -15,7 +15,7 @@ public class ModelTire extends ModelItemHelper {
     private final Map<EntityLivingBase, Integer> angleStart = new HashMap<>();
 
     public ModelTire() {
-        super(BaublesRegister.ModItems.Tire);
+        super(BaublesRegister.ModItems.tire);
     }
 
     public static ModelTire instance() {

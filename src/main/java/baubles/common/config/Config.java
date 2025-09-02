@@ -24,7 +24,6 @@ public class Config extends PartialConfig {
     //    Configuration Options
     public static boolean keepBaubles = false;
     public static boolean rightClick = true;
-    public static int maxLevel = 1;
 //    public static boolean armorStand = false;
     private static String[] clickBlacklist = {"wct:wct"};
 
@@ -52,10 +51,7 @@ public class Config extends PartialConfig {
 
     }
 
-
     public void loadData() {
-        maxLevel = configFile.getInt("maxLevel", CATEGORY_GENERAL, maxLevel, 0, 255, "Max level of haste given by Miner's Ring");
-
         keepBaubles = configFile.getBoolean("keepBaubles", CATEGORY_GENERAL, keepBaubles, "Whether baubles can drop when player dies.");
         rightClick = configFile.getBoolean("rightClick", CATEGORY_GENERAL, rightClick, "Whether player can use right click to equip baubles.");
 //        armorStand = configFile.getBoolean("armorStand", CATEGORY_GENERAL, armorStand, "Whether armorStand has baubles container (need to place armorStand again)");
@@ -96,7 +92,7 @@ public class Config extends PartialConfig {
         @Override
         public void loadData() {
             AMULET = getCfgAmount("amuletSlot", BaubleType.AMULET.amount);
-            RING = getCfgAmount("ringSlot", BaubleType.RING.amount);// no less than 2 or incompatible with artifact
+            RING = getCfgAmount("ringSlot", BaubleType.RING.amount);
             BELT = getCfgAmount("beltSlot", BaubleType.BELT.amount);
             TRINKET = getCfgAmount("trinketSlot", BaubleType.TRINKET.amount, "Number of slots only for trinket is equal to the difference between the value you set and all other slots.");
             HEAD = getCfgAmount("headSlot", BaubleType.HEAD.amount);
@@ -125,6 +121,7 @@ public class Config extends PartialConfig {
         public static boolean baublesButton = true;
         public static boolean scrollerBar = true;
         public static boolean widerBar = false;
+        public static boolean visibleSwitchers = true;
         public static int column = 2;
 
         @Override
@@ -133,12 +130,15 @@ public class Config extends PartialConfig {
             scrollerBar = configFile.getBoolean("scrollerBar", CLIENT_GUI, scrollerBar, "Default visibility of the scroller bar");
             widerBar = configFile.getBoolean("widerBar", CLIENT_GUI, widerBar, "Default selection of the sidebar");
             column = configFile.getInt("column", CLIENT_GUI, column, 2,5, "Columns of the wider sidebar");
+            visibleSwitchers = configFile.getBoolean("visibleSwitchers", CLIENT_GUI, visibleSwitchers, "Show visible switchers or not");
             configFile.getCategory(CLIENT_GUI).setComment("Edit new gui.");
         }
     }
 
     public static class ModItems extends PartialConfig {
         public static boolean testItem = false;
+        public static boolean itemRing = true;
+        public static int maxLevel = 1;
         public static boolean elytraBauble = false;
         public static String elytraSlot = "elytra";
         private final String[] elytraValidSlot = {"amulet", "ring", "belt", "trinket", "head", "body", "charm", "elytra"};
@@ -146,9 +146,11 @@ public class Config extends PartialConfig {
         @Override
         public void loadData() {
             testItem = configFile.getBoolean("testItem", BAUBLES_ITEMS, testItem, "For test, or you want");
+            itemRing = configFile.getBoolean("itemRing", BAUBLES_ITEMS, itemRing, "The ring added by original Baubles");
+            maxLevel = configFile.getInt("maxLevel", BAUBLES_ITEMS, maxLevel, 0, 255, "Max level of haste given by Miner's Ring");
             elytraBauble = configFile.getBoolean("elytraBauble", BAUBLES_ITEMS, elytraBauble, "Set elytra as bauble");
             elytraSlot = configFile.getString("elytraSlot", BAUBLES_ITEMS, elytraSlot, "Get a specific slot for elytra", elytraValidSlot);
-            configFile.getCategory(BAUBLES_ITEMS).setComment("Item modified by BaublesEX. (need to restart)");
+            configFile.getCategory(BAUBLES_ITEMS).setComment("Item modified by BaublesEX. (some need to restart)");
             configFile.getCategory(BAUBLES_ITEMS).requiresMcRestart();
         }
     }

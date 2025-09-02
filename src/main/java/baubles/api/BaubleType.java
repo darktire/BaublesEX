@@ -31,7 +31,7 @@ public enum BaubleType {
 		return baubleTypeEx.hasSlot(slot);
 	}
 
-	@Deprecated // artifact incompatible
+	@Deprecated
 	public int[] getValidSlots() {
         return baubleTypeEx.getOriSlots().stream().mapToInt(Integer::intValue).toArray();
 	}
