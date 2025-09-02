@@ -4,7 +4,7 @@ import artifacts.common.init.ModItems;
 import artifacts.common.item.BaubleBottledCloud;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.compat.artifacts.Resource;
+import baubles.compat.artifacts.Resources;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Implements;
@@ -17,13 +17,13 @@ import org.spongepowered.asm.mixin.Unique;
 public abstract class MixinBaubleBottledCloud {
     @Unique
     public ModelBauble brs$getModel(boolean slim) {
-        return Resource.BOTTLE_MODEL;
+        return Resources.BOTTLE_MODEL;
     }
 
     @Unique
     public ResourceLocation brs$getTexture(boolean slim, EntityLivingBase entity) {
-        if ((Object) this == ModItems.BOTTLED_CLOUD) return Resource.BOTTLED_CLOUD;
-        else if((Object) this == ModItems.BOTTLED_FART) return Resource.BOTTLED_FART;
+        if ((Object) this == ModItems.BOTTLED_CLOUD) return Resources.BOTTLED_CLOUD;
+        else if((Object) this == ModItems.BOTTLED_FART) return Resources.BOTTLED_FART;
         return null;
     }
 

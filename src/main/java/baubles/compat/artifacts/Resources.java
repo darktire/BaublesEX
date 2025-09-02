@@ -10,7 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.ResourceLocation;
 
-public class Resource {
+public class Resources {
     private static final String ENTITY_LAYER = "textures/entity/layer/";
     
     

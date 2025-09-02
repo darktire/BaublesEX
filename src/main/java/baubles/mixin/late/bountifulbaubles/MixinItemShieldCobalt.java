@@ -1,31 +1,27 @@
-package baubles.mixin.late.artifacts;
+package baubles.mixin.late.bountifulbaubles;
 
-import artifacts.common.item.BaubleBubbleWrap;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.compat.artifacts.Resources;
+import baubles.compat.bountifulbaubles.ModelShield;
+import cursedflames.bountifulbaubles.item.ItemShieldCobalt;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-@Mixin(BaubleBubbleWrap.class)
+@Mixin(ItemShieldCobalt.class)
 @Implements(@Interface(iface = IRenderBauble.class, prefix = "brs$"))
-public abstract class MixinBaubleBubbleWrap {
+public abstract class MixinItemShieldCobalt {
     @Unique
     public ModelBauble brs$getModel(boolean slim) {
-        return Resources.BUBBLE_MODEL;
-    }
+    return ModelShield.instance((Item) (Object) this);
+}
 
     @Unique
     public ResourceLocation brs$getTexture(boolean slim, EntityLivingBase entity) {
-        return Resources.BUBBLE_WRAP;
-    }
-
-    @Unique
-    public IRenderBauble.RenderType brs$getRenderType() {
-        return IRenderBauble.RenderType.BODY;
+        return ModelShield.instance((Item) (Object) this).getTexture();
     }
 }

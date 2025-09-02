@@ -12,7 +12,6 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -41,7 +40,7 @@ public class BaubleElytra implements IBauble, IRenderBauble {
 
     @Override
     public ModelBauble getModel(boolean slim) {
-        return ModelElytra.instance(Items.ELYTRA, slim);
+        return ModelElytra.instance(slim);
     }
 
     @Override

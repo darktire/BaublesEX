@@ -122,6 +122,8 @@ dependencies {
 //    runtimeOnly fg.deobf("curse.maven:wings-302584:2829351")
     //RLArtifacts
     implementation fg.deobf("curse.maven:rl-artifacts-819886:4475428")
+    //BountifulBaubles
+    implementation fg.deobf("curse.maven:bountifulbaubles-313536:3568240")
 }
 
 mixin {

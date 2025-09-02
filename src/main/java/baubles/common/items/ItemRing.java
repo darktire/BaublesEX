@@ -100,7 +100,7 @@ public class ItemRing extends Item implements IBauble {
 		IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
 		Potion potion = Potion.REGISTRY.getObject(new ResourceLocation("haste"));
 
-		BaubleTypeEx target = TypesData.getTypeByName("ring");
+		BaubleTypeEx target = TypesData.Preset.RING;
 		for (int i = 0; i < baubles.getSlots(); i++) {
 			if (baubles.getTypeInSlot(i) != target) continue;
 			ItemStack ring1 = baubles.getStackInSlot(i);

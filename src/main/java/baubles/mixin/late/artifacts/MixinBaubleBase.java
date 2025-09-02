@@ -5,7 +5,7 @@ import artifacts.common.item.BaubleBase;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
 import baubles.compat.artifacts.ModelGlove;
-import baubles.compat.artifacts.Resource;
+import baubles.compat.artifacts.Resources;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.Unique;
 public abstract class MixinBaubleBase {
     @Unique
     public ModelBauble brs$getModel(boolean slim) {
-        if ((Object) this == ModItems.DRINKING_HAT) return Resource.HAT_MODEL;
+        if ((Object) this == ModItems.DRINKING_HAT) return Resources.HAT_MODEL;
         else if ((Object) this == ModItems.POCKET_PISTON) return ModelGlove.instance((Item) (Object) this, slim);
         else if ((Object) this == ModItems.MAGMA_STONE) return ModelGlove.instance((Item) (Object) this, slim);
         return null;
@@ -30,9 +30,9 @@ public abstract class MixinBaubleBase {
     public ResourceLocation brs$getTexture(boolean slim, EntityLivingBase entity) {
         if ((Object) this == ModItems.DRINKING_HAT) {
             if (entity instanceof EntityPlayer && entity.getName().equals("wouterke")) {
-                return Resource.HAT_SPECIAL_TEXTURE;
+                return Resources.HAT_SPECIAL_TEXTURE;
             }
-            else return Resource.HAT_TEXTURE;
+            else return Resources.HAT_TEXTURE;
         }
         else if ((Object) this == ModItems.POCKET_PISTON) return ModelGlove.instance((Item) (Object) this, slim).getTexture();
         return null;

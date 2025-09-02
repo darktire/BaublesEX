@@ -45,16 +45,16 @@ public class ArtifactsHandler {
             Item itemIn = event.getStackIn().getItem();
             Item itemOut = event.getStackOut().getItem();
             if (itemIn == ModItems.STAR_CLOAK && itemOut != ModItems.STAR_CLOAK) {
-                Resource.setHoodState(RenderHelper.shouldRenderInSlot((EntityPlayer) entity, EntityEquipmentSlot.HEAD) && (BaublesApi.isBaubleEquipped(entity, ModItems.DRINKING_HAT) == -1));
+                Resources.setHoodState(RenderHelper.shouldRenderInSlot((EntityPlayer) entity, EntityEquipmentSlot.HEAD) && (BaublesApi.isBaubleEquipped(entity, ModItems.DRINKING_HAT) == -1));
             }
             else if (itemIn == ModItems.DRINKING_HAT && itemOut != ModItems.DRINKING_HAT) {
-                if (Resource.getHoodState()) {
-                    Resource.setHoodState(false);
+                if (Resources.getHoodState()) {
+                    Resources.setHoodState(false);
                 }
             }
             else if (itemIn != ModItems.DRINKING_HAT && itemOut == ModItems.DRINKING_HAT) {
-                if (!Resource.getHoodState()) {
-                    Resource.setHoodState(RenderHelper.shouldRenderInSlot((EntityPlayer) entity, EntityEquipmentSlot.HEAD));
+                if (!Resources.getHoodState()) {
+                    Resources.setHoodState(RenderHelper.shouldRenderInSlot((EntityPlayer) entity, EntityEquipmentSlot.HEAD));
                 }
             }
         }
@@ -68,13 +68,13 @@ public class ArtifactsHandler {
                 ItemStack stackIn = event.getTo();
                 ItemStack stackOut = event.getFrom();
                 if (!stackIn.isEmpty()) {
-                    if (Resource.getHoodState()) {
-                        Resource.setHoodState(false);
+                    if (Resources.getHoodState()) {
+                        Resources.setHoodState(false);
                     }
                 }
                 else if (!stackOut.isEmpty()) {
-                    if (!Resource.getHoodState()) {
-                        Resource.setHoodState(RenderHelper.shouldRenderInSlot((EntityPlayer) entity, EntityEquipmentSlot.HEAD) && (BaublesApi.isBaubleEquipped(entity, ModItems.DRINKING_HAT) == -1));
+                    if (!Resources.getHoodState()) {
+                        Resources.setHoodState(RenderHelper.shouldRenderInSlot((EntityPlayer) entity, EntityEquipmentSlot.HEAD) && (BaublesApi.isBaubleEquipped(entity, ModItems.DRINKING_HAT) == -1));
                     }
                 }
             }

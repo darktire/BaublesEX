@@ -1,10 +1,10 @@
 package baubles.mixin.early.vanilla;
 
-import baubles.BaublesRegister;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesModifiable;
+import baubles.api.registries.TypesData;
 import baubles.common.config.Config;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,7 +30,7 @@ public abstract class MixinStack {
         BaubleTypeEx type = bauble.getBaubleType();
         IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) playerIn);
         for (int i = 0; i < baubles.getSlots(); i++) {
-            if (baubles.getTypeInSlot(i) != type && type != BaublesRegister.TRINKET) continue;
+            if (baubles.getTypeInSlot(i) != type && type != TypesData.Preset.TRINKET) continue;
             if (baubles.getStackInSlot(i).isEmpty()) {
                 ItemStack itemStack = heldItem.copy();
                 baubles.setStackInSlot(i, itemStack);

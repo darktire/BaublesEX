@@ -24,19 +24,23 @@
   - [x] provide baubles ability for more entity (may have problems)
   - [x] provide event when exchange baubles
   - [x] provide multiple types for one bauble
+  - [x] provide easy system for rendering bauble model (support enchanted glint)
 - [x] more configure
   - [x] json support, use json to:
     - edit type of baubles
     - register your type for baubles
     - see Json Helper below for help
+- [x] control the visibility of baubles. The following are mods that can be controlled:
+  - [x] RLArtifacts
+  - [x] Bountiful Baubles
+  - [ ] ...
+  - [ ] need help
 - [x] more command
 - [x] add bauble button in creative tab
 - [x] elytra can be a bauble in the config
 - [x] new style of bauble slots (redraw again)
 - [x] right click to equip baubles
 - [x] enchantment support for baubles
-- [ ] json function
-- [ ] visibility of each bauble
 - [ ] support for CraftTweaker
 - [ ] ...
 - [ ] waiting for more suggestions

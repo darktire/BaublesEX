@@ -12,6 +12,7 @@
     "vanilla.MixinStack"
   ],
   "client": [
+    "vanilla.AccessorRenderItem",
     "vanilla.MixinCape",
     "vanilla.MixinElytra$MixinPlayerSP"
   ],

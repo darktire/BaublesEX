@@ -15,6 +15,10 @@
     "artifacts.MixinBaublePotionEffect",
     "artifacts.MixinBaubleStarCloak",
     "artifacts.MixinProxy",
+    "bountifulbaubles.MixinAmulet",
+    "bountifulbaubles.MixinItemShieldCobalt",
+    "bountifulbaubles.MixinItemSunglasses",
+    "bountifulbaubles.MixinProxy",
     "extrautils2.MixinItem",
     "wings.MixinWings"
   ],

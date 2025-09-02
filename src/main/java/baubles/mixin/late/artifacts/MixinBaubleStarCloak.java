@@ -3,7 +3,7 @@ package baubles.mixin.late.artifacts;
 import artifacts.common.item.BaubleStarCloak;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.compat.artifacts.Resource;
+import baubles.compat.artifacts.Resources;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
@@ -20,8 +20,8 @@ import java.util.Map;
 public abstract class MixinBaubleStarCloak {
     @Unique
     private static final ImmutableMap<ModelBauble, IRenderBauble.RenderType> brs$renderMap = ImmutableMap.of(
-            Resource.CLOAK_MODEL_UP, IRenderBauble.RenderType.HEAD,
-            Resource.CLOAK_MODEL_DOWN, IRenderBauble.RenderType.BODY
+            Resources.CLOAK_MODEL_UP, IRenderBauble.RenderType.HEAD,
+            Resources.CLOAK_MODEL_DOWN, IRenderBauble.RenderType.BODY
     );
 
     @Unique
@@ -31,11 +31,11 @@ public abstract class MixinBaubleStarCloak {
 
     @Unique
     public ResourceLocation brs$getTexture(boolean slim, EntityLivingBase entity) {
-        return Resource.CLOAK_NORMAL;
+        return Resources.CLOAK_NORMAL;
     }
 
     @Unique
     public ResourceLocation brs$getEmissiveMap(boolean slim, EntityLivingBase entity) {
-        return Resource.CLOAK_OVERLAY;
+        return Resources.CLOAK_OVERLAY;
     }
 }

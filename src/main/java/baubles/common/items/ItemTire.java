@@ -4,7 +4,10 @@ import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesModifiable;
+import baubles.api.model.ModelBauble;
 import baubles.api.registries.TypesData;
+import baubles.api.render.IRenderBauble;
+import baubles.client.model.ModelTire;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.SoundEvents;
@@ -12,11 +15,12 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class ItemTire extends Item implements IBauble {
+public class ItemTire extends Item implements IBauble, IRenderBauble {
 	private final String[] typesName = {"head", "amulet", "body", "charm"};
 	private final List<BaubleTypeEx> types = new LinkedList<>();
 
@@ -59,8 +63,9 @@ public class ItemTire extends Item implements IBauble {
 			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 1.9f);
 		}
 		IBaublesModifiable handler = BaublesApi.getBaublesHandler(entity);
-		handler.modifySlotOA("charm", 2);
+		handler.modifySlotOA("trinket", 2);
 		handler.updateContainer();
+		ModelTire.instance().resetAngle(entity);
 	}
 
 	@Override
@@ -69,7 +74,22 @@ public class ItemTire extends Item implements IBauble {
 			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 1.9f);
 		}
 		IBaublesModifiable handler = BaublesApi.getBaublesHandler(entity);
-		handler.modifySlotOA("charm", -2);
+		handler.modifySlotOA("trinket", -2);
 		handler.updateContainer();
+	}
+
+	@Override
+	public ModelBauble getModel(boolean slim) {
+		return ModelTire.instance();
+	}
+
+	@Override
+	public ResourceLocation getTexture(boolean slim, EntityLivingBase entity) {
+		return ModelTire.instance().getTexture();
+	}
+
+	@Override
+	public RenderType getRenderType() {
+		return RenderType.BODY;
 	}
 }

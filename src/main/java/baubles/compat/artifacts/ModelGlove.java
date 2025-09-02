@@ -1,9 +1,14 @@
 package baubles.compat.artifacts;
 
 import artifacts.common.init.ModItems;
+import baubles.api.BaubleTypeEx;
+import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesModifiable;
 import baubles.api.model.ModelBauble;
+import baubles.api.registries.TypesData;
 import baubles.client.ClientProxy;
 import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
@@ -16,16 +21,16 @@ import java.util.Map;
 
 public class ModelGlove extends ModelBauble {
     private static final Map<Map.Entry<Item, Boolean>, ModelGlove> instances = new HashMap<>();
-    private final ModelPlayer modelPlayer;
     private final ResourceLocation texture;
     private final ResourceLocation emissive;
-    private EnumHandSide hand = initHand();
+    private static final BaubleTypeEx RING = TypesData.Preset.RING;
 
     public ModelGlove(Item item, boolean slim) {
-        super(item, slim, null);
+        super(item, slim);
         this.texture = getResourceLocation(switchTex(item), slim);
         this.emissive = getResourceLocation(switchLum(item), slim);
-        this.modelPlayer = slim ? ClientProxy.SLIM_LAYER.getModelPlayer() : ClientProxy.NORMAL_LAYER.getModelPlayer();
+//        this.model = new ModelPlayer(1, slim);
+        this.model = slim ? ClientProxy.SLIM_LAYER.getModelPlayer() : ClientProxy.NORMAL_LAYER.getModelPlayer();
     }
 
     private static ResourceLocation getResourceLocation(ResourceLocation texture, boolean slim) {
@@ -48,26 +53,35 @@ public class ModelGlove extends ModelBauble {
         return model;
     }
 
-    public void setHand(EnumHandSide hand) {
-        this.hand = hand;
-    }
-
-    private static EnumHandSide initHand() {
-        int flag = (int) (Math.random() * 2);
-        return flag == 0 ? EnumHandSide.LEFT : EnumHandSide.RIGHT;
+    private EnumHandSide getHand(EntityLivingBase entity) {
+        IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
+        int j = 0, k = 0;
+        for (int i = 0; i < baubles.getSlots(); i++) {
+            if (baubles.getTypeInSlot(i) == RING) {
+                j = i;
+                break;
+            }
+        }
+        for (int i = 0; i < baubles.getSlots(); i++) {
+            if (baubles.getStackInSlot(i).getItem() == this.item) {
+                k = i;
+                break;
+            }
+        }
+        return ((k - j) & 1) == 0 ? EnumHandSide.RIGHT : EnumHandSide.LEFT;
     }
 
     private static ResourceLocation switchTex(Item item) {
-        if (item == ModItems.POWER_GLOVE) return Resource.POWER_GLOVE_TEXTURE;
-        else if(item == ModItems.FERAL_CLAWS) return Resource.FERAL_CLAWS_TEXTURE;
-        else if(item == ModItems.MECHANICAL_GLOVE) return Resource.MECHANICAL_GLOVE_TEXTURE;
-        else if(item == ModItems.FIRE_GAUNTLET) return Resource.FIRE_GAUNTLET_TEXTURE;
-        else if(item == ModItems.POCKET_PISTON) return Resource.POCKET_PISTON_TEXTURE;
+        if (item == ModItems.POWER_GLOVE) return Resources.POWER_GLOVE_TEXTURE;
+        else if(item == ModItems.FERAL_CLAWS) return Resources.FERAL_CLAWS_TEXTURE;
+        else if(item == ModItems.MECHANICAL_GLOVE) return Resources.MECHANICAL_GLOVE_TEXTURE;
+        else if(item == ModItems.FIRE_GAUNTLET) return Resources.FIRE_GAUNTLET_TEXTURE;
+        else if(item == ModItems.POCKET_PISTON) return Resources.POCKET_PISTON_TEXTURE;
         return null;
     }
 
     private static ResourceLocation switchLum(Item item) {
-        if(item == ModItems.FIRE_GAUNTLET || item == ModItems.MAGMA_STONE) return Resource.FIRE_GAUNTLET_OVERLAY_TEXTURE;
+        if(item == ModItems.FIRE_GAUNTLET || item == ModItems.MAGMA_STONE) return Resources.FIRE_GAUNTLET_OVERLAY_TEXTURE;
         return null;
     }
 
@@ -81,52 +95,26 @@ public class ModelGlove extends ModelBauble {
 
     @Override
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        this.switchSide();
-        this.modelPlayer.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-        this.callback();
+        renderGlove(this.getHand((EntityLivingBase) entity), scale);
     }
 
     @Override
-    public void render(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        this.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+    public void render(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+        if (entity.isSneaking() && flag) GlStateManager.translate(0, 0.2F, 0);
+        renderGlove(this.getHand(entity), scale);
+    }
+
+    private void renderGlove(EnumHandSide hand, float scale) {
+        if (hand == EnumHandSide.LEFT) {
+            ((ModelPlayer) this.model).bipedLeftArm.render(scale);
+        }
+        else {
+            ((ModelPlayer) this.model).bipedRightArm.render(scale);
+        }
     }
 
     @Override
     public boolean needLocating() {
         return false;
-    }
-
-    private void switchSide() {
-        if(this.hand == EnumHandSide.LEFT) {
-            modelPlayer.bipedLeftArm.showModel = true;
-            modelPlayer.bipedLeftArmwear.showModel = true;
-            modelPlayer.bipedRightArm.showModel = false;
-            modelPlayer.bipedRightArmwear.showModel = false;
-        }
-        else {
-            modelPlayer.bipedLeftArm.showModel = false;
-            modelPlayer.bipedLeftArmwear.showModel = false;
-            modelPlayer.bipedRightArm.showModel = true;
-            modelPlayer.bipedRightArmwear.showModel = true;
-        }
-        modelPlayer.bipedHead.showModel = false;
-        modelPlayer.bipedHeadwear.showModel = false;
-        modelPlayer.bipedBody.showModel = false;
-        modelPlayer.bipedBodyWear.showModel = false;
-        modelPlayer.bipedRightLeg.showModel = false;
-        modelPlayer.bipedRightLegwear.showModel = false;
-        modelPlayer.bipedLeftLeg.showModel = false;
-        modelPlayer.bipedLeftLegwear.showModel = false;
-    }
-
-    private void callback() {
-        if(this.hand == EnumHandSide.LEFT) {
-            modelPlayer.bipedLeftArmwear.showModel = false;
-            modelPlayer.bipedLeftArm.showModel = false;
-        }
-        else {
-            modelPlayer.bipedRightArmwear.showModel = false;
-            modelPlayer.bipedRightArm.showModel = false;
-        }
     }
 }

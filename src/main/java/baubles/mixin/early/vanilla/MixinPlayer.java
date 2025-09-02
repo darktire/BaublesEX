@@ -15,7 +15,7 @@ public abstract class MixinPlayer {
     private EntityLivingBase baubles$target;
 
     @Unique
-    private Boolean baubles$flag = true;
+    private Boolean baubles$flag;
 
     @Unique
     public void baubles$setTarget(EntityLivingBase target) {
@@ -35,7 +35,7 @@ public abstract class MixinPlayer {
     }
 
     @Unique
-    public boolean baubles$getFlag() {
+    public Boolean baubles$getFlag() {
         return this.baubles$flag;
     }
 }

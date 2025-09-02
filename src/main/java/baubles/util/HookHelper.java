@@ -6,6 +6,7 @@ import baubles.common.config.Config;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
@@ -15,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HookHelper {
+    private final static ItemStack ELYTRA = new ItemStack(Items.ELYTRA);
+
     public static ItemStack elytraInBaubles(EntityLivingBase entity, EntityEquipmentSlot slot) {
         ItemStack stack = entity.getItemStackFromSlot(slot);
         if (Config.ModItems.elytraBauble && entity instanceof EntityPlayer && ((!(stack.getItem() instanceof ItemElytra) || stack.getItem() instanceof ItemElytra && !ItemElytra.isUsable(stack)))) {
@@ -29,9 +32,11 @@ public class HookHelper {
         return stack;
     }
 
-    public static ItemStack capeJudgment(AbstractClientPlayer entity, EntityEquipmentSlot slot) {
+    public static ItemStack capeCondition(AbstractClientPlayer entity, EntityEquipmentSlot slot) {
+        Boolean flag = ((IHelper) entity).getFlag();
+        if (flag != null && flag) return ELYTRA;
         ItemStack stack = entity.getItemStackFromSlot(slot);
-        if (Config.ModItems.elytraBauble && ((IHelper) entity).getFlag() && !(stack.getItem() instanceof ItemElytra)) {
+        if (Config.ModItems.elytraBauble && flag == null && !(stack.getItem() instanceof ItemElytra)) {
             IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
             if (baubles != null) {
                 for (int i = 0; i < baubles.getSlots(); i++) {

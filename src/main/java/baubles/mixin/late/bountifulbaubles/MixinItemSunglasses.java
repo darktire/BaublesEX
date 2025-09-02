@@ -1,9 +1,10 @@
-package baubles.mixin.late.artifacts;
+package baubles.mixin.late.bountifulbaubles;
 
-import artifacts.common.item.BaubleBubbleWrap;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.compat.artifacts.Resources;
+import baubles.compat.bountifulbaubles.ModelSunglasses;
+import baubles.compat.bountifulbaubles.Resources;
+import cursedflames.bountifulbaubles.item.ItemSunglasses;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Implements;
@@ -11,21 +12,16 @@ import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-@Mixin(BaubleBubbleWrap.class)
+@Mixin(ItemSunglasses.class)
 @Implements(@Interface(iface = IRenderBauble.class, prefix = "brs$"))
-public abstract class MixinBaubleBubbleWrap {
+public abstract class MixinItemSunglasses {
     @Unique
     public ModelBauble brs$getModel(boolean slim) {
-        return Resources.BUBBLE_MODEL;
+        return ModelSunglasses.instance();
     }
 
     @Unique
     public ResourceLocation brs$getTexture(boolean slim, EntityLivingBase entity) {
-        return Resources.BUBBLE_WRAP;
-    }
-
-    @Unique
-    public IRenderBauble.RenderType brs$getRenderType() {
-        return IRenderBauble.RenderType.BODY;
+        return Resources.SUNGLASSES_TEXTURE;
     }
 }

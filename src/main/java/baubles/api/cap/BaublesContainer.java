@@ -8,7 +8,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -17,7 +16,7 @@ import java.util.*;
 public class BaublesContainer extends ItemStackHandler implements IBaublesModifiable {
 
     private boolean blockEvents = false;
-    private static final BaubleTypeEx TRINKET = TypesData.getTypeByName("trinket");
+    private static final BaubleTypeEx TRINKET = TypesData.Preset.TRINKET;
     private EntityLivingBase entity;
     private final Deque<ItemStack> droppingItem = new ArrayDeque<>();
 
@@ -31,7 +30,6 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     public static final List<BaublesContainer> CONTAINERS = new ArrayList<>();
     private final List<IBaublesListener> listeners = new ArrayList<>();
     public boolean containerUpdated = true;
-    public boolean guiUpdated = true;
 
     public BaublesContainer() { super(TypesData.getSum()); }
 
@@ -122,12 +120,16 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     }
 
     private void onSlotChanged() {
-        NonNullList<ItemStack> stacks1 = this.stacks;
+        List<ItemStack> stacks1 = new ArrayList<>(this.stacks);
+        Map<Integer, Boolean> visibility1 = new HashMap<>(this.visibility);
         setSize(this.MODIFIED_SLOTS.size());
+        this.visibility.clear();
         boolean drop;
         for (int i = 0; i < stacks1.size(); i++) {
+            boolean flag = visibility1.getOrDefault(i, true);
             ItemStack stack = stacks1.get(i);
-            if (stack.isEmpty()) continue;
+            boolean empty = stack.isEmpty();
+            if (empty && flag) continue;
             BaubleTypeEx type = this.PREVIOUS_SLOTS.get(i);
             int start = this.MODIFIED_SLOTS.indexOf(type);
             drop = false;
@@ -136,7 +138,8 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
                 int move = start - this.PREVIOUS_SLOTS.indexOf(type);
                 int newIndex = i + move;
                 if (newIndex < this.MODIFIED_SLOTS.size() && this.MODIFIED_SLOTS.get(newIndex) == type) {
-                    this.stacks.set(newIndex, stack);
+                    if (!empty) this.stacks.set(newIndex, stack);
+                    if (!flag) this.visibility.put(newIndex, false);
                 }
                 else drop = true;
             }
@@ -146,7 +149,6 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
             }
         }
         if (!this.containerUpdated) this.containerUpdated = true;
-        if (this.guiUpdated) this.guiUpdated = false;
     }
 
     public void onConfigChanged() {
@@ -207,7 +209,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         IBauble bauble = BaublesApi.toBauble(stack);
         if (bauble != null) {
             boolean canEquip = bauble.canEquip(stack, entity);
-            boolean hasSlot = bauble.getBaubleTypes().contains(MODIFIED_SLOTS.get(slot)) || bauble.getBaubleTypes().contains(TRINKET);
+            boolean hasSlot = bauble.getBaubleTypes().contains(MODIFIED_SLOTS.get(slot)) || bauble.getBaubleTypes().contains(TRINKET) || MODIFIED_SLOTS.get(slot) == TRINKET;
             return canEquip && hasSlot;
         }
         return false;

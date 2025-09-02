@@ -7,5 +7,5 @@ public interface IHelper {
     EntityLivingBase getTarget();
 
     void setFlag(Boolean flag);
-    boolean getFlag();
+    Boolean getFlag();
 }

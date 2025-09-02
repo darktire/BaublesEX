@@ -1,5 +1,6 @@
 package baubles.api.registries;
 
+import baubles.api.BaubleType;
 import baubles.api.BaubleTypeEx;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.util.ResourceLocation;
@@ -76,5 +77,18 @@ public class TypesData {
 
     public static Iterator<BaubleTypeEx> iterator() {
         return REGISTRY.iterator();
+    }
+
+
+
+    public static class Preset {
+        public static BaubleTypeEx HEAD = BaubleType.HEAD.getExpansion();
+        public static BaubleTypeEx AMULET = BaubleType.AMULET.getExpansion();
+        public static BaubleTypeEx BODY = BaubleType.BELT.getExpansion();
+        public static BaubleTypeEx RING = BaubleType.RING.getExpansion();
+        public static BaubleTypeEx BELT = BaubleType.BELT.getExpansion();
+        public static BaubleTypeEx CHARM = BaubleType.CHARM.getExpansion();
+        public static BaubleTypeEx TRINKET = BaubleType.TRINKET.getExpansion();
+        public static BaubleTypeEx ELYTRA = BaubleType.ELYTRA.getExpansion();
     }
 }

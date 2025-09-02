@@ -11,7 +11,6 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -107,7 +106,7 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
             }
 
             if (ctx.stack.isItemEnchanted()) {
-                LayerArmorBase.renderEnchantedGlint(this.renderPlayer, ctx.entity, model, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale);
+                model.renderEnchantedGlint(this.renderPlayer, ctx.entity, model, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale);
             }
 
             GlStateManager.popMatrix();
@@ -117,7 +116,7 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
     private void renderEachTexture(QueryCtx ctx, IRenderBauble.RenderType render, ResourceLocation texture, ModelBauble model, boolean flag) {
         this.switchTex(ctx, texture, flag);
         if (flag && model.needLocating()) this.switchBip(render, ctx.scale);
-        model.render(ctx.entity, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale);
+        model.render(ctx.entity, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale, flag);
     }
 
     private void switchTex(QueryCtx ctx, ResourceLocation texture, boolean flag) {

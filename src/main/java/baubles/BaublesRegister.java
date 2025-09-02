@@ -27,7 +27,6 @@ import java.util.List;
 
 public class BaublesRegister {
     private static final boolean WINGS = Loader.isModLoaded("wings");
-    public static BaubleTypeEx TRINKET = BaubleType.TRINKET.getExpansion();
 
     public BaublesRegister() {
     }
@@ -38,7 +37,7 @@ public class BaublesRegister {
                 ItemsData.registerBauble(item, (IBauble) item);
             }
             else if (WINGS && item instanceof ItemWings) {
-                ItemsData.registerBauble(item, TypesData.getTypeByName("body"));
+                ItemsData.registerBauble(item, TypesData.Preset.BODY);
             }
         });
         if (Config.ModItems.elytraBauble) {
@@ -63,7 +62,7 @@ public class BaublesRegister {
             TypesData.registerBauble(type.getExpansion().setAmount(value));
         }
         if (Config.ModItems.elytraBauble && Config.ModItems.elytraSlot.equals("elytra")) {
-            BaubleType.ELYTRA.getExpansion().setAmount(1);
+            TypesData.Preset.ELYTRA.setAmount(1);
         }
 
         try {
@@ -93,7 +92,7 @@ public class BaublesRegister {
         }
         TypesData.setSum(pointer);
 
-        BaubleTypeEx trinket = TRINKET;
+        BaubleTypeEx trinket = TypesData.Preset.TRINKET;
         iterator.forEachRemaining(trinket::addOriSlots);
     }
 
