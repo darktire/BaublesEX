@@ -44,14 +44,36 @@ public class Resources {
     
     public static final ResourceLocation SNORKEL_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "snorkel.png");
     
-    public static final ModelBauble AMULET_MODEL = new ModelBauble(new ModelAmulet());
-    public static final ModelBauble PANIC_MODEL = new ModelBauble(new ModelPanicNecklace());
-    public static final ModelBauble ULTIMATE_MODEL = new ModelBauble(new ModelUltimatePendant());
+    public static final ModelBauble AMULET_MODEL = new ModelArtifacts(new ModelAmulet());
+    public static final ModelBauble PANIC_MODEL = new ModelArtifacts(new ModelPanicNecklace());
+    public static final ModelBauble ULTIMATE_MODEL = new ModelArtifacts(new ModelUltimatePendant());
 
-    public static final ModelBauble BOTTLE_MODEL = new ModelBauble(new ModelBottledCloud());
-    public static final ModelBauble ANTIDOTE_MODEL = new ModelBauble(new ModelAntidoteVessel());
-    public static final ModelBauble BUBBLE_MODEL = new ModelBauble(new ModelBubbleWrap());
-    public static final ModelBauble SKULL_MODEL = new ModelBauble(new ModelObsidianSkull());
+    public static final ModelBauble BOTTLE_MODEL = new ModelArtifacts(new ModelBottledCloud()) {
+        @Override
+        public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+            boolean hasPants = !((EntityPlayer)entity).getItemStackFromSlot(EntityEquipmentSlot.LEGS).isEmpty();
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(1.1666666F, 1.1666666F, 1.1666666F);
+            GlStateManager.scale(1.0F, 1.0F, hasPants ? 1.2F : 1.1F);
+            ((ModelBottledCloud) this.model).belt.render(scale);
+            GlStateManager.scale(1.0F, 1.0F, hasPants ? 0.8333333F : 0.9090909F);
+            GlStateManager.scale(0.5F, 0.5F, 0.5F);
+            GlStateManager.translate(0.0F, 1.0F, -0.6666667F);
+            GlStateManager.translate(0.2F, 0.0F, 0.0F);
+            GlStateManager.rotate(-15.0F, 0.0F, 1.0F, 0.0F);
+            ((ModelBottledCloud) this.model).jar.render(scale);
+            ((ModelBottledCloud) this.model).lid.render(scale);
+            GlStateManager.popMatrix();
+        }
+    };
+    public static final ModelBauble ANTIDOTE_MODEL = new ModelArtifacts(new ModelAntidoteVessel());
+    public static final ModelBauble BUBBLE_MODEL = new ModelBauble(new ModelBubbleWrap()) {
+        @Override
+        public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+            ((ModelBubbleWrap) this.model).belt.render(scale);
+        }
+    };
+    public static final ModelBauble SKULL_MODEL = new ModelArtifacts(new ModelObsidianSkull());
 
     public static final ModelBauble CLOAK_MODEL_UP = new ModelBauble(new ModelCloak() {
         @Override
@@ -137,4 +159,3 @@ public class Resources {
         return renderHood;
     }
 }
-//todo Artifacts applies translation at render. Need to adjust it for correct enchanted glint.
