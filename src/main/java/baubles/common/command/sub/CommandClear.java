@@ -3,6 +3,7 @@ package baubles.common.command.sub;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.common.command.CommandBaubles;
+import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
 import net.minecraft.command.CommandBase;
@@ -35,11 +36,13 @@ public class CommandClear extends CommandBase {
                 ItemStack stack = baubles.getStackInSlot(a);
                 if (stack.isEmpty()) continue;
                 BaublesApi.toBauble(stack).onUnequipped(stack, player);
-                player.dropItem(stack, false);
+                if (Config.Commands.dropBaubles) player.dropItem(stack, false);
                 baubles.setStackInSlot(a, ItemStack.EMPTY);
             }
-            sender.sendMessage(new TextComponentTranslation("commands.baubles.clear.all", player.getName()));
-            player.sendMessage(new TextComponentTranslation("commands.baubles.clear.all.claim", sender.getName()));
+            if (Config.Commands.commandLogs) {
+                sender.sendMessage(new TextComponentTranslation("commands.baubles.clear.all", player.getName()));
+                player.sendMessage(new TextComponentTranslation("commands.baubles.clear.all.claim", sender.getName()));
+            }
         }
         else if (args[1].equals("modifier")) {
             baubles.clearModifier();
@@ -55,10 +58,12 @@ public class CommandClear extends CommandBase {
             else {
                 ItemStack stack = baubles.getStackInSlot(slot);
                 BaublesApi.toBauble(stack).onEquipped(stack, player);
-                player.dropItem(stack, false);
+                if (Config.Commands.dropBaubles) player.dropItem(stack, false);
                 baubles.setStackInSlot(slot, ItemStack.EMPTY);
-                sender.sendMessage(new TextComponentTranslation("commands.baubles.clear", slot, player.getName()));
-                player.sendMessage(new TextComponentTranslation("commands.baubles.clear.claim", slot, sender.getName()));
+                if (Config.Commands.commandLogs) {
+                    sender.sendMessage(new TextComponentTranslation("commands.baubles.clear", slot, player.getName()));
+                    player.sendMessage(new TextComponentTranslation("commands.baubles.clear.claim", slot, sender.getName()));
+                }
             }
         }
     }

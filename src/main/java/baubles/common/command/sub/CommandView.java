@@ -1,7 +1,6 @@
 package baubles.common.command.sub;
 
 import baubles.api.BaublesApi;
-import baubles.api.IBauble;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.common.command.CommandBaubles;
 import net.minecraft.command.CommandBase;
@@ -34,9 +33,11 @@ public class CommandView extends CommandBase {
         sender.sendMessage(new TextComponentTranslation("commands.baubles.view.info", player.getName()));
         for (int i = 0; i < baubles.getSlots(); i++) {
             ItemStack stack = baubles.getStackInSlot(i);
-            if (!stack.isEmpty() && BaublesApi.isBauble(stack)) {
-                IBauble bauble = BaublesApi.toBauble(stack);
-                sender.sendMessage(new TextComponentTranslation("commands.baubles.view", i, stack.getDisplayName(), bauble.getBaubleType().getTypeName()));
+            if (!stack.isEmpty()) {
+                sender.sendMessage(new TextComponentTranslation("commands.baubles.view", i, stack.getDisplayName(), baubles.getTypeInSlot(i)));
+            }
+            else {
+                sender.sendMessage(new TextComponentTranslation("commands.baubles.view", i, "nothing", baubles.getTypeInSlot(i)));
             }
         }
     }

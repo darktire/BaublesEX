@@ -1,7 +1,12 @@
 package baubles.util;
 
 import baubles.api.BaublesApi;
+import baubles.api.BaublesWrapper;
+import baubles.api.IBauble;
+import baubles.api.cap.BaublesCapabilities;
+import baubles.api.cap.BaublesCapabilityProvider;
 import baubles.api.cap.IBaublesModifiable;
+import baubles.api.registries.ItemsData;
 import baubles.common.config.Config;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.EntityLivingBase;
@@ -10,6 +15,7 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.Loader;
 
 import java.util.HashMap;
@@ -49,6 +55,17 @@ public class HookHelper {
             ((IHelper) entity).setFlag(false);
         }
         return stack;
+    }
+
+    public static ICapabilityProvider redirectBaubleCap(ItemStack stack, ICapabilityProvider provider) {
+        IBauble bauble = provider.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
+        if (bauble != null && !(bauble instanceof BaublesWrapper)) {
+            if (!ItemsData.isBauble(stack.getItem())) {
+                ItemsData.registerBauble(stack.getItem(), bauble.getBaubleType(stack).getExpansion());
+            }
+            return new BaublesCapabilityProvider(stack);
+        }
+        return provider;
     }
 
     private static final Map<String, Boolean> isModLoaded = new HashMap<>();

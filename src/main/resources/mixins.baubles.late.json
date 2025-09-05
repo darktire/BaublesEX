@@ -19,6 +19,7 @@
     "bountifulbaubles.MixinItemShieldCobalt",
     "bountifulbaubles.MixinItemSunglasses",
     "bountifulbaubles.MixinProxy",
+    "ebwizardry.MixinItem",
     "extrautils2.MixinItem",
     "wings.MixinWings"
   ],

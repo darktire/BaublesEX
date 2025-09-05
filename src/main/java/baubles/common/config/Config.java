@@ -30,6 +30,7 @@ public class Config extends PartialConfig {
     public final static String BAUBLES_SLOTS = "general.slots";
     public final static String CLIENT_GUI = "client.gui";
     public final static String BAUBLES_ITEMS = "general.items";
+    public final static String BAUBLES_COMMANDS = "general.commands";
 
     private static final LinkedList<Item> blacklist = new LinkedList<>();
 
@@ -42,6 +43,7 @@ public class Config extends PartialConfig {
             PartialConfig.create(Slots.class);
             PartialConfig.create(Gui.class);
             PartialConfig.create(ModItems.class);
+            PartialConfig.create(Commands.class);
             PartialConfig.create(Config.class);
             json = new JsonHelper(modDir);
         } catch (Exception e) {
@@ -155,6 +157,18 @@ public class Config extends PartialConfig {
         }
     }
 
+    public static class Commands extends PartialConfig {
+        public static boolean debug = false;
+        public static boolean commandLogs = true;
+        public static boolean dropBaubles = true;
+
+        @Override
+        public void loadData() {
+            debug = configFile.getBoolean("debug", BAUBLES_COMMANDS, debug, "Make /baubles debug commands available for use");
+            commandLogs = configFile.getBoolean("commandLogs", BAUBLES_COMMANDS, commandLogs, "Whether /baubles commands send logs when commands have executed successfully");
+            dropBaubles = configFile.getBoolean("dropBaubles", BAUBLES_COMMANDS, dropBaubles, "Whether /baubles clear will drop baubles");
+        }
+    }
 
     public static class ConfigChangeListener {
         @SubscribeEvent
@@ -163,6 +177,7 @@ public class Config extends PartialConfig {
                 PartialConfig.create(Slots.class);
                 PartialConfig.create(Gui.class);
                 PartialConfig.create(ModItems.class);
+                PartialConfig.create(Commands.class);
                 PartialConfig.create(Config.class);
                 Config.saveConfig();
                 if (Config.rightClick) Config.setupBlacklist();

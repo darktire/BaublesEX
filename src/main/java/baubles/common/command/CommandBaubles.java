@@ -1,6 +1,7 @@
 package baubles.common.command;
 
 import baubles.common.command.sub.*;
+import baubles.common.config.Config;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -16,7 +17,8 @@ public class CommandBaubles extends CommandTreeBase {
 		this.addSubcommand(new CommandClear());
 		this.addSubcommand(new CommandHand());
 		this.addSubcommand(new CommandAdd());
-		this.addSubcommand(new CommandDebug());
+		this.addSubcommand(new CommandSet());
+		if (Config.Commands.debug) this.addSubcommand(new CommandDebug());
 	}
 
 	@Override

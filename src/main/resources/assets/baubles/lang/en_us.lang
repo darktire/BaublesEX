@@ -34,3 +34,4 @@ commands.baubles.clear.all.claim=§4All your baubles slots have been cleared by 
 commands.baubles.clear=§3Cleared baubles slot %s §3for %s
 commands.baubles.clear.claim=§4Your baubles slot %s §4has been cleared by admin %s
 commands.baubles.hand=<%s%s> [type: %s]
+commands.baubles.set=Set %s in [slot: %s] of %s's baubles container

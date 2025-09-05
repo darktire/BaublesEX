@@ -24,6 +24,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -35,6 +36,7 @@ import static cofh.core.init.CoreEnchantments.soulbound;
 @Mod.EventBusSubscriber(modid = Baubles.MOD_ID)
 public class EventHandlerEntity {
     private static final ResourceLocation BAUBLES_CAP = new ResourceLocation(Baubles.MOD_ID, "container");
+    private static final boolean CoFHLoaded = Loader.isModLoaded("cofhcore");
 
     @SubscribeEvent
     public static void equipmentRenderEvent(BaublesRenderEvent.InEquipments event) {
@@ -124,7 +126,7 @@ public class EventHandlerEntity {
                 if (EnchantmentHelper.hasVanishingCurse(stack)) {
                     baubles.setStackInSlot(i, ItemStack.EMPTY);
                 }
-                else if (EnchantmentHelper.getEnchantmentLevel(soulbound, stack) > 0) {
+                else if (CoFHLoaded && EnchantmentHelper.getEnchantmentLevel(soulbound, stack) > 0) {
                     handleSoulbound(stack);
                 }
                 else {
