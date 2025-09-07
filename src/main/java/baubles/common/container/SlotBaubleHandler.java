@@ -64,18 +64,18 @@ public class SlotBaubleHandler extends SlotItemHandler {
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isBlocked()) return;
 
-        if (getHasStack() && !ItemStack.areItemStacksEqual(stack, getStack()) && BaublesApi.isBauble(getStack())) {
-            BaublesApi.toBauble(getStack()).onUnequipped(getStack(), this.entity);
+        ItemStack stack1 = getStack();
+        if (!ItemStack.areItemStacksEqual(stack, stack1)) {
+            if (BaublesApi.isBauble(stack1)) {
+                BaublesApi.toBauble(stack1).onUnequipped(stack1, this.entity);
+            }
+            if (BaublesApi.isBauble(stack)) {
+                BaublesApi.toBauble(stack).onEquipped(stack, this.entity);
+            }
         }
-
-        ItemStack oldStack = getStack().copy();
 
         this.getItemHandler().setStackInSlot(index, stack);
-        this.onSlotChanged();//no effect
-
-        if (getHasStack() && !ItemStack.areItemStacksEqual(oldStack, getStack())) {
-            BaublesApi.toBauble(getStack()).onEquipped(getStack(), this.entity);
-        }
+        this.onSlotChanged();
     }
 
     public void setStack(ItemStack stack) {

@@ -13,8 +13,8 @@ import java.util.Map;
 
 public class ModelScroll extends ModelItemHelper {
     private static final Map<Item, ModelScroll> instances = new HashMap<>();
-    private static final List<Item> list = new ArrayList<>();
-    private static float perItem = 0;
+    private static final Map<EntityLivingBase, List<Item>> map = new HashMap<>();
+    private static final Map<EntityLivingBase, Float> perItem = new HashMap<>();
     public ModelScroll(Item item) {
         super(item);
     }
@@ -33,23 +33,33 @@ public class ModelScroll extends ModelItemHelper {
         float rotateAngleY = ((float)entity.ticksExisted + partialTicks) / 5.0F;
         GlStateManager.scale(0.3, 0.3, 0.3);
         GlStateManager.translate(0.0, 0.75, 0.0);
-        GlStateManager.rotate(rotateAngleY * 57.295776F + list.indexOf(this.item) * perItem, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(rotateAngleY * 57.295776F + getAngle(entity), 0.0F, 1.0F, 0.0F);
         GlStateManager.translate(0.0F, 0.0F, 2.5F);
         this.renderItem();
     }
 
-    public static void addItem(Item item) {
-        list.add(item);
-        perItem = 360F / list.size();
+    private float getAngle(EntityLivingBase entity) {
+        return map.get(entity).indexOf(this.item) * perItem.get(entity);
     }
 
-    public static void removeItem(Item item) {
-        if (list.contains(item)) {
-            list.remove(item);
-            perItem = 360F / list.size();
-        }
-        else {
-            Baubles.log.error(item.getRegistryName() + " is not equipped");
+    public static void addItem(EntityLivingBase entity, Item item) {
+        List<Item> scrolls = map.get(entity);
+        if (scrolls == null) scrolls = new ArrayList<>();
+        scrolls.add(item);
+        map.put(entity, scrolls);
+        perItem.put(entity, 360F / scrolls.size());
+    }
+
+    public static void removeItem(EntityLivingBase entity, Item item) {
+        List<Item> scrolls = map.get(entity);
+        if (scrolls != null) {
+            scrolls.remove(item);
+            if (scrolls.contains(item)) {
+                perItem.put(entity, 360F / scrolls.size());
+            }
+            else {
+                Baubles.log.error(item.getRegistryName() + " is not equipped");
+            }
         }
     }
 }

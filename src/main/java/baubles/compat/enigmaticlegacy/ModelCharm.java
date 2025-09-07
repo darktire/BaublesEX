@@ -33,6 +33,7 @@ public class ModelCharm extends ModelItemHelper {
         GlStateManager.translate(0.15, 0.3, armor ? -0.1875 : -0.125);
         float s = 0.125F;
         GlStateManager.scale(s, s, s);
+        GlStateManager.rotate(180, 1, 0, 0);
         this.renderItem();
     }
 }

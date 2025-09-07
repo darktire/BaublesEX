@@ -10,6 +10,8 @@ import baubles.api.registries.TypesData;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.config.Config;
 import baubles.common.config.KeyBindings;
+import baubles.common.network.PacketHandler;
+import baubles.common.network.PacketOpenBaublesInventory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -77,6 +79,7 @@ public class ClientEventHandler {
         Minecraft mc = Minecraft.getMinecraft();
         if (KeyBindings.KEY_BAUBLES.isPressed()) {
             mc.displayGuiScreen(new GuiPlayerExpanded(player));
+            PacketHandler.INSTANCE.sendToServer(new PacketOpenBaublesInventory());
         }
     }
 }
