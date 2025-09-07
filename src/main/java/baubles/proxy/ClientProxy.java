@@ -1,7 +1,6 @@
-package baubles.client;
+package baubles.proxy;
 
 import baubles.client.render.BaublesRenderLayer;
-import baubles.common.CommonProxy;
 import baubles.common.config.KeyBindings;
 import baubles.util.HookHelper;
 import net.minecraft.client.Minecraft;
@@ -30,6 +29,7 @@ public class ClientProxy extends CommonProxy {
         KeyBindings.register();
         if (HookHelper.isModLoaded("RLArtifacts")) MinecraftForge.EVENT_BUS.register(baubles.compat.artifacts.EventHandler.class);
         if (Loader.isModLoaded("bountifulbaubles")) MinecraftForge.EVENT_BUS.register(baubles.compat.bountifulbaubles.EventHandler.class);
+        if (Loader.isModLoaded("enigmaticlegacy")) MinecraftForge.EVENT_BUS.register(baubles.compat.enigmaticlegacy.EventHandler.class);
     }
 
     @Override

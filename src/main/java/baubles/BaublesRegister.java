@@ -18,6 +18,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class BaublesRegister {
     }
 
     public static void registerItems() {
-        Item.REGISTRY.iterator().forEachRemaining(item -> {
+        ForgeRegistries.ITEMS.iterator().forEachRemaining(item -> {
             if (item instanceof IBauble) {
                 ItemsData.registerBauble(item, (IBauble) item);
             }

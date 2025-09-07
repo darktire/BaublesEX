@@ -1,7 +1,7 @@
 package baubles.client.model;
 
 import baubles.api.model.ModelBauble;
-import baubles.client.ClientProxy;
+import baubles.proxy.ClientProxy;
 import goblinbob.mobends.core.util.BenderHelper;
 import goblinbob.mobends.standard.data.PlayerData;
 import net.minecraft.client.entity.AbstractClientPlayer;

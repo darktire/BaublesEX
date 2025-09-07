@@ -209,7 +209,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         IBauble bauble = BaublesApi.toBauble(stack);
         if (bauble != null) {
             boolean canEquip = bauble.canEquip(stack, entity);
-            boolean hasSlot = bauble.getBaubleTypes().contains(MODIFIED_SLOTS.get(slot)) || bauble.getBaubleTypes().contains(TRINKET) || MODIFIED_SLOTS.get(slot) == TRINKET;
+            boolean hasSlot = bauble.getTypes(stack).contains(MODIFIED_SLOTS.get(slot)) || bauble.getTypes(stack).contains(TRINKET) || MODIFIED_SLOTS.get(slot) == TRINKET;
             return canEquip && hasSlot;
         }
         return false;
@@ -355,7 +355,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
             ItemStack stack = new ItemStack(itemTags);
             if (slot >= 0 && slot < stacks.size()
                     && BaublesApi.isBauble(stack)
-                    && BaublesApi.toBauble(stack).getBaubleTypes().contains(getTypeInSlot(slot))) {
+                    && BaublesApi.toBauble(stack).getTypes(stack).contains(getTypeInSlot(slot))) {
                 flag = true;
             }
             if (flag) {

@@ -1,10 +1,15 @@
-package baubles.mixin.late.artifacts;
+package baubles.mixin.late.enigmaticlegacy;
 
-import artifacts.common.item.BaubleAntidoteVessel;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.compat.artifacts.Resources;
+import baubles.compat.enigmaticlegacy.ModelCharm;
+import keletu.enigmaticlegacy.item.ItemBerserkEmblem;
+import keletu.enigmaticlegacy.item.ItemEnigmaticEye;
+import keletu.enigmaticlegacy.item.ItemMiningCharm;
+import keletu.enigmaticlegacy.item.ItemMonsterCharm;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Implements;
@@ -12,17 +17,18 @@ import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-@Mixin(BaubleAntidoteVessel.class)
+@Mixin({ItemEnigmaticEye.class, ItemBerserkEmblem.class, ItemMiningCharm.class, ItemMonsterCharm.class})
 @Implements(@Interface(iface = IRenderBauble.class, prefix = "brs$"))
-public abstract class MixinBaubleAntidoteVessel {
+public class MixinCharm {
+
     @Unique
     public ModelBauble brs$getModel(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        return Resources.ANTIDOTE_MODEL;
+        return ModelCharm.instance((Item) (Object) this, stack.getMetadata());
     }
 
     @Unique
     public ResourceLocation brs$getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        return Resources.ANTIDOTE_VESSEL;
+        return TextureMap.LOCATION_BLOCKS_TEXTURE;
     }
 
     @Unique

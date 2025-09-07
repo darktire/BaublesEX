@@ -9,6 +9,7 @@ import baubles.compat.artifacts.Resources;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
@@ -19,7 +20,7 @@ import org.spongepowered.asm.mixin.Unique;
 @Implements(@Interface(iface = IRenderBauble.class, prefix = "brs$"))
 public abstract class MixinBaubleBase {
     @Unique
-    public ModelBauble brs$getModel(boolean slim) {
+    public ModelBauble brs$getModel(ItemStack stack, EntityLivingBase entity, boolean slim) {
         if ((Object) this == ModItems.DRINKING_HAT) return Resources.HAT_MODEL;
         else if ((Object) this == ModItems.POCKET_PISTON) return ModelGlove.instance((Item) (Object) this, slim);
         else if ((Object) this == ModItems.MAGMA_STONE) return ModelGlove.instance((Item) (Object) this, slim);
@@ -27,7 +28,7 @@ public abstract class MixinBaubleBase {
     }
 
     @Unique
-    public ResourceLocation brs$getTexture(boolean slim, EntityLivingBase entity) {
+    public ResourceLocation brs$getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
         if ((Object) this == ModItems.DRINKING_HAT) {
             if (entity instanceof EntityPlayer && entity.getName().equals("wouterke")) {
                 return Resources.HAT_SPECIAL_TEXTURE;
@@ -39,13 +40,13 @@ public abstract class MixinBaubleBase {
     }
 
     @Unique
-    public ResourceLocation brs$getEmissiveMap(boolean slim, EntityLivingBase entity) {
+    public ResourceLocation brs$getEmissiveMap(ItemStack stack, EntityLivingBase entity, boolean slim) {
         if ((Object) this == ModItems.MAGMA_STONE) return ModelGlove.instance((Item) (Object) this, slim).getEmissive();
         return null;
     }
 
     @Unique
-    public IRenderBauble.RenderType brs$getRenderType() {
+    public IRenderBauble.RenderType brs$getRenderType(ItemStack stack, EntityLivingBase entity, boolean slim) {
         if ((Object) this == ModItems.DRINKING_HAT) return IRenderBauble.RenderType.HEAD;
         else if ((Object) this == ModItems.POCKET_PISTON) return IRenderBauble.RenderType.BODY;
         else if ((Object) this == ModItems.MAGMA_STONE) return IRenderBauble.RenderType.BODY;

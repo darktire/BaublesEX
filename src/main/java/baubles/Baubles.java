@@ -6,10 +6,10 @@ import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
 import baubles.api.cap.BaublesCapabilities.CapabilityItemBaubleStorage;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.common.CommonProxy;
 import baubles.common.command.CommandBaubles;
 import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
+import baubles.proxy.CommonProxy;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
@@ -35,7 +35,7 @@ public class Baubles {
     public static final String VERSION = "2.2.3";
     public static final String FACTORY = "baubles.client.gui.config.BaublesGuiFactory";
 
-    @SidedProxy(clientSide = "baubles.client.ClientProxy", serverSide = "baubles.common.CommonProxy")
+    @SidedProxy(clientSide = "baubles.proxy.ClientProxy", serverSide = "baubles.proxy.CommonProxy")
     public static CommonProxy proxy;
 
     @Instance(value = Baubles.MOD_ID)

@@ -1,5 +1,6 @@
 package baubles.util;
 
+import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import baubles.api.BaublesWrapper;
 import baubles.api.IBauble;
@@ -61,7 +62,7 @@ public class HookHelper {
         IBauble bauble = provider.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
         if (bauble != null && !(bauble instanceof BaublesWrapper)) {
             if (!ItemsData.isBauble(stack.getItem())) {
-                ItemsData.registerBauble(stack.getItem(), bauble.getBaubleType(stack).getExpansion());
+                ItemsData.registerBauble(stack.getItem(), ((BaubleType) bauble.getBaubleType(stack)).getExpansion());
             }
             return new BaublesCapabilityProvider(stack);
         }

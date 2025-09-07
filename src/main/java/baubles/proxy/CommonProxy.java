@@ -1,4 +1,4 @@
-package baubles.common;
+package baubles.proxy;
 
 import baubles.Baubles;
 import baubles.client.gui.GuiPlayerExpanded;

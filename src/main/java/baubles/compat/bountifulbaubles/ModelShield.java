@@ -1,9 +1,7 @@
 package baubles.compat.bountifulbaubles;
 
-import baubles.api.model.ModelBauble;
 import baubles.client.model.ModelItemHelper;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -35,10 +33,5 @@ public class ModelShield extends ModelItemHelper {
         GlStateManager.rotate(180, 0, 0, 1);
         GlStateManager.translate(0.5, -0.25, this.armor.get(entity) ? 0.75 : 0.7);
         this.renderItem();
-    }
-
-    @Override
-    public void renderEnchantedGlint(RenderPlayer renderPlayer, EntityLivingBase entity, ModelBauble model, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        this.renderItemGlint();
     }
 }

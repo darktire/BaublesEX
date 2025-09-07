@@ -1,6 +1,6 @@
-package baubles.mixin.late.artifacts;
+package baubles.mixin.late.enigmaticlegacy;
 
-import artifacts.client.ClientProxy;
+import keletu.enigmaticlegacy.proxy.ClientProxy;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientProxy.class)
 public abstract class MixinProxy {
-    @Inject(method = "init", at = @At("HEAD"), cancellable = true, remap = false)
-    private void blockRender(CallbackInfo ci) {
+    @Inject(method = "addRenderLayers", at = @At("HEAD"), cancellable = true, remap = false)
+    private static void blockRender(CallbackInfo ci) {
         ci.cancel();
     }
 }

@@ -23,25 +23,29 @@ public final class BaublesWrapper implements IWrapper {
     private BaubleTypeEx type;
     private List<BaubleTypeEx> types;
     private ResourceLocation registryName;
+    public boolean haSub = false;// todo solve metadata
 
     public BaublesWrapper() {}
 
     public BaublesWrapper(Item item, IBauble bauble) {
         this.item = item;
         this.bauble = bauble;
-        this.registerBauble(item, bauble);
+        if (item.getHasSubtypes()) {
+            this.haSub = true;
+//            for (int meta = 0;; meta++) {
+//                if (!item.getHasSubtypes()) break;
+//            }
+        }
+        this.wrapBauble(item, bauble);
         this.registerRender(item);
     }
 
-    private void registerBauble(Item item, IBauble bauble) {
+    private void wrapBauble(Item item, IBauble bauble) {
         if (bauble != null) {
-            this.type = bauble.getBaubleType();
-            this.types = bauble.getBaubleTypes();
+            ItemStack stack = new ItemStack(item);
+            this.type = bauble.getType(stack);
+            this.types = bauble.getTypes(stack);
             if (this.types == null || this.types.isEmpty()) {
-                if (this.type == null) {
-                    this.type = bauble.getBaubleType(new ItemStack(item)).getExpansion();
-                    if (this.type == null) throw new RuntimeException(item.getRegistryName() + " have no type");
-                }
                 this.types = new LinkedList<>();
                 this.types.add(this.type);
             } else if (this.type == null) {
@@ -86,12 +90,12 @@ public final class BaublesWrapper implements IWrapper {
     }
 
     @Override
-    public BaubleTypeEx getBaubleType() {
+    public BaubleTypeEx getType(ItemStack itemStack) {
         return this.type;
     }
 
     @Override
-    public List<BaubleTypeEx> getBaubleTypes() {
+    public List<BaubleTypeEx> getTypes(ItemStack itemStack) {
         return this.types;
     }
 
@@ -140,33 +144,33 @@ public final class BaublesWrapper implements IWrapper {
     }
 
     @Override
-    public Map<ModelBauble, RenderType> getRenderMap(boolean slim) {
+    public Map<ModelBauble, RenderType> getRenderMap(ItemStack stack, EntityLivingBase entity, boolean slim) {
         if (this.render == null) return null;
-        return this.render.getRenderMap(slim);
+        return this.render.getRenderMap(stack, entity, slim);
     }
 
     @Override
-    public ModelBauble getModel(boolean slim) {
+    public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, boolean slim) {
         if (this.render == null) return null;
-        return this.render.getModel(slim);
+        return this.render.getModel(stack, entity, slim);
     }
 
     @Override
-    public ResourceLocation getTexture(boolean slim, EntityLivingBase entity) {
+    public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
         if (this.render == null) return null;
-        return this.render.getTexture(slim, entity);
+        return this.render.getTexture(stack, entity, slim);
     }
 
     @Override
-    public ResourceLocation getEmissiveMap(boolean slim, EntityLivingBase entity) {
+    public ResourceLocation getEmissiveMap(ItemStack stack, EntityLivingBase entity, boolean slim) {
         if (this.render == null) return null;
-        return this.render.getEmissiveMap(slim, entity);
+        return this.render.getEmissiveMap(stack, entity, slim);
     }
 
     @Override
-    public RenderType getRenderType() {
+    public RenderType getRenderType(ItemStack stack, EntityLivingBase entity, boolean slim) {
         if (this.render == null) return null;
-        return this.render.getRenderType();
+        return this.render.getRenderType(stack, entity, slim);
     }
 }
 // todo commands edit type, also the data persistence

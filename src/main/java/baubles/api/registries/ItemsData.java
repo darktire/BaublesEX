@@ -22,7 +22,7 @@ public class ItemsData {
      */
     public static void registerBauble(Item item, BaublesWrapper wrapper) {
         if (BAUBLE_ITEMS.containsKey(item) && wrapper.getBauble() != null && !wrapper.isCopy()) {
-            BAUBLE_ITEMS.get(item).setTypes(wrapper.getBaubleTypes());
+            BAUBLE_ITEMS.get(item).setTypes(wrapper.getTypes(null));
         }
         else {
             BAUBLE_ITEMS.put(item, wrapper);

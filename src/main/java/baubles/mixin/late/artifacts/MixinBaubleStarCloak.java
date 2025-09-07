@@ -6,6 +6,7 @@ import baubles.api.render.IRenderBauble;
 import baubles.compat.artifacts.Resources;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
@@ -25,17 +26,17 @@ public abstract class MixinBaubleStarCloak {
     );
 
     @Unique
-    public Map<ModelBauble, IRenderBauble.RenderType> brs$getRenderMap(boolean slim) {
+    public Map<ModelBauble, IRenderBauble.RenderType> brs$getRenderMap(ItemStack stack, EntityLivingBase entity, boolean slim) {
         return brs$renderMap;
     }
 
     @Unique
-    public ResourceLocation brs$getTexture(boolean slim, EntityLivingBase entity) {
+    public ResourceLocation brs$getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
         return Resources.CLOAK_NORMAL;
     }
 
     @Unique
-    public ResourceLocation brs$getEmissiveMap(boolean slim, EntityLivingBase entity) {
+    public ResourceLocation brs$getEmissiveMap(ItemStack stack, EntityLivingBase entity, boolean slim) {
         return Resources.CLOAK_OVERLAY;
     }
 }

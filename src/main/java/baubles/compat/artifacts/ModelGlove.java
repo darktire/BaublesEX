@@ -6,7 +6,7 @@ import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.model.ModelBauble;
 import baubles.api.registries.TypesData;
-import baubles.client.ClientProxy;
+import baubles.proxy.ClientProxy;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;

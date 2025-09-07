@@ -6,6 +6,7 @@ import baubles.compat.bountifulbaubles.ModelShield;
 import cursedflames.bountifulbaubles.item.ItemShieldCobalt;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
@@ -14,14 +15,14 @@ import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(ItemShieldCobalt.class)
 @Implements(@Interface(iface = IRenderBauble.class, prefix = "brs$"))
-public abstract class MixinItemShieldCobalt {
+public abstract class MixinItemShieldCobalt extends Item {
     @Unique
-    public ModelBauble brs$getModel(boolean slim) {
-    return ModelShield.instance((Item) (Object) this);
+    public ModelBauble brs$getModel(ItemStack stack, EntityLivingBase entity, boolean slim) {
+    return ModelShield.instance(this);
 }
 
     @Unique
-    public ResourceLocation brs$getTexture(boolean slim, EntityLivingBase entity) {
-        return ModelShield.instance((Item) (Object) this).getTexture();
+    public ResourceLocation brs$getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
+        return ModelShield.instance(this).getTexture();
     }
 }

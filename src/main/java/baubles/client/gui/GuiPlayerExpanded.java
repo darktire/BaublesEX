@@ -145,7 +145,7 @@ public class GuiPlayerExpanded extends GuiBase implements IBaublesListener {
         this.addButton(new ElementController.h(57, this, this.guiLeft - 14, this.guiTop + 5, 2));
         this.scroller = this.addButton(new ElementScroller(58, this, this.guiLeft - 30 - 18 * this.column, this.guiTop, Config.Gui.scrollerBar));
         this.switchers = this.addButton(new ElementSwitchers(59, this, this.guiLeft - 10, this.guiTop + 14));
-        this.extraArea.add(new Rectangle(this.guiLeft - 29, this.guiTop, 10 + 18 * this.column, 166));
+        this.extraArea.add(new Rectangle(this.guiLeft - 11 - 18 * this.column, this.guiTop, 10 + 18 * this.column, 166));
     }
 
     /**

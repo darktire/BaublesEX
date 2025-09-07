@@ -29,12 +29,7 @@ public class BaubleItem implements IBauble {
 	}
 
 	@Override
-	public BaubleTypeEx getBaubleType() {
-		return type;
-	}
-
-	@Override
-	public List<BaubleTypeEx> getBaubleTypes() {
+	public List<BaubleTypeEx> getTypes(ItemStack itemStack) {
 		return this.types;
 	}
 

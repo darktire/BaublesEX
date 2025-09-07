@@ -31,7 +31,7 @@ public class ItemDataAdapter extends TypeAdapter<List<BaublesWrapper>>  {
                 }
                 out.name("types");
                 out.beginArray();
-                for (BaubleTypeEx type: wrapper.getBaubleTypes()) {
+                for (BaubleTypeEx type: wrapper.getTypes(null)) {
                     out.value(type.getRegistryName().toString());
                 }
                 out.endArray();

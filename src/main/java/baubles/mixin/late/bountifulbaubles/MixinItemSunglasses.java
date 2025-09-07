@@ -6,6 +6,7 @@ import baubles.compat.bountifulbaubles.ModelSunglasses;
 import baubles.compat.bountifulbaubles.Resources;
 import cursedflames.bountifulbaubles.item.ItemSunglasses;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
@@ -16,12 +17,12 @@ import org.spongepowered.asm.mixin.Unique;
 @Implements(@Interface(iface = IRenderBauble.class, prefix = "brs$"))
 public abstract class MixinItemSunglasses {
     @Unique
-    public ModelBauble brs$getModel(boolean slim) {
+    public ModelBauble brs$getModel(ItemStack stack, EntityLivingBase entity, boolean slim) {
         return ModelSunglasses.instance();
     }
 
     @Unique
-    public ResourceLocation brs$getTexture(boolean slim, EntityLivingBase entity) {
+    public ResourceLocation brs$getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
         return Resources.SUNGLASSES_TEXTURE;
     }
 }

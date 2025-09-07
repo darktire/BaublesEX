@@ -20,10 +20,16 @@
     "bountifulbaubles.MixinItemSunglasses",
     "bountifulbaubles.MixinProxy",
     "ebwizardry.MixinItem",
+    "enigmaticlegacy.MixinAmulet",
+    "enigmaticlegacy.MixinCharm",
+    "enigmaticlegacy.MixinItemHalfHeartMask",
+    "enigmaticlegacy.MixinScroll",
     "extrautils2.MixinItem",
     "wings.MixinWings"
   ],
   "client": [
+    "enigmaticlegacy.MixinLayerScroll",
+    "enigmaticlegacy.MixinProxy",
     "mobends.MixinCustomCape"
   ],
   "server": [

@@ -20,7 +20,7 @@ public class BaubleElytra implements IBauble, IRenderBauble {
     private static final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("minecraft", "textures/entity/elytra.png");
 
     @Override
-    public BaubleTypeEx getBaubleType() {
+    public BaubleTypeEx getType(ItemStack stack) {
     return TYPE;
 }
 
@@ -39,12 +39,12 @@ public class BaubleElytra implements IBauble, IRenderBauble {
     }
 
     @Override
-    public ModelBauble getModel(boolean slim) {
+    public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, boolean slim) {
         return ModelElytra.instance(slim);
     }
 
     @Override
-    public ResourceLocation getTexture(boolean slim, EntityLivingBase entity) {
+    public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
         if (entity instanceof AbstractClientPlayer) {
             AbstractClientPlayer abstractclientplayer = (AbstractClientPlayer)entity;
 
@@ -64,7 +64,7 @@ public class BaubleElytra implements IBauble, IRenderBauble {
     }
 
     @Override
-    public IRenderBauble.RenderType getRenderType() {
+    public IRenderBauble.RenderType getRenderType(ItemStack stack, EntityLivingBase entity, boolean slim) {
         return IRenderBauble.RenderType.BODY;
     }
 }

@@ -6,7 +6,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -16,9 +18,24 @@ public class ModelItemHelper extends ModelBauble {
     protected static final RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
     protected final IBakedModel model;
     private static final ResourceLocation TEXTURES = TextureMap.LOCATION_BLOCKS_TEXTURE;
-    public ModelItemHelper(Item item) {
-        this.stack = new ItemStack(item);
+    public ModelItemHelper(Item item, int meta) {
+        this.item = item;
+        this.stack = new ItemStack(item, 1, meta);
         this.model = itemRender.getItemModelWithOverrides(this.stack, null, null);
+    }
+
+    public ModelItemHelper(Item item) {
+        this(item, 0);
+    }
+
+    @Override
+    public void render(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+        this.renderItem();
+    }
+
+    @Override
+    public void renderEnchantedGlint(RenderPlayer renderPlayer, EntityLivingBase entity, ModelBauble model, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        this.renderItemGlint();
     }
 
     protected void renderItem() {

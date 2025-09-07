@@ -48,7 +48,7 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 	}
 
 	@Override
-	public List<BaubleTypeEx> getBaubleTypes() {
+	public List<BaubleTypeEx> getTypes(ItemStack stack) {
 		return this.types;
 	}
 
@@ -79,17 +79,17 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 	}
 
 	@Override
-	public ModelBauble getModel(boolean slim) {
+	public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, boolean slim) {
 		return ModelTire.instance();
 	}
 
 	@Override
-	public ResourceLocation getTexture(boolean slim, EntityLivingBase entity) {
+	public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
 		return ModelTire.instance().getTexture();
 	}
 
 	@Override
-	public RenderType getRenderType() {
+	public RenderType getRenderType(ItemStack stack, EntityLivingBase entity, boolean slim) {
 		return RenderType.BODY;
 	}
 }

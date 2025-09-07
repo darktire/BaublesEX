@@ -71,10 +71,10 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
     }
 
     private void renderLayer(QueryCtx ctx) {
-        Map<ModelBauble, IRenderBauble.RenderType> collection = ctx.wrapper.getRenderMap(this.slim);
+        Map<ModelBauble, IRenderBauble.RenderType> collection = ctx.wrapper.getRenderMap(ctx.stack, ctx.entity, this.slim);
         if (collection == null) {
-            ModelBauble model = ctx.wrapper.getModel(this.slim);
-            IRenderBauble.RenderType render = ctx.wrapper.getRenderType();
+            ModelBauble model = ctx.wrapper.getModel(ctx.stack, ctx.entity, this.slim);
+            IRenderBauble.RenderType render = ctx.wrapper.getRenderType(ctx.stack, ctx.entity, this.slim);
             renderModelPart(ctx, model, render);
         }
         else {
@@ -90,10 +90,10 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
             GlStateManager.enableLighting();
             if (ctx.entity.isSneaking() && model.needLocating()) GlStateManager.translate(0, 0.2F, 0);
 
-            ResourceLocation texture = ctx.wrapper.getTexture(this.slim, ctx.entity);
+            ResourceLocation texture = ctx.wrapper.getTexture(ctx.stack, ctx.entity, this.slim);
             if (texture != null) renderEachTexture(ctx, render, texture, model, true);
 
-            texture = ctx.wrapper.getEmissiveMap(this.slim, ctx.entity);
+            texture = ctx.wrapper.getEmissiveMap(ctx.stack, ctx.entity, this.slim);
             if (texture != null) {
                 float lastSky = OpenGlHelper.lastBrightnessX;
                 float lastBlock = OpenGlHelper.lastBrightnessY;

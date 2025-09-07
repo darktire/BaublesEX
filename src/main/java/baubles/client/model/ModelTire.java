@@ -1,9 +1,7 @@
 package baubles.client.model;
 
 import baubles.BaublesRegister;
-import baubles.api.model.ModelBauble;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 
 import java.util.HashMap;
@@ -29,14 +27,9 @@ public class ModelTire extends ModelItemHelper {
     public void render(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
         this.updateAngle(entity);
         GlStateManager.translate(0, 0, 0.5);
-        GlStateManager.rotate((float) this.angle.get(entity) / 2, 0, 0, 1);
+        GlStateManager.rotate((this.angle.get(entity) + partialTicks) / 2, 0, 0, 1);
         GlStateManager.scale(3, 3, 1);
         this.renderItem();
-    }
-
-    @Override
-    public void renderEnchantedGlint(RenderPlayer renderPlayer, EntityLivingBase entity, ModelBauble model, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        this.renderItemGlint();
     }
 
     private void updateAngle(EntityLivingBase entity) {

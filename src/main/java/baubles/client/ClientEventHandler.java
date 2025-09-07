@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -44,19 +45,20 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public static void tooltipEvent(ItemTooltipEvent event) {
-        if (!event.getItemStack().isEmpty() && BaublesApi.isBauble(event.getItemStack())) {
-            IBauble bauble = BaublesApi.toBauble(event.getItemStack());
+        ItemStack stack = event.getItemStack();
+        if (!stack.isEmpty() && BaublesApi.isBauble(stack)) {
+            IBauble bauble = BaublesApi.toBauble(stack);
             StringBuilder tooltip = new StringBuilder(TextFormatting.GOLD + I18n.format("baubles.tooltip") + ": ");
             if (bauble instanceof BaublesWrapper) {
-                Iterator<BaubleTypeEx> types = bauble.getBaubleTypes().iterator();
+                Iterator<BaubleTypeEx> types = bauble.getTypes(stack).iterator();
                 while (types.hasNext()) {
                     tooltip.append(I18n.format(types.next().getTranslateKey()));
                     if (types.hasNext()) tooltip.append(", ");
                 }
             }
             else {
-                Baubles.log.warn("bauble cap on " + event.getItemStack().getTranslationKey() + " registered incorrect");
-                tooltip.append(I18n.format("name." + bauble.getBaubleType(event.getItemStack()).toString().toLowerCase()));
+                Baubles.log.warn("bauble cap on " + stack.getTranslationKey() + " registered incorrect");
+                tooltip.append(I18n.format("name." + bauble.getType(stack).toString().toLowerCase()));
             }
             event.getToolTip().add(tooltip.toString());
         }
