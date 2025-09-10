@@ -85,7 +85,7 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 
 	@Override
 	public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
-		return ModelTire.instance().getTexture();
+		return ModelTire.getTexture();
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.BaublesWrapper;
 import baubles.api.IBauble;
+import baubles.api.event.BaublesRenderEvent;
 import baubles.api.registries.TypesData;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.config.Config;
@@ -18,6 +19,7 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
@@ -34,6 +36,13 @@ import java.util.Iterator;
 
 @Mod.EventBusSubscriber(modid = Baubles.MOD_ID, value = Side.CLIENT)
 public class ClientEventHandler {
+
+    @SubscribeEvent
+    public static void equipmentRenderEvent(BaublesRenderEvent.InEquipments event) {
+        if (!(event.getStack().getItem() instanceof ItemElytra)) {
+            event.canceled();
+        }
+    }
 
     @SubscribeEvent
     public static void registerItemModels(ModelRegistryEvent event) {

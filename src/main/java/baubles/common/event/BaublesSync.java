@@ -10,6 +10,7 @@ import baubles.common.network.PacketSync;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -53,11 +54,17 @@ public class BaublesSync {
         Deque<ItemStack> deque = new ArrayDeque<>();
         while (baubles.haveDroppingItem()) {
             ItemStack stack = baubles.getDroppingItem();
-            entity.entityDropItem(stack, 0);
+            EntityItem ei = entity.entityDropItem(stack, 0F);
+            if (ei != null) {
+                ei.setNoDespawn();
+                ei.setNoPickupDelay();
+//                    boolean ok = entity.world.spawnEntity(ei);
+//                    Baubles.log.warn("spawnEntity result = " + ok);
+            }
             if (BaublesApi.isBauble(stack)) {
                 BaublesApi.toBauble(stack).onUnequipped(stack, entity);
-                deque.push(stack);
             }
+            deque.push(stack);
         }
         if (!deque.isEmpty()) onDropping.put(entity.getUniqueID(), deque);
     }
@@ -74,13 +81,12 @@ public class BaublesSync {
     }
 
     private static void syncSlots(EntityLivingBase entity, Collection<? extends EntityPlayer> receivers) {
-        IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
-        for (int i = 0; i < baubles.getSlots(); i++) {
+        BaublesApi.applyByIndex(entity, (baubles, i) -> {
             PacketSync pkt = new PacketSync(entity, i, baubles.getStackInSlot(i), baubles.getVisible(i));
             for (EntityPlayer receiver : receivers) {
                 PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) receiver);
             }
-        }
+        });
     }
 
     private static void syncModifier(EntityLivingBase entity, Collection<? extends EntityPlayerMP> receivers) {

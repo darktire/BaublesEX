@@ -10,9 +10,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-/**
- * @author Azanor
- */
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 public class BaublesApi {
 
     /**
@@ -43,23 +43,19 @@ public class BaublesApi {
     }
 
     /**
-     * Returns if the passed in item is equipped in a bauble slot. Will return the first slot found
+     * Get the index of the stack, the item or the type in baubles.
      * @return -1 if not found and slot number if it is found
      */
-    public static int isBaubleEquipped(EntityLivingBase entity, Item bauble) {
-        IBaublesModifiable handler = getBaublesHandler(entity);
-        for (int a = 0; a < handler.getSlots(); a++) {
-            if (!handler.getStackInSlot(a).isEmpty() && handler.getStackInSlot(a).getItem() == bauble) return a;
-        }
-        return -1;
+    public static int getIndexInBaubles(EntityLivingBase entity, Object o, int start) {
+        return getBaublesHandler(entity).indexOf(o, start);
     }
 
     /**
-     * @deprecated prefer calling {@link BaublesApi#isBaubleEquipped(EntityLivingBase, Item)} wherever possible
+     * @deprecated prefer calling {@link BaublesApi#getIndexInBaubles(EntityLivingBase, Object, int)} wherever possible
      */
     @Deprecated
     public static int isBaubleEquipped(EntityPlayer player, Item bauble) {
-        return isBaubleEquipped((EntityLivingBase) player, bauble);
+        return getBaublesHandler(player).indexOf(bauble, 0);
     }
 
     public static boolean canEquipBaubles(EntityLivingBase entity) {
@@ -76,5 +72,16 @@ public class BaublesApi {
      */
     public static IWrapper toBauble(ItemStack stack) {
         return stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
+    }
+
+    public static void applyByIndex(EntityLivingBase entity, BiConsumer<IBaublesModifiable, Integer> c) {
+        IBaublesModifiable baubles = getBaublesHandler(entity);
+        for (int i = 0; i < baubles.getSlots(); i++) {
+            c.accept(baubles, i);
+        }
+    }
+
+    public static void applyToBaubles(EntityLivingBase entity, Consumer<ItemStack> c) {
+        applyByIndex(entity, (baubles, i) -> c.accept(baubles.getStackInSlot(i)));
     }
 }

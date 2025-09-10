@@ -5,9 +5,6 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.BaublesContainerProvider;
-import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.cap.IBaublesModifiable;
-import baubles.api.event.BaublesRenderEvent;
 import baubles.common.config.Config;
 import cofh.core.enchantment.EnchantmentSoulbound;
 import cofh.core.util.helpers.ItemHelper;
@@ -16,7 +13,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -37,13 +33,6 @@ import static cofh.core.init.CoreEnchantments.soulbound;
 public class EventHandlerEntity {
     private static final ResourceLocation BAUBLES_CAP = new ResourceLocation(Baubles.MOD_ID, "container");
     private static final boolean CoFHLoaded = Loader.isModLoaded("cofhcore");
-
-    @SubscribeEvent
-    public static void equipmentRenderEvent(BaublesRenderEvent.InEquipments event) {
-        if (!(event.getStack().getItem() instanceof ItemElytra)) {
-            event.canceled();
-        }
-    }
 
 /*    @SubscribeEvent
     public void openEntityGui(PlayerInteractEvent.EntityInteractSpecific event) {
@@ -94,17 +83,14 @@ public class EventHandlerEntity {
 
     @SubscribeEvent
     public static void playerTick(TickEvent.PlayerTickEvent event) {
-        // todo onWornTick
         if (event.phase == TickEvent.Phase.END) {
             EntityPlayer player = event.player;
-            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
-            for (int i = 0; i < baubles.getSlots(); i++) {
-                ItemStack stack = baubles.getStackInSlot(i);
+            BaublesApi.applyToBaubles(player, stack -> {
                 IBauble bauble = BaublesApi.toBauble(stack);
                 if (bauble != null) {
                     bauble.onWornTick(stack, player);
                 }
-            }
+            });
         }
     }
 
@@ -114,13 +100,12 @@ public class EventHandlerEntity {
                 && !event.getEntity().world.isRemote
                 && !event.getEntity().world.getGameRules().getBoolean("keepInventory")
                 && !Config.keepBaubles) {
-            dropItemsAt(event.getEntityPlayer(), event.getDrops(), event.getEntityPlayer());
+            dropItemsAt(event.getEntityPlayer(), event.getDrops());
         }
     }
 
-    public static void dropItemsAt(EntityPlayer player, List<EntityItem> drops, Entity e) {
-        IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
-        for (int i = 0; i < baubles.getSlots(); ++i) {
+    public static void dropItemsAt(EntityPlayer player, List<EntityItem> drops) {
+        BaublesApi.applyByIndex(player, (baubles, i) -> {
             ItemStack stack = baubles.getStackInSlot(i);
             if (!stack.isEmpty() && ((IBauble) stack.getItem()).canDrop(stack, player)) {
                 if (EnchantmentHelper.hasVanishingCurse(stack)) {
@@ -130,12 +115,12 @@ public class EventHandlerEntity {
                     handleSoulbound(stack);
                 }
                 else {
-                    EntityItem ei = new EntityItem(e.world,
-                                e.posX, e.posY + e.getEyeHeight(), e.posZ,
-                                stack.copy());
+                    EntityItem ei = new EntityItem(player.world,
+                            player.posX, player.posY + player.getEyeHeight(), player.posZ,
+                            stack.copy());
                     ei.setPickupDelay(40);
-                    float f1 = e.world.rand.nextFloat() * 0.5F;
-                    float f2 = e.world.rand.nextFloat() * (float) Math.PI * 2.0F;
+                    float f1 = player.world.rand.nextFloat() * 0.5F;
+                    float f2 = player.world.rand.nextFloat() * (float) Math.PI * 2.0F;
                     ei.motionX = -MathHelper.sin(f2) * f1;
                     ei.motionZ = MathHelper.cos(f2) * f1;
                     ei.motionY = 0.20000000298023224D;
@@ -143,7 +128,7 @@ public class EventHandlerEntity {
                     baubles.setStackInSlot(i, ItemStack.EMPTY);
                 }
             }
-        }
+        });
     }
 
     private static void handleSoulbound(ItemStack stack) {

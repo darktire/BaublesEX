@@ -30,6 +30,7 @@ public class ClientProxy extends CommonProxy {
         if (HookHelper.isModLoaded("RLArtifacts")) MinecraftForge.EVENT_BUS.register(baubles.compat.artifacts.EventHandler.class);
         if (Loader.isModLoaded("bountifulbaubles")) MinecraftForge.EVENT_BUS.register(baubles.compat.bountifulbaubles.EventHandler.class);
         if (Loader.isModLoaded("enigmaticlegacy")) MinecraftForge.EVENT_BUS.register(baubles.compat.enigmaticlegacy.EventHandler.class);
+        if (Loader.isModLoaded("xat")) MinecraftForge.EVENT_BUS.register(baubles.compat.xat.EventHandler.class);
     }
 
     @Override

@@ -34,9 +34,9 @@ minecraft {
 
     }
 
-//    legacy {
-//        attachMappings = true
-//    }
+    legacy {
+        fixClasspath = true
+    }
 }
 
 fancyGradle {
@@ -89,20 +89,22 @@ dependencies {
     annotationProcessor ('zone.rong:mixinbooter:10.6') {
         transitive = false
     }
-    implementation 'com.cleanroommc:configanytime:3.0'
+//    implementation 'com.cleanroommc:configanytime:3.0'
 
     runtimeOnly fileTree(dir: 'libs', includes: ['*.jar'])
 //    compileOnly fileTree(dir: 'libs', includes: ['*.jar'])
 
-    //Bookshelf
-//    runtimeOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-${minecraft_version}:${bookshelf_version}")
     //JEI
-    compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}")
+//    compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")
+//    runtimeOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}")
+    //HEI
+    implementation 'mezz:jei:4.29.7'
     //CoFH
 //    runtimeOnly fg.deobf("curse.maven:redstone-flux-270789:2920436")
 //    runtimeOnly fg.deobf("curse.maven:cofh-core-69162:2920433")
     compileOnly fg.deobf("curse.maven:cofh-core-69162:2920433")
+    //Bookshelf
+//    runtimeOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-${minecraft_version}:${bookshelf_version}")
 
     //TOP
     runtimeOnly fg.deobf("curse.maven:the-one-probe-community-edition-885670:6736118")
@@ -125,12 +127,16 @@ dependencies {
     implementation fg.deobf("curse.maven:rl-artifacts-819886:4475428")
     //BountifulBaubles
     implementation fg.deobf("curse.maven:bountifulbaubles-313536:3568240")
+    //trinkets-and-baubles
+    implementation fg.deobf("curse.maven:trinkets-and-baubles-279900:5717039")
     //wizardry
     compileOnly fg.deobf("curse.maven:electroblobs-wizardry-265642:6950392")
     //enigmatic
-    runtimeOnly fg.deobf("curse.maven:fermiumbooter2mixinbooter-1163720:6552152")
+//    runtimeOnly fg.deobf("curse.maven:fermiumbooter2mixinbooter-1163720:6552152")
     compileOnly fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:6816073")
-    runtimeOnly fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:6816073")
+//    runtimeOnly fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:6816073")
+    //aether
+//    implementation fg.deobf("curse.maven:aether-255308:6316434")
 }
 
 mixin {

@@ -17,7 +17,6 @@ public class ModelItemHelper extends ModelBauble {
     protected final ItemStack stack;
     protected static final RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
     protected final IBakedModel model;
-    private static final ResourceLocation TEXTURES = TextureMap.LOCATION_BLOCKS_TEXTURE;
     public ModelItemHelper(Item item, int meta) {
         this.item = item;
         this.stack = new ItemStack(item, 1, meta);
@@ -49,7 +48,7 @@ public class ModelItemHelper extends ModelBauble {
         GlStateManager.disableBlend();
     }
 
-    public ResourceLocation getTexture() {
-        return TEXTURES;
+    public static ResourceLocation getTexture() {
+        return TextureMap.LOCATION_BLOCKS_TEXTURE;
     }
 }

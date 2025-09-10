@@ -3,18 +3,15 @@ package baubles.api.event;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
+@Cancelable
 public class BaublesEvent extends LivingEvent {
     private final ItemStack stack;
 
     public BaublesEvent(EntityLivingBase entity, ItemStack stack) {
         super(entity);
         this.stack = stack;
-    }
-
-    public boolean isCancelable()
-    {
-        return true;
     }
 
     public void canceled() {

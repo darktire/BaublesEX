@@ -32,6 +32,11 @@ public interface IRenderBauble {
     }
 
     default RenderType getRenderType(ItemStack stack, EntityLivingBase entity, boolean slim) {
+        return getRenderType();
+    }
+
+    @Deprecated
+    default RenderType getRenderType() {
         return null;
     }
 

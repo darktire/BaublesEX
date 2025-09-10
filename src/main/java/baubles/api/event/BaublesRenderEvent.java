@@ -18,6 +18,16 @@ public class BaublesRenderEvent extends BaublesEvent {
         return this.slim;
     }
 
+    public static BaublesRenderEvent of(EntityLivingBase entity, boolean slim, ItemStack stack, Object slotId) {
+        if (slotId instanceof Integer) {
+            return new InBaubles(entity, slim, stack, (Integer) slotId);
+        }
+        else if (slotId instanceof EntityEquipmentSlot) {
+            return new InEquipments(entity, slim, stack, (EntityEquipmentSlot) slotId);
+        }
+        throw new IllegalArgumentException("slotId illegal");
+    }
+
     public static class InBaubles extends BaublesRenderEvent {
         private final int slot;
 

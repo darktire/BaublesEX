@@ -58,7 +58,7 @@ public class CommandDebug extends CommandBase {
                 sender.sendMessage(new TextComponentTranslation("" + i));
             });
         }
-        else if (args[0].equals("dump")) {
+        else if (args[0].equals("dump")) {// todo dump out, info
             try {
                 Config.json.typeToJson(this.getList(TypesData.iterator()));
                 Config.json.itemToJson(this.getList(ItemsData.iterator()));

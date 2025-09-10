@@ -45,7 +45,7 @@ public class EventHandler {
             Item itemIn = event.getStackIn().getItem();
             Item itemOut = event.getStackOut().getItem();
             if (itemIn == ModItems.STAR_CLOAK && itemOut != ModItems.STAR_CLOAK) {
-                Resources.setHoodState(RenderHelper.shouldRenderInSlot((EntityPlayer) entity, EntityEquipmentSlot.HEAD) && (BaublesApi.isBaubleEquipped(entity, ModItems.DRINKING_HAT) == -1));
+                Resources.setHoodState(RenderHelper.shouldRenderInSlot((EntityPlayer) entity, EntityEquipmentSlot.HEAD) && (BaublesApi.getIndexInBaubles(entity, ModItems.DRINKING_HAT, 0) == -1));
             }
             else if (itemIn == ModItems.DRINKING_HAT && itemOut != ModItems.DRINKING_HAT) {
                 if (Resources.getHoodState()) {
@@ -74,7 +74,7 @@ public class EventHandler {
                 }
                 else if (!stackOut.isEmpty()) {
                     if (!Resources.getHoodState()) {
-                        Resources.setHoodState(RenderHelper.shouldRenderInSlot((EntityPlayer) entity, EntityEquipmentSlot.HEAD) && (BaublesApi.isBaubleEquipped(entity, ModItems.DRINKING_HAT) == -1));
+                        Resources.setHoodState(RenderHelper.shouldRenderInSlot((EntityPlayer) entity, EntityEquipmentSlot.HEAD) && (BaublesApi.getIndexInBaubles(entity, ModItems.DRINKING_HAT, 0) == -1));
                     }
                 }
             }

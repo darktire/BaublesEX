@@ -5,6 +5,11 @@
   "minVersion": "0.8",
   "refmap": "mixins.baubles.refmap.json",
   "mixins": [
+    "ebwizardry.MixinItem",
+    "extrautils2.MixinItem",
+    "wings.MixinWings"
+  ],
+  "client": [
     "artifacts.MixinAttributeModifierBauble",
     "artifacts.MixinBaubleAmulet",
     "artifacts.MixinBaubleAntidoteVessel",
@@ -19,18 +24,18 @@
     "bountifulbaubles.MixinItemShieldCobalt",
     "bountifulbaubles.MixinItemSunglasses",
     "bountifulbaubles.MixinProxy",
-    "ebwizardry.MixinItem",
     "enigmaticlegacy.MixinAmulet",
     "enigmaticlegacy.MixinCharm",
     "enigmaticlegacy.MixinItemHalfHeartMask",
-    "enigmaticlegacy.MixinScroll",
-    "extrautils2.MixinItem",
-    "wings.MixinWings"
-  ],
-  "client": [
     "enigmaticlegacy.MixinLayerScroll",
     "enigmaticlegacy.MixinProxy",
-    "mobends.MixinCustomCape"
+    "enigmaticlegacy.MixinScroll",
+    "mobends.MixinCustomCape",
+    "xat.MixinTrinketDamageShield",
+    "xat.MixinTrinketEnderTiara",
+    "xat.MixinTrinketFaelisClaws",
+    "xat.MixinTrinketSeaStone",
+    "xat.MixinTrinketsRenderLayer"
   ],
   "server": [
   ],

@@ -5,6 +5,7 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.registries.TypesData;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -12,6 +13,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class BaublesContainer extends ItemStackHandler implements IBaublesModifiable {
 
@@ -171,12 +173,20 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     }
 
     @Override
-    public List<ItemStack> getStacksInSlot(BaubleTypeEx type) {
-        LinkedList<ItemStack> stacks = new LinkedList<>();
-        for (int i = 0; i < this.getSlots(); i++) {
-            if (this.MODIFIED_SLOTS.get(i) == type) stacks.add(this.stacks.get(i));
+    public int indexOf(Object o, int start) {
+        if (o instanceof ItemStack) return indexOf(this.stacks, start, stack -> ItemStack.areItemStacksEqual(stack, (ItemStack) o));
+        else if (o instanceof Item) return indexOf(this.stacks, start, stack -> stack.getItem() == o);
+        else if (o instanceof BaubleTypeEx) return indexOf(this.MODIFIED_SLOTS, start, type -> type == o);
+        return -1;
+    }
+
+    private static <T> int indexOf(List<T> list, int start, Predicate<? super T> predicate) {
+        for (int i = start, max = list.size(); i < max; i++) {
+            if (predicate.test(list.get(i))) {
+                return i;
+            }
         }
-        return stacks;
+        return -1;
     }
 
 //    @Override
@@ -353,13 +363,11 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
             int slot = itemTags.getInteger("Slot");
             boolean flag = false;
             ItemStack stack = new ItemStack(itemTags);
-            if (slot >= 0 && slot < stacks.size()
-                    && BaublesApi.isBauble(stack)
-                    && BaublesApi.toBauble(stack).getTypes(stack).contains(getTypeInSlot(slot))) {
+            if (slot >= 0 && slot < this.stacks.size() && this.isItemValidForSlot(slot, stack, this.entity)) {
                 flag = true;
             }
             if (flag) {
-                stacks.set(slot, stack);
+                this.stacks.set(slot, stack);
             }
             else {
                 this.droppingItem.push(stack);

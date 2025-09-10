@@ -1,5 +1,6 @@
 pluginManagement {
     repositories {
+        maven { url = 'https://lss233.littleservice.cn/repositories/minecraft/' }
         mavenLocal()
         mavenCentral()
         gradlePluginPortal()

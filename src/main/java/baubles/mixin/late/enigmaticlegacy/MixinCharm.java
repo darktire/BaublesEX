@@ -7,7 +7,6 @@ import keletu.enigmaticlegacy.item.ItemBerserkEmblem;
 import keletu.enigmaticlegacy.item.ItemEnigmaticEye;
 import keletu.enigmaticlegacy.item.ItemMiningCharm;
 import keletu.enigmaticlegacy.item.ItemMonsterCharm;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -28,7 +27,7 @@ public class MixinCharm {
 
     @Unique
     public ResourceLocation brs$getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        return TextureMap.LOCATION_BLOCKS_TEXTURE;
+        return ModelCharm.getTexture();
     }
 
     @Unique

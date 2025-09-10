@@ -1,35 +1,29 @@
-package baubles.mixin.late.enigmaticlegacy;
+package baubles.mixin.late.xat;
 
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.compat.enigmaticlegacy.ModelScroll;
-import keletu.enigmaticlegacy.item.ItemBaseBauble;
-import keletu.enigmaticlegacy.item.ItemScrollBauble;
+import baubles.compat.xat.ModelSeaStone;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+import xzeroair.trinkets.items.trinkets.TrinketSeaStone;
 
-@Mixin(ItemScrollBauble.class)
+@Mixin(TrinketSeaStone.class)
 @Implements(@Interface(iface = IRenderBauble.class, prefix = "brs$"))
-public abstract class MixinScroll extends ItemBaseBauble {
-
-    public MixinScroll(String name, EnumRarity rare) {
-        super(name, rare);
-    }
+public class MixinTrinketSeaStone {
 
     @Unique
     public ModelBauble brs$getModel(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        return ModelScroll.instance(this);
+        return ModelSeaStone.instance();
     }
 
     @Unique
     public ResourceLocation brs$getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        return ModelScroll.getTexture();
+        return ModelSeaStone.getTexture();
     }
 
     @Unique

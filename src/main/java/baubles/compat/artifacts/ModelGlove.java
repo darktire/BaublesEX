@@ -1,7 +1,6 @@
 package baubles.compat.artifacts;
 
 import artifacts.common.init.ModItems;
-import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.model.ModelBauble;
@@ -23,7 +22,6 @@ public class ModelGlove extends ModelBauble {
     private static final Map<Map.Entry<Item, Boolean>, ModelGlove> instances = new HashMap<>();
     private final ResourceLocation texture;
     private final ResourceLocation emissive;
-    private static final BaubleTypeEx RING = TypesData.Preset.RING;
 
     public ModelGlove(Item item, boolean slim) {
         super(item, slim);
@@ -55,19 +53,8 @@ public class ModelGlove extends ModelBauble {
 
     private EnumHandSide getHand(EntityLivingBase entity) {
         IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
-        int j = 0, k = 0;
-        for (int i = 0; i < baubles.getSlots(); i++) {
-            if (baubles.getTypeInSlot(i) == RING) {
-                j = i;
-                break;
-            }
-        }
-        for (int i = 0; i < baubles.getSlots(); i++) {
-            if (baubles.getStackInSlot(i).getItem() == this.item) {
-                k = i;
-                break;
-            }
-        }
+        int k = baubles.indexOf(TypesData.Preset.RING, 0);
+        int j = baubles.indexOf(this.item, 0);
         return ((k - j) & 1) == 0 ? EnumHandSide.RIGHT : EnumHandSide.LEFT;
     }
 

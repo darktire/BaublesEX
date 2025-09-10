@@ -5,8 +5,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import java.util.List;
-
 public interface IBaublesItemHandler extends IItemHandlerModifiable {
 
     boolean isItemValidForSlot(int slot, ItemStack stack, EntityLivingBase entity);
@@ -27,7 +25,7 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 
 	BaubleTypeEx getTypeInSlot(int index);
 
-	List<ItemStack> getStacksInSlot(BaubleTypeEx type);
+	int indexOf(Object o, int start);
 
 	boolean haveDroppingItem();
 	ItemStack getDroppingItem();

@@ -21,6 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Map;
 
 public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
@@ -37,34 +38,23 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
     @Override
     public void doRenderLayer(@Nonnull EntityPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (player.getActivePotionEffect(MobEffects.INVISIBILITY) == null) {
-            IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
             QueryCtx ctx = new QueryCtx(player, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
-            for (int i = 0; i < baubles.getSlots(); i++) {
-                if (baubles.getVisible(i)) {
-                    ItemStack stack = baubles.getStackInSlot(i);
-                    IWrapper wrapper = BaublesApi.toBauble(stack);
-                    if (wrapper != null) {
-                        ctx.setStack(stack);
-                        ctx.setWrapper(wrapper);
-                        BaublesRenderEvent.InBaubles event = new BaublesRenderEvent.InBaubles(player, this.slim, stack, i);
-                        MinecraftForge.EVENT_BUS.post(event);
-                        if (event.isCanceled()) continue;
-                        this.renderLayer(ctx);
-                    }
-                }
-            }
-            for (EntityEquipmentSlot slotIn : EntityEquipmentSlot.values()) {
-                if (slotIn.getSlotType() == EntityEquipmentSlot.Type.ARMOR) {
-                    ItemStack stack = player.getItemStackFromSlot(slotIn);
-                    IWrapper wrapper = BaublesApi.toBauble(stack);
-                    if (wrapper != null) {
-                        ctx.setStack(stack);
-                        ctx.setWrapper(wrapper);
-                        BaublesRenderEvent.InEquipments event = new BaublesRenderEvent.InEquipments(player, this.slim, stack, slotIn);
-                        MinecraftForge.EVENT_BUS.post(event);
-                        if (event.isCanceled()) continue;
-                        this.renderLayer(ctx);
-                    }
+            BaublesApi.applyByIndex(player, (baubles, i) -> renderPerSlots(new BaubleRef(baubles, i), ctx));
+            Arrays.stream(EntityEquipmentSlot.values()).forEach(i -> renderPerSlots(new ArmorRef(i), ctx));
+        }
+    }
+
+    private void renderPerSlots(SlotRef slot, QueryCtx ctx) {
+        if (slot.visible()) {
+            ItemStack stack = slot.getStack(ctx.entity);
+            IWrapper wrapper = BaublesApi.toBauble(stack);
+            if (wrapper != null) {
+                ctx.setStack(stack);
+                ctx.setWrapper(wrapper);
+                BaublesRenderEvent event = BaublesRenderEvent.of(ctx.entity, this.slim, stack, slot.id);
+                MinecraftForge.EVENT_BUS.post(event);
+                if (!event.isCanceled()) {
+                    this.renderLayer(ctx);
                 }
             }
         }
@@ -158,7 +148,7 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
         return renderPlayer;
     }
 
-    public static final class QueryCtx {
+    private static final class QueryCtx {
         private final EntityLivingBase entity;
         private final float limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale;
         private ItemStack stack;
@@ -181,6 +171,47 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
 
         public void setWrapper(IWrapper wrapper) {
             this.wrapper = wrapper;
+        }
+    }
+
+    private static abstract class SlotRef {
+        private final Object id;
+        private SlotRef(Object id) { this.id = id; }
+        protected abstract ItemStack getStack(EntityLivingBase e);
+        protected abstract boolean visible();
+    }
+
+    private static final class BaubleRef extends SlotRef {
+        private final IBaublesModifiable baubles;
+        private final int index;
+        private BaubleRef(IBaublesModifiable baubles, int index) {
+            super(index);
+            this.baubles = baubles;
+            this.index = index;
+        }
+        @Override
+        protected ItemStack getStack(EntityLivingBase p) {
+            return this.baubles.getStackInSlot(index);
+        }
+        @Override
+        protected boolean visible() {
+            return this.baubles.getVisible(index);
+        }
+    }
+
+    private static final class ArmorRef extends SlotRef {
+        private final EntityEquipmentSlot slot;
+        private ArmorRef(EntityEquipmentSlot slotIn) {
+            super(slotIn);
+            this.slot = slotIn;
+        }
+        @Override
+        protected ItemStack getStack(EntityLivingBase e) {
+            return e.getItemStackFromSlot(slot);
+        }
+        @Override
+        protected boolean visible() {
+            return slot.getSlotType() == EntityEquipmentSlot.Type.ARMOR;
         }
     }
 }
