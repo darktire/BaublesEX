@@ -25,7 +25,7 @@ public final class BaublesWrapper implements IWrapper {
     private BaubleTypeEx type;
     private List<BaubleTypeEx> types;
     private ResourceLocation registryName;
-    public boolean haSub = false;// todo solve metadata
+    public boolean hasSub = false;// todo solve metadata
 
     public BaublesWrapper() {}
 
@@ -33,20 +33,19 @@ public final class BaublesWrapper implements IWrapper {
         this.item = item;
         this.bauble = bauble;
         if (item.getHasSubtypes()) {
-            this.haSub = true;
+            this.hasSub = true;
 //            for (int meta = 0;; meta++) {
 //                if (!item.getHasSubtypes()) break;
 //            }
         }
-        this.wrapBauble(item, bauble);
+        this.wrapBauble(bauble);
         this.registerRender(item);
     }
 
-    private void wrapBauble(Item item, IBauble bauble) {
+    private void wrapBauble(IBauble bauble) {
         if (bauble != null) {
-            ItemStack stack = new ItemStack(item);
-            this.type = bauble.getType(stack);
-            this.types = bauble.getTypes(stack);
+            this.type = bauble.getType(ItemStack.EMPTY);
+            this.types = bauble.getTypes(ItemStack.EMPTY);
             if (this.types == null || this.types.isEmpty()) {
                 this.types = new LinkedList<>();
                 this.types.add(this.type);

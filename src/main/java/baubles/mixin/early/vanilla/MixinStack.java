@@ -6,20 +6,31 @@ import baubles.api.IBauble;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.registries.TypesData;
 import baubles.common.config.Config;
+import baubles.util.ICapabilityModifiable;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.CapabilityDispatcher;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.LoaderState;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ItemStack.class)
 public abstract class MixinStack {
+
+    @Shadow(remap = false)
+    private CapabilityDispatcher capabilities;
 
     @Inject(method = "useItemRightClick", at = @At("RETURN"), cancellable = true)
     private void playerRightClickItem(World worldIn, EntityPlayer playerIn, EnumHand hand, CallbackInfoReturnable<ActionResult<ItemStack>> cir) {
@@ -42,5 +53,12 @@ public abstract class MixinStack {
             }
         }
         cir.setReturnValue(new ActionResult<>(EnumActionResult.SUCCESS, playerIn.getHeldItem(hand)));
+    }
+
+    @Inject(method = "<init>(Lnet/minecraft/item/Item;IILnet/minecraft/nbt/NBTTagCompound;)V", at = @At("TAIL"))
+    public void redirectBaubleCap(Item itemIn, int amount, int meta, NBTTagCompound capNBT, CallbackInfo ci) {
+        if (Loader.instance().getLoaderState() != LoaderState.NOINIT && this.capabilities != null) {
+            ((ICapabilityModifiable) (Object) this.capabilities).patchCap((ItemStack) (Object) this);
+        }
     }
 }

@@ -1,0 +1,39 @@
+repositories {
+    maven { url 'https://maven.cleanroommc.com' }
+    mavenLocal()
+}
+
+dependencies {
+    minecraft(
+            group  : "${forge_group}",
+            name   : "forge",
+            version: "${minecraft_version}-${forge_version}"
+    )
+
+    annotationProcessor 'org.ow2.asm:asm-debug-all:5.2'
+    annotationProcessor 'com.google.guava:guava:32.1.2-jre'
+    annotationProcessor 'com.google.code.gson:gson:2.8.9'
+
+    implementation ('zone.rong:mixinbooter:10.6') {
+        transitive = false
+    }
+    annotationProcessor ('zone.rong:mixinbooter:10.6') {
+        transitive = false
+    }
+//    implementation 'com.cleanroommc:configanytime:3.0'
+}
+
+fancyGradle {
+    patches {
+        coremods
+        codeChickenLib
+        asm
+        mergetool
+    }
+}
+
+mixin {
+    add sourceSets.main, refmap_configs.replace('${mod_id}', mod_id)
+
+    debug = true
+}

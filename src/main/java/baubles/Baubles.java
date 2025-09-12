@@ -26,13 +26,12 @@ import org.apache.logging.log4j.Logger;
 @Mod(
         modid = Baubles.MOD_ID,
         name = Baubles.MOD_NAME,
-        version = Baubles.VERSION,
-        guiFactory = Baubles.FACTORY)
+        guiFactory = Baubles.FACTORY
+)
 public class Baubles {
 
     public static final String MOD_ID = "baubles";
     public static final String MOD_NAME = "BaublesEX";
-    public static final String VERSION = "2.2.4";
     public static final String FACTORY = "baubles.client.gui.config.BaublesGuiFactory";
 
     @SidedProxy(clientSide = "baubles.proxy.ClientProxy", serverSide = "baubles.proxy.CommonProxy")

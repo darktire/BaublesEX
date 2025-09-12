@@ -14,23 +14,26 @@ import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 
 public class BaublesCapabilityProvider implements ICapabilityProvider, INBTSerializable<NBTTagCompound> {
     private final BaublesWrapper wrapper;
+    private final ICapabilityProvider other;
 
-    public BaublesCapabilityProvider(ItemStack itemStack) {
+    public BaublesCapabilityProvider(ItemStack itemStack, ICapabilityProvider other) {
         this.wrapper = ItemsData.toBauble(itemStack.getItem());
+        this.other = other;
     }
 
     public BaublesCapabilityProvider(Item item) {
         this.wrapper = ItemsData.toBauble(item);
+        this.other = null;
     }
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capability == CAPABILITY_ITEM_BAUBLE;
+        return capability == CAPABILITY_ITEM_BAUBLE || (this.other != null && this.other.hasCapability(capability, facing));
     }
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        return capability == CAPABILITY_ITEM_BAUBLE ? CAPABILITY_ITEM_BAUBLE.cast(wrapper) : null;
+        return capability == CAPABILITY_ITEM_BAUBLE ? CAPABILITY_ITEM_BAUBLE.cast(wrapper) : (this.other == null ? null : this.other.getCapability(capability, facing));
     }
 
     @Override

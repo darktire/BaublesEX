@@ -3,7 +3,6 @@ plugins {
     id 'wtf.gofancy.fancygradle' version '1.1.+'
     id 'org.spongepowered.mixin' version '0.7.+'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
-//    id 'com.gtnewhorizons.retrofuturagradle' version '1.4.1'
 }
 
 version = "${version_major}.${version_minor}.${version_patch}"
@@ -30,8 +29,6 @@ minecraft {
         }
 
         server {}
-
-
     }
 
     legacy {
@@ -39,147 +36,14 @@ minecraft {
     }
 }
 
-fancyGradle {
-    patches {
-//        resources
-        coremods
-        codeChickenLib
-        asm
-        mergetool
-    }
-}
-
-repositories {
-    mavenCentral()
-    maven {
-        name "Curse Maven"
-        url "https://www.cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-    maven {
-        name "Jared's maven"
-        url "https://maven.blamejared.com/"
-    }
-    maven {
-        name "CoFH Maven"
-        url "https://maven.covers1624.net"
-    }
-//    maven { url "https://maven.tehnut.info" }
-    maven { url 'https://maven.blamejared.com' }
-    maven { url 'https://maven.cleanroommc.com' }
-}
-
-dependencies {
-    minecraft(
-        group  : "${forge_group}",
-        name   : "forge",
-        version: "${minecraft_version}-${forge_version}"
-    )
-//    shadow 'zone.rong:mixinbooter:10.6'
-
-    annotationProcessor 'org.ow2.asm:asm-debug-all:5.2'
-    annotationProcessor 'com.google.guava:guava:32.1.2-jre'
-    annotationProcessor 'com.google.code.gson:gson:2.8.9'
-
-    implementation ('zone.rong:mixinbooter:10.6') {
-        transitive = false
-    }
-    annotationProcessor ('zone.rong:mixinbooter:10.6') {
-        transitive = false
-    }
-//    implementation 'com.cleanroommc:configanytime:3.0'
-
-    runtimeOnly fileTree(dir: 'libs', includes: ['*.jar'])
-//    compileOnly fileTree(dir: 'libs', includes: ['*.jar'])
-
-    //JEI
-//    compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")
-//    runtimeOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}")
-    //HEI
-    implementation 'mezz:jei:4.29.7'
-    //CoFH
-//    runtimeOnly fg.deobf("curse.maven:redstone-flux-270789:2920436")
-//    runtimeOnly fg.deobf("curse.maven:cofh-core-69162:2920433")
-    compileOnly fg.deobf("curse.maven:cofh-core-69162:2920433")
-    //Bookshelf
-//    runtimeOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-${minecraft_version}:${bookshelf_version}")
-
-    //TOP
-    runtimeOnly fg.deobf("curse.maven:the-one-probe-community-edition-885670:6736118")
-//    runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:2667280")
-    //Mo' Bends
-    compileOnly fg.deobf("curse.maven:mo-bends-231347:3573346")
-    runtimeOnly fg.deobf("curse.maven:mo-bends-231347:3573346")
-    //Test dummy
-    implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:2503041")
-    //Botania
-//    runtimeOnly fg.deobf("curse.maven:botania-225643:3330934")
-//    runtimeOnly fg.deobf("curse.maven:botania-ceu-1179448:6900692")
-    //ExU2
-    compileOnly fg.deobf("curse.maven:extra-utilities-225561:2678374")
-//    runtimeOnly fg.deobf("curse.maven:extra-utilities-225561:2678374")
-    //Wings
-    compileOnly fg.deobf("curse.maven:wings-302584:2829351")
-//    runtimeOnly fg.deobf("curse.maven:wings-302584:2829351")
-    //RLArtifacts
-    implementation fg.deobf("curse.maven:rl-artifacts-819886:4475428")
-    //BountifulBaubles
-    implementation fg.deobf("curse.maven:bountifulbaubles-313536:3568240")
-    //trinkets-and-baubles
-    implementation fg.deobf("curse.maven:trinkets-and-baubles-279900:5717039")
-    //wizardry
-    compileOnly fg.deobf("curse.maven:electroblobs-wizardry-265642:6950392")
-    //enigmatic
-//    runtimeOnly fg.deobf("curse.maven:fermiumbooter2mixinbooter-1163720:6552152")
-    compileOnly fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:6816073")
-//    runtimeOnly fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:6816073")
-    //aether
-//    implementation fg.deobf("curse.maven:aether-255308:6316434")
-}
-
-mixin {
-    add sourceSets.main, refmap_configs.replace('${mod_id}', mod_id)
-
-    debug.verbose = true
-    debug.export = true
-}
-
-tasks.register('copyResource', Copy) {
-    group("custom tasks")
-    inputs.files sourceSets.main.resources.srcDirs
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude '**/*.bak', '**/*.psd', 'mcmod.info'
-    }
-    into 'build/classes/java/main'
-}
-
-tasks.register('copyInfo', Copy) {
-    group("custom tasks")
-    inputs.files 'gradle.properties'
-
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand mod_id:mod_id, mod_name:mod_name, version:version, mcversion:minecraft_version
-    }
-    into 'build/classes/java/main'
-}
+apply from: 'gradle/scripts/necessary_dependencies.gradle'
+apply from: 'gradle/scripts/dependencies.gradle'
+apply from: 'gradle/scripts/templates.gradle'
 
 tasks.register('cleanLogs', Delete) {
     group("custom tasks")
     delete("run/crash-reports")
     delete("run/logs")
-}
-
-processResources {
-    enabled = false
-}
-
-classes.configure {
-    dependsOn(copyInfo)
-    dependsOn(copyResource)
 }
 
 jar {
