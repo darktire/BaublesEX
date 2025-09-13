@@ -5,9 +5,12 @@ public abstract class PartialConfig {
 
     public abstract void loadData();
 
-    public static <T extends PartialConfig> void create(Class<T> clazz) {
+    @SafeVarargs
+    public static void create(Class<? extends PartialConfig>... classes) {
         try {
-            clazz.getDeclaredConstructor().newInstance();
+            for (Class<?> clazz : classes) {
+                clazz.getDeclaredConstructor().newInstance();
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

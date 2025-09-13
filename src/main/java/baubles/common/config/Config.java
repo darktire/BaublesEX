@@ -40,10 +40,6 @@ public class Config extends PartialConfig {
             configFile = new Configuration(event.getSuggestedConfigurationFile());
             configFile.load();
 
-            PartialConfig.create(Slots.class);
-            PartialConfig.create(Gui.class);
-            PartialConfig.create(ModItems.class);
-            PartialConfig.create(Commands.class);
             PartialConfig.create(Config.class);
             json = new JsonHelper(modDir);
         } catch (Exception e) {
@@ -59,6 +55,8 @@ public class Config extends PartialConfig {
 //        armorStand = configFile.getBoolean("armorStand", CATEGORY_GENERAL, armorStand, "Whether armorStand has baubles container (need to place armorStand again)");
 
         clickBlacklist = configFile.getStringList("clickBlacklist", CATEGORY_GENERAL, clickBlacklist, "");
+
+        PartialConfig.create(Slots.class, Gui.class, ModItems.class, Commands.class);
     }
 
     private static void saveConfig() {
@@ -125,6 +123,7 @@ public class Config extends PartialConfig {
         public static boolean widerBar = false;
         public static boolean visibleSwitchers = true;
         public static int column = 2;
+        public static boolean aetherButton = false;
 
         @Override
         public void loadData() {
@@ -133,6 +132,7 @@ public class Config extends PartialConfig {
             widerBar = configFile.getBoolean("widerBar", CLIENT_GUI, widerBar, "Default selection of the sidebar");
             column = configFile.getInt("column", CLIENT_GUI, column, 2,5, "Columns of the wider sidebar");
             visibleSwitchers = configFile.getBoolean("visibleSwitchers", CLIENT_GUI, visibleSwitchers, "Show visible switchers or not");
+            aetherButton = configFile.getBoolean("aetherButton", CLIENT_GUI, aetherButton, "Show aether accessory button or not");
             configFile.getCategory(CLIENT_GUI).setComment("Edit new gui.");
         }
     }
@@ -174,10 +174,6 @@ public class Config extends PartialConfig {
         @SubscribeEvent
         public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
             if (eventArgs.getModID().equals(Baubles.MOD_ID)) {
-                PartialConfig.create(Slots.class);
-                PartialConfig.create(Gui.class);
-                PartialConfig.create(ModItems.class);
-                PartialConfig.create(Commands.class);
                 PartialConfig.create(Config.class);
                 Config.saveConfig();
                 if (Config.rightClick) Config.setupBlacklist();

@@ -6,7 +6,6 @@ import baubles.util.HookHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
@@ -27,10 +26,11 @@ public class ClientProxy extends CommonProxy {
     public void preInit() {
         super.preInit();
         KeyBindings.register();
-        if (HookHelper.isModLoaded("RLArtifacts")) MinecraftForge.EVENT_BUS.register(baubles.compat.artifacts.EventHandler.class);
-        if (Loader.isModLoaded("bountifulbaubles")) MinecraftForge.EVENT_BUS.register(baubles.compat.bountifulbaubles.EventHandler.class);
-        if (Loader.isModLoaded("enigmaticlegacy")) MinecraftForge.EVENT_BUS.register(baubles.compat.enigmaticlegacy.EventHandler.class);
-        if (Loader.isModLoaded("xat")) MinecraftForge.EVENT_BUS.register(baubles.compat.xat.EventHandler.class);
+        patchModsEvents(HookHelper.isModLoaded("RLArtifacts"), "artifacts", true);
+        patchModsEvents(Loader.isModLoaded("bountifulbaubles"), "bountifulbaubles", true);
+        patchModsEvents(Loader.isModLoaded("enigmaticlegacy"), "enigmaticlegacy", true);
+        patchModsEvents(Loader.isModLoaded("xat"), "xat", true);
+        patchModsEvents(Loader.isModLoaded("aether_legacy"), "aether_legacy", true);
     }
 
     @Override

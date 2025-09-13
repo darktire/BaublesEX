@@ -42,4 +42,8 @@ public class EventHandlerItem {
         BaublesRegister.registerItems();
         if (Config.rightClick) Config.setupBlacklist();
     }
+
+    public static ResourceLocation getItemCap() {
+        return ITEM_CAP;
+    }
 }

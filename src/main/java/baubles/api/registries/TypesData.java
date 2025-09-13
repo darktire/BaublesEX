@@ -84,7 +84,7 @@ public class TypesData {
     public static class Preset {
         public static BaubleTypeEx HEAD = BaubleType.HEAD.getExpansion();
         public static BaubleTypeEx AMULET = BaubleType.AMULET.getExpansion();
-        public static BaubleTypeEx BODY = BaubleType.BELT.getExpansion();
+        public static BaubleTypeEx BODY = BaubleType.BODY.getExpansion();
         public static BaubleTypeEx RING = BaubleType.RING.getExpansion();
         public static BaubleTypeEx BELT = BaubleType.BELT.getExpansion();
         public static BaubleTypeEx CHARM = BaubleType.CHARM.getExpansion();

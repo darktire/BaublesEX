@@ -6,7 +6,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class EventHandler {
+public class ClientEventHandler {
     @SubscribeEvent
     public static void updateAngle(BaublesEvent.Equip event) {
         EntityLivingBase entity = event.getEntityLiving();

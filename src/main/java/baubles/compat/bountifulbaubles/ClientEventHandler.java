@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import vazkii.botania.api.item.IPhantomInkable;
 
-public class EventHandler {
+public class ClientEventHandler {
     @SubscribeEvent
     public static void applyControl(BaublesRenderEvent event) {
         if (doNotRender(event.getStack())) event.canceled();

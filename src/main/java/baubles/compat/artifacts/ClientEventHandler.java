@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class EventHandler {
+public class ClientEventHandler {
     @SubscribeEvent
     public static void applyControl(BaublesRenderEvent.InBaubles event) {
         EntityLivingBase entity = event.getEntityLiving();

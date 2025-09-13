@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "refmap": "mixins.baubles.refmap.json",
   "mixins": [
+    "aether_legacy.MixinInventoryAccessories",
     "wings.MixinWings"
   ],
   "client": [

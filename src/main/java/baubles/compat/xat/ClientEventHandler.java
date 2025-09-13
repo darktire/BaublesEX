@@ -4,7 +4,7 @@ import baubles.api.event.BaublesRenderEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xzeroair.trinkets.items.trinkets.TrinketEnderTiara;
 
-public class EventHandler {
+public class ClientEventHandler {
 
     @SubscribeEvent
     public static void equipmentRenderEvent(BaublesRenderEvent.InEquipments event) {
