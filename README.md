@@ -33,8 +33,11 @@
 - [x] control the visibility of baubles. The following are the mods that can be controlled:
   - [x] RLArtifacts
   - [x] Bountiful Baubles
+  - [x] Trinkets and Baubles
+  - [x] Enigmatic Legacy
+  - [x] I&F
   - [ ] ...
-  - [ ] need help
+  - [ ] need your help
 - [x] more command
 - [x] add bauble button in creative tab
 - [x] elytra can be a bauble in the config

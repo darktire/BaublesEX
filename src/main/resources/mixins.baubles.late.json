@@ -29,6 +29,8 @@
     "enigmaticlegacy.MixinLayerScroll",
     "enigmaticlegacy.MixinProxy",
     "enigmaticlegacy.MixinScroll",
+    "iceandfire.MixinHeadWear",
+    "iceandfire.MixinLayer",
     "mobends.MixinCustomCape",
     "xat.MixinTrinketDamageShield",
     "xat.MixinTrinketEnderTiara",

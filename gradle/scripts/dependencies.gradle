@@ -6,6 +6,7 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven { url 'https://lss233.littleservice.cn/repositories/minecraft/' }
     maven {
         name "Jared's maven"
         url "https://maven.blamejared.com/"
@@ -14,15 +15,13 @@ repositories {
         name "CoFH Maven"
         url "https://maven.covers1624.net"
     }
-//    maven { url "https://maven.tehnut.info" }
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://maven.cleanroommc.com' }
     mavenLocal()
 }
 
 dependencies {
-    runtimeOnly fileTree(dir: 'libs', includes: ['*.jar'])
-//    compileOnly fileTree(dir: 'libs', includes: ['*.jar'])
+    runtimeOnly fileTree(dir: 'libs/runtime', includes: ['*.jar'])
 
     //JEI
 //    compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")
@@ -35,6 +34,9 @@ dependencies {
     compileOnly fg.deobf("curse.maven:cofh-core-69162:2920433")
     //Bookshelf
 //    runtimeOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-${minecraft_version}:${bookshelf_version}")
+    //llibrary
+    runtimeOnly fg.deobf('net.ilexiconn:llibrary-core:1.0.11-1.12.2')
+    runtimeOnly fg.deobf('net.ilexiconn:llibrary:1.7.19-1.12.2:dev')
 
     //TOP
     runtimeOnly fg.deobf("curse.maven:the-one-probe-community-edition-885670:6736118")
@@ -61,8 +63,10 @@ dependencies {
     compileOnly fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:6816073")
 //    runtimeOnly fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:6816073")
     //aether
-    implementation fg.deobf("curse.maven:aether-255308:6316434")
+    compileOnly fg.deobf("curse.maven:aether-255308:6316434")
     //crafttweaker
 //    compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}:deobf"
 //    runtimeOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}:deobf"
+
+    implementation files("libs/iceandfire-rlcraft.jar")
 }
