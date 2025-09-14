@@ -21,11 +21,10 @@ public class CommandHelp extends CommandBase {
         if (args[0].equalsIgnoreCase("help")) {
             sender.sendMessage(new TextComponentTranslation("/baubles view <player>"));
             sender.sendMessage(new TextComponentTranslation("/baubles hand"));
-            sender.sendMessage(new TextComponentTranslation("/baubles clear <player> [<slot>]"));
-            sender.sendMessage(new TextComponentTranslation("/baubles clear <player> modifier"));
-            sender.sendMessage(new TextComponentTranslation("/baubles add <player> <type> <number>"));
-            sender.sendMessage(new TextComponentTranslation("/baubles set <player> <slot> <item>"));
+            sender.sendMessage(new TextComponentTranslation("/baubles clear <player> <slot>"));
+            sender.sendMessage(new TextComponentTranslation("/baubles slots <option> <player> <type> <number>"));
             sender.sendMessage(new TextComponentTranslation("/baubles set <player> <slot> <item> <meta> {nbt}"));
+            sender.sendMessage(new TextComponentTranslation("/baubles dump"));
         }
     }
 }

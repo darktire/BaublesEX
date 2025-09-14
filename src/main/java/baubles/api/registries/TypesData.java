@@ -10,6 +10,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class TypesData {
     private static final String DATA_ID = "baubles";
@@ -77,6 +78,10 @@ public class TypesData {
 
     public static Iterator<BaubleTypeEx> iterator() {
         return REGISTRY.iterator();
+    }
+
+    public static void applyToTypes(Consumer<BaubleTypeEx> c) {
+        REGISTRY.iterator().forEachRemaining(c);
     }
 
 

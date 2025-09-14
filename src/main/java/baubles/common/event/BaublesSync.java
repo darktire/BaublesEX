@@ -91,12 +91,12 @@ public class BaublesSync {
 
     private static void syncModifier(EntityLivingBase entity, Collection<? extends EntityPlayerMP> receivers) {
         IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
-        TypesData.iterator().forEachRemaining(type -> {
+        TypesData.applyToTypes(type -> {
             String typeName = type.getTypeName();
             int modifier = baubles.getModifier(typeName);
             if (modifier != 0) {
                 for (EntityPlayerMP receiver : receivers) {
-                    PacketHandler.INSTANCE.sendTo(new PacketModifySlots(entity, typeName, modifier, 0), receiver);
+                    PacketHandler.INSTANCE.sendTo(new PacketModifySlots(entity, typeName, modifier, 1), receiver);
                 }
             }
         });

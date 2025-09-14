@@ -6,7 +6,6 @@ repositories {
             includeGroup "curse.maven"
         }
     }
-    maven { url 'https://lss233.littleservice.cn/repositories/minecraft/' }
     maven {
         name "Jared's maven"
         url "https://maven.blamejared.com/"
@@ -17,6 +16,7 @@ repositories {
     }
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://maven.cleanroommc.com' }
+    maven { url 'https://lss233.littleservice.cn/repositories/minecraft/' }
     mavenLocal()
 }
 
@@ -35,8 +35,8 @@ dependencies {
     //Bookshelf
 //    runtimeOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-${minecraft_version}:${bookshelf_version}")
     //llibrary
-    runtimeOnly fg.deobf('net.ilexiconn:llibrary-core:1.0.11-1.12.2')
-    runtimeOnly fg.deobf('net.ilexiconn:llibrary:1.7.19-1.12.2:dev')
+//    runtimeOnly fg.deobf('net.ilexiconn:llibrary-core:1.0.11-1.12.2')
+//    runtimeOnly fg.deobf('net.ilexiconn:llibrary:1.7.19-1.12.2:dev')
 
     //TOP
     runtimeOnly fg.deobf("curse.maven:the-one-probe-community-edition-885670:6736118")
@@ -67,6 +67,7 @@ dependencies {
     //crafttweaker
 //    compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}:deobf"
 //    runtimeOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}:deobf"
-
-    implementation files("libs/iceandfire-rlcraft.jar")
+    //I&F_RL
+    compileOnly fg.deobf("curse.maven:iceandfire-rlcraft-888556:6596246")
+//    runtimeOnly files("libs/iceandfire-rlcraft.jar")
 }

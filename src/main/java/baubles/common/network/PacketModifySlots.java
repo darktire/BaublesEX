@@ -26,8 +26,8 @@ public class PacketModifySlots implements IMessage {
     /**
      * @param entity sever player
      * @param typeName  bauble type
-     * @param modifier value of modifier, unused when addition > 1
-     * @param addition 0 means setting; 1 means addition; 2 means reset
+     * @param modifier value of modifier, be used when addition == 3
+     * @param addition 0 means setting; 1 means modifying base on previous; 2 means modifying base on normal; 3 means reset
      */
     public PacketModifySlots(EntityLivingBase entity, String typeName, int modifier, int addition) {
         this.entityId = entity.getEntityId();
@@ -38,15 +38,11 @@ public class PacketModifySlots implements IMessage {
         this.addition = addition;
     }
 
-    /**
-     * @param entity sever player
-     * @param addition 2 means reset
-     */
-    public PacketModifySlots(EntityLivingBase entity, int addition) {
+    public PacketModifySlots(EntityLivingBase entity) {
         this.entityId = entity.getEntityId();
-        this.typeId = 0;
+        this.typeId = -1;
         this.modifier = 0;
-        this.addition = addition;
+        this.addition = 3;
     }
 
     @Override
@@ -81,7 +77,9 @@ public class PacketModifySlots implements IMessage {
                 if (message.typeId > -1) {
                     if (message.addition == 0) baublesCL.modifySlot(TypesData.getTypeById(message.typeId).getTypeName(), message.modifier);
                     else if (message.addition == 1) baublesCL.modifySlotOA(TypesData.getTypeById(message.typeId).getTypeName(), message.modifier);
-                    else if (message.addition == 2) baublesCL.clearModifier();
+                    else if (message.addition == 2) baublesCL.setSlot(TypesData.getTypeById(message.typeId).getTypeName(), message.modifier);
+                    else if (message.addition == 3) baublesCL.clearModifier();
+                    baublesCL.updateContainer();
                 }
             }
         }

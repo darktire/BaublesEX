@@ -43,6 +43,15 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     }
 
     @Override
+    public void setSlot(String typeName, int n) {
+        BaubleTypeEx type = TypesData.getTypeByName(typeName);
+        if (type != null) {
+            int original = type.getAmount();
+            modifySlotOA(typeName, n - original);
+        }
+    }
+
+    @Override
     public void modifySlot(String typeName, int modifier) {
         int original = this.BAUBLE_MODIFIER.getOrDefault(typeName, 0);
         modifySlotOA(typeName, modifier - original);

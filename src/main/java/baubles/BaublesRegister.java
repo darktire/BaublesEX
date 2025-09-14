@@ -8,6 +8,7 @@ import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
 import baubles.api.render.IRenderBauble;
 import baubles.common.config.Config;
+import baubles.common.config.json.JsonHelper;
 import baubles.common.items.BaubleElytra;
 import baubles.common.items.ItemRing;
 import baubles.common.items.ItemTire;
@@ -23,7 +24,6 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 public class BaublesRegister {
@@ -48,7 +48,7 @@ public class BaublesRegister {
         }
 
         try {
-            List<BaublesWrapper> items = Config.json.jsonToItem();
+            List<BaublesWrapper> items = JsonHelper.jsonToItem();
             if (items != null) {
                 items.forEach(wrapper -> ItemsData.registerBauble(wrapper.getItem(), wrapper));
             }
@@ -67,7 +67,7 @@ public class BaublesRegister {
         }
 
         try {
-            List<BaubleTypeEx> types = Config.json.jsonToType();
+            List<BaubleTypeEx> types = JsonHelper.jsonToType();
             if (types != null) {
                 types.forEach(TypesData::registerBauble);
             }
@@ -79,8 +79,7 @@ public class BaublesRegister {
     public static void loadValidSlots() {
         int pointer = 0;
         List<BaubleTypeEx> types = new ArrayList<>();
-        Iterator<BaubleTypeEx> iterator = TypesData.iterator();
-        iterator.forEachRemaining(types::add);
+        TypesData.applyToTypes(types::add);
         types.sort(Collections.reverseOrder());
         TypesData.initLazyList();
         for (BaubleTypeEx type : types) {
@@ -94,7 +93,7 @@ public class BaublesRegister {
         TypesData.setSum(pointer);
 
         BaubleTypeEx trinket = TypesData.Preset.TRINKET;
-        iterator.forEachRemaining(trinket::addOriSlots);
+        TypesData.applyToTypes(trinket::addOriSlots);
     }
 
     @Mod.EventBusSubscriber

@@ -4,22 +4,24 @@ import baubles.Baubles;
 import baubles.BaublesRegister;
 import baubles.api.BaubleType;
 import baubles.api.cap.BaublesContainer;
-import baubles.common.config.json.JsonHelper;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
 import java.util.LinkedList;
+import java.util.Map;
 
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
 public class Config extends PartialConfig {
-    private static Configuration configFile;
-    public static JsonHelper json;
+    private static Configuration configIns;
+    public static File MOD_DIR;
 
     //    Configuration Options
     public static boolean keepBaubles = false;
@@ -35,38 +37,55 @@ public class Config extends PartialConfig {
     private static final LinkedList<Item> blacklist = new LinkedList<>();
 
     public static void loadConfig(FMLPreInitializationEvent event) {
-        File modDir = event.getModConfigurationDirectory();
+        MOD_DIR =new File(event.getModConfigurationDirectory(), Baubles.MOD_ID);
         try {
-            configFile = new Configuration(event.getSuggestedConfigurationFile());
-            configFile.load();
+            configIns = new Configuration(event.getSuggestedConfigurationFile());
+            configIns.load();
 
             PartialConfig.create(Config.class);
-            json = new JsonHelper(modDir);
         } catch (Exception e) {
             Baubles.log.error("BAUBLES has a problem loading it's configuration");
         }
+        checkConfig(configIns);
         saveConfig();
-
     }
 
     public void loadData() {
-        keepBaubles = configFile.getBoolean("keepBaubles", CATEGORY_GENERAL, keepBaubles, "Whether baubles can drop when player dies.");
-        rightClick = configFile.getBoolean("rightClick", CATEGORY_GENERAL, rightClick, "Whether player can use right click to equip baubles.");
-//        armorStand = configFile.getBoolean("armorStand", CATEGORY_GENERAL, armorStand, "Whether armorStand has baubles container (need to place armorStand again)");
+        keepBaubles = configIns.getBoolean("keepBaubles", CATEGORY_GENERAL, keepBaubles, "Whether baubles can drop when player dies.");
+        rightClick = configIns.getBoolean("rightClick", CATEGORY_GENERAL, rightClick, "Whether player can use right click to equip baubles.");
+//        armorStand = configIns.getBoolean("armorStand", CATEGORY_GENERAL, armorStand, "Whether armorStand has baubles container (need to place armorStand again)");
 
-        clickBlacklist = configFile.getStringList("clickBlacklist", CATEGORY_GENERAL, clickBlacklist, "");
+        clickBlacklist = configIns.getStringList("clickBlacklist", CATEGORY_GENERAL, clickBlacklist, "");
 
         PartialConfig.create(Slots.class, Gui.class, ModItems.class, Commands.class);
     }
 
-    private static void saveConfig() {
-        if (Config.configFile != null && configFile.hasChanged()) {
-            configFile.save();
+    private static void checkConfig(Configuration cfg) {
+        for (String catName : cfg.getCategoryNames()) {
+            ConfigCategory cat = cfg.getCategory(catName);
+            checkCategory(cat, "");
         }
     }
 
-    public static Configuration getConfigFile() {
-        return configFile;
+    private static void checkCategory(ConfigCategory cat, String path) {
+        for (Map.Entry<String, Property> entry : cat.entrySet()) {
+            if (entry.getValue().getComment().isEmpty()) {
+                cat.remove(entry.getKey());
+            }
+        }
+        for (ConfigCategory child : cat.getChildren()) {
+            checkCategory(child, path.isEmpty() ? cat.getName() : path + "." + cat.getName());
+        }
+    }
+
+    public static void saveConfig() {
+        if (Config.configIns != null && configIns.hasChanged()) {
+            configIns.save();
+        }
+    }
+
+    public static Configuration getConfigIns() {
+        return configIns;
     }
 
     public static LinkedList<Item> getBlacklist() {
@@ -94,24 +113,24 @@ public class Config extends PartialConfig {
             AMULET = getCfgAmount("amuletSlot", BaubleType.AMULET.amount);
             RING = getCfgAmount("ringSlot", BaubleType.RING.amount);
             BELT = getCfgAmount("beltSlot", BaubleType.BELT.amount);
-            TRINKET = getCfgAmount("trinketSlot", BaubleType.TRINKET.amount, "Number of slots only for trinket is equal to the difference between the value you set and all other slots.");
+            TRINKET = getCfgAmount("trinketSlot", BaubleType.TRINKET.amount);
             HEAD = getCfgAmount("headSlot", BaubleType.HEAD.amount);
             BODY = getCfgAmount("bodySlot", BaubleType.BODY.amount);
             CHARM = getCfgAmount("charmSlot", BaubleType.CHARM.amount);
 
-            configFile.getCategory(BAUBLES_SLOTS).setComment("Modify the quantity of initial baubles.");
+            getCategory().setComment("Modify the quantity of initial baubles.");
         }
 
         private int getCfgAmount(String key, int value) {
-            return getCfgAmount(key , value,"");
+            return configIns.getInt(key, BAUBLES_SLOTS, value, 0, 100, "Set slots for " + key.replace("Slot", ""));
         }
 
-        private int getCfgAmount(String key, int value, String comment) {
-            return configFile.getInt(key, BAUBLES_SLOTS, value, 0, 100, comment);
+        public static ConfigCategory getCategory() {
+            return configIns.getCategory(BAUBLES_SLOTS);
         }
 
         public static int getCfgAmount(String key){
-            Property property = configFile.getCategory(BAUBLES_SLOTS).get(key.toLowerCase() + "Slot");
+            Property property = getCategory().get(key.toLowerCase() + "Slot");
             if (property != null) return property.getInt();
             else return 0;
         }
@@ -127,13 +146,13 @@ public class Config extends PartialConfig {
 
         @Override
         public void loadData() {
-            baublesButton = configFile.getBoolean("baublesButton", CLIENT_GUI, baublesButton, "Show baubles button or not");
-            scrollerBar = configFile.getBoolean("scrollerBar", CLIENT_GUI, scrollerBar, "Default visibility of the scroller bar");
-            widerBar = configFile.getBoolean("widerBar", CLIENT_GUI, widerBar, "Default selection of the sidebar");
-            column = configFile.getInt("column", CLIENT_GUI, column, 2,5, "Columns of the wider sidebar");
-            visibleSwitchers = configFile.getBoolean("visibleSwitchers", CLIENT_GUI, visibleSwitchers, "Show visible switchers or not");
-            aetherButton = configFile.getBoolean("aetherButton", CLIENT_GUI, aetherButton, "Show aether accessory button or not");
-            configFile.getCategory(CLIENT_GUI).setComment("Edit new gui.");
+            baublesButton = configIns.getBoolean("baublesButton", CLIENT_GUI, baublesButton, "Show baubles button or not");
+            scrollerBar = configIns.getBoolean("scrollerBar", CLIENT_GUI, scrollerBar, "Default visibility of the scroller bar");
+            widerBar = configIns.getBoolean("widerBar", CLIENT_GUI, widerBar, "Default selection of the sidebar");
+            column = configIns.getInt("column", CLIENT_GUI, column, 2,5, "Columns of the wider sidebar");
+            visibleSwitchers = configIns.getBoolean("visibleSwitchers", CLIENT_GUI, visibleSwitchers, "Show visible switchers or not");
+            aetherButton = configIns.getBoolean("aetherButton", CLIENT_GUI, aetherButton, "Show aether accessory button or not");
+            configIns.getCategory(CLIENT_GUI).setComment("Edit new gui.");
         }
     }
 
@@ -147,13 +166,14 @@ public class Config extends PartialConfig {
 
         @Override
         public void loadData() {
-            testItem = configFile.getBoolean("testItem", BAUBLES_ITEMS, testItem, "For test, or you want");
-            itemRing = configFile.getBoolean("itemRing", BAUBLES_ITEMS, itemRing, "The ring added by original Baubles");
-            maxLevel = configFile.getInt("maxLevel", BAUBLES_ITEMS, maxLevel, 0, 255, "Max level of haste given by Miner's Ring");
-            elytraBauble = configFile.getBoolean("elytraBauble", BAUBLES_ITEMS, elytraBauble, "Set elytra as bauble");
-            elytraSlot = configFile.getString("elytraSlot", BAUBLES_ITEMS, elytraSlot, "Get a specific slot for elytra", elytraValidSlot);
-            configFile.getCategory(BAUBLES_ITEMS).setComment("Item modified by BaublesEX. (some need to restart)");
-            configFile.getCategory(BAUBLES_ITEMS).requiresMcRestart();
+            testItem = configIns.getBoolean("testItem", BAUBLES_ITEMS, testItem, "For test, or you want");
+            itemRing = configIns.getBoolean("itemRing", BAUBLES_ITEMS, itemRing, "The ring added by original Baubles");
+            maxLevel = configIns.getInt("maxLevel", BAUBLES_ITEMS, maxLevel, 0, 255, "Max level of haste given by Miner's Ring");
+            elytraBauble = configIns.getBoolean("elytraBauble", BAUBLES_ITEMS, elytraBauble, "Set elytra as bauble");
+            elytraSlot = configIns.getString("elytraSlot", BAUBLES_ITEMS, elytraSlot, "Get a specific slot for elytra", elytraValidSlot);
+            ConfigCategory category = configIns.getCategory(BAUBLES_ITEMS);
+            category.setComment("Item modified by BaublesEX. (need to restart)");
+            category.requiresMcRestart();
         }
     }
 
@@ -164,12 +184,13 @@ public class Config extends PartialConfig {
 
         @Override
         public void loadData() {
-            debug = configFile.getBoolean("debug", BAUBLES_COMMANDS, debug, "Make /baubles debug commands available for use");
-            commandLogs = configFile.getBoolean("commandLogs", BAUBLES_COMMANDS, commandLogs, "Whether /baubles commands send logs when commands have executed successfully");
-            dropBaubles = configFile.getBoolean("dropBaubles", BAUBLES_COMMANDS, dropBaubles, "Whether /baubles clear will drop baubles");
+            debug = configIns.getBoolean("debug", BAUBLES_COMMANDS, debug, "Make /baubles debug commands available for use");
+            commandLogs = configIns.getBoolean("commandLogs", BAUBLES_COMMANDS, commandLogs, "Whether /baubles commands send logs when commands have executed successfully");
+            dropBaubles = configIns.getBoolean("dropBaubles", BAUBLES_COMMANDS, dropBaubles, "Whether /baubles clear will drop baubles");
         }
     }
 
+    @Mod.EventBusSubscriber(modid = Baubles.MOD_ID)
     public static class ConfigChangeListener {
         @SubscribeEvent
         public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
@@ -177,13 +198,16 @@ public class Config extends PartialConfig {
                 PartialConfig.create(Config.class);
                 Config.saveConfig();
                 if (Config.rightClick) Config.setupBlacklist();
-                BaublesRegister.registerBaubles();
-                BaublesRegister.loadValidSlots();
-                for (BaublesContainer container: BaublesContainer.CONTAINERS) {
-                    container.onConfigChanged();
-                }
+                syncToBaubles();
             }
         }
     }
+
+    public static void syncToBaubles() {
+        BaublesRegister.registerBaubles();
+        BaublesRegister.loadValidSlots();
+        for (BaublesContainer container: BaublesContainer.CONTAINERS) {
+            container.onConfigChanged();
+        }
+    }
 }
-//exposed as old api

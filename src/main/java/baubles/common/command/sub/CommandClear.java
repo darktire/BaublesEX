@@ -2,7 +2,7 @@ package baubles.common.command.sub;
 
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.common.command.CommandBaubles;
+import baubles.common.command.BaublesCommand;
 import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
@@ -28,7 +28,7 @@ public class CommandClear extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        EntityPlayerMP player = CommandBaubles.checkPlayer(server, sender, args);
+        EntityPlayerMP player = BaublesCommand.checkPlayer(server, sender, args);
         IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
         if (args.length < 2) {
             for (int a = 0;;a++) {
@@ -46,25 +46,33 @@ public class CommandClear extends CommandBase {
         }
         else if (args[1].equals("modifier")) {
             baubles.clearModifier();
-            PacketHandler.INSTANCE.sendTo(new PacketModifySlots(player, 2), player);
+            PacketHandler.INSTANCE.sendTo(new PacketModifySlots(player), player);
             baubles.updateContainer();
-            player.sendMessage(new TextComponentTranslation("commands.baubles.success"));
+            if (Config.Commands.commandLogs) {
+                player.sendMessage(new TextComponentTranslation("commands.baubles.success"));
+            }
         }
         else if (args[1].matches("\\d+")) {
-            int slot = Integer.parseInt(args[1]);
-            if (slot >= baubles.getSlots()) {
-                throw new CommandException("commands.baubles.index.out", slot);
-            }
-            else {
-                ItemStack stack = baubles.getStackInSlot(slot);
-                BaublesApi.toBauble(stack).onEquipped(stack, player);
-                if (Config.Commands.dropBaubles) player.dropItem(stack, false);
-                baubles.setStackInSlot(slot, ItemStack.EMPTY);
-                if (Config.Commands.commandLogs) {
-                    sender.sendMessage(new TextComponentTranslation("commands.baubles.clear", slot, player.getName()));
-                    player.sendMessage(new TextComponentTranslation("commands.baubles.clear.claim", slot, sender.getName()));
+            clearOne(sender, args[1], baubles, player);
+            if (args.length > 2) {
+                for (int i = 2; i < args.length; i++){
+                    clearOne(sender, args[i], baubles, player);
                 }
             }
         }
+    }
+
+    private void clearOne(ICommandSender sender, String s, IBaublesModifiable baubles, EntityPlayerMP player) throws CommandException {
+        int slot = Integer.parseInt(s);
+        BaublesCommand.checkSlot(baubles, slot);
+        ItemStack stack = baubles.getStackInSlot(slot);
+        BaublesApi.toBauble(stack).onEquipped(stack, player);
+        if (Config.Commands.dropBaubles) player.dropItem(stack, false);
+        baubles.setStackInSlot(slot, ItemStack.EMPTY);
+        if (Config.Commands.commandLogs) {
+            sender.sendMessage(new TextComponentTranslation("commands.baubles.clear", slot, player.getName()));
+            player.sendMessage(new TextComponentTranslation("commands.baubles.clear.claim", slot, sender.getName()));
+        }
+
     }
 }

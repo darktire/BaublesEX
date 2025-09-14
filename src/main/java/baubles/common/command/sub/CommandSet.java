@@ -2,7 +2,7 @@ package baubles.common.command.sub;
 
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.common.command.CommandBaubles;
+import baubles.common.command.BaublesCommand;
 import baubles.common.config.Config;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -29,12 +29,12 @@ public class CommandSet extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        EntityPlayerMP player = CommandBaubles.checkPlayer(server, sender, args);
+        EntityPlayerMP player = BaublesCommand.checkPlayer(server, sender, args);
         Item item = Item.getByNameOrId(args[2]);
         if (item != null && args[1].matches("\\d+")) {
             int slot = Integer.parseInt(args[1]);
             IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
-            if (slot > baubles.getSlots()) sender.sendMessage(new TextComponentTranslation("commands.baubles.error"));
+            BaublesCommand.checkSlot(baubles, slot);
             ItemStack stack = baubles.getStackInSlot(slot);
             ItemStack stack1 = new ItemStack(item, 1, args.length > 3 ? parseInt(args[3]) : 0);
 
@@ -66,7 +66,7 @@ public class CommandSet extends CommandBase {
             }
         }
         else {
-            sender.sendMessage(new TextComponentTranslation("commands.baubles.error"));
+            BaublesCommand.sendError(sender);
         }
     }
 }

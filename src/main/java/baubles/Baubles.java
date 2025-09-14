@@ -6,11 +6,10 @@ import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
 import baubles.api.cap.BaublesCapabilities.CapabilityItemBaubleStorage;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.common.command.CommandBaubles;
+import baubles.common.command.BaublesCommand;
 import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
 import baubles.proxy.CommonProxy;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -47,7 +46,6 @@ public class Baubles {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         Config.loadConfig(event);
-        MinecraftForge.EVENT_BUS.register(Config.ConfigChangeListener.class);
         BaublesRegister.registerBaubles();
         BaublesRegister.loadValidSlots();
 
@@ -72,6 +70,6 @@ public class Baubles {
 
     @EventHandler
     public void serverLoad(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandBaubles());
+        event.registerServerCommand(new BaublesCommand());
     }
 }

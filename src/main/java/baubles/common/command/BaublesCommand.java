@@ -1,5 +1,6 @@
 package baubles.common.command;
 
+import baubles.api.cap.IBaublesModifiable;
 import baubles.common.command.sub.*;
 import baubles.common.config.Config;
 import net.minecraft.command.CommandException;
@@ -10,16 +11,22 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.server.command.CommandTreeBase;
 
-public class CommandBaubles extends CommandTreeBase {
-	public CommandBaubles() {
-		this.addSubcommand(new CommandHelp());
+public class BaublesCommand extends CommandTreeBase {
+	private static final CommandHelp COMMAND_HELP = new CommandHelp();
+	private static final String[] HELP = {"help"};
+
+	public BaublesCommand() {
+		this.addSubcommand(COMMAND_HELP);
 		this.addSubcommand(new CommandView());
 		this.addSubcommand(new CommandClear());
 		this.addSubcommand(new CommandHand());
-		this.addSubcommand(new CommandAdd());
+		this.addSubcommand(new CommandSlots());
 		this.addSubcommand(new CommandSet());
+		this.addSubcommand(new CommandDump());
 		if (Config.Commands.debug) this.addSubcommand(new CommandDebug());
 	}
+
+	public BaublesCommand(Object unused) {}
 
 	@Override
 	public String getName() {
@@ -28,7 +35,7 @@ public class CommandBaubles extends CommandTreeBase {
 
 	@Override
 	public String getUsage(ICommandSender icommandsender) {
-		return "/baubles <action> [<player> [<params>]]";
+		return "/baubles <action> ...";
 	}
 
 	@Override
@@ -37,15 +44,9 @@ public class CommandBaubles extends CommandTreeBase {
 	}
 
 	@Override
-	public boolean isUsernameIndex(String[] astring, int i) {
-		return i == 1;
-	}
-
-	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if (args.length < 1) {
-			ICommand help = this.getSubCommand("help");
-			if (help != null) help.execute(server, sender, new String[]{"help"});
+			COMMAND_HELP.execute(server, sender, HELP);
 		}
 		else {
 			ICommand cmd = this.getSubCommand(args[0]);
@@ -58,8 +59,7 @@ public class CommandBaubles extends CommandTreeBase {
 				cmd.execute(server, sender, shiftArgs(args));
 			}
 			else {
-				sender.sendMessage(new TextComponentTranslation("commands.baubles.error"));
-				sender.sendMessage(new TextComponentTranslation("commands.baubles.help.get"));
+				sendError(sender);
 			}
 		}
 	}
@@ -69,7 +69,7 @@ public class CommandBaubles extends CommandTreeBase {
 		return super.getSubCommand(command.toLowerCase());
 	}
 
-	private static String[] shiftArgs(String[] s) {
+	public static String[] shiftArgs(String[] s) {
 		if(s == null || s.length == 0) {
 			return new String[0];
 		}
@@ -83,5 +83,16 @@ public class CommandBaubles extends CommandTreeBase {
 		if (args.length == 0) throw new CommandException("commands.baubles.player.none");
 
         return getPlayer(server, sender, args[0]);
+	}
+
+	public static void checkSlot(IBaublesModifiable baubles, int slot) throws CommandException {
+		if (slot >= baubles.getSlots()) {
+			throw new CommandException("commands.baubles.index.out", slot);
+		}
+	}
+
+	public static void sendError(ICommandSender sender) {
+		sender.sendMessage(new TextComponentTranslation("commands.baubles.error"));
+		sender.sendMessage(new TextComponentTranslation("commands.baubles.help.get"));
 	}
 }

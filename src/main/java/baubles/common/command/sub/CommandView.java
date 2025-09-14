@@ -2,7 +2,8 @@ package baubles.common.command.sub;
 
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
-import baubles.common.command.CommandBaubles;
+import baubles.api.registries.TypesData;
+import baubles.common.command.BaublesCommand;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -26,7 +27,7 @@ public class CommandView extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        EntityPlayerMP player = CommandBaubles.checkPlayer(server, sender, args);
+        EntityPlayerMP player = BaublesCommand.checkPlayer(server, sender, args);
 
         IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
 
@@ -40,5 +41,11 @@ public class CommandView extends CommandBase {
                 sender.sendMessage(new TextComponentTranslation("commands.baubles.view", i, "nothing", baubles.getTypeInSlot(i)));
             }
         }
+        TypesData.applyToTypes(type -> {
+            String typeName = type.getTypeName();
+            int i = baubles.getModifier(typeName);
+            sender.sendMessage(new TextComponentTranslation(typeName + " " + i));
+        });
+
     }
 }
