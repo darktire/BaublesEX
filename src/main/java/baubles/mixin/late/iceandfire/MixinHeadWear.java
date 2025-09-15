@@ -27,7 +27,8 @@ public abstract class MixinHeadWear extends Item {
     @Unique
     public ResourceLocation brs$getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
         if (this == IafItemRegistry.blindfold) return Resources.BLINDFOLD;
-        else return Resources.EAR_PLUGS;
+        else if (this == IafItemRegistry.earplugs) return Resources.EAR_PLUGS;
+        return null;
     }
 
     @Unique

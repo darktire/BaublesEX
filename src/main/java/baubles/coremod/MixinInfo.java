@@ -7,6 +7,7 @@ public class MixinInfo {
 
     public static boolean isModLoaded(String modId) {
         if (modId.equals("artifacts")) return HookHelper.isModLoaded("RLArtifacts");
+        else if (modId.equals("iceandfire")) return HookHelper.checkResource();
         return Loader.isModLoaded(modId);
     }
 

@@ -9,5 +9,5 @@ public class Resources {
     public static final ResourceLocation BLINDFOLD = new ResourceLocation(IceAndFire.MODID, "textures/models/armor/blindfold_layer_1.png");
     public static final ResourceLocation EAR_PLUGS = new ResourceLocation(IceAndFire.MODID, "textures/models/armor/earplugs_layer_1.png");
 
-    public static final ModelBauble Model_HEADWEAR = new ModelBauble(new ModelHeadBauble());
+    public static final ModelBauble Model_HEADWEAR =  new ModelBauble(new ModelHeadBauble());
 }

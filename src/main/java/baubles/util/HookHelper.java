@@ -60,4 +60,13 @@ public class HookHelper {
         }
         return flag;
     }
+
+    public static boolean checkResource() {
+        try {
+            Class.forName("com.github.alexthe666.iceandfire.integration.baubles.client.model.ModelHeadBauble");
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
 }

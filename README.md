@@ -35,7 +35,7 @@
   - [x] Bountiful Baubles
   - [x] Trinkets and Baubles
   - [x] Enigmatic Legacy
-  - [x] I&F
+  - [x] I&F_RL
   - [ ] ...
   - [ ] need your help
 - [x] more command
@@ -66,7 +66,7 @@
 ## Json Helper:
   - locate in `your_minecraft_floder/config/baubles/*`
   - `items_data.json` and `types_data.json` will be auto created, or you can also create it yourself
-  - use command `/baubles debug dump` to get all existed items and types into `items_data.json` and `types_data.json`. remember to backup your json if you have edited, though the dumping will not clear your editions.
+  - use command `/baubles dump` to get all existed items and types into `items_dump.json` and `types_dump.json`.
 
 ### items_data.json:
 

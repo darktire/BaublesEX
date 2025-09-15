@@ -67,7 +67,8 @@ dependencies {
     //crafttweaker
 //    compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}:deobf"
 //    runtimeOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}:deobf"
-    //I&F_RL
+    //I&F
     compileOnly fg.deobf("curse.maven:iceandfire-rlcraft-888556:6596246")
+//    runtimeOnly fg.deobf("curse.maven:ice-and-fire-rotn-edition-457668:5738729")
 //    runtimeOnly files("libs/iceandfire-rlcraft.jar")
 }

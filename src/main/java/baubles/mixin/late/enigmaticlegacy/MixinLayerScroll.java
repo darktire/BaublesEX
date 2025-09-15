@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LayerScroll.class)
 public class MixinLayerScroll {
     @Inject(method = "renderLivingPost", at = @At("HEAD"), cancellable = true, remap = false)
-    public void blockRender(RenderLivingEvent.Post<EntityLivingBase> event, CallbackInfo ci) {
+    public void blockRendering(RenderLivingEvent.Post<EntityLivingBase> event, CallbackInfo ci) {
         ci.cancel();
     }
 }

@@ -24,8 +24,8 @@ public class JsonHelper {
             .create();
     private final static File TYPE_JSON = new File(Config.MOD_DIR, "types_data.json");
     private final static File ITEM_JSON = new File(Config.MOD_DIR, "items_data.json");
-    private final static File TYPE_DUMP = new File(Config.MOD_DIR, "types_data_dump.json");
-    private final static File ITEM_DUMP = new File(Config.MOD_DIR, "items_data_dump.json");
+    private final static File TYPE_DUMP = new File(Config.MOD_DIR, "types_dump.json");
+    private final static File ITEM_DUMP = new File(Config.MOD_DIR, "items_dump.json");
 
     public final static TypeToken<List<BaubleTypeEx>> TOKEN1 = new TypeToken<List<BaubleTypeEx>>() {};
     public final static TypeToken<List<BaublesWrapper>> TOKEN2 = new TypeToken<List<BaublesWrapper>>() {};
