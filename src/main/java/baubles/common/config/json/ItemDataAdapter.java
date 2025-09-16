@@ -2,8 +2,9 @@ package baubles.common.config.json;
 
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesWrapper;
-import baubles.api.IBauble;
+import baubles.api.IWrapper;
 import baubles.api.cap.BaubleItem;
+import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -14,28 +15,23 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ItemDataAdapter extends TypeAdapter<List<BaublesWrapper>>  {
+public class ItemDataAdapter extends TypeAdapter<List<IWrapper>>  {
+
+    private static final BaublesWrapper.CSTMap CST_MAP = BaublesWrapper.CSTMap.instance();
+
     @Override
-    public void write(JsonWriter out, List<BaublesWrapper> value) throws IOException {
+    public void write(JsonWriter out, List<IWrapper> value) throws IOException {
         out.beginObject();
-        for (BaublesWrapper wrapper: value) {
-            Item item = wrapper.getItem();
+        for (IWrapper wrapper: value) {
+            Item item = wrapper.getItemStack().getItem();
             out.name(item.getRegistryName().toString());
             out.beginObject();
-            if (wrapper.getBauble() == null) {
-                out.name("addition").value("remove");
+            out.name("types");
+            out.beginArray();
+            for (BaubleTypeEx type: wrapper.getTypes(null)) {
+                out.value(type.getRegistryName().toString());
             }
-            else {
-                if (wrapper.isCopy()) {
-                    out.name("copyFrom").value(((Item) wrapper.getBauble()).getRegistryName().toString());
-                }
-                out.name("types");
-                out.beginArray();
-                for (BaubleTypeEx type: wrapper.getTypes(null)) {
-                    out.value(type.getRegistryName().toString());
-                }
-                out.endArray();
-            }
+            out.endArray();
             out.endObject();
         }
         out.endObject();
@@ -43,8 +39,7 @@ public class ItemDataAdapter extends TypeAdapter<List<BaublesWrapper>>  {
     }
 
     @Override
-    public List<BaublesWrapper> read(JsonReader in) throws IOException {
-        List<BaublesWrapper> items = new LinkedList<>();
+    public List<IWrapper> read(JsonReader in) throws IOException {
         in.beginObject();
         while (in.hasNext()) {
             //start item
@@ -62,14 +57,10 @@ public class ItemDataAdapter extends TypeAdapter<List<BaublesWrapper>>  {
                             if (type != null) types.add(type);
                         }
                         in.endArray();
-                        if (!types.isEmpty()) items.add(new BaublesWrapper(item, new BaubleItem(types)));
-                        break;
-                    case "copyFrom":
-                        Item from = Item.getByNameOrId(in.nextString());
-                        if (from instanceof IBauble) items.add(new BaublesWrapper(item, (IBauble) from));
+                        if (!types.isEmpty() && item != null) ItemsData.registerBauble(item, new BaubleItem(types));
                         break;
                     case "addition":
-                        if (in.nextString().equals("remove")) items.add(new BaublesWrapper(item, null));
+                        if (in.nextString().equals("remove")) CST_MAP.update(item, attribute -> attribute.remove(true));
                         break;
                     default:
                         in.skipValue();
@@ -79,6 +70,6 @@ public class ItemDataAdapter extends TypeAdapter<List<BaublesWrapper>>  {
             in.endObject();
         }
         in.endObject();
-        return items;
+        return null;
     }
 }

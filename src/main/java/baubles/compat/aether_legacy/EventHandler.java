@@ -25,7 +25,7 @@ public class EventHandler {
         if (item instanceof ItemAccessory) {
             if (!ItemsData.isBauble(item)) {
                 ItemsData.registerBauble(item, map.get(((ItemAccessory) item).getType()));
-                event.addCapability(EventHandlerItem.getItemCap(), new BaublesCapabilityProvider(item));
+                event.addCapability(EventHandlerItem.getItemCap(), new BaublesCapabilityProvider(stack, null));
             }
         }
     }

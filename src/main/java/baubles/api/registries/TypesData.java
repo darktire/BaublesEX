@@ -8,7 +8,6 @@ import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -76,8 +75,8 @@ public class TypesData {
         return contained;
     }
 
-    public static Iterator<BaubleTypeEx> iterator() {
-        return REGISTRY.iterator();
+    public static List<BaubleTypeEx> getList() {
+        return new ArrayList<>(REGISTRY.getValuesCollection());
     }
 
     public static void applyToTypes(Consumer<BaubleTypeEx> c) {

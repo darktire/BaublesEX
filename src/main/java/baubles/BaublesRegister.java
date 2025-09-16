@@ -2,11 +2,9 @@ package baubles;
 
 import baubles.api.BaubleType;
 import baubles.api.BaubleTypeEx;
-import baubles.api.BaublesWrapper;
 import baubles.api.IBauble;
 import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
-import baubles.api.render.IRenderBauble;
 import baubles.common.config.Config;
 import baubles.common.config.json.JsonHelper;
 import baubles.common.items.BaubleElytra;
@@ -35,7 +33,7 @@ public class BaublesRegister {
     public static void registerItems() {
         ForgeRegistries.ITEMS.iterator().forEachRemaining(item -> {
             if (item instanceof IBauble) {
-                ItemsData.registerBauble(item, (IBauble) item);
+                ItemsData.registerBauble(item);
             }
             else if (WINGS && item instanceof ItemWings) {
                 ItemsData.registerBauble(item, TypesData.Preset.BODY);
@@ -43,15 +41,12 @@ public class BaublesRegister {
         });
         if (Config.ModItems.elytraBauble) {
             BaubleElytra elytra = new BaubleElytra();
-            ItemsData.registerBauble(Items.ELYTRA, (IBauble) elytra);
-            ItemsData.registerBauble(Items.ELYTRA, (IRenderBauble) elytra);
+            ItemsData.registerBauble(Items.ELYTRA, elytra);
+            ItemsData.registerRender(Items.ELYTRA, elytra);
         }
 
         try {
-            List<BaublesWrapper> items = JsonHelper.jsonToItem();
-            if (items != null) {
-                items.forEach(wrapper -> ItemsData.registerBauble(wrapper.getItem(), wrapper));
-            }
+            JsonHelper.jsonToItem();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

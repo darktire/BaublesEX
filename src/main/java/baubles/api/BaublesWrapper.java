@@ -1,5 +1,6 @@
 package baubles.api;
 
+import baubles.api.cap.IBaublesListener;
 import baubles.api.event.BaublesEvent;
 import baubles.api.event.BaublesRenderEvent;
 import baubles.api.model.ModelBauble;
@@ -13,86 +14,37 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.lang.ref.WeakReference;
+import java.util.*;
+import java.util.function.Consumer;
 
 public final class BaublesWrapper implements IWrapper {
-
-    private Item item;
+    private ItemStack stack;
     private IBauble bauble;
     private IRenderBauble render;
-    private BaubleTypeEx type;
     private List<BaubleTypeEx> types;
-    private ResourceLocation registryName;
-    public boolean hasSub = false;// todo solve metadata
 
     public BaublesWrapper() {}
 
-    public BaublesWrapper(Item item, IBauble bauble) {
-        this.item = item;
-        this.bauble = bauble;
-        if (item.getHasSubtypes()) {
-            this.hasSub = true;
-//            for (int meta = 0;; meta++) {
-//                if (!item.getHasSubtypes()) break;
-//            }
+    private BaublesWrapper(ItemStack stack) {
+        this.stack = stack;
+        Item item = stack.getItem();
+        if (item instanceof IBauble) {
+            this.bauble = (IBauble) item;
+            this.types = bauble.getTypes(stack);
         }
-        this.wrapBauble(bauble);
-        this.registerRender(item);
-    }
-
-    private void wrapBauble(IBauble bauble) {
-        if (bauble != null) {
-            this.type = bauble.getType(ItemStack.EMPTY);
-            this.types = bauble.getTypes(ItemStack.EMPTY);
-            if (this.types == null || this.types.isEmpty()) {
-                this.types = new LinkedList<>();
-                this.types.add(this.type);
-            } else if (this.type == null) {
-                this.type = this.types.get(0);
-            }
+        if (item instanceof IRenderBauble) {
+            this.render = (IRenderBauble) item;
         }
+        this.updateBaubles();
     }
 
-    public void registerRender(Object object) {
-        if (object instanceof IRenderBauble) {
-            this.render = (IRenderBauble) object;
-        }
+    public static IWrapper instance(ItemStack stack) {
+        return new BaublesWrapper(stack).startListening();
     }
 
-    public Item getItem() {
-        return this.item;
-    }
-
-    public IBauble getBauble() {
-        return this.bauble;
-    }
-
-    public BaublesWrapper setType(BaubleTypeEx type) {
-        this.type = type;
-        this.types.add(type);
-        return this;
-    }
-
-    public BaublesWrapper setTypes(List<BaubleTypeEx> types) {
-        this.type = this.types.get(0);
-        this.types = types;
-        return this;
-    }
-
-    public void addTypes(List<BaubleTypeEx> types) {
-        this.types.addAll(types);
-    }
-
-    public boolean isCopy() {
-        if (this.bauble instanceof Item) return !(this.item == this.bauble);
-        return false;
-    }
-
-    @Override
-    public BaubleTypeEx getType(ItemStack itemStack) {
-        return this.type;
+    public ItemStack getItemStack() {
+        return this.stack;
     }
 
     @Override
@@ -102,7 +54,7 @@ public final class BaublesWrapper implements IWrapper {
 
     @Override
     public BaubleType getBaubleType(ItemStack itemStack) {
-        return this.type.getOldType();
+        return this.types.get(0).getOldType();
     }
 
     @Override
@@ -178,5 +130,111 @@ public final class BaublesWrapper implements IWrapper {
         if (this.render == null) return null;
         return this.render.getRenderType(stack, entity, slim);
     }
+
+    @Override
+    public void updateBaubles() {
+        CSTMap.Attribute attribute = CSTMap.INSTANCE.get(this.stack.getItem());
+        if (attribute != null) {
+            if (attribute.bauble != null) {
+                this.bauble = attribute.bauble;
+                this.types = attribute.bauble.getTypes(this.stack);
+            }
+            if (attribute.render != null) {
+                this.render = attribute.render;
+            }
+            if (attribute.types != null) {
+                this.types = attribute.types;
+            }
+        }
+    }
+
+    @Override
+    public IWrapper startListening() {
+        CSTMap.Attribute attribute = CSTMap.INSTANCE.get(this.stack.getItem());
+        if (attribute != null) {
+            attribute.addListener(this);
+        }
+        return this;
+    }
+
+    public final static class CSTMap {
+        private static final CSTMap INSTANCE = new CSTMap();
+        private final Map<Map.Entry<Item, Object>, Attribute> map = new HashMap<>();
+
+        public static CSTMap instance() {
+            return INSTANCE;
+        }
+
+        public Attribute get(Item item) {
+            return this.get(item, null);
+        }
+
+        public void update(Item item, Consumer<Attribute> editor) {
+            this.update(item, null, editor);
+        }
+
+        public Attribute get(Item item, Object o) {
+            return this.map.get(new AbstractMap.SimpleEntry<>(item, o));
+        }
+
+        public void update(Item item, Object o, Consumer<Attribute> editor) {
+            editor.accept(this.map.computeIfAbsent(new AbstractMap.SimpleEntry<>(item, o), i -> new Attribute()));
+        }
+
+        public final static class Attribute {
+            private final List<WeakReference<IBaublesListener<?>>> listeners = new ArrayList<>();
+            private final Object lock = new Object();
+            private IBauble bauble;
+            private IRenderBauble render;
+            private List<BaubleTypeEx> types;
+            private boolean remove = false;
+
+            private void broadcast() {
+                List<IBaublesListener<?>> snap;
+                synchronized (lock) {
+                    listeners.removeIf(ref -> ref.get() == null);
+                    snap = new ArrayList<>(listeners.size());
+                    for (WeakReference<IBaublesListener<?>> ref : listeners) {
+                        IBaublesListener<?> l = ref.get();
+                        if (l != null) snap.add(l);
+                    }
+                }
+                for (IBaublesListener<?> l : snap) {
+                    l.updateBaubles();
+                }
+            }
+
+            public void addListener(IBaublesListener<?> listener) {
+                synchronized (lock) {
+                    this.listeners.add(new WeakReference<>(listener));
+                }
+            }
+
+            public void bauble(IBauble bauble) {
+                this.bauble = bauble;
+                this.broadcast();
+            }
+
+            public void render(IRenderBauble render) {
+                this.render = render;
+                this.broadcast();
+            }
+
+            public void types(List<BaubleTypeEx> types) {
+                this.types = types;
+                this.broadcast();
+            }
+
+            public void remove(boolean remove) {
+                this.remove = remove;
+                this.broadcast();
+            }
+        }
+
+        public static boolean isRemoved(Item item) {
+            CSTMap.Attribute attribute = CSTMap.INSTANCE.get(item);
+            if (attribute == null) return false;
+            return attribute.remove;
+        }
+    }
 }
-// todo commands edit type, also the data persistence

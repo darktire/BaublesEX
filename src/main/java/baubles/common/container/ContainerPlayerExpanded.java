@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-public class ContainerPlayerExpanded extends Container implements IBaublesListener {
+public class ContainerPlayerExpanded extends Container implements IBaublesListener<ContainerPlayerExpanded> {
     private final EntityPlayer player;
     private final EntityLivingBase entity;
     public IBaublesModifiable baubles;
@@ -42,7 +42,6 @@ public class ContainerPlayerExpanded extends Container implements IBaublesListen
         this.entity = entity;
         this.baubles = BaublesApi.getBaublesHandler(entity);
         this.baublesAmount = this.baubles.getSlots();
-        this.baubles.addListener(this);
         InventoryPlayer playerInv = player.inventory;
 
         //add craftResult (1) [0,1)
@@ -112,6 +111,7 @@ public class ContainerPlayerExpanded extends Container implements IBaublesListen
         else this.addSlimBaubles();
 
         this.onCraftMatrixChanged(this.craftMatrix);
+        this.startListening();
     }
 
     public void addSlimBaubles() {
@@ -307,6 +307,12 @@ public class ContainerPlayerExpanded extends Container implements IBaublesListen
         if (!this.entity.world.isRemote) {
             this.addSlimBaubles();
         }
+    }
+
+    @Override
+    public ContainerPlayerExpanded startListening() {
+        this.baubles.addListener(this);
+        return this;
     }
 
     public void clearBaubles() {

@@ -12,11 +12,16 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,6 +37,16 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 		this.setCreativeTab(CreativeTabs.TOOLS);
 		this.setTranslationKey("Tire");
 		this.setTypes();
+		this.addPropertyOverride(new ResourceLocation("meta"), new IItemPropertyGetter() {
+			@SideOnly(Side.CLIENT)
+			public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
+				if (stack.getMetadata() == 1) {
+					return 1F;
+				} else if (stack.getMetadata() == 2) {
+					return 2F;
+				} else return 0;
+			}
+		});
 	}
 
 	private void setTypes() {
@@ -44,6 +59,8 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
 		if (this.isInCreativeTab(tab)) {
 			list.add(new ItemStack(this, 1, 0));
+			list.add(new ItemStack(this, 1, 1));
+			list.add(new ItemStack(this, 1, 2));
 		}
 	}
 
@@ -65,7 +82,6 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 		IBaublesModifiable handler = BaublesApi.getBaublesHandler(entity);
 		handler.modifySlotOA("trinket", 2);
 		handler.updateContainer();
-		ModelTire.instance().resetAngle(entity);
 	}
 
 	@Override

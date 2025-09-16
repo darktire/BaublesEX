@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -30,7 +31,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     private final Map<Integer, Boolean> visibility = new HashMap<>();
 
     public static final List<BaublesContainer> CONTAINERS = new ArrayList<>();
-    private final List<IBaublesListener> listeners = new ArrayList<>();
+    private final List<WeakReference<IBaublesListener<?>>> listeners = new ArrayList<>();
     public boolean containerUpdated = true;
 
     public BaublesContainer() { super(TypesData.getSum()); }
@@ -119,9 +120,12 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     public void updateContainer() {
         if (!this.containerUpdated) {
             this.onSlotChanged();
-            for (IBaublesListener listener : this.listeners) {
+            this.listeners.removeIf(ref -> {
+                IBaublesListener<?> listener = ref.get();
+                if (listener == null) return true;
                 listener.updateBaubles();
-            }
+                return false;
+            });
         }
     }
 
@@ -283,13 +287,13 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
 	}
 
     @Override
-    public void addListener(IBaublesListener listener) {
-        this.listeners.add(listener);
+    public void addListener(IBaublesListener<?> listener) {
+        this.listeners.add(new WeakReference<>(listener));
     }
 
     @Override
-    public void removeListener(IBaublesListener listener) {
-        this.listeners.remove(listener);
+    public void removeListener(IBaublesListener<?> listener) {
+        this.listeners.removeIf(ref -> ref.get() == listener);
     }
 
     @Override

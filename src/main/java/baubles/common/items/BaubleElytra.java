@@ -15,12 +15,15 @@ import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Collections;
+import java.util.List;
+
 public class BaubleElytra implements IBauble, IRenderBauble {
-    private static final BaubleTypeEx TYPE = TypesData.getTypeByName(Config.ModItems.elytraSlot);
+    private static final List<BaubleTypeEx> TYPE = Collections.singletonList(TypesData.getTypeByName(Config.ModItems.elytraSlot));
     private static final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("minecraft", "textures/entity/elytra.png");
 
     @Override
-    public BaubleTypeEx getType(ItemStack stack) {
+    public List<BaubleTypeEx> getTypes(ItemStack stack) {
     return TYPE;
 }
 

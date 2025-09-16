@@ -32,7 +32,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
-import java.util.Iterator;
+import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = Baubles.MOD_ID, value = Side.CLIENT)
 public class ClientEventHandler {
@@ -61,15 +61,16 @@ public class ClientEventHandler {
             IBauble bauble = BaublesApi.toBauble(stack);
             StringBuilder tooltip = new StringBuilder(TextFormatting.GOLD + I18n.format("baubles.tooltip") + ": ");
             if (bauble instanceof BaublesWrapper) {
-                Iterator<BaubleTypeEx> types = bauble.getTypes(stack).iterator();
-                while (types.hasNext()) {
-                    tooltip.append(I18n.format(types.next().getTranslateKey()));
-                    if (types.hasNext()) tooltip.append(", ");
-                }
+                tooltip.append(bauble.getTypes(stack)
+                        .stream()
+                        .map(BaubleTypeEx::getTranslateKey)
+                        .map(I18n::format)
+                        .collect(Collectors.joining(", "))
+                );
             }
             else {
                 Baubles.log.warn("bauble cap on " + stack.getTranslationKey() + " registered incorrect");
-                tooltip.append(I18n.format("name." + bauble.getType(stack).toString().toLowerCase()));
+                tooltip.append(I18n.format("name." + bauble.getBaubleType(stack).toString().toLowerCase()));
             }
             event.getToolTip().add(tooltip.toString());
         }

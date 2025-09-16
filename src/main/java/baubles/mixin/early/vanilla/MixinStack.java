@@ -21,6 +21,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -28,6 +29,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ItemStack.class)
 public abstract class MixinStack {
+
+    @Unique
+    private static final int BS$PRE_INIT = LoaderState.PREINITIALIZATION.ordinal();
 
     @Shadow(remap = false)
     private CapabilityDispatcher capabilities;
@@ -57,7 +61,7 @@ public abstract class MixinStack {
 
     @Inject(method = "<init>(Lnet/minecraft/item/Item;IILnet/minecraft/nbt/NBTTagCompound;)V", at = @At("TAIL"))
     public void redirectBaubleCap(Item itemIn, int amount, int meta, NBTTagCompound capNBT, CallbackInfo ci) {
-        if (Loader.instance().getLoaderState() != LoaderState.NOINIT && this.capabilities != null) {
+        if (Loader.instance().getLoaderState().ordinal() >= BS$PRE_INIT && this.capabilities != null) {
             ((ICapabilityModifiable) (Object) this.capabilities).patchCap((ItemStack) (Object) this);
         }
     }

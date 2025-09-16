@@ -11,9 +11,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 public class CommandDump extends CommandBase {
 
@@ -30,19 +27,13 @@ public class CommandDump extends CommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         try {
-            JsonHelper.typeToJson(this.getList(TypesData.iterator()), true);
-            JsonHelper.itemToJson(this.getList(ItemsData.iterator()), true);
+            JsonHelper.typeToJson(TypesData.getList(), true);
+            JsonHelper.itemToJson(ItemsData.getList(), true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         if (Config.Commands.commandLogs) {
             sender.sendMessage(new TextComponentTranslation("commands.baubles.dump", Config.MOD_DIR.getAbsoluteFile()));
         }
-    }
-
-    private <T> List<T> getList(Iterator<T> iterator) {
-        List<T> list = new LinkedList<>();
-        iterator.forEachRemaining(list::add);
-        return list;
     }
 }

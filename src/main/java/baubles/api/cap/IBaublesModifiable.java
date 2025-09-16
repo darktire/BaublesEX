@@ -2,8 +2,8 @@ package baubles.api.cap;
 
 public interface IBaublesModifiable extends IBaublesItemHandler{
 
-    void addListener(IBaublesListener listener);
-    void removeListener(IBaublesListener listener);
+    void addListener(IBaublesListener<?> listener);
+    void removeListener(IBaublesListener<?> listener);
 
     void setSlot(String typeName, int n);
 

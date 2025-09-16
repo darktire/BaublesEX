@@ -10,22 +10,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class BaubleItem implements IBauble {
-	private final BaubleTypeEx type;
 	private final List<BaubleTypeEx> types = new LinkedList<>();
 
 	public BaubleItem(List<BaubleTypeEx> types) {
-		this.type = types.get(0);
 		this.types.addAll(types);
 	}
 
 	public BaubleItem(BaubleTypeEx... types) {
-        this.type = types[0];
 		this.types.addAll(Arrays.asList(types));
 	}
 
 	@SuppressWarnings("unused")// for old api
 	public BaubleItem(BaubleType type) {
-        this.type = type.getExpansion();
+        this.types.add(type.getExpansion());
 	}
 
 	@Override
@@ -35,6 +32,6 @@ public class BaubleItem implements IBauble {
 
 	@Override
 	public BaubleType getBaubleType(ItemStack itemStack) {
-		return type.getOldType();
+		return this.types.get(0).getOldType();
 	}
 }

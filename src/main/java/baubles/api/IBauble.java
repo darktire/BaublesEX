@@ -3,6 +3,7 @@ package baubles.api;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,27 +16,15 @@ import java.util.List;
 public interface IBauble {
 
     /**
-     * This method return the type or the main type of bauble this is.
-     * Type is used to determine the slots it can go into.
-     */
-    default BaubleTypeEx getType(ItemStack itemStack) {
-        BaubleType oldType = getBaubleType(itemStack);
-        if (oldType != null) {
-            return oldType.getExpansion();
-        }
-        else return null;
-    }
-
-    /**
      * If bauble has more than on types, use this method.
      * Type is used to determine the slots it can go into.
      */
     default List<BaubleTypeEx> getTypes(ItemStack itemStack) {
-        return null;
+        return Collections.singletonList(getBaubleType(itemStack).getExpansion());
     }
 
     /**
-     * @deprecated prefer calling {@link IBauble#getType(ItemStack itemStack)} wherever possible
+     * @deprecated prefer calling {@link IBauble#getTypes(ItemStack)} wherever possible
      */
     default BaubleType getBaubleType(ItemStack itemStack) {
         return null;

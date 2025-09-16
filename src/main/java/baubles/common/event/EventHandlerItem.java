@@ -3,6 +3,7 @@ package baubles.common.event;
 import baubles.Baubles;
 import baubles.BaublesRegister;
 import baubles.api.BaubleTypeEx;
+import baubles.api.BaublesWrapper;
 import baubles.api.cap.BaublesCapabilityProvider;
 import baubles.api.registries.ItemsData;
 import baubles.common.config.Config;
@@ -27,14 +28,13 @@ public class EventHandlerItem {
         ItemStack stack = event.getObject();
 
         if (stack.isEmpty()) return;
-
         Item item = stack.getItem();
 
         if (!(ItemsData.isBauble(item))) return;
 
-        if (ItemsData.toBauble(item).getBauble() == null) return;
+        if (BaublesWrapper.CSTMap.isRemoved(item)) return;
 
-        event.addCapability(ITEM_CAP, new BaublesCapabilityProvider(item));
+        event.addCapability(ITEM_CAP, new BaublesCapabilityProvider(stack, null));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

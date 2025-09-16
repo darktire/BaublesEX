@@ -52,3 +52,4 @@ public class TypeDataAdapter extends TypeAdapter<List<BaubleTypeEx>> {
         return types;
     }
 }
+//todo improve

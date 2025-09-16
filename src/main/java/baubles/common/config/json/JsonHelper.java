@@ -2,6 +2,7 @@ package baubles.common.config.json;
 
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesWrapper;
+import baubles.api.IWrapper;
 import baubles.common.config.Config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -44,17 +45,16 @@ public class JsonHelper {
         return null;
     }
 
-    public static void itemToJson(List<BaublesWrapper> items, boolean dump) throws IOException {
+    public static void itemToJson(List<IWrapper> items, boolean dump) throws IOException {
         File output = dump ? ITEM_DUMP : ITEM_JSON;
         FileUtils.write(output, GSON.toJson(items, TOKEN2.getType()), StandardCharsets.UTF_8);
     }
 
-    public static List<BaublesWrapper> jsonToItem() throws IOException {
+    public static void jsonToItem() throws IOException {
         try {
-            return GSON.fromJson(new FileReader(ITEM_JSON), TOKEN2.getType());
+            GSON.fromJson(new FileReader(ITEM_JSON), TOKEN2.getType());
         } catch (FileNotFoundException e) {
             FileUtils.write(ITEM_JSON, null, StandardCharsets.UTF_8);
         }
-        return null;
     }
 }

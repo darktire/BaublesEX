@@ -36,7 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class GuiPlayerExpanded extends GuiBase implements IBaublesListener {
+public class GuiPlayerExpanded extends GuiBase implements IBaublesListener<GuiPlayerExpanded> {
     @Deprecated public static final ResourceLocation background = new ResourceLocation(Baubles.MOD_ID,"textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
     private final EntityPlayer player;
     private final EntityLivingBase entity;
@@ -61,7 +61,6 @@ public class GuiPlayerExpanded extends GuiBase implements IBaublesListener {
         this.player = player;
         this.entity = entity;
         this.allowUserInput = true;
-        this.baubles.addListener(this);
     }
 
     private int initRow() {
@@ -110,6 +109,12 @@ public class GuiPlayerExpanded extends GuiBase implements IBaublesListener {
         this.setSlotsPos();
     }
 
+    @Override
+    public GuiPlayerExpanded startListening() {
+        this.baubles.addListener(this);
+        return this;
+    }
+
     public void handleWider() {
         this.offset = 0;
         this.containerEx.clearBaubles();
@@ -146,6 +151,7 @@ public class GuiPlayerExpanded extends GuiBase implements IBaublesListener {
         this.scroller = this.addButton(new ElementScroller(58, this, this.guiLeft - 30 - 18 * this.column, this.guiTop, Config.Gui.scrollerBar));
         this.switchers = this.addButton(new ElementSwitchers(59, this, this.guiLeft - 10, this.guiTop + 14));
         this.extraArea.add(new Rectangle(this.guiLeft - 11 - 18 * this.column, this.guiTop, 10 + 18 * this.column, 166));
+        this.startListening();
     }
 
     /**

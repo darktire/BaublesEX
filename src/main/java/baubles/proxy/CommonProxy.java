@@ -3,7 +3,6 @@ package baubles.proxy;
 import baubles.Baubles;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.container.ContainerPlayerExpanded;
-import baubles.util.IHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -17,9 +16,6 @@ public class CommonProxy implements IGuiHandler {
         if (ID == Baubles.GUI) {
             return new GuiPlayerExpanded(player);
         }
-        else if (ID == Baubles.GUI_A) {
-            return new GuiPlayerExpanded(player, ((IHelper) player).getTarget());
-        }
         return null;
     }
 
@@ -27,9 +23,6 @@ public class CommonProxy implements IGuiHandler {
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         if (ID == Baubles.GUI) {
             return new ContainerPlayerExpanded(player);
-        }
-        else if (ID == Baubles.GUI_A) {
-            return new ContainerPlayerExpanded(player, ((IHelper) player).getTarget());
         }
         return null;
     }
