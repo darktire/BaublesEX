@@ -2,7 +2,6 @@ package baubles.api;
 
 import baubles.api.cap.IBaublesListener;
 import baubles.api.event.BaublesEvent;
-import baubles.api.event.BaublesRenderEvent;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -67,7 +66,7 @@ public final class BaublesWrapper implements IWrapper {
 
     @Override
     public void onEquipped(ItemStack itemstack, EntityLivingBase entity) {
-        BaublesEvent.Equip event = new BaublesRenderEvent.Equip(entity, itemstack);
+        BaublesEvent event = new BaublesEvent.Equip.Post(entity, itemstack);
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled()) return;
         this.bauble.onEquipped(itemstack, entity);
@@ -75,7 +74,7 @@ public final class BaublesWrapper implements IWrapper {
 
     @Override
     public void onUnequipped(ItemStack itemstack, EntityLivingBase entity) {
-        BaublesEvent.Unequip event = new BaublesEvent.Unequip(entity, itemstack);
+        BaublesEvent event = new BaublesEvent.Unequip.Post(entity, itemstack);
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled()) return;
         this.bauble.onUnequipped(itemstack, entity);
@@ -83,12 +82,18 @@ public final class BaublesWrapper implements IWrapper {
 
     @Override
     public boolean canEquip(ItemStack itemstack, EntityLivingBase entity) {
-        return this.bauble.canEquip(itemstack, entity);
+        boolean def = this.bauble.canEquip(itemstack, entity);
+        BaublesEvent.Equip.Pre event = new BaublesEvent.Equip.Pre(entity, itemstack, def);
+        MinecraftForge.EVENT_BUS.post(event);
+        return event.getRet();
     }
 
     @Override
     public boolean canUnequip(ItemStack itemstack, EntityLivingBase entity) {
-        return !EnchantmentHelper.hasBindingCurse(itemstack) && this.bauble.canUnequip(itemstack, entity);
+        boolean def = !EnchantmentHelper.hasBindingCurse(itemstack) && this.bauble.canUnequip(itemstack, entity);
+        BaublesEvent.Unequip.Pre event = new BaublesEvent.Unequip.Pre(entity, itemstack, def);
+        MinecraftForge.EVENT_BUS.post(event);
+        return event.getRet();
     }
 
     @Override

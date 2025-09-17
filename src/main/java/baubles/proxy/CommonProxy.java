@@ -33,6 +33,7 @@ public class CommonProxy implements IGuiHandler {
 
     public void preInit() {
         patchModsEvents(Loader.isModLoaded("aether_legacy"), "aether_legacy", false);
+        patchModsEvents(Loader.isModLoaded("crafttweaker"), "crt", false);
     }
 
     public void init() {}

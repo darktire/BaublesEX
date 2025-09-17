@@ -5,6 +5,7 @@ import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.event.BaublesChangeEvent;
+import baubles.api.event.BaublesValidation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -33,7 +34,9 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        return getItemHandler().isItemValidForSlot(index, stack, this.entity);
+        BaublesValidation event = new BaublesValidation(this.entity, stack, getItemHandler().isItemValidForSlot(index, stack, this.entity));
+        MinecraftForge.EVENT_BUS.post(event);
+        return event.getRet();
     }
 
     @Override

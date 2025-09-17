@@ -44,7 +44,7 @@
 - [x] new style of bauble slots (redraw again)
 - [x] right click to equip baubles
 - [x] enchantment support for baubles
-- [ ] support for CraftTweaker
+- [x] support for CraftTweaker
 - [ ] ...
 - [ ] waiting for more suggestions
 

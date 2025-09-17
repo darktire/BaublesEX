@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientEventHandler {
     @SubscribeEvent
-    public static void updateAngle(BaublesEvent.Equip event) {
+    public static void updateAngle(BaublesEvent.Equip.Post event) {
         EntityLivingBase entity = event.getEntityLiving();
         Item item = event.getStack().getItem();
         if (item instanceof ItemScrollBauble) {
@@ -17,7 +17,7 @@ public class ClientEventHandler {
     }
 
     @SubscribeEvent
-    public static void updateAngle(BaublesEvent.Unequip event) {
+    public static void updateAngle(BaublesEvent.Unequip.Post event) {
         EntityLivingBase entity = event.getEntityLiving();
         Item item = event.getStack().getItem();
         if (item instanceof ItemScrollBauble) {
