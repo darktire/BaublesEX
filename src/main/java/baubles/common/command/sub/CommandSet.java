@@ -53,13 +53,13 @@ public class CommandSet extends CommandBase {
             }
 
             if (!ItemStack.areItemStacksEqual(stack, stack1)) {
+                baubles.setStackInSlot(slot, stack1);
                 if (BaublesApi.isBauble(stack)) {
                     BaublesApi.toBauble(stack).onEquipped(stack, player);
                 }
                 if (BaublesApi.isBauble(stack1)) {
                     BaublesApi.toBauble(stack1).onUnequipped(stack1, player);
                 }
-                baubles.setStackInSlot(slot, stack1);
                 if (Config.Commands.commandLogs) {
                     sender.sendMessage(new TextComponentTranslation("commands.baubles.set", item.getRegistryName(), slot, player.getName()));
                 }

@@ -82,7 +82,7 @@ public class EventHandlerEntity {
     }
 
     @SubscribeEvent
-    public static void playerTick(TickEvent.PlayerTickEvent event) {
+    public static void playerTick(TickEvent.PlayerTickEvent event) {// todo entity event pre/post
         if (event.phase == TickEvent.Phase.END) {
             EntityPlayer player = event.player;
             BaublesApi.applyToBaubles(player, stack -> {

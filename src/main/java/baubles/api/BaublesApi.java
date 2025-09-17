@@ -47,7 +47,11 @@ public class BaublesApi {
      * @return -1 if not found and slot number if it is found
      */
     public static int getIndexInBaubles(EntityLivingBase entity, Object o, int start) {
-        return getBaublesHandler(entity).indexOf(o, start);
+        IBaublesModifiable baubles = getBaublesHandler(entity);
+        if (baubles != null) {
+            return baubles.indexOf(o, start);
+        }
+        return -1;
     }
 
     /**
@@ -55,7 +59,7 @@ public class BaublesApi {
      */
     @Deprecated
     public static int isBaubleEquipped(EntityPlayer player, Item bauble) {
-        return getBaublesHandler(player).indexOf(bauble, 0);
+        return getIndexInBaubles(player, bauble, 0);
     }
 
     public static boolean canEquipBaubles(EntityLivingBase entity) {

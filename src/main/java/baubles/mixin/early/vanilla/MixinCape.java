@@ -13,6 +13,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class MixinCape {
     @Redirect(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/AbstractClientPlayer;getItemStackFromSlot(Lnet/minecraft/inventory/EntityEquipmentSlot;)Lnet/minecraft/item/ItemStack;"))
     private ItemStack injected(AbstractClientPlayer entity, EntityEquipmentSlot slot) {
-        return HookHelper.capeCondition(entity, slot);
+        return HookHelper.universalCondition(entity, slot, false);
     }
 }

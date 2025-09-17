@@ -1,12 +1,8 @@
 package baubles.util;
 
-import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesModifiable;
 import baubles.common.config.Config;
-import net.minecraft.client.entity.AbstractClientPlayer;
+import baubles.common.items.BaubleElytra;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
@@ -16,37 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HookHelper {
-    private final static ItemStack ELYTRA = new ItemStack(Items.ELYTRA);
 
-    public static ItemStack elytraInBaubles(EntityLivingBase entity, EntityEquipmentSlot slot) {
+    public static ItemStack universalCondition(EntityLivingBase entity, EntityEquipmentSlot slot, boolean using) {
         ItemStack stack = entity.getItemStackFromSlot(slot);
-        if (Config.ModItems.elytraBauble && entity instanceof EntityPlayer && ((!(stack.getItem() instanceof ItemElytra) || stack.getItem() instanceof ItemElytra && !ItemElytra.isUsable(stack)))) {
-            IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
-            if (baubles != null) {
-                for (int i = 0; i < baubles.getSlots(); i++) {
-                    ItemStack stack1 = baubles.getStackInSlot(i);
-                    if (stack1.getItem() instanceof ItemElytra && ItemElytra.isUsable(stack1)) return stack1;
-                }
-            }
-        }
-        return stack;
-    }
-
-    public static ItemStack capeCondition(AbstractClientPlayer entity, EntityEquipmentSlot slot) {
-        Boolean flag = ((IHelper) entity).getFlag();
-        if (flag != null && flag) return ELYTRA;
-        ItemStack stack = entity.getItemStackFromSlot(slot);
-        if (Config.ModItems.elytraBauble && flag == null && !(stack.getItem() instanceof ItemElytra)) {
-            IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
-            if (baubles != null) {
-                for (int i = 0; i < baubles.getSlots(); i++) {
-                    ItemStack stack1 = baubles.getStackInSlot(i);
-                    if (stack1.getItem() instanceof ItemElytra) {
-                        return stack1;
-                    }
-                }
-            }
-            ((IHelper) entity).setFlag(false);
+        boolean unusable = using && stack.getItem() instanceof ItemElytra && !ItemElytra.isUsable(stack);
+        boolean toFind = !(stack.getItem() instanceof ItemElytra) || unusable;
+        if (Config.ModItems.elytraBauble && toFind && BaubleElytra.isWearing(entity, using)) {
+            return BaubleElytra.getWearing(entity, using);
         }
         return stack;
     }

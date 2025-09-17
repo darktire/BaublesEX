@@ -68,6 +68,10 @@ public class SlotBaubleHandler extends SlotItemHandler {
         if (event.isBlocked()) return;
 
         ItemStack stack1 = getStack();
+
+        this.getItemHandler().setStackInSlot(index, stack);
+        this.onSlotChanged();
+
         if (!ItemStack.areItemStacksEqual(stack, stack1)) {
             if (BaublesApi.isBauble(stack1)) {
                 BaublesApi.toBauble(stack1).onUnequipped(stack1, this.entity);
@@ -76,9 +80,6 @@ public class SlotBaubleHandler extends SlotItemHandler {
                 BaublesApi.toBauble(stack).onEquipped(stack, this.entity);
             }
         }
-
-        this.getItemHandler().setStackInSlot(index, stack);
-        this.onSlotChanged();
     }
 
     public void setStack(ItemStack stack) {

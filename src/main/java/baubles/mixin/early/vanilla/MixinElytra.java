@@ -16,7 +16,7 @@ public abstract class MixinElytra {
     public abstract static class MixinPlayerSP {
         @Redirect(method = "onLivingUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/EntityPlayerSP;getItemStackFromSlot(Lnet/minecraft/inventory/EntityEquipmentSlot;)Lnet/minecraft/item/ItemStack;"))
         private ItemStack injected(EntityPlayerSP entity, EntityEquipmentSlot slot) {
-            return HookHelper.elytraInBaubles(entity, slot);
+            return HookHelper.universalCondition(entity, slot, true);
         }
     }
 
@@ -24,7 +24,7 @@ public abstract class MixinElytra {
     public abstract static class MixinEntityBase {
         @Redirect(method = "updateElytra", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityLivingBase;getItemStackFromSlot(Lnet/minecraft/inventory/EntityEquipmentSlot;)Lnet/minecraft/item/ItemStack;"))
         private ItemStack injected(EntityLivingBase entity, EntityEquipmentSlot slot) {
-            return HookHelper.elytraInBaubles(entity, slot);
+            return HookHelper.universalCondition(entity, slot, true);
         }
     }
 
@@ -32,7 +32,7 @@ public abstract class MixinElytra {
     public abstract static class MixinNetHandler {
         @Redirect(method = "processEntityAction", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayerMP;getItemStackFromSlot(Lnet/minecraft/inventory/EntityEquipmentSlot;)Lnet/minecraft/item/ItemStack;"))
         private ItemStack injected(EntityPlayerMP entity, EntityEquipmentSlot slot) {
-            return HookHelper.elytraInBaubles(entity, slot);
+            return HookHelper.universalCondition(entity, slot, true);
         }
     }
 }
