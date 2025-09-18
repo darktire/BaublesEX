@@ -8,6 +8,7 @@
     "vanilla.MixinElytra$MixinEntityBase",
     "vanilla.MixinElytra$MixinNetHandler",
     "vanilla.MixinEnchantment",
+    "vanilla.MixinEventFactory",
     "vanilla.MixinStack"
   ],
   "client": [

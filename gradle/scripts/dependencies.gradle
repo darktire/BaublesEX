@@ -37,6 +37,8 @@ dependencies {
     //llibrary
 //    runtimeOnly fg.deobf('net.ilexiconn:llibrary-core:1.0.11-1.12.2')
 //    runtimeOnly fg.deobf('net.ilexiconn:llibrary:1.7.19-1.12.2:dev')
+    //loliasm
+//    runtimeOnly fg.deobf("curse.maven:lolasm-460609:6854259")
 
     //TOP
     runtimeOnly fg.deobf("curse.maven:the-one-probe-community-edition-885670:6736118")

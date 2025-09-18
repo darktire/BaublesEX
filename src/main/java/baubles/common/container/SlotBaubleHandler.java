@@ -69,7 +69,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
         ItemStack stack1 = getStack();
 
-        this.getItemHandler().setStackInSlot(index, stack);
+        this.getItemHandler().setStackInSlot(index, stack.copy());
         this.onSlotChanged();
 
         if (!ItemStack.areItemStacksEqual(stack, stack1)) {
