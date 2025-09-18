@@ -58,7 +58,7 @@ public class ModelScroll extends ModelItemHelper {
                 perItem.put(entity, 360F / scrolls.size());
             }
             else {
-                Baubles.log.error(item.getRegistryName() + " is not equipped");
+                Baubles.log.error("{} is not equipped", item.getRegistryName());
             }
         }
     }

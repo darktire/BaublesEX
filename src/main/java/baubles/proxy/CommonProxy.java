@@ -5,8 +5,6 @@ import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.container.ContainerPlayerExpanded;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
 public class CommonProxy implements IGuiHandler {
@@ -31,17 +29,7 @@ public class CommonProxy implements IGuiHandler {
         return null;
     }
 
-    public void preInit() {
-        patchModsEvents(Loader.isModLoaded("aether_legacy"), "aether_legacy", false);
-        patchModsEvents(Loader.isModLoaded("crafttweaker"), "crt", false);
-    }
+    public void preInit() {}
 
     public void init() {}
-
-    protected static void patchModsEvents(boolean flag, String name, boolean client) {
-        if (flag) {
-            try { MinecraftForge.EVENT_BUS.register(Class.forName("baubles.compat." + name + "." + (client ? "Client" : "") + "EventHandler")); }
-            catch (ClassNotFoundException ignored) {}
-        }
-    }
 }

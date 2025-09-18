@@ -10,6 +10,7 @@ import baubles.common.command.BaublesCommand;
 import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
 import baubles.proxy.CommonProxy;
+import baubles.util.ModsHelper;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -59,6 +60,7 @@ public class Baubles {
                 BaublesWrapper::new);
 
         proxy.preInit();
+        ModsHelper.patchModsEvents(event.getAsmData());
         PacketHandler.init();
     }
 

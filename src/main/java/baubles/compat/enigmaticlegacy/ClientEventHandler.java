@@ -1,11 +1,13 @@
 package baubles.compat.enigmaticlegacy;
 
 import baubles.api.event.BaublesEvent;
+import baubles.compat.ModOnly;
 import keletu.enigmaticlegacy.item.ItemScrollBauble;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@ModOnly(value = "enigmaticlegacy", client = true)
 public class ClientEventHandler {
     @SubscribeEvent
     public static void updateAngle(BaublesEvent.Equip.Post event) {

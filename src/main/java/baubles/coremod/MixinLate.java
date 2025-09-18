@@ -1,5 +1,6 @@
 package baubles.coremod;
 
+import baubles.util.ModsHelper;
 import com.google.common.collect.ImmutableList;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -29,9 +30,8 @@ public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        String modId = MixinInfo.getTargetModId(mixinClassName);
-        if (modId != null) return MixinInfo.isModLoaded(modId);
-        return false;
+        String modId = ModsHelper.getTargetModId(mixinClassName);
+        return ModsHelper.isModLoaded(modId);
     }
 
     @Override

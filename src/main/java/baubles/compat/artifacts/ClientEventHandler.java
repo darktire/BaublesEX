@@ -5,6 +5,7 @@ import artifacts.common.util.RenderHelper;
 import baubles.api.BaublesApi;
 import baubles.api.event.BaublesChangeEvent;
 import baubles.api.event.BaublesRenderEvent;
+import baubles.compat.ModOnly;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -13,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@ModOnly(value = "RLArtifacts", client = true)
 public class ClientEventHandler {
     @SubscribeEvent
     public static void applyControl(BaublesRenderEvent.InBaubles event) {

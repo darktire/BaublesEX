@@ -34,34 +34,6 @@ public class EventHandlerEntity {
     private static final ResourceLocation BAUBLES_CAP = new ResourceLocation(Baubles.MOD_ID, "container");
     private static final boolean CoFHLoaded = Loader.isModLoaded("cofhcore");
 
-/*    @SubscribeEvent
-    public void openEntityGui(PlayerInteractEvent.EntityInteractSpecific event) {
-        if (Config.ModItems.testItem) {
-            Entity target = event.getTarget();
-            if (target instanceof EntityLivingBase && BaublesApi.canEquipBaubles((EntityLivingBase) target)) {
-                EntityPlayer player = event.getEntityPlayer();
-                if (player.getHeldItem(event.getHand()).isEmpty()) {
-                    IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
-                    boolean flag = false;
-                    for (int i = 0; i < baubles.getSlots(); i++) {
-                        if (baubles.getStackInSlot(i).getItem() == BaublesRegister.ModItems.Tire) {
-                            flag = true;
-                            break;
-                        }
-                    }
-                    if (flag) {
-                        ((IHelper) player).setTarget((EntityLivingBase) target);
-                        if (!event.getWorld().isRemote) {
-                            player.openGui(Baubles.instance, Baubles.GUI_A, event.getWorld(), 0, 0, 0);
-                        }
-                        event.setCancellationResult(EnumActionResult.SUCCESS);
-                        event.setCanceled(true);
-                    }
-                }
-            }
-        }
-    }*/
-
     @SubscribeEvent
     public static void cloneCapabilitiesEvent(PlayerEvent.Clone event) {
         try {

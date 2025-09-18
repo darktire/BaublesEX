@@ -1,10 +1,11 @@
-package baubles.compat.aether_legacy;
+package baubles.compat.aether;
 
 import baubles.api.BaubleTypeEx;
 import baubles.api.cap.BaublesCapabilityProvider;
 import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
 import baubles.common.event.EventHandlerItem;
+import baubles.compat.ModOnly;
 import com.gildedgames.the_aether.api.accessories.AccessoryType;
 import com.gildedgames.the_aether.items.accessories.ItemAccessory;
 import com.google.common.collect.ImmutableMap;
@@ -15,6 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Map;
 
+@ModOnly(value = "aether_legacy")
 public class EventHandler {
     @SubscribeEvent
     public static void itemCapabilityAttach(AttachCapabilitiesEvent<ItemStack> event) {

@@ -69,7 +69,7 @@ public class ClientEventHandler {
                 );
             }
             else {
-                Baubles.log.warn("bauble cap on " + stack.getTranslationKey() + " registered incorrect");
+                Baubles.log.warn("bauble cap on {} registered incorrect", stack.getTranslationKey());
                 tooltip.append(I18n.format("name." + bauble.getBaubleType(stack).toString().toLowerCase()));
             }
             event.getToolTip().add(tooltip.toString());

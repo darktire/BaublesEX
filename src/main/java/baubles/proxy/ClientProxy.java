@@ -2,12 +2,10 @@ package baubles.proxy;
 
 import baubles.client.render.BaublesRenderLayer;
 import baubles.common.config.KeyBindings;
-import baubles.util.HookHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -26,11 +24,6 @@ public class ClientProxy extends CommonProxy {
     public void preInit() {
         super.preInit();
         KeyBindings.register();
-        patchModsEvents(HookHelper.isModLoaded("RLArtifacts"), "artifacts", true);
-        patchModsEvents(Loader.isModLoaded("bountifulbaubles"), "bountifulbaubles", true);
-        patchModsEvents(Loader.isModLoaded("enigmaticlegacy"), "enigmaticlegacy", true);
-        patchModsEvents(Loader.isModLoaded("xat"), "xat", true);
-        patchModsEvents(Loader.isModLoaded("aether_legacy"), "aether_legacy", true);
     }
 
     @Override

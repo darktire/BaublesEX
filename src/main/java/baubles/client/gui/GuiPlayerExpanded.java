@@ -11,6 +11,7 @@ import baubles.common.config.Config;
 import baubles.common.container.ContainerPlayerExpanded;
 import baubles.common.container.SlotBaubleHandler;
 import baubles.compat.jei.JeiPlugin;
+import baubles.util.ModsHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.achievement.GuiStats;
@@ -23,7 +24,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiUtils;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
@@ -40,7 +40,7 @@ public class GuiPlayerExpanded extends GuiBase implements IBaublesListener<GuiPl
     @Deprecated public static final ResourceLocation background = new ResourceLocation(Baubles.MOD_ID,"textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
     private final EntityPlayer player;
     private final EntityLivingBase entity;
-    private final static boolean jeiLoaded = Loader.isModLoaded("jei");
+    private final static boolean jeiLoaded = ModsHelper.isModLoaded("jei");
     private final ContainerPlayerExpanded containerEx = (ContainerPlayerExpanded) this.inventorySlots;
     public IBaublesModifiable baubles = (this.containerEx).baubles;
     public int baublesAmount = (this.containerEx).baublesAmount;

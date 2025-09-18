@@ -37,6 +37,8 @@ dependencies {
     //llibrary
 //    runtimeOnly fg.deobf('net.ilexiconn:llibrary-core:1.0.11-1.12.2')
 //    runtimeOnly fg.deobf('net.ilexiconn:llibrary:1.7.19-1.12.2:dev')
+    //mantle
+    runtimeOnly fg.deobf("curse.maven:mantle-74924:2713386")
     //loliasm
 //    runtimeOnly fg.deobf("curse.maven:lolasm-460609:6854259")
 
@@ -74,4 +76,8 @@ dependencies {
     compileOnly fg.deobf("curse.maven:iceandfire-rlcraft-888556:6596246")
 //    runtimeOnly fg.deobf("curse.maven:ice-and-fire-rotn-edition-457668:5738729")
 //    runtimeOnly files("libs/iceandfire-rlcraft.jar")
+    //tinkers
+    implementation fg.deobf("curse.maven:tinkers-construct-74072:2902483")
+    compileOnly fg.deobf("curse.maven:more-tcon-396545:5840934")
+    runtimeOnly files("libs/more-tcon.jar")
 }

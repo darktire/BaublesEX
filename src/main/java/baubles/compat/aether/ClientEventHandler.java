@@ -1,6 +1,7 @@
-package baubles.compat.aether_legacy;
+package baubles.compat.aether;
 
 import baubles.common.config.Config;
+import baubles.compat.ModOnly;
 import com.gildedgames.the_aether.client.gui.button.GuiAccessoryButton;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -14,6 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.List;
 
+@ModOnly(value = "aether_legacy", client = true)
 public class ClientEventHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void blockAdding(GuiScreenEvent.InitGuiEvent.Post event) {

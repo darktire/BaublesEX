@@ -1,6 +1,7 @@
 package baubles.compat.crt;
 
 import baubles.api.event.BaublesEvent;
+import baubles.compat.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.event.IEventHandle;
 import crafttweaker.api.event.IEventManager;
@@ -10,6 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import stanhebben.zenscript.annotations.ZenExpansion;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+@ModOnly("crafttweaker")
 @ZenRegister
 @ZenExpansion("crafttweaker.events.IEventManager")
 public class EventHandler {
