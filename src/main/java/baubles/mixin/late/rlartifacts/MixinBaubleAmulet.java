@@ -1,10 +1,10 @@
-package baubles.mixin.late.artifacts;
+package baubles.mixin.late.rlartifacts;
 
 import artifacts.common.init.ModItems;
 import artifacts.common.item.BaubleAmulet;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.compat.artifacts.Resources;
+import baubles.compat.rlartifacts.Resources;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

@@ -1,4 +1,4 @@
-package baubles.compat.artifacts;
+package baubles.compat.rlartifacts;
 
 import baubles.api.model.ModelBauble;
 import net.minecraft.client.model.ModelBase;

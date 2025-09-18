@@ -1,9 +1,9 @@
-package baubles.mixin.late.artifacts;
+package baubles.mixin.late.rlartifacts;
 
 import artifacts.common.item.BaubleStarCloak;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.compat.artifacts.Resources;
+import baubles.compat.rlartifacts.Resources;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;

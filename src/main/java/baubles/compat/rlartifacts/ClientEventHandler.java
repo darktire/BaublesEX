@@ -1,4 +1,4 @@
-package baubles.compat.artifacts;
+package baubles.compat.rlartifacts;
 
 import artifacts.common.init.ModItems;
 import artifacts.common.util.RenderHelper;

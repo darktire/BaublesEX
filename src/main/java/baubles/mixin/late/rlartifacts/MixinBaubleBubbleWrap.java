@@ -1,9 +1,9 @@
-package baubles.mixin.late.artifacts;
+package baubles.mixin.late.rlartifacts;
 
-import artifacts.common.item.BaubleObsidianSkull;
+import artifacts.common.item.BaubleBubbleWrap;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.compat.artifacts.Resources;
+import baubles.compat.rlartifacts.Resources;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -12,17 +12,17 @@ import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-@Mixin(BaubleObsidianSkull.class)
+@Mixin(BaubleBubbleWrap.class)
 @Implements(@Interface(iface = IRenderBauble.class, prefix = "brs$"))
-public abstract class MixinBaubleObsidianSkull {
+public abstract class MixinBaubleBubbleWrap {
     @Unique
     public ModelBauble brs$getModel(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        return Resources.SKULL_MODEL;
+        return Resources.BUBBLE_MODEL;
     }
 
     @Unique
     public ResourceLocation brs$getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        return Resources.OBSIDIAN_SKULL;
+        return Resources.BUBBLE_WRAP;
     }
 
     @Unique

@@ -20,7 +20,7 @@ public final class ModsHelper {
         Boolean loaded = INFO.get(mod);
         if (loaded == null) {
             switch (mod) {
-                case "artifacts" : loaded = checkByName("RLArtifacts"); break;
+                case "rlartifacts" : loaded = checkByName("RLArtifacts"); break;
                 case "iceandfire" : loaded = checkByClass("com.github.alexthe666.iceandfire.integration.baubles.client.model.ModelHeadBauble"); break;
                 default: loaded = Loader.isModLoaded(mod);
             }

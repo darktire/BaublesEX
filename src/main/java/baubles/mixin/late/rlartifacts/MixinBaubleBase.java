@@ -1,11 +1,11 @@
-package baubles.mixin.late.artifacts;
+package baubles.mixin.late.rlartifacts;
 
 import artifacts.common.init.ModItems;
 import artifacts.common.item.BaubleBase;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.compat.artifacts.ModelGlove;
-import baubles.compat.artifacts.Resources;
+import baubles.compat.rlartifacts.ModelGlove;
+import baubles.compat.rlartifacts.Resources;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;

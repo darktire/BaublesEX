@@ -1,4 +1,4 @@
-package baubles.compat.artifacts;
+package baubles.compat.rlartifacts;
 
 import artifacts.Artifacts;
 import artifacts.client.model.*;
