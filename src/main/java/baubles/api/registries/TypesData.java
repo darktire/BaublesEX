@@ -14,10 +14,14 @@ import java.util.function.Consumer;
 public class TypesData {
     private static final String DATA_ID = "baubles";
     private static final ResourceLocation BAUBLE_TYPE = new ResourceLocation(DATA_ID, "types");
-    private static final ForgeRegistry<BaubleTypeEx> REGISTRY = (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>().setType(BaubleTypeEx.class).allowModification().setName(BAUBLE_TYPE).create();
+    private static ForgeRegistry<BaubleTypeEx> REGISTRY;
 
     private static int sum = 7;
     private static final List<BaubleTypeEx> BAUBLE_SLOTS = new ArrayList<>();
+
+    public static void create() {
+        REGISTRY = (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>().setType(BaubleTypeEx.class).allowModification().setName(BAUBLE_TYPE).create();
+    }
 
     public static void registerBauble(String typeName, int amount, int priority) {
         if (amount < 0) return;

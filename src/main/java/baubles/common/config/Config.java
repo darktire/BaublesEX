@@ -79,7 +79,7 @@ public class Config extends PartialConfig {
     }
 
     public static void saveConfig() {
-        if (Config.configIns != null && configIns.hasChanged()) {
+        if (configIns != null && configIns.hasChanged()) {
             configIns.save();
         }
     }
@@ -93,9 +93,11 @@ public class Config extends PartialConfig {
     }
 
     public static void setupBlacklist() {
-        for (String s : clickBlacklist) {
-            Item item = Item.getByNameOrId(s);
-            if (item != null) blacklist.add(item);
+        if (rightClick)  {
+            for (String s : clickBlacklist) {
+                Item item = Item.getByNameOrId(s);
+                if (item != null) blacklist.add(item);
+            }
         }
     }
 
@@ -204,7 +206,7 @@ public class Config extends PartialConfig {
     }
 
     public static void syncToBaubles() {
-        BaublesRegister.registerBaubles();
+        BaublesRegister.registerTypes();
         BaublesRegister.loadValidSlots();
         for (BaublesContainer container: BaublesContainer.CONTAINERS) {
             container.onConfigChanged();

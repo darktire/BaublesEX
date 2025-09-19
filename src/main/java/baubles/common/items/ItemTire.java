@@ -8,6 +8,7 @@ import baubles.api.model.ModelBauble;
 import baubles.api.registries.TypesData;
 import baubles.api.render.IRenderBauble;
 import baubles.client.model.ModelTire;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.SoundEvents;
@@ -22,12 +23,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.LinkedList;
 import java.util.List;
 
 public class ItemTire extends Item implements IBauble, IRenderBauble {
-	private final String[] typesName = {"head", "amulet", "body", "charm"};
-	private final List<BaubleTypeEx> types = new LinkedList<>();
+	private final List<BaubleTypeEx> types = ImmutableList.<BaubleTypeEx>builder()
+			.add(TypesData.Preset.HEAD, TypesData.Preset.BODY, TypesData.Preset.BELT, TypesData.Preset.CHARM).build();
 
 	public ItemTire() {
 		super();
@@ -36,7 +36,6 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 		this.setMaxDamage(0);
 		this.setCreativeTab(CreativeTabs.TOOLS);
 		this.setTranslationKey("Tire");
-		this.setTypes();
 		this.addPropertyOverride(new ResourceLocation("meta"), new IItemPropertyGetter() {
 			@SideOnly(Side.CLIENT)
 			public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
@@ -44,15 +43,11 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 					return 1F;
 				} else if (stack.getMetadata() == 2) {
 					return 2F;
+				} else if (stack.getMetadata() == 3) {
+					return 3F;
 				} else return 0;
 			}
 		});
-	}
-
-	private void setTypes() {
-		for (String name: typesName) {
-			types.add(TypesData.getTypeByName(name));
-		}
 	}
 
 	@Override
@@ -61,6 +56,7 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 			list.add(new ItemStack(this, 1, 0));
 			list.add(new ItemStack(this, 1, 1));
 			list.add(new ItemStack(this, 1, 2));
+			list.add(new ItemStack(this, 1, 3));
 		}
 	}
 

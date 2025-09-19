@@ -17,13 +17,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Arrays;
 
-@Mixin(targets = "me.paulf.wings.server.apparatus.FlightApparatuses$WingedPresentState")
+@Mixin(targets = "me.paulf.wings.server.apparatus.FlightApparatuses$WingedPresentState", remap = false)
 public abstract class MixinWings extends CapabilityHolder.PresentState<ItemStack, FlightApparatus> {
     protected MixinWings(Capability<FlightApparatus> capability) {
         super(capability);
     }
 
-    @Inject(method = "find", at = @At("HEAD"), cancellable = true, remap = false)
+    @Inject(method = "find", at = @At("HEAD"), cancellable = true)
     private void findWings(EntityLivingBase player, CallbackInfoReturnable<ItemStack> cir) {
         ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
         if (this.has(stack, null)) {

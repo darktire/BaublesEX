@@ -14,6 +14,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Mod.EventBusSubscriber(modid = Baubles.MOD_ID)
 public class BaublesRegister {
     public BaublesRegister() {
     }
@@ -44,7 +46,7 @@ public class BaublesRegister {
         }
     }
 
-    public static void registerBaubles() {
+    public static void registerTypes() {
         for (BaubleType type : BaubleType.values()) {
             int value = Config.Slots.getCfgAmount(type.toString());
             TypesData.registerBauble(type.getExpansion().setAmount(value));
@@ -52,6 +54,7 @@ public class BaublesRegister {
         if (Config.ModItems.elytraBauble && Config.ModItems.elytraSlot.equals("elytra")) {
             TypesData.Preset.ELYTRA.setAmount(1);
         }
+        else TypesData.Preset.ELYTRA.setAmount(0);
 
         try {
             List<BaubleTypeEx> types = JsonHelper.jsonToType();
@@ -83,7 +86,7 @@ public class BaublesRegister {
         TypesData.applyToTypes(trinket::addOriSlots);
     }
 
-    @Mod.EventBusSubscriber
+    @Mod.EventBusSubscriber(modid = Baubles.MOD_ID)
     public static class ModItems {
         public static final Item ring = new ItemRing().setRegistryName("ring");
         public static final Item tire = new ItemTire().setRegistryName("tire");
@@ -93,5 +96,18 @@ public class BaublesRegister {
             if (Config.ModItems.itemRing) event.getRegistry().register(ring);
             if (Config.ModItems.testItem) event.getRegistry().register(tire);
         }
+    }
+
+    @SubscribeEvent
+    public static void createRegistry(RegistryEvent.NewRegistry event) {
+        TypesData.create();
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onRegistering(RegistryEvent.Register<BaubleTypeEx> event) {
+        registerTypes();
+        loadValidSlots();
+        registerItems();
+        Config.setupBlacklist();
     }
 }

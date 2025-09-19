@@ -47,8 +47,6 @@ public class Baubles {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         Config.loadConfig(event);
-        BaublesRegister.registerBaubles();
-        BaublesRegister.loadValidSlots();
 
         CapabilityManager.INSTANCE.register(
                 IBaublesModifiable.class,

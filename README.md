@@ -1,7 +1,7 @@
 # [BaublesEX](https://www.curseforge.com/minecraft/mc-mods/baublesex)
 
-[![Version](https://cf.way2muchnoise.eu/versions/For%20MC_baublesex_all.svg)](https://www.curseforge.com/minecraft/mc-mods/baublesex)
-[![Downloads](https://cf.way2muchnoise.eu/full_baublesex_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/baublesex)
+[![Version](https://cf.way2muchnoise.eu/versions/For%20MC_baubles-ex_all.svg)](https://www.curseforge.com/minecraft/mc-mods/baublesex)
+[![Downloads](https://cf.way2muchnoise.eu/full_baubles-ex_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/baublesex)
 
 ---
 
@@ -37,14 +37,15 @@
   - [x] Enigmatic Legacy
   - [x] I&F_RL
   - [ ] ...
-  - [ ] need your help
+- [x] extra supports for mods
+  - [x] aether accessory
+  - [x] CraftTweaker
 - [x] more command
 - [x] add bauble button in creative tab
 - [x] elytra can be a bauble in the config
 - [x] new style of bauble slots (redraw again)
 - [x] right click to equip baubles
 - [x] enchantment support for baubles
-- [x] support for CraftTweaker
 - [ ] ...
 - [ ] waiting for more suggestions
 

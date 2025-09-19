@@ -68,10 +68,11 @@ dependencies {
 //    runtimeOnly fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:6816073")
     //aether
     compileOnly fg.deobf("curse.maven:aether-255308:6316434")
+    runtimeOnly fg.deobf("curse.maven:aether-255308:6316434")
     //crafttweaker
     compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}:deobf"
     compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}:deobf"
-    runtimeOnly files("libs/crafttweaker.jar")
+//    runtimeOnly files("libs/crafttweaker.jar")
     //I&F
     compileOnly fg.deobf("curse.maven:iceandfire-rlcraft-888556:6596246")
 //    runtimeOnly fg.deobf("curse.maven:ice-and-fire-rotn-edition-457668:5738729")

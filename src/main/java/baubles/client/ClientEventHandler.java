@@ -65,8 +65,7 @@ public class ClientEventHandler {
                         .stream()
                         .map(BaubleTypeEx::getTranslateKey)
                         .map(I18n::format)
-                        .collect(Collectors.joining(", "))
-                );
+                        .collect(Collectors.joining(", ")));
             }
             else {
                 Baubles.log.warn("bauble cap on {} registered incorrect", stack.getTranslationKey());

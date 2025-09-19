@@ -6,28 +6,33 @@ import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
 import baubles.common.event.EventHandlerItem;
 import baubles.compat.ModOnly;
+import com.gildedgames.the_aether.api.AetherAPI;
 import com.gildedgames.the_aether.api.accessories.AccessoryType;
-import com.gildedgames.the_aether.items.accessories.ItemAccessory;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Map;
 
 @ModOnly(value = "aether_legacy")
 public class EventHandler {
-    @SubscribeEvent
+
+    private static final AetherAPI AETHER_API = AetherAPI.getInstance();
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void itemCapabilityAttach(AttachCapabilitiesEvent<ItemStack> event) {
         ItemStack stack = event.getObject();
 
         if (stack.isEmpty()) return;
         Item item = stack.getItem();
-        if (item instanceof ItemAccessory) {
+        if (ItemsData.isBauble(item)) return;
+        if (AETHER_API.isAccessory(stack)) {
             if (!ItemsData.isBauble(item)) {
-                ItemsData.registerBauble(item, map.get(((ItemAccessory) item).getType()));
-                event.addCapability(EventHandlerItem.getItemCap(), new BaublesCapabilityProvider(stack, null));
+                ItemsData.registerBauble(item, map.get(AETHER_API.getAccessory(stack).getAccessoryType()));
+                event.addCapability(EventHandlerItem.ITEM_CAP, new BaublesCapabilityProvider(stack, null));
             }
         }
     }
