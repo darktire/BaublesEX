@@ -4,10 +4,12 @@ import baubles.api.model.ModelBauble;
 import cursedflames.bountifulbaubles.item.ModItems;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
@@ -46,7 +48,7 @@ public class ModelAmulet extends ModelBauble {
     }
 
     @Override
-    public void render(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
         if (entity.hasItemInSlot(EntityEquipmentSlot.CHEST)) {
             GlStateManager.translate(0.0F, -0.02F, -0.045F);
             GlStateManager.scale(1.1F, 1.1F, 1.1F);

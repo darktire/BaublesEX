@@ -93,6 +93,7 @@ public class GuiPlayerExpanded extends GuiBase implements IBaublesListener<GuiPl
         super.updateScreen();
     }
 
+    @Override
     public void updateBaubles() {
         this.baublesAmount = this.baubles.getSlots();
         if (this.wider) {

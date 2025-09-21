@@ -2,8 +2,10 @@ package baubles.compat.xat;
 
 import baubles.client.model.ModelItemHelper;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import xzeroair.trinkets.init.ModItems;
 import xzeroair.trinkets.util.TrinketsConfig;
 
@@ -22,7 +24,7 @@ public class ModelSeaStone extends ModelItemHelper {
     }
 
     @Override
-    public void render(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
         if (!TrinketsConfig.CLIENT.items.SEA_STONE.doRender) return;
         final float offsetY = 0.16F;
         final float offsetZ = 0.14F;

@@ -1,12 +1,11 @@
-package baubles.compat.bountifulbaubles;
+package baubles.compat.bot;
 
 import baubles.api.event.BaublesRenderEvent;
 import baubles.compat.ModOnly;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import vazkii.botania.api.item.IPhantomInkable;
 
-@ModOnly(value = "bountifulbaubles", client = true)
+@ModOnly(value = "botania", client = true)
 public class ClientEventHandler {
     @SubscribeEvent
     public static void applyControl(BaublesRenderEvent event) {
@@ -14,6 +13,6 @@ public class ClientEventHandler {
     }
 
     private static boolean shouldNotRender(ItemStack stack) {
-        return stack.getItem() instanceof IPhantomInkable && ((IPhantomInkable) stack.getItem()).hasPhantomInk(stack);
+        return stack.hasTagCompound() && stack.getTagCompound().hasKey("phantomInk");
     }
 }

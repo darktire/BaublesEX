@@ -23,7 +23,7 @@ public class ClientEventHandler {
             EntityPlayer player = (EntityPlayer) entity;
             ItemStack stack = event.getStack();
             if (!RenderHelper.shouldItemStackRender(player, stack)) {
-                event.canceled();
+                event.cancel();
             }
         }
     }
@@ -34,8 +34,8 @@ public class ClientEventHandler {
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
             ItemStack stack = event.getStack();
-            if (!RenderHelper.shouldItemStackRender(player, stack) || !RenderHelper.shouldRenderInSlot(player, event.getSlotIn())) {
-                event.canceled();
+            if (!RenderHelper.shouldItemStackRender(player, stack)) {
+                event.cancel();
             }
         }
     }

@@ -37,7 +37,7 @@ public class CrTBSEvent<T extends BaublesEvent> implements IEventCancelable {
 
     @Override
     public void setCanceled(boolean unused) {
-        this.event.canceled();
+        this.event.cancel();
     }
 
     private static class Pre<U extends BaublesEvent & BaublesEvent.ResultAccessor> extends CrTBSEvent<U> implements IEventHasResult {

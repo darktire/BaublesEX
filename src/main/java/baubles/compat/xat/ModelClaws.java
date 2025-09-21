@@ -7,7 +7,9 @@ import baubles.api.registries.TypesData;
 import baubles.api.render.IRenderBauble;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import xzeroair.trinkets.init.ModItems;
 import xzeroair.trinkets.util.Reference;
@@ -45,7 +47,7 @@ public class ModelClaws extends ModelBauble {
     }
 
     @Override
-    public void render(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
         if (!TrinketsConfig.CLIENT.items.FAELIS_CLAW.doRender) {
             return;
         }
@@ -68,24 +70,24 @@ public class ModelClaws extends ModelBauble {
 
     public static Map<ModelBauble, IRenderBauble.RenderType> getRenderMap(EntityLivingBase entity, boolean slim) {
         if (!TrinketsConfig.SERVER.Items.FAELIS_CLAW.compat.baubles.equip_multiple) {
-            return ClawRenderMap.of(slim).init().both;
+            return RenderMap.of(slim).init().both;
         }
         IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
         int j = baubles.indexOf(TypesData.Preset.RING, 0);
         int k = baubles.indexOf(ModItems.baubles.BaubleFaelisClaw, 0);
         if (k != -1) {
             int l = baubles.indexOf(ModItems.baubles.BaubleFaelisClaw, k);
-            if (l != k) return ClawRenderMap.of(slim).init().both;
+            if (l != k) return RenderMap.of(slim).init().both;
         }
         if (((k - j) & 1) == 0) {
-            return ClawRenderMap.of(slim).init().r;
+            return RenderMap.of(slim).init().r;
         }
         else {
-            return ClawRenderMap.of(slim).init().l;
+            return RenderMap.of(slim).init().l;
         }
     }
 
-    enum ClawRenderMap {
+    private enum RenderMap {
         NORMAL(false), SLIM(true);
 
         private final boolean slim;
@@ -93,28 +95,25 @@ public class ModelClaws extends ModelBauble {
         Map<ModelBauble, IRenderBauble.RenderType> l;
         Map<ModelBauble, IRenderBauble.RenderType> r;
 
-        ClawRenderMap(boolean slim) {
+        RenderMap(boolean slim) {
             this.slim = slim;
         }
 
-        private ClawRenderMap init() {
-            ModelClaws model = ModelClaws.instance(slim);
-            if (this.both == null) {
+        private RenderMap init() {
+            if (this.both == null || this.l == null || this.r == null) {
+                ModelClaws model = ModelClaws.instance(this.slim);
+                ModelClaws copy1 = model.copy();
                 this.both = ImmutableMap.of(
                         model, IRenderBauble.RenderType.ARM_LEFT,
-                        model.copy(), IRenderBauble.RenderType.ARM_RIGHT
+                        copy1, IRenderBauble.RenderType.ARM_RIGHT
                 );
-            }
-            if (this.l == null) {
                 this.l = ImmutableMap.of(model, IRenderBauble.RenderType.ARM_LEFT);
-            }
-            if (this.r == null) {
-                this.r = ImmutableMap.of(model.copy(), IRenderBauble.RenderType.ARM_RIGHT);
+                this.r = ImmutableMap.of(copy1, IRenderBauble.RenderType.ARM_RIGHT);
             }
             return this;
         }
 
-        private static ClawRenderMap of(boolean slim) {
+        private static RenderMap of(boolean slim) {
             return slim ? SLIM : NORMAL;
         }
     }

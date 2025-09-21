@@ -3,8 +3,10 @@ package baubles.compat.enigmaticlegacy;
 import baubles.api.BaublesApi;
 import baubles.client.model.ModelItemHelper;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +31,7 @@ public class ModelScroll extends ModelItemHelper {
     }
 
     @Override
-    public void render(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
         float rotateAngleY = ((float)entity.ticksExisted + partialTicks) / 5.0F;
         GlStateManager.scale(0.3, 0.3, 0.3);
         GlStateManager.translate(0.0, 0.75, 0.0);

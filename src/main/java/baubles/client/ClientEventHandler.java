@@ -37,8 +37,8 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public static void equipmentRenderEvent(BaublesRenderEvent.InEquipments event) {
-        if (!(event.getStack().getItem() instanceof ItemElytra)) {
-            event.canceled();
+        if (event.getStack().getItem() instanceof ItemElytra) {
+            event.cancel();
         }
     }
 

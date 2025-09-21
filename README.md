@@ -36,11 +36,16 @@
   - [x] Trinkets and Baubles
   - [x] Enigmatic Legacy
   - [x] I&F_RL
+  - [x] Thaumcraft
+  - [x] Thaumic Periphery
+  - [ ] Aether
+  - [ ] Botania
   - [ ] ...
 - [x] extra supports for mods
+  - [x] all models support Mo' Bends
   - [x] aether accessory
   - [x] CraftTweaker
-- [x] more command
+- [x] more commands
 - [x] add bauble button in creative tab
 - [x] elytra can be a bauble in the config
 - [x] new style of bauble slots (redraw again)

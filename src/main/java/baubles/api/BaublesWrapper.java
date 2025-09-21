@@ -21,7 +21,8 @@ public final class BaublesWrapper implements IWrapper {
     private ItemStack stack;
     private IBauble bauble;
     private IRenderBauble render;
-    private List<BaubleTypeEx> types;
+    private boolean edited = false;
+    private CSTMap.Attribute attribute;
 
     public BaublesWrapper() {}
 
@@ -30,11 +31,11 @@ public final class BaublesWrapper implements IWrapper {
         Item item = stack.getItem();
         if (item instanceof IBauble) {
             this.bauble = (IBauble) item;
-            this.types = bauble.getTypes(stack);
         }
         if (item instanceof IRenderBauble) {
             this.render = (IRenderBauble) item;
         }
+        this.attribute = CSTMap.INSTANCE.get(this.stack.getItem());
         this.updateBaubles();
     }
 
@@ -48,12 +49,14 @@ public final class BaublesWrapper implements IWrapper {
 
     @Override
     public List<BaubleTypeEx> getTypes(ItemStack itemStack) {
-        return this.types;
+        if (this.edited) return this.attribute.types;
+        return this.bauble.getTypes(itemStack);
     }
 
     @Override
     public BaubleType getBaubleType(ItemStack itemStack) {
-        return this.types.get(0).getOldType();
+        if (this.edited) return this.attribute.types.get(0).getOldType();
+        return this.bauble.getTypes(itemStack).get(0).getOldType();
     }
 
     @Override
@@ -138,18 +141,14 @@ public final class BaublesWrapper implements IWrapper {
 
     @Override
     public void updateBaubles() {
-        CSTMap.Attribute attribute = CSTMap.INSTANCE.get(this.stack.getItem());
-        if (attribute != null) {
-            if (attribute.bauble != null) {
-                this.bauble = attribute.bauble;
-                this.types = attribute.bauble.getTypes(this.stack);
+        if (this.attribute != null) {
+            if (this.attribute.bauble != null) {
+                this.bauble = this.attribute.bauble;
             }
-            if (attribute.render != null) {
-                this.render = attribute.render;
+            if (this.attribute.render != null) {
+                this.render = this.attribute.render;
             }
-            if (attribute.types != null) {
-                this.types = attribute.types;
-            }
+            if (this.attribute.types != null) this.edited = true;
         }
     }
 

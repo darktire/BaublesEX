@@ -96,22 +96,22 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
             }
 
             if (ctx.stack.isItemEnchanted()) {
-                model.renderEnchantedGlint(this.renderPlayer, ctx.entity, model, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale);
+                model.renderEnchantedGlint(this.renderPlayer, ctx.entity, ctx.stack, model, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale);
             }
 
             GlStateManager.popMatrix();
         }
     }
 
-    private void renderEachTexture(QueryCtx ctx, IRenderBauble.RenderType render, ResourceLocation texture, ModelBauble model, boolean flag) {
-        this.switchTex(ctx, texture, flag);
-        if (flag && model.needLocating()) this.switchBip(render, ctx.scale);
-        model.render(ctx.entity, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale, flag);
+    private void renderEachTexture(QueryCtx ctx, IRenderBauble.RenderType render, ResourceLocation texture, ModelBauble model, boolean ems) {
+        this.switchTex(ctx, texture, ems);
+        if (ems && model.needLocating()) this.switchBip(render, ctx.scale);
+        model.render(this.renderPlayer, ctx.entity, ctx.stack, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale, ems);
     }
 
-    private void switchTex(QueryCtx ctx, ResourceLocation texture, boolean flag) {
+    private void switchTex(QueryCtx ctx, ResourceLocation texture, boolean ems) {
         if (texture != null) {
-            BaublesRenderEvent.SwitchTexture event = new BaublesRenderEvent.SwitchTexture(ctx.entity, this.slim, ctx.stack, texture, flag);
+            BaublesRenderEvent.SwitchTexture event = new BaublesRenderEvent.SwitchTexture(ctx.entity, this.slim, ctx.stack, texture, ems);
             MinecraftForge.EVENT_BUS.post(event);
             if (event.isChanged()) texture = event.getTexture();
             Minecraft.getMinecraft().getTextureManager().bindTexture(texture);

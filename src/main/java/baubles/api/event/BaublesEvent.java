@@ -15,7 +15,7 @@ public class BaublesEvent extends LivingEvent {
         this.stack = stack;
     }
 
-    public void canceled() {
+    public void cancel() {
         this.setCanceled(true);
     }
 

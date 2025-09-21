@@ -10,8 +10,8 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public static void equipmentRenderEvent(BaublesRenderEvent.InEquipments event) {
-        if (!(event.getStack().getItem() instanceof TrinketEnderTiara)) {
-            event.canceled();
+        if (event.getStack().getItem() instanceof TrinketEnderTiara) {
+            event.cancel();
         }
     }
 }

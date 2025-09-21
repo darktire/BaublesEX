@@ -3,6 +3,7 @@ package baubles.compat.rlartifacts;
 import artifacts.Artifacts;
 import artifacts.client.model.*;
 import baubles.api.model.ModelBauble;
+import baubles.compat.CommonRcs;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
@@ -10,40 +11,42 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.ResourceLocation;
 
-public class Resources {
-    private static final String ENTITY_LAYER = "textures/entity/layer/";
+public class Resources extends CommonRcs {
     
+    public static final ResourceLocation SHOCK_TEXTURE = getLoc("shock_pendant.png");
+    public static final ResourceLocation FLAME_TEXTURE = getLoc("flame_pendant.png");
+    public static final ResourceLocation THORN_TEXTURE = getLoc("thorn_pendant.png");
+    public static final ResourceLocation PANIC_TEXTURE = getLoc("panic_necklace.png");
+    public static final ResourceLocation ULTIMATE_TEXTURE = getLoc("ultimate_pendant.png");
+    public static final ResourceLocation SACRIFICIAL_TEXTURE = getLoc("sacrificial_amulet.png");
+
+    public static final ResourceLocation BOTTLED_CLOUD = getLoc("bottled_cloud.png");
+    public static final ResourceLocation BOTTLED_FART = getLoc("bottled_fart.png");
+    public static final ResourceLocation ANTIDOTE_VESSEL = getLoc("antidote_vessel.png");
+    public static final ResourceLocation BUBBLE_WRAP = getLoc("bubble_wrap.png");
+    public static final ResourceLocation OBSIDIAN_SKULL = getLoc("obsidian_skull.png");
+
+    public static final ResourceLocation CLOAK_NORMAL = getLoc("star_cloak.png");
+    public static final ResourceLocation CLOAK_OVERLAY = getLoc("star_cloak_overlay.png");
+
+    public static final ResourceLocation HAT_TEXTURE = getLoc("drinking_hat.png");
+    public static final ResourceLocation HAT_SPECIAL_TEXTURE = getLoc("drinking_hat_special.png");
+
+    public static final ResourceLocation FERAL_CLAWS_TEXTURE = getLoc("feral_claws_normal.png");
+    public static final ResourceLocation POWER_GLOVE_TEXTURE = getLoc("power_glove_normal.png");
+    public static final ResourceLocation MECHANICAL_GLOVE_TEXTURE = getLoc("mechanical_glove_normal.png");
+    public static final ResourceLocation FIRE_GAUNTLET_TEXTURE = getLoc("fire_gauntlet_normal.png");
+    public static final ResourceLocation FIRE_GAUNTLET_OVERLAY_TEXTURE = getLoc("fire_gauntlet_overlay_normal.png");
+    public static final ResourceLocation POCKET_PISTON_TEXTURE = getLoc("pocket_piston_normal.png");
+
+    public static final ResourceLocation GOGGLES_TEXTURE = getLoc("night_vision_goggles.png");
     
-    public static final ResourceLocation SHOCK_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "shock_pendant.png");
-    public static final ResourceLocation FLAME_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "flame_pendant.png");
-    public static final ResourceLocation THORN_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "thorn_pendant.png");
-    public static final ResourceLocation PANIC_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "panic_necklace.png");
-    public static final ResourceLocation ULTIMATE_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "ultimate_pendant.png");
-    public static final ResourceLocation SACRIFICIAL_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "sacrificial_amulet.png");
+    public static final ResourceLocation SNORKEL_TEXTURE = getLoc("snorkel.png");
 
-    public static final ResourceLocation BOTTLED_CLOUD = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "bottled_cloud.png");
-    public static final ResourceLocation BOTTLED_FART = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "bottled_fart.png");
-    public static final ResourceLocation ANTIDOTE_VESSEL = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "antidote_vessel.png");
-    public static final ResourceLocation BUBBLE_WRAP = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "bubble_wrap.png");
-    public static final ResourceLocation OBSIDIAN_SKULL = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "obsidian_skull.png");
+    static ResourceLocation getLoc(String path) {
+        return getLoc(Artifacts.MODID, ENTITY_LAYER, path);
+    }
 
-    public static final ResourceLocation CLOAK_NORMAL = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "star_cloak.png");
-    public static final ResourceLocation CLOAK_OVERLAY = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "star_cloak_overlay.png");
-
-    public static final ResourceLocation HAT_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "drinking_hat.png");
-    public static final ResourceLocation HAT_SPECIAL_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "drinking_hat_special.png");
-
-    public static final ResourceLocation FERAL_CLAWS_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "feral_claws_normal.png");
-    public static final ResourceLocation POWER_GLOVE_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "power_glove_normal.png");
-    public static final ResourceLocation MECHANICAL_GLOVE_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "mechanical_glove_normal.png");
-    public static final ResourceLocation FIRE_GAUNTLET_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "fire_gauntlet_normal.png");
-    public static final ResourceLocation FIRE_GAUNTLET_OVERLAY_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "fire_gauntlet_overlay_normal.png");
-    public static final ResourceLocation POCKET_PISTON_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "pocket_piston_normal.png");
-
-    public static final ResourceLocation GOGGLES_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "night_vision_goggles.png");
-    
-    public static final ResourceLocation SNORKEL_TEXTURE = new ResourceLocation(Artifacts.MODID, ENTITY_LAYER + "snorkel.png");
-    
     public static final ModelBauble AMULET_MODEL = new ModelArtifacts(new ModelAmulet());
     public static final ModelBauble PANIC_MODEL = new ModelArtifacts(new ModelPanicNecklace());
     public static final ModelBauble ULTIMATE_MODEL = new ModelArtifacts(new ModelUltimatePendant());
