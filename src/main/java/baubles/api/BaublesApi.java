@@ -9,11 +9,18 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class BaublesApi {
+public final class BaublesApi {
+
+    public static final String MOD_ID = "baubles";
+    public static final String MOD_NAME = "BaublesEX";
+
+    public static final Logger log = LogManager.getLogger(MOD_ID.toUpperCase());
 
     /**
      * Retrieves the baubles inventory capability handler for the supplied player

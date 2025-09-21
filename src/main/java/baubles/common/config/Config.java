@@ -1,8 +1,8 @@
 package baubles.common.config;
 
-import baubles.Baubles;
 import baubles.BaublesRegister;
 import baubles.api.BaubleType;
+import baubles.api.BaublesApi;
 import baubles.api.cap.BaublesContainer;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.ConfigCategory;
@@ -37,14 +37,14 @@ public class Config extends PartialConfig {
     private static final LinkedList<Item> blacklist = new LinkedList<>();
 
     public static void loadConfig(FMLPreInitializationEvent event) {
-        MOD_DIR =new File(event.getModConfigurationDirectory(), Baubles.MOD_ID);
+        MOD_DIR =new File(event.getModConfigurationDirectory(), BaublesApi.MOD_ID);
         try {
             configIns = new Configuration(event.getSuggestedConfigurationFile());
             configIns.load();
 
             PartialConfig.create(Config.class);
         } catch (Exception e) {
-            Baubles.log.error("BAUBLES has a problem loading it's configuration");
+            BaublesApi.log.error("BAUBLES has a problem loading it's configuration");
         }
         checkConfig(configIns);
         saveConfig();
@@ -192,11 +192,11 @@ public class Config extends PartialConfig {
         }
     }
 
-    @Mod.EventBusSubscriber(modid = Baubles.MOD_ID)
+    @Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
     public static class ConfigChangeListener {
         @SubscribeEvent
         public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-            if (eventArgs.getModID().equals(Baubles.MOD_ID)) {
+            if (eventArgs.getModID().equals(BaublesApi.MOD_ID)) {
                 PartialConfig.create(Config.class);
                 Config.saveConfig();
                 if (Config.rightClick) Config.setupBlacklist();

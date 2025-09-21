@@ -1,6 +1,6 @@
 package baubles.compat.enigmaticlegacy;
 
-import baubles.Baubles;
+import baubles.api.BaublesApi;
 import baubles.client.model.ModelItemHelper;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.EntityLivingBase;
@@ -58,7 +58,7 @@ public class ModelScroll extends ModelItemHelper {
                 perItem.put(entity, 360F / scrolls.size());
             }
             else {
-                Baubles.log.error("{} is not equipped", item.getRegistryName());
+                BaublesApi.log.error("{} is not equipped", item.getRegistryName());
             }
         }
     }

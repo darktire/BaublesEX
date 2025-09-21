@@ -1,6 +1,6 @@
 package baubles.client.gui;
 
-import baubles.Baubles;
+import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesListener;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.client.gui.element.ElementButton;
@@ -37,7 +37,7 @@ import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class GuiPlayerExpanded extends GuiBase implements IBaublesListener<GuiPlayerExpanded> {
-    @Deprecated public static final ResourceLocation background = new ResourceLocation(Baubles.MOD_ID,"textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
+    @Deprecated public static final ResourceLocation background = new ResourceLocation(BaublesApi.MOD_ID,"textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
     private final EntityPlayer player;
     private final EntityLivingBase entity;
     private final static boolean jeiLoaded = ModsHelper.isModLoaded("jei");

@@ -66,7 +66,7 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 	}
 
 	@Override
-	public EnumRarity getRarity(ItemStack par1ItemStack) {
+	public EnumRarity getRarity(ItemStack stack) {
 		return EnumRarity.EPIC;
 	}
 

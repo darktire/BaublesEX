@@ -1,6 +1,5 @@
 package baubles.common.event;
 
-import baubles.Baubles;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesContainer;
@@ -29,9 +28,9 @@ import java.util.List;
 
 import static cofh.core.init.CoreEnchantments.soulbound;
 
-@Mod.EventBusSubscriber(modid = Baubles.MOD_ID)
+@Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
 public class EventHandlerEntity {
-    private static final ResourceLocation BAUBLES_CAP = new ResourceLocation(Baubles.MOD_ID, "container");
+    private static final ResourceLocation BAUBLES_CAP = new ResourceLocation(BaublesApi.MOD_ID, "container");
     private static final boolean CoFHLoaded = Loader.isModLoaded("cofhcore");
 
     @SubscribeEvent
@@ -42,7 +41,7 @@ public class EventHandlerEntity {
             NBTTagCompound nbt = bco.serializeNBT();
             bcn.deserializeNBT(nbt);
         } catch (Exception e) {
-            Baubles.log.error("Could not clone player [" + event.getOriginal().getName() + "] baubles when changing dimensions");
+            BaublesApi.log.error("Could not clone player [" + event.getOriginal().getName() + "] baubles when changing dimensions");
         }
     }
 

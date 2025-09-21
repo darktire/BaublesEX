@@ -1,5 +1,6 @@
 package baubles;
 
+import baubles.api.BaublesApi;
 import baubles.api.BaublesWrapper;
 import baubles.api.IWrapper;
 import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
@@ -20,29 +21,19 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @Mod(
-        modid = Baubles.MOD_ID,
-        name = Baubles.MOD_NAME,
-        guiFactory = Baubles.FACTORY
+        modid = BaublesApi.MOD_ID,
+        name = BaublesApi.MOD_NAME,
+        guiFactory = "baubles.client.gui.config.BaublesGuiFactory"
 )
 public class Baubles {
-
-    public static final String MOD_ID = "baubles";
-    public static final String MOD_NAME = "BaublesEX";
-    public static final String FACTORY = "baubles.client.gui.config.BaublesGuiFactory";
 
     @SidedProxy(clientSide = "baubles.proxy.ClientProxy", serverSide = "baubles.proxy.CommonProxy")
     public static CommonProxy proxy;
 
-    @Instance(value = Baubles.MOD_ID)
+    @Instance(value = BaublesApi.MOD_ID)
     public static Baubles instance;
-
-    public static final Logger log = LogManager.getLogger(MOD_ID.toUpperCase());
-    public static final int GUI = 0;
-    public static final int GUI_A = 1;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {

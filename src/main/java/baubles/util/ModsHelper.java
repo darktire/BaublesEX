@@ -1,6 +1,6 @@
 package baubles.util;
 
-import baubles.Baubles;
+import baubles.api.BaublesApi;
 import baubles.compat.ModOnly;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.ModClassLoader;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +28,13 @@ public final class ModsHelper {
             INFO.put(mod, loaded);
         }
         return loaded;
+    }
+
+    public static boolean isModLoaded(ArrayList<String> mods) {
+        for (String mod : mods) {
+            if (!isModLoaded(mod)) return false;
+        }
+        return true;
     }
 
     private static boolean checkByName(String modName) {
@@ -53,17 +61,18 @@ public final class ModsHelper {
 
         for (ASMDataTable.ASMData data : list) {
             try {
-                String mod = (String) data.getAnnotationInfo().get("value");
+                @SuppressWarnings("unchecked")
+                ArrayList<String> mods = (ArrayList<String>) data.getAnnotationInfo().get("value");
                 boolean client = Boolean.TRUE.equals(data.getAnnotationInfo().get("client"));
 
-                if (!isModLoaded(mod)) continue;
+                if (!isModLoaded(mods)) continue;
                 if (client && FMLCommonHandler.instance().getSide() == Side.SERVER) continue;
 
                 String className = data.getClassName();
                 Class<?> clazz = Class.forName(className, false, mcl);
                 MinecraftForge.EVENT_BUS.register(clazz);
             } catch (ClassNotFoundException e) {
-                Baubles.log.warn("An error occurred trying to load the compat event {} for mod {}", data.getClassName(), data.getAnnotationInfo().get("value"));
+                BaublesApi.log.warn("An error occurred trying to load the compat event {} for mod {}", data.getClassName(), data.getAnnotationInfo().get("value"));
             }
         }
     }

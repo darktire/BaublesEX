@@ -1,6 +1,5 @@
 package baubles.common.event;
 
-import baubles.Baubles;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.registries.TypesData;
@@ -21,7 +20,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.*;
 
-@Mod.EventBusSubscriber(modid = Baubles.MOD_ID)
+@Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
 public class BaublesSync {
     private static final HashMap<UUID, Deque<ItemStack>> onDropping = new HashMap<>();
 

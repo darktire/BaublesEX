@@ -1,6 +1,6 @@
 package baubles.client.gui.config;
 
-import baubles.Baubles;
+import baubles.api.BaublesApi;
 import baubles.common.config.Config;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
@@ -14,7 +14,7 @@ import java.util.List;
 public class BaublesConfigGui extends GuiConfig {
 
     public BaublesConfigGui(GuiScreen parent) {
-        super(getParent(parent), getConfigElements(), Baubles.MOD_ID, false, false, getTitle(parent));
+        super(getParent(parent), getConfigElements(), BaublesApi.MOD_ID, false, false, getTitle(parent));
     }
 
     private static List<IConfigElement> getConfigElements() {

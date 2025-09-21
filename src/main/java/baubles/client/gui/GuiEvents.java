@@ -1,6 +1,6 @@
 package baubles.client.gui;
 
-import baubles.Baubles;
+import baubles.api.BaublesApi;
 import baubles.client.gui.element.ElementButton;
 import baubles.common.config.Config;
 import net.minecraft.client.gui.GuiScreen;
@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod.EventBusSubscriber(modid = Baubles.MOD_ID, value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID, value = Side.CLIENT)
 public class GuiEvents {
 	@SubscribeEvent
 	public static void guiPostInit(GuiScreenEvent.InitGuiEvent.Post event) {

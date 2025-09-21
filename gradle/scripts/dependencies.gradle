@@ -38,7 +38,7 @@ dependencies {
 //    runtimeOnly fg.deobf('net.ilexiconn:llibrary-core:1.0.11-1.12.2')
 //    runtimeOnly fg.deobf('net.ilexiconn:llibrary:1.7.19-1.12.2:dev')
     //mantle
-    runtimeOnly fg.deobf("curse.maven:mantle-74924:2713386")
+//    runtimeOnly fg.deobf("curse.maven:mantle-74924:2713386")
     //loliasm
 //    runtimeOnly fg.deobf("curse.maven:lolasm-460609:6854259")
 
@@ -47,7 +47,7 @@ dependencies {
 //    runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:2667280")
     //Mo' Bends
     compileOnly fg.deobf("curse.maven:mo-bends-231347:3573346")
-    runtimeOnly fg.deobf("curse.maven:mo-bends-231347:3573346")
+//    runtimeOnly fg.deobf("curse.maven:mo-bends-231347:3573346")
     //Test dummy
 //    implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:2503041")
     //Botania
@@ -68,7 +68,7 @@ dependencies {
 //    runtimeOnly fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:6816073")
     //aether
     compileOnly fg.deobf("curse.maven:aether-255308:6316434")
-    runtimeOnly fg.deobf("curse.maven:aether-255308:6316434")
+//    runtimeOnly fg.deobf("curse.maven:aether-255308:6316434")
     //crafttweaker
     compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}:deobf"
     compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}:deobf"
@@ -78,7 +78,11 @@ dependencies {
 //    runtimeOnly fg.deobf("curse.maven:ice-and-fire-rotn-edition-457668:5738729")
 //    runtimeOnly files("libs/iceandfire-rlcraft.jar")
     //tinkers
-    implementation fg.deobf("curse.maven:tinkers-construct-74072:2902483")
+    compileOnly fg.deobf("curse.maven:tinkers-construct-74072:2902483")
     compileOnly fg.deobf("curse.maven:more-tcon-396545:5840934")
-    runtimeOnly files("libs/more-tcon.jar")
+//    runtimeOnly files("libs/more-tcon.jar")
+    //reskillable
+//    implementation fg.deobf("curse.maven:reskillable-286382:2815686")
+//    implementation fg.deobf("curse.maven:compatskills-290541:2815688")
+
 }

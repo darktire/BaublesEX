@@ -2,6 +2,7 @@ package baubles.api.registries;
 
 import baubles.api.BaubleType;
 import baubles.api.BaubleTypeEx;
+import baubles.api.BaublesApi;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistry;
@@ -12,8 +13,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class TypesData {
-    private static final String DATA_ID = "baubles";
-    private static final ResourceLocation BAUBLE_TYPE = new ResourceLocation(DATA_ID, "types");
+    private static final ResourceLocation BAUBLE_TYPE = getLoc("types", false);
     private static ForgeRegistry<BaubleTypeEx> REGISTRY;
 
     private static int sum = 7;
@@ -62,8 +62,8 @@ public class TypesData {
     }
 
     public static BaubleTypeEx getTypeByName(String typeName) {
-        BaubleTypeEx type = REGISTRY.getValue(new ResourceLocation(DATA_ID, typeName));
-        if (type == null) type = REGISTRY.getValue(new ResourceLocation(typeName));
+        BaubleTypeEx type = REGISTRY.getValue(getLoc(typeName, false));
+        if (type == null) type = REGISTRY.getValue(getLoc(typeName, true));
         return type;
     }
     public static BaubleTypeEx getTypeById(int id) {
@@ -74,8 +74,8 @@ public class TypesData {
     }
 
     public static boolean hasType(String typeName) {
-        boolean contained = REGISTRY.containsKey(new ResourceLocation(DATA_ID, typeName));
-        if (!contained) contained = REGISTRY.containsKey(new ResourceLocation(typeName));
+        boolean contained = REGISTRY.containsKey(getLoc(typeName, false));
+        if (!contained) contained = REGISTRY.containsKey(getLoc(typeName, true));
         return contained;
     }
 
@@ -87,6 +87,10 @@ public class TypesData {
         REGISTRY.iterator().forEachRemaining(c);
     }
 
+    private static ResourceLocation getLoc(String path, boolean withId) {
+        if (withId) return new ResourceLocation(path);
+        return new ResourceLocation(BaublesApi.MOD_ID, path);
+    }
 
 
     public static class Preset {

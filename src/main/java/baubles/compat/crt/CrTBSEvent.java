@@ -1,6 +1,6 @@
 package baubles.compat.crt;
 
-import baubles.Baubles;
+import baubles.api.BaublesApi;
 import baubles.api.event.BaublesEvent;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.entity.IEntityLivingBase;
@@ -13,7 +13,7 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 
 public class CrTBSEvent<T extends BaublesEvent> implements IEventCancelable {
-    private static final String BASE_CLASS = "mods." + Baubles.MOD_ID + ".BaublesEvent";
+    private static final String BASE_CLASS = "mods." + BaublesApi.MOD_ID + ".BaublesEvent";
     protected final T event;
 
     private CrTBSEvent(T event) {

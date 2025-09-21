@@ -2,6 +2,7 @@ package baubles;
 
 import baubles.api.BaubleType;
 import baubles.api.BaubleTypeEx;
+import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = Baubles.MOD_ID)
+@Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
 public class BaublesRegister {
     public BaublesRegister() {
     }
@@ -86,7 +87,7 @@ public class BaublesRegister {
         TypesData.applyToTypes(trinket::addOriSlots);
     }
 
-    @Mod.EventBusSubscriber(modid = Baubles.MOD_ID)
+    @Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
     public static class ModItems {
         public static final Item ring = new ItemRing().setRegistryName("ring");
         public static final Item tire = new ItemTire().setRegistryName("tire");

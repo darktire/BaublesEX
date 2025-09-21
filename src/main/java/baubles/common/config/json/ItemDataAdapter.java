@@ -26,12 +26,17 @@ public class ItemDataAdapter extends TypeAdapter<List<IWrapper>>  {
             Item item = wrapper.getItemStack().getItem();
             out.name(item.getRegistryName().toString());
             out.beginObject();
-            out.name("types");
-            out.beginArray();
-            for (BaubleTypeEx type: wrapper.getTypes(null)) {
-                out.value(type.getRegistryName().toString());
+            if (BaublesWrapper.CSTMap.isRemoved(item)) {
+                out.name("addition").value("remove");
             }
-            out.endArray();
+            else {
+                out.name("types");
+                out.beginArray();
+                for (BaubleTypeEx type : wrapper.getTypes(null)) {
+                    out.value(type.getRegistryName().toString());
+                }
+                out.endArray();
+            }
             out.endObject();
         }
         out.endObject();

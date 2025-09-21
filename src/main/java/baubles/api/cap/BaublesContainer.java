@@ -60,28 +60,21 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
 
     @Override
     public void modifySlotOA(String typeName, int modifier) {
-        if (modifier != 0) {
-            this.storeSlots();
-            int input = this.modifySlotOL(typeName, modifier);
-            if (input != 0) {
-                this.BAUBLE_MODIFIER.put(typeName, input);
-            }
-            else {
-                this.BAUBLE_MODIFIER.remove(typeName);
-            }
+        if (modifier == 0) return;
+        this.storeSlots();
+        nameToT(typeName).ifPresent(type -> {
+            this.applyModifier(type, modifier, true);
             if (this.containerUpdated) this.containerUpdated = false;
-        }
+        });
     }
 
-    /**
-     * Only modify slots without storing previous slots or updating {@link BaublesContainer#BAUBLE_MODIFIER}.
-     * Also will not trigger {@link BaublesContainer#updateContainer()}.
-     * @return current modifier
-     */
-    private int modifySlotOL(String typeName, int modifier) {
-        BaubleTypeEx type = TypesData.getTypeByName(typeName);
-        if (type == null) throw new RuntimeException("No such bauble type");
-        int original = this.BAUBLE_MODIFIER.getOrDefault(typeName, 0);
+    private void modifySlotOL(String typeName, int modifier) {
+        nameToT(typeName).ifPresent(type -> applyModifier(type, modifier, false));
+    }
+
+    private void applyModifier(BaubleTypeEx type, int modifier, boolean flag) {
+        String name = type.getTypeName();
+        int oldVar = this.BAUBLE_MODIFIER.getOrDefault(name, 0);
         if (modifier > 0) {
             int index = this.MODIFIED_SLOTS.indexOf(type);
             if (index == -1) {
@@ -99,12 +92,30 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         }
         else {
             int lastIndex = this.MODIFIED_SLOTS.lastIndexOf(type);
-            if (lastIndex == -1) return original;
-            if (modifier + type.getAmount() + original < 0) modifier = -type.getAmount() - original;
-            this.MODIFIED_SLOTS.subList(lastIndex + modifier + 1, lastIndex + 1).clear();
+            if (lastIndex == -1) modifier = 0;
+            else {
+                if (modifier + type.getAmount() + oldVar < 0) modifier = -type.getAmount() - oldVar;
+                this.MODIFIED_SLOTS.subList(lastIndex + modifier + 1, lastIndex + 1).clear();
+            }
         }
 
-        return original + modifier;
+        if (flag) {
+            int newVar = oldVar + modifier;
+            if (newVar != 0) {
+                this.BAUBLE_MODIFIER.put(name, newVar);
+            }
+            else {
+                this.BAUBLE_MODIFIER.remove(name);
+            }
+        }
+    }
+
+    private Optional<BaubleTypeEx> nameToT(String typeName) {
+        BaubleTypeEx type = TypesData.getTypeByName(typeName);
+        if (type == null) {
+            BaublesApi.log.error("no such type {}", typeName);
+        }
+        return Optional.ofNullable(type);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package baubles.common.network;
 
 import baubles.Baubles;
+import baubles.proxy.CommonProxy;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldServer;
@@ -25,7 +26,7 @@ public class PacketOpenBaublesInventory implements IMessage {
             EntityPlayerMP player = ctx.getServerHandler().player;
             ((WorldServer) player.world).addScheduledTask(() -> {
                 player.closeContainer();
-                player.openGui(Baubles.instance, Baubles.GUI, player.world, 0, 0, 0);
+                player.openGui(Baubles.instance, CommonProxy.GUI, player.world, 0, 0, 0);
             });
             return null;
         }

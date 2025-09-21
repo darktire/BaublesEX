@@ -1,11 +1,9 @@
 package baubles.client;
 
-import baubles.Baubles;
 import baubles.BaublesRegister;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
-import baubles.api.BaublesWrapper;
-import baubles.api.IBauble;
+import baubles.api.IWrapper;
 import baubles.api.event.BaublesRenderEvent;
 import baubles.api.registries.TypesData;
 import baubles.client.gui.GuiPlayerExpanded;
@@ -34,7 +32,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.stream.Collectors;
 
-@Mod.EventBusSubscriber(modid = Baubles.MOD_ID, value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID, value = Side.CLIENT)
 public class ClientEventHandler {
 
     @SubscribeEvent
@@ -46,32 +44,35 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public static void registerItemModels(ModelRegistryEvent event) {
-        registerModel(BaublesRegister.ModItems.ring);
-        if (Config.ModItems.testItem) registerModel(BaublesRegister.ModItems.tire);
+        registerModel(BaublesRegister.ModItems.ring, 0);
+        if (Config.ModItems.testItem) {
+            registerModel(BaublesRegister.ModItems.tire, 0);
+            registerModel(BaublesRegister.ModItems.tire, 1);
+            registerModel(BaublesRegister.ModItems.tire, 2);
+            registerModel(BaublesRegister.ModItems.tire, 3);
+        }
     }
 
-    private static void registerModel(Item item) {
-        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
+    private static void registerModel(Item item, int meta) {
+        ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(item.getRegistryName(), "inventory"));
     }
 
     @SubscribeEvent
     public static void tooltipEvent(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
         if (!stack.isEmpty() && BaublesApi.isBauble(stack)) {
-            IBauble bauble = BaublesApi.toBauble(stack);
-            StringBuilder tooltip = new StringBuilder(TextFormatting.GOLD + I18n.format("baubles.tooltip") + ": ");
-            if (bauble instanceof BaublesWrapper) {
-                tooltip.append(bauble.getTypes(stack)
-                        .stream()
-                        .map(BaubleTypeEx::getTranslateKey)
-                        .map(I18n::format)
-                        .collect(Collectors.joining(", ")));
+            try {
+                IWrapper bauble = BaublesApi.toBauble(stack);
+                String tooltip = TextFormatting.GOLD + I18n.format("baubles.tooltip") + ": " +
+                        bauble.getTypes(stack)
+                            .stream()
+                            .map(BaubleTypeEx::getTranslateKey)
+                            .map(I18n::format)
+                            .collect(Collectors.joining(", "));
+                event.getToolTip().add(tooltip);
+            } catch (Exception e) {
+                throw new RuntimeException(String.format("baubles_cap for %s is outdated", stack.getItem().getRegistryName()));
             }
-            else {
-                Baubles.log.warn("bauble cap on {} registered incorrect", stack.getTranslationKey());
-                tooltip.append(I18n.format("name." + bauble.getBaubleType(stack).toString().toLowerCase()));
-            }
-            event.getToolTip().add(tooltip.toString());
         }
     }
 
