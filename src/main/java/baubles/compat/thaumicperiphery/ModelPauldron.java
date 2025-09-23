@@ -3,7 +3,7 @@ package baubles.compat.thaumicperiphery;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
 import baubles.proxy.ClientProxy;
-import baubles.util.ModsHelper;
+import baubles.util.HookHelper;
 import com.google.common.collect.ImmutableMap;
 import goblinbob.mobends.core.util.BenderHelper;
 import goblinbob.mobends.standard.data.PlayerData;
@@ -22,7 +22,7 @@ public class ModelPauldron extends ModelBauble {
     private final ModelBiped model;
     private final ModelPlayer modelPlayer;
     private final RenderPlayer renderPlayer;
-    private static final boolean FLAG = ModsHelper.isModLoaded("mobends");
+    private static final boolean FLAG = HookHelper.isModLoaded("mobends");
 
     private ModelPauldron(boolean slim) {
         super(new thaumicperiphery.render.ModelPauldron(0.125F));

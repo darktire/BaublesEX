@@ -10,7 +10,7 @@
     "wings.MixinWings"
   ],
   "client": [
-    "artifacts.MixinProxy",
+    "artifacts.MixinLayerBauble",
     "bountifulbaubles.MixinAmulet",
     "bountifulbaubles.MixinItemShieldCobalt",
     "bountifulbaubles.MixinItemSunglasses",
@@ -33,6 +33,7 @@
     "rlartifacts.MixinBaubleObsidianSkull",
     "rlartifacts.MixinBaublePotionEffect",
     "rlartifacts.MixinBaubleStarCloak",
+    "rlartifacts.MixinProxy",
     "thaumcraft.MixinItemHead",
     "thaumicperiphery.MixinItemBaubles",
     "thaumicperiphery.MixinItemMagicQuiver",

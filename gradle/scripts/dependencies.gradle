@@ -52,13 +52,14 @@ dependencies {
 //    implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:2503041")
     //Botania
     compileOnly fg.deobf("curse.maven:botania-225643:3330934")
-    runtimeOnly fg.deobf("curse.maven:botania-225643:3330934")
+//    runtimeOnly fg.deobf("curse.maven:botania-225643:3330934")
 //    runtimeOnly fg.deobf("curse.maven:botania-ceu-1179448:6900692")
     //Wings
     compileOnly fg.deobf("curse.maven:wings-302584:2829351")
 //    runtimeOnly fg.deobf("curse.maven:wings-302584:2829351")
-    //RLArtifacts
+    //Artifacts
     implementation fg.deobf("curse.maven:rl-artifacts-819886:4475428")
+//    runtimeOnly fg.deobf("curse.maven:artifacts-312353:4871204")
     //BountifulBaubles
     implementation fg.deobf("curse.maven:bountifulbaubles-313536:3568240")
     //trinkets-and-baubles
@@ -81,6 +82,7 @@ dependencies {
     //tinkers
     compileOnly fg.deobf("curse.maven:tinkers-construct-74072:2902483")
     compileOnly fg.deobf("curse.maven:more-tcon-396545:5840934")
+//    runtimeOnly fg.deobf("curse.maven:tinkers-construct-74072:2902483")
 //    runtimeOnly files("libs/more-tcon.jar")
     //reskillable
 //    implementation fg.deobf("curse.maven:reskillable-286382:2815686")

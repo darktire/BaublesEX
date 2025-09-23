@@ -17,3 +17,4 @@ public class PacketHandler {
         INSTANCE.registerMessage(PacketModifySlots.Handler.class, PacketModifySlots.class, START_ID++, Side.CLIENT);
     }
 }
+//todo cache

@@ -2,6 +2,7 @@ package baubles.compat.tcon;
 
 import baubles.api.BaublesApi;
 import baubles.compat.ModOnly;
+import baubles.util.HookHelper;
 import com.existingeevee.moretcon.tools.tooltypes.Gauntlet;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
@@ -12,22 +13,16 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import slimeknights.tconstruct.library.traits.ITrait;
 import slimeknights.tconstruct.library.utils.ToolHelper;
 
+import java.lang.reflect.Field;
+
 @ModOnly("moretcon")
 public class EventHandler extends Gauntlet {
-    private static float lastDMG = -1.0F;
+    private static final Field LAST_DMG_FIELD = HookHelper.getField("com.existingeevee.moretcon.tools.tooltypes.Gauntlet", "lastDMG");
+    private static float lastDMG = (float) HookHelper.getValue(LAST_DMG_FIELD, null);
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onLivingAttackEvent(LivingKnockBackEvent e) {
-        int count = 0;
-        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-            if (ste.getClassName().equals(this.getClass().getName())) {
-                count++;
-            }
-        }
-
-        if (count > 1) {
-            return;
-        }
+    public static void onLivingAttack(LivingKnockBackEvent e) {
+        if (checkState("onLivingAttack")) return;
 
         if (e.getAttacker() instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) e.getAttacker();
@@ -45,17 +40,8 @@ public class EventHandler extends Gauntlet {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onLivingAttackEvent(LivingHurtEvent e) {
-        int count = 0;
-        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-            if (ste.getClassName().equals(this.getClass().getName())) {
-                count++;
-            }
-        }
-
-        if (count > 1) {
-            return;
-        }
+    public static void onLivingHurt(LivingHurtEvent e) {
+        if (checkState("onLivingHurt")) return;
 
         DamageSource source = e.getSource();
         if (source.getImmediateSource() instanceof EntityPlayer && source.getDamageType().equals("player")) {
@@ -80,5 +66,18 @@ public class EventHandler extends Gauntlet {
 
             e.setAmount(lastDMG);
         }
+    }
+
+    private static boolean checkState(String methodName) {
+        int count = 0;
+        String className = EventHandler.class.getName();
+
+        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+            if (ste.getClassName().equals(className) && ste.getMethodName().equals(methodName)) {
+                count++;
+            }
+        }
+
+        return count > 1;
     }
 }

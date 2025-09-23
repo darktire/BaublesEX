@@ -2,7 +2,7 @@ package baubles.client.model;
 
 import baubles.api.model.ModelBauble;
 import baubles.proxy.ClientProxy;
-import baubles.util.ModsHelper;
+import baubles.util.HookHelper;
 import goblinbob.mobends.core.util.BenderHelper;
 import goblinbob.mobends.standard.data.PlayerData;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 public class ModelElytra extends ModelBauble {
     private static ModelElytra instance;
     private final RenderPlayer renderPlayer;
-    private static final boolean FLAG = ModsHelper.isModLoaded("mobends");
+    private static final boolean FLAG = HookHelper.isModLoaded("mobends");
 
     public ModelElytra(boolean slim) {
         this.model = new net.minecraft.client.model.ModelElytra();

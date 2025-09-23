@@ -1,4 +1,4 @@
-package baubles.mixin.late.artifacts;
+package baubles.mixin.late.rlartifacts;
 
 import artifacts.client.ClientProxy;
 import org.spongepowered.asm.mixin.Mixin;

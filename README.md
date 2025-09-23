@@ -70,9 +70,9 @@
 ---
 
 ## Json Helper:
-  - locate in `your_minecraft_floder/config/baubles/*`
-  - `items_data.json` and `types_data.json` will be auto created, or you can also create it yourself
-  - use command `/baubles dump` to get all existed items and types into `items_dump.json` and `types_dump.json`.
+  - `items_data.json` & `types_data.json` will be automatically created when starting the game
+  - use the command `/baubles dump` to write all your currently loaded bauble items & bauble types into `items_dump.json` & `types_dump.json` respectively
+  - all of these `.json` files are located in `your_minecraft_folder/config/baubles/*`
 
 ### items_data.json:
 
