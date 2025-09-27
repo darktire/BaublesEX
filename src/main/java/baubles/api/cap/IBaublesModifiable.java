@@ -1,5 +1,7 @@
 package baubles.api.cap;
 
+import java.util.BitSet;
+
 public interface IBaublesModifiable extends IBaublesItemHandler{
 
     void addListener(IBaublesListener<?> listener);
@@ -25,4 +27,7 @@ public interface IBaublesModifiable extends IBaublesItemHandler{
     void updateContainer();
 
     int getModifier(String typeName);
+
+    void markDirty(int index);
+    BitSet getDirty();
 }

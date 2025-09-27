@@ -18,10 +18,10 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.WorldServer;
 
-import java.util.HashMap;
+import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public class ContainerPlayerExpanded extends Container implements IBaublesListener<ContainerPlayerExpanded> {
     private final EntityPlayer player;
@@ -31,7 +31,7 @@ public class ContainerPlayerExpanded extends Container implements IBaublesListen
     public final InventoryCrafting craftMatrix = new InventoryCrafting(this, 2, 2);
     public final InventoryCraftResult craftResult = new InventoryCraftResult();
     private static final EntityEquipmentSlot[] equipmentSlots = new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
-    private final Map<Integer, Boolean> visibility = new HashMap<>();
+    private final BitSet visibility = new BitSet();
 
     public ContainerPlayerExpanded(EntityPlayer player) {
         this(player, player);
@@ -248,10 +248,105 @@ public class ContainerPlayerExpanded extends Container implements IBaublesListen
         return newStack;
     }
 
-    //private void unequipBauble(ItemStack stack) { }
     @Override
     public boolean canMergeSlot(ItemStack stack, Slot slot) {
         return slot.inventory != this.craftResult && super.canMergeSlot(stack, slot);
+    }
+
+    @Override
+    protected boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
+        boolean flag = false;
+        int i = startIndex;
+
+        if (reverseDirection) {
+            i = endIndex - 1;
+        }
+
+        if (stack.isStackable()) {
+            while (!stack.isEmpty()) {
+                if (reverseDirection) {
+                    if (i < startIndex) {
+                        break;
+                    }
+                }
+                else if (i >= endIndex) {
+                    break;
+                }
+
+                Slot slot = this.inventorySlots.get(i);
+                ItemStack itemstack = slot.getStack();
+
+                if (!itemstack.isEmpty() && itemstack.getItem() == stack.getItem() && (!stack.getHasSubtypes() || stack.getMetadata() == itemstack.getMetadata()) && ItemStack.areItemStackTagsEqual(stack, itemstack)) {
+                    int j = itemstack.getCount() + stack.getCount();
+                    int maxSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
+
+                    if (j <= maxSize) {
+                        stack.setCount(0);
+                        itemstack.setCount(j);
+                        slot.onSlotChanged();
+                        flag = true;
+                    }
+                    else if (itemstack.getCount() < maxSize) {
+                        stack.shrink(maxSize - itemstack.getCount());
+                        itemstack.setCount(maxSize);
+                        slot.onSlotChanged();
+                        flag = true;
+                    }
+                }
+
+                if (reverseDirection) {
+                    --i;
+                }
+                else {
+                    ++i;
+                }
+            }
+        }
+
+        if (!stack.isEmpty()) {
+            if (reverseDirection) {
+                i = endIndex - 1;
+            }
+            else {
+                i = startIndex;
+            }
+
+            while (true) {
+                if (reverseDirection) {
+                    if (i < startIndex) {
+                        break;
+                    }
+                }
+                else if (i >= endIndex) {
+                    break;
+                }
+
+                Slot slot1 = this.inventorySlots.get(i);
+                ItemStack itemstack1 = slot1.getStack();
+
+                if (itemstack1.isEmpty() && slot1.isItemValid(stack)) {
+                    if (stack.getCount() > slot1.getSlotStackLimit()) {
+                        slot1.putStack(stack.splitStack(slot1.getSlotStackLimit()));
+                    }
+                    else {
+                        slot1.putStack(stack.splitStack(stack.getCount()));
+                    }
+
+                    slot1.onSlotChanged();
+                    flag = true;
+                    break;
+                }
+
+                if (reverseDirection) {
+                    --i;
+                }
+                else {
+                    ++i;
+                }
+            }
+        }
+
+        return flag;
     }
 
     @Override
@@ -261,12 +356,12 @@ public class ContainerPlayerExpanded extends Container implements IBaublesListen
             if (slot instanceof SlotBaubleHandler) ((SlotBaubleHandler) slot).setStack(list.get(i));
             else slot.putStack(list.get(i));
         }
+        this.baubles.getDirty().set(0, this.baublesAmount);
     }
 
     @Override
     public void detectAndSendChanges() {
-        HashSet<EntityPlayer> receivers = null;
-        for (int i = 0; i < this.inventorySlots.size(); ++i) {
+        for (int i = 0; i < 46; ++i) {
             ItemStack itemstack = this.inventorySlots.get(i).getStack();
             ItemStack itemstack1 = this.inventoryItemStacks.get(i);
 
@@ -281,22 +376,45 @@ public class ContainerPlayerExpanded extends Container implements IBaublesListen
                     }
                 }
             }
-            if (i > 45) {
-                int j = i - 46;
-                boolean flag = this.baubles.getVisible(j);
-                boolean flag1 = this.visibility.getOrDefault(j, true);
-                if (flag != flag1) {
-                    this.visibility.put(j, flag);
-                    if (receivers == null) {
-                        receivers = new HashSet<>(((WorldServer) this.player.world).getEntityTracker().getTrackingPlayers(this.player));
-                        receivers.add(this.player);
-                    }
-                    PacketSync pkt = new PacketSync(this.player, j, flag);
-                    for (EntityPlayer receiver : receivers) {
-                        PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) receiver);
-                    }
+        }
+    }
+
+    public void syncBaubles() {
+        Set<EntityPlayer> receivers = null;
+        for (int i = 0, slots = this.baubles.getSlots(); i < slots; i++) {
+            if (!this.baubles.getDirty().get(i)) continue;
+
+            ItemStack stack = this.baubles.getStackInSlot(i);
+            ItemStack stack1 = this.inventoryItemStacks.get(i + 46);
+
+            boolean clientStackChanged = false;
+            if (!ItemStack.areItemStacksEqual(stack1, stack)) {
+                clientStackChanged = !ItemStack.areItemStacksEqualUsingNBTShareTag(stack1, stack);
+                stack1 = stack.isEmpty() ? ItemStack.EMPTY : stack.copy();
+                this.inventoryItemStacks.set(i + 46, stack1);
+            }
+
+            boolean v = this.baubles.getVisible(i);
+            boolean v1 = this.visibility.get(i);
+
+            boolean visibilityChanged = v == v1;
+            if (visibilityChanged) {
+                if (v) this.visibility.clear(i);
+                else this.visibility.set(i);
+            }
+
+            if (clientStackChanged || visibilityChanged) {
+                if (receivers == null) {
+                    receivers = new HashSet<>(((WorldServer) entity.world).getEntityTracker().getTrackingPlayers(this.entity));
+                    if (this.entity instanceof EntityPlayer) receivers.add((EntityPlayer) this.entity);
+                }
+                PacketSync pkt = PacketSync.severPack(this.entity, i, stack1, v);
+                for (EntityPlayer receiver : receivers) {
+                    PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) receiver);
                 }
             }
+
+            this.baubles.getDirty().clear(i);
         }
     }
 

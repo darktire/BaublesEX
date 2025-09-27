@@ -96,3 +96,4 @@ public final class BaublesApi {
         applyByIndex(entity, (baubles, i) -> c.accept(baubles.getStackInSlot(i)));
     }
 }
+//todo cache

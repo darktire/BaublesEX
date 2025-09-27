@@ -26,7 +26,7 @@ public class ElementSwitcher extends ElementBase {
             if (pressed) {
                 this.on = !this.on;
                 this.parentGui.baubles.setVisible(id, this.on);
-                PacketHandler.INSTANCE.sendToServer(new PacketSync(id, this.on));
+                PacketHandler.INSTANCE.sendToServer(PacketSync.clientPack(id, this.on));
             }
             return pressed;
         }

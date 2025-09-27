@@ -3,6 +3,7 @@ package baubles.common.event;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.registries.TypesData;
+import baubles.common.container.ContainerPlayerExpanded;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
 import baubles.common.network.PacketSync;
@@ -17,12 +18,21 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.*;
 
 @Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
 public class BaublesSync {
     private static final HashMap<UUID, Deque<ItemStack>> onDropping = new HashMap<>();
+
+    @SubscribeEvent
+    public static void syncBaubles(TickEvent.PlayerTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) return;
+        if (!event.player.world.isRemote && event.player.openContainer instanceof ContainerPlayerExpanded) {
+            ((ContainerPlayerExpanded) event.player.openContainer).syncBaubles();
+        }
+    }
 
     @SubscribeEvent
     public static void playerJoin(EntityJoinWorldEvent event) {
@@ -32,7 +42,7 @@ public class BaublesSync {
                 EntityPlayerMP player = (EntityPlayerMP) entity;
                 dropItem((EntityLivingBase) entity);
                 syncModifier(player, Collections.singletonList(player));
-                syncSlots(player, Collections.singletonList(player));
+                syncAllSlots(player, Collections.singletonList(player));
             }
             if (entity instanceof EntityPlayerSP) {
                 UUID uuid = entity.getUniqueID();
@@ -75,13 +85,13 @@ public class BaublesSync {
     public static void onStartTracking(PlayerEvent.StartTracking event) {
         Entity target = event.getTarget();
         if (target instanceof EntityPlayerMP) {
-            syncSlots((EntityPlayer) target, Collections.singletonList(event.getEntityPlayer()));
+            syncAllSlots((EntityPlayer) target, Collections.singletonList(event.getEntityPlayer()));
         }
     }
 
-    private static void syncSlots(EntityLivingBase entity, Collection<? extends EntityPlayer> receivers) {
+    private static void syncAllSlots(EntityLivingBase entity, Collection<? extends EntityPlayer> receivers) {
         BaublesApi.applyByIndex(entity, (baubles, i) -> {
-            PacketSync pkt = new PacketSync(entity, i, baubles.getStackInSlot(i), baubles.getVisible(i));
+            PacketSync pkt = PacketSync.severPack(entity, i, baubles.getStackInSlot(i), baubles.getVisible(i));
             for (EntityPlayer receiver : receivers) {
                 PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) receiver);
             }

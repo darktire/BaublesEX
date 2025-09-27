@@ -19,7 +19,6 @@ public class BaublesCommand extends CommandTreeBase {
 		this.addSubcommand(COMMAND_HELP);
 		this.addSubcommand(new CommandView());
 		this.addSubcommand(new CommandClear());
-		this.addSubcommand(new CommandHand());
 		this.addSubcommand(new CommandSlots());
 		this.addSubcommand(new CommandSet());
 		this.addSubcommand(new CommandDump());

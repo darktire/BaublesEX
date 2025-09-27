@@ -75,7 +75,7 @@ public class EventHandlerEntity {
         }
     }
 
-    public static void dropItemsAt(EntityPlayer player, List<EntityItem> drops) {
+    private static void dropItemsAt(EntityPlayer player, List<EntityItem> drops) {
         BaublesApi.applyByIndex(player, (baubles, i) -> {
             ItemStack stack = baubles.getStackInSlot(i);
             if (!stack.isEmpty() && ((IBauble) stack.getItem()).canDrop(stack, player)) {
@@ -85,7 +85,7 @@ public class EventHandlerEntity {
                 else if (CoFHLoaded && EnchantmentHelper.getEnchantmentLevel(soulbound, stack) > 0) {
                     handleSoulbound(stack);
                 }
-                else {
+                else {//todo improve
                     EntityItem ei = new EntityItem(player.world,
                             player.posX, player.posY + player.getEyeHeight(), player.posZ,
                             stack.copy());

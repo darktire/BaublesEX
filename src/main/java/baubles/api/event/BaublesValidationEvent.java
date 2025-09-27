@@ -6,12 +6,12 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 @Event.HasResult
-public class BaublesValidation extends LivingEvent implements BaublesEvent.ResultAccessor {
+public class BaublesValidationEvent extends LivingEvent implements BaublesEvent.ResultAccessor {
 
     private final ItemStack stack;
     private final boolean ret;
 
-    public BaublesValidation(EntityLivingBase entity, ItemStack stack, boolean ret) {
+    public BaublesValidationEvent(EntityLivingBase entity, ItemStack stack, boolean ret) {
         super(entity);
         this.stack = stack;
         this.ret = ret;

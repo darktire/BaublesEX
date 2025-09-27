@@ -2,7 +2,7 @@ package baubles.common.network;
 
 import baubles.Baubles;
 import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesItemHandler;
+import baubles.api.cap.IBaublesModifiable;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -20,7 +20,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketSync implements IMessage {
 
-    private int id;
+    private boolean toClient;
     private int entityId;
     private int slot;
     private ItemStack stack;
@@ -28,94 +28,88 @@ public class PacketSync implements IMessage {
 
     public PacketSync() {}
 
+    @SuppressWarnings("unused")
     public PacketSync(EntityPlayer p, int slot, ItemStack bauble) {}
 
-    public PacketSync(EntityLivingBase entity, int slot, ItemStack stack, boolean visible) {
-        this.id = 0;
-        this.entityId = entity.getEntityId();
+    public static PacketSync severPack(EntityLivingBase entity, int slot, ItemStack stack, boolean visible) {
+        PacketSync pkt = PacketPool.borrow(entity, slot, stack, visible);
+        pkt.toClient = true;
+        return pkt;
+    }
+
+    public static PacketSync clientPack(int slot, boolean visible) {
+        PacketSync pkt = PacketPool.borrow(null, slot, null, visible);
+        pkt.toClient = false;
+        return pkt;
+    }
+
+    PacketSync set(int entityId, int slot, ItemStack stack, boolean visible) {
+        this.entityId = entityId;
         this.slot = slot;
+        this.visible = visible;
         this.stack = stack;
-        this.visible = visible;
+        return this;
     }
 
-    public PacketSync(EntityLivingBase entity, int slot, boolean visible) {
-        this.id = 1;
-        this.entityId = entity.getEntityId();
-        this.slot = slot;
-        this.visible = visible;
+    void reset() {
+        this.entityId = -1;
+        this.slot = -1;
+        this.stack = ItemStack.EMPTY;
+        this.visible = false;
     }
-
-    public PacketSync(int slot, boolean visible) {
-        this.id = -1;
-        this.slot = slot;
-        this.visible = visible;
-    }
-
 
     @Override
     public void toBytes(ByteBuf buffer) {
-        buffer.writeInt(this.id);
-        if (this.id == -1) {
-            buffer.writeInt(this.slot);
-            buffer.writeBoolean(this.visible);
-        }
-        else if (this.id == 0) {
+        buffer.writeBoolean(this.toClient);
+        if (this.toClient) {
             buffer.writeInt(this.entityId);
-            buffer.writeInt(this.slot);
             ByteBufUtils.writeItemStack(buffer, this.stack);
-            buffer.writeBoolean(this.visible);
         }
-        else if (this.id == 1) {
-            buffer.writeInt(this.entityId);
-            buffer.writeInt(this.slot);
-            buffer.writeBoolean(this.visible);
-        }
+        buffer.writeInt(this.slot);
+        buffer.writeBoolean(this.visible);
     }
 
     @Override
     public void fromBytes(ByteBuf buffer) {
-        this.id = buffer.readInt();
-        if (this.id == -1) {
-            this.slot = buffer.readInt();
-            this.visible = buffer.readBoolean();
-        }
-        else if (this.id == 0) {
+        this.toClient = buffer.readBoolean();
+        if (this.toClient) {
             this.entityId = buffer.readInt();
-            this.slot = buffer.readInt();
             this.stack = ByteBufUtils.readItemStack(buffer);
-            this.visible = buffer.readBoolean();
         }
-        else if (this.id == 1) {
-            this.entityId = buffer.readInt();
-            this.slot = buffer.readInt();
-            this.visible = buffer.readBoolean();
-        }
+        this.slot = buffer.readInt();
+        this.visible = buffer.readBoolean();
     }
 
     public static class Handler implements IMessageHandler<PacketSync, IMessage> {
         @Override
         public IMessage onMessage(PacketSync msg, MessageContext ctx) {
-            if (ctx.side == Side.CLIENT && msg.id >= 0) {
-                Minecraft.getMinecraft().addScheduledTask(() -> {
-                    World world = Baubles.proxy.getClientWorld();
-                    if (world == null) return;
-                    Entity entity = world.getEntityByID(msg.entityId);
-                    if (entity instanceof EntityLivingBase) {
-                        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
-                        int i = msg.slot;
-                        if (msg.id == 0) baubles.setStackInSlot(i, msg.stack);
-                        baubles.setVisible(i, msg.visible);
-                    }
-                });
+            if (ctx.side == Side.CLIENT && msg.toClient) {
+                Minecraft.getMinecraft().addScheduledTask(() -> handleClient(msg));
             }
-            else if (ctx.side == Side.SERVER && msg.id < 0) {
+            else if (ctx.side == Side.SERVER && !msg.toClient) {
                 EntityPlayerMP player = ctx.getServerHandler().player;
-                ((WorldServer) player.world).addScheduledTask(() -> {
-                    IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
-                    baubles.setVisible(msg.slot, msg.visible);
-                });
+                ((WorldServer) player.world).addScheduledTask(() -> handleSever(msg, player));
             }
             return null;
+        }
+
+        private void handleSever(PacketSync msg, EntityLivingBase player) {
+            IBaublesModifiable baubles = BaublesApi.getBaublesHandler(player);
+            baubles.setVisible(msg.slot, msg.visible);
+            baubles.markDirty(msg.slot);
+            PacketPool.release(msg);
+        }
+
+        private void handleClient(PacketSync msg) {
+            World world = Baubles.proxy.getClientWorld();
+            if (world == null) return;
+            Entity entity = world.getEntityByID(msg.entityId);
+            if (entity instanceof EntityLivingBase) {
+                IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
+                baubles.setStackInSlot(msg.slot, msg.stack);
+                baubles.setVisible(msg.slot, msg.visible);
+            }
+            PacketPool.release(msg);
         }
     }
 }

@@ -2,10 +2,9 @@ package baubles.common.container;
 
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.cap.IBaublesModifiable;
 import baubles.api.event.BaublesChangeEvent;
-import baubles.api.event.BaublesValidation;
+import baubles.api.event.BaublesValidationEvent;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -21,20 +20,21 @@ public class SlotBaubleHandler extends SlotItemHandler {
     private final int startYPos;
     private final EntityLivingBase entity;
 
-    public SlotBaubleHandler(EntityLivingBase entity, IBaublesItemHandler itemHandler, int index, int xPosition, int yPosition) {
+    public SlotBaubleHandler(EntityLivingBase entity, IBaublesModifiable itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);
         this.entity = entity;
         this.index = index;
         this.startYPos = yPosition;
     }
 
+    @SideOnly(Side.CLIENT)
     public void setYPos(int value) {
         this.yPos = this.startYPos + value;
     }
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        BaublesValidation event = new BaublesValidation(this.entity, stack, getItemHandler().isItemValidForSlot(index, stack, this.entity));
+        BaublesValidationEvent event = new BaublesValidationEvent(this.entity, stack, getItemHandler().isItemValidForSlot(index, stack, this.entity));
         MinecraftForge.EVENT_BUS.post(event);
         return event.getRet();
     }
@@ -134,3 +134,4 @@ public class SlotBaubleHandler extends SlotItemHandler {
     }
 
 }
+//todo lock
