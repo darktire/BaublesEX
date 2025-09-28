@@ -63,7 +63,7 @@ public class ClientEventHandler {
         if (!stack.isEmpty() && BaublesApi.isBauble(stack)) {
             try {
                 IWrapper bauble = BaublesApi.toBauble(stack);
-                String tooltip = TextFormatting.GOLD + I18n.format("baubles.tooltip") + ": " +
+                String tooltip = TextFormatting.GOLD + I18n.format("name.bauble") + ": " +
                         bauble.getTypes(stack)
                             .stream()
                             .map(BaubleTypeEx::getTranslateKey)

@@ -16,11 +16,15 @@ import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BaubleElytra implements IBauble, IRenderBauble {
-    private static final Map<EntityLivingBase, Boolean> EQUIPPED = new HashMap<>();
-    private static final Map<Map.Entry<EntityLivingBase, Boolean>, ItemStack> WEARING = new HashMap<>();
+    private static final Map<EntityLivingBase, Boolean> EQUIPPED = new ConcurrentHashMap<>();
+    private static final Map<Map.Entry<EntityLivingBase, Boolean>, ItemStack> WEARING = new ConcurrentHashMap<>();
     private static final List<BaubleTypeEx> TYPE = Collections.singletonList(TypesData.getTypeByName(Config.ModItems.elytraSlot));
     private static final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("minecraft", "textures/entity/elytra.png");
 

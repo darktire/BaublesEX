@@ -5,14 +5,15 @@ import baubles.api.BaubleTypeEx;
 import baubles.api.IBauble;
 import net.minecraft.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.Collection;
 import java.util.List;
 
 public class BaubleItem implements IBauble {
-	private final List<BaubleTypeEx> types = new LinkedList<>();
+	private final List<BaubleTypeEx> types = new ArrayList<>();
 
-	public BaubleItem(List<BaubleTypeEx> types) {
+	public BaubleItem(Collection<BaubleTypeEx> types) {
 		this.types.addAll(types);
 	}
 

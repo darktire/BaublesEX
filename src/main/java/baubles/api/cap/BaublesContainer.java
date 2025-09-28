@@ -5,6 +5,7 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.registries.TypesData;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,9 +20,7 @@ import java.util.function.Predicate;
 public class BaublesContainer extends ItemStackHandler implements IBaublesModifiable {
 
     private boolean blockEvents = false;
-    private static final BaubleTypeEx TRINKET = TypesData.Preset.TRINKET;
     private EntityLivingBase entity;
-    private final Deque<ItemStack> droppingItem = new ArrayDeque<>();
     private final BitSet dirty = new BitSet();
 
     private List<BaubleTypeEx> MODIFIED_SLOTS = new ArrayList<>();
@@ -74,7 +73,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     }
 
     private void applyModifier(BaubleTypeEx type, int modifier, boolean flag) {
-        String name = type.getTypeName();
+        String name = type.getName();
         int oldVar = this.modifierMap.getOrDefault(name, 0);
         if (modifier > 0) {
             int index = this.MODIFIED_SLOTS.indexOf(type);
@@ -231,34 +230,17 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
         IBauble bauble = BaublesApi.toBauble(stack);
         if (bauble != null) {
             boolean canEquip = bauble.canEquip(stack, entity);
-            boolean hasSlot = bauble.getTypes(stack).contains(MODIFIED_SLOTS.get(slot)) || bauble.getTypes(stack).contains(TRINKET) || MODIFIED_SLOTS.get(slot) == TRINKET;
+            boolean hasSlot = MODIFIED_SLOTS.get(slot).contains(bauble.getTypes(stack));
             return canEquip && hasSlot;
         }
         return false;
     }
 
-    @Override
-    public boolean isEventBlocked() {
-        return blockEvents;
-    }
-
-    @Override
-    public void setEventBlock(boolean blockEvents) {
-        this.blockEvents = blockEvents;
-    }
-
-    @Override
-    public boolean isChanged(int slot) {
-        return false;
-    }
-
-    @Override
-    public void setChanged(int slot, boolean change) {}
-
-	@Override
-	public void setPlayer(EntityLivingBase entity) {
-		this.entity = entity;
-	}
+    @Override public boolean isEventBlocked() { return blockEvents; }
+    @Override public void setEventBlock(boolean blockEvents) { this.blockEvents = blockEvents; }
+    @Override public boolean isChanged(int slot) { return false; }
+    @Override public void setChanged(int slot, boolean change) {}
+	@Override public void setPlayer(EntityLivingBase entity) { this.entity = entity; }
 
     @Override
     public void addListener(IBaublesListener<?> listener) {
@@ -268,16 +250,6 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
     @Override
     public void removeListener(IBaublesListener<?> listener) {
         this.listeners.removeIf(ref -> ref.get() == listener);
-    }
-
-    @Override
-    public boolean haveDroppingItem() {
-        return !this.droppingItem.isEmpty();
-    }
-
-    @Override
-    public ItemStack getDroppingItem() {
-        return this.droppingItem.pop();
     }
 
     @Override
@@ -367,8 +339,21 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesModifi
                 this.stacks.set(slot, stack);
             }
             else {
-                this.droppingItem.push(stack);
+                dropItem(this.entity, stack);
             }
+        }
+    }
+
+    private static void dropItem(EntityLivingBase entity, ItemStack stack) {
+        EntityItem ei = entity.entityDropItem(stack, 0F);
+        if (ei != null) {
+            ei.setNoDespawn();
+            ei.setNoPickupDelay();
+//            boolean ok = entity.world.spawnEntity(ei);
+//            Baubles.log.warn("spawnEntity result = " + ok);
+        }
+        if (BaublesApi.isBauble(stack)) {
+            BaublesApi.toBauble(stack).onUnequipped(stack, entity);
         }
     }
 }

@@ -55,7 +55,7 @@ public class CommandView extends BaublesCommand {
                 }
             }
             TypesData.applyToTypes(type -> {
-                String typeName = type.getTypeName();
+                String typeName = type.getName();
                 int i = baubles.getModifier(typeName);
                 sender.sendMessage(new TextComponentTranslation(typeName + " " + i));
             });

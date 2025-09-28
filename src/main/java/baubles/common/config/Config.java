@@ -1,9 +1,9 @@
 package baubles.common.config;
 
 import baubles.BaublesRegister;
-import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import baubles.api.cap.BaublesContainer;
+import baubles.api.registries.TypesData;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -14,7 +14,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
@@ -34,7 +35,7 @@ public class Config extends PartialConfig {
     public final static String BAUBLES_ITEMS = "general.items";
     public final static String BAUBLES_COMMANDS = "general.commands";
 
-    private static final LinkedList<Item> blacklist = new LinkedList<>();
+    private static final List<Item> blacklist = new ArrayList<>();
 
     public static void loadConfig(FMLPreInitializationEvent event) {
         MOD_DIR =new File(event.getModConfigurationDirectory(), BaublesApi.MOD_ID);
@@ -88,7 +89,7 @@ public class Config extends PartialConfig {
         return configIns;
     }
 
-    public static LinkedList<Item> getBlacklist() {
+    public static List<Item> getBlacklist() {
         return blacklist;
     }
 
@@ -112,13 +113,13 @@ public class Config extends PartialConfig {
 
         @Override
         public void loadData() {
-            AMULET = getCfgAmount("amuletSlot", BaubleType.AMULET.amount);
-            RING = getCfgAmount("ringSlot", BaubleType.RING.amount);
-            BELT = getCfgAmount("beltSlot", BaubleType.BELT.amount);
-            TRINKET = getCfgAmount("trinketSlot", BaubleType.TRINKET.amount);
-            HEAD = getCfgAmount("headSlot", BaubleType.HEAD.amount);
-            BODY = getCfgAmount("bodySlot", BaubleType.BODY.amount);
-            CHARM = getCfgAmount("charmSlot", BaubleType.CHARM.amount);
+            AMULET = getCfgAmount("amuletSlot", TypesData.Preset.AMULET.getAmount());
+            RING = getCfgAmount("ringSlot", TypesData.Preset.RING.getAmount());
+            BELT = getCfgAmount("beltSlot", TypesData.Preset.BELT.getAmount());
+            TRINKET = getCfgAmount("trinketSlot", TypesData.Preset.TRINKET.getAmount());
+            HEAD = getCfgAmount("headSlot", TypesData.Preset.HEAD.getAmount());
+            BODY = getCfgAmount("bodySlot", TypesData.Preset.BODY.getAmount());
+            CHARM = getCfgAmount("charmSlot", TypesData.Preset.CHARM.getAmount());
 
             getCategory().setComment("Modify the quantity of initial baubles.");
         }
@@ -206,7 +207,7 @@ public class Config extends PartialConfig {
     }
 
     public static void syncToBaubles() {
-        BaublesRegister.registerTypes();
+        BaublesRegister.setTypes();
         BaublesRegister.loadValidSlots();
         for (BaublesContainer container: BaublesContainer.CONTAINERS) {
             container.onConfigChanged();

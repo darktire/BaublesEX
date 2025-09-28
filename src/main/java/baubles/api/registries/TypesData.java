@@ -1,6 +1,5 @@
 package baubles.api.registries;
 
-import baubles.api.BaubleType;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import com.google.common.collect.ImmutableList;
@@ -9,6 +8,7 @@ import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -23,24 +23,29 @@ public class TypesData {
         REGISTRY = (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>().setType(BaubleTypeEx.class).allowModification().setName(BAUBLE_TYPE).create();
     }
 
-    public static void registerBauble(String typeName, int amount, int priority) {
-        if (amount < 0) return;
-        registerBauble(new BaubleTypeEx(typeName, amount).setPriority(priority));
-    }
-
-    public static void registerBauble(String typeName, int amount) {
-        if (amount < 0) return;
-        registerBauble(new BaubleTypeEx(typeName, amount));
-    }
-
-    public static void registerBauble(BaubleTypeEx type) {
-        BaubleTypeEx get = REGISTRY.getValue(type.getRegistryName());
-        if (get != null) {
-            get.setAmount(type.getAmount());
-            get.setPriority(type.getPriority());
+    public static BaubleTypeEx registerType(String name, Integer amount, Integer priority, Collection<BaubleTypeEx> parents) {
+        if (name == null) return null;
+        BaubleTypeEx type;
+        if (TypesData.hasType(name)) {
+             type = TypesData.getTypeByName(name);
+            if (amount != null) type.setAmount(amount);
+            if (priority != null) type.setPriority(priority);
         }
         else {
-            REGISTRY.register(type);
+            if (amount == null) amount = 0;
+            if (priority == null) priority = 0;
+            type = BaubleTypeEx.create(name, amount, priority);
+        }
+        if (!parents.isEmpty() && !BaubleTypeEx.isGlobal(type)) type.setParents(parents);
+        return type;
+    }
+
+    public static void registerTypes() {
+        while (!BaubleTypeEx.REG_QUE.isEmpty()) {
+            BaubleTypeEx poll = BaubleTypeEx.REG_QUE.poll();
+            if (poll != null && !REGISTRY.containsKey(poll.getRegistryName())) {
+                REGISTRY.register(poll);
+            }
         }
     }
 
@@ -94,13 +99,30 @@ public class TypesData {
 
 
     public static class Preset {
-        public static BaubleTypeEx HEAD = BaubleType.HEAD.getExpansion();
-        public static BaubleTypeEx AMULET = BaubleType.AMULET.getExpansion();
-        public static BaubleTypeEx BODY = BaubleType.BODY.getExpansion();
-        public static BaubleTypeEx RING = BaubleType.RING.getExpansion();
-        public static BaubleTypeEx BELT = BaubleType.BELT.getExpansion();
-        public static BaubleTypeEx CHARM = BaubleType.CHARM.getExpansion();
-        public static BaubleTypeEx TRINKET = BaubleType.TRINKET.getExpansion();
-        public static BaubleTypeEx ELYTRA = BaubleType.ELYTRA.getExpansion();
+        public static BaubleTypeEx BAUBLE, HEAD, AMULET, BODY, RING, BELT, CHARM, TRINKET, ELYTRA;
+        public static BaubleTypeEx[] ENUM_HELPER;
+        static {
+            BAUBLE = BaubleTypeEx.getGlobal(true);
+            HEAD = BaubleTypeEx.create("head", 1, 10);
+            AMULET = BaubleTypeEx.create("amulet", 1, 10);
+            BODY = BaubleTypeEx.create("body", 1, 10);
+            RING = BaubleTypeEx.create("ring", 2, 0);
+            BELT = BaubleTypeEx.create("belt", 1, 0);
+            CHARM = BaubleTypeEx.create("charm", 1, 0);
+            TRINKET = BaubleTypeEx.getGlobal(false);
+            ELYTRA = BaubleTypeEx.create("elytra", 0, 5);
+
+            ELYTRA.addParent(BODY);
+
+            ENUM_HELPER = new BaubleTypeEx[]{HEAD, AMULET, BODY, RING, BELT, CHARM, TRINKET};
+        }
+        public static void init() {
+        }
+        public static BaubleTypeEx enumRef(String name) {
+            for (BaubleTypeEx type : ENUM_HELPER) {
+                if (type.getName().equals(name)) return type;
+            }
+            return null;
+        }
     }
 }

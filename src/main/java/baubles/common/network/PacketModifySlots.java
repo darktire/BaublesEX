@@ -75,9 +75,9 @@ public class PacketModifySlots implements IMessage {
             if (entity instanceof EntityLivingBase) {
                 IBaublesModifiable baublesCL = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
                 if (message.typeId > -1) {
-                    if (message.addition == 0) baublesCL.modifySlot(TypesData.getTypeById(message.typeId).getTypeName(), message.modifier);
-                    else if (message.addition == 1) baublesCL.modifySlotOA(TypesData.getTypeById(message.typeId).getTypeName(), message.modifier);
-                    else if (message.addition == 2) baublesCL.setSlot(TypesData.getTypeById(message.typeId).getTypeName(), message.modifier);
+                    if (message.addition == 0) baublesCL.modifySlot(TypesData.getTypeById(message.typeId).getName(), message.modifier);
+                    else if (message.addition == 1) baublesCL.modifySlotOA(TypesData.getTypeById(message.typeId).getName(), message.modifier);
+                    else if (message.addition == 2) baublesCL.setSlot(TypesData.getTypeById(message.typeId).getName(), message.modifier);
                     else if (message.addition == 3) baublesCL.clearModifier();
                     baublesCL.updateContainer();
                 }

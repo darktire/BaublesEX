@@ -31,8 +31,8 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
@@ -50,7 +50,7 @@ public class GuiPlayerExpanded extends GuiBase implements IBaublesListener<GuiPl
     private int offset = 0;
     private ElementScroller scroller;
     private ElementSwitchers switchers;
-    private final List<Rectangle> extraArea = new LinkedList<>();
+    private final List<Rectangle> extraArea = new ArrayList<>();
 
     public GuiPlayerExpanded(EntityPlayer player) {
         this(player, player);
@@ -185,7 +185,7 @@ public class GuiPlayerExpanded extends GuiBase implements IBaublesListener<GuiPl
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(0, 0, 200);
-        String str = I18n.format("name." + this.baubles.getTypeInSlot(index).getTypeName());
+        String str = I18n.format("name." + this.baubles.getTypeInSlot(index).getName());
 
         GuiUtils.drawHoveringText(Collections.singletonList(str), mouseX - this.guiLeft, mouseY - this.guiTop + 7, this.width, this.height, 300, renderer);
         GlStateManager.popMatrix();

@@ -14,7 +14,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public final class BaublesWrapper implements IWrapper {
@@ -163,7 +167,7 @@ public final class BaublesWrapper implements IWrapper {
 
     public final static class CSTMap {
         private static final CSTMap INSTANCE = new CSTMap();
-        private final Map<Map.Entry<Item, Object>, Attribute> map = new HashMap<>();
+        private final Map<Map.Entry<Item, Object>, Attribute> map = new ConcurrentHashMap<>();
 
         public static CSTMap instance() {
             return INSTANCE;

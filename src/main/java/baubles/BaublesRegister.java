@@ -1,6 +1,5 @@
 package baubles;
 
-import baubles.api.BaubleType;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
@@ -47,21 +46,21 @@ public class BaublesRegister {
         }
     }
 
-    public static void registerTypes() {
-        for (BaubleType type : BaubleType.values()) {
-            int value = Config.Slots.getCfgAmount(type.toString());
-            TypesData.registerBauble(type.getExpansion().setAmount(value));
-        }
+    public static void setTypes() {
+        TypesData.Preset.AMULET.setAmount(Config.Slots.getCfgAmount("head"));
+        TypesData.Preset.RING.setAmount(Config.Slots.getCfgAmount("ring"));
+        TypesData.Preset.BELT.setAmount(Config.Slots.getCfgAmount("belt"));
+        TypesData.Preset.TRINKET.setAmount(Config.Slots.getCfgAmount("trinket"));
+        TypesData.Preset.HEAD.setAmount(Config.Slots.getCfgAmount("head"));
+        TypesData.Preset.BODY.setAmount(Config.Slots.getCfgAmount("body"));
+        TypesData.Preset.CHARM.setAmount(Config.Slots.getCfgAmount("charm"));
+
         if (Config.ModItems.elytraBauble && Config.ModItems.elytraSlot.equals("elytra")) {
             TypesData.Preset.ELYTRA.setAmount(1);
         }
-        else TypesData.Preset.ELYTRA.setAmount(0);
 
         try {
-            List<BaubleTypeEx> types = JsonHelper.jsonToType();
-            if (types != null) {
-                types.forEach(TypesData::registerBauble);
-            }
+            JsonHelper.jsonToType();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -106,7 +105,8 @@ public class BaublesRegister {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onRegistering(RegistryEvent.Register<BaubleTypeEx> event) {
-        registerTypes();
+        TypesData.registerTypes();
+        setTypes();
         loadValidSlots();
         registerItems();
         Config.setupBlacklist();

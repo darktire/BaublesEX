@@ -4,6 +4,7 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.BaublesContainerProvider;
+import baubles.api.cap.IBaublesModifiable;
 import baubles.common.config.Config;
 import cofh.core.enchantment.EnchantmentSoulbound;
 import cofh.core.util.helpers.ItemHelper;
@@ -25,6 +26,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.List;
+import java.util.Random;
 
 import static cofh.core.init.CoreEnchantments.soulbound;
 
@@ -32,6 +34,7 @@ import static cofh.core.init.CoreEnchantments.soulbound;
 public class EventHandlerEntity {
     private static final ResourceLocation BAUBLES_CAP = new ResourceLocation(BaublesApi.MOD_ID, "container");
     private static final boolean CoFHLoaded = Loader.isModLoaded("cofhcore");
+    private static final int PICKUP_DELAY = 40;
 
     @SubscribeEvent
     public static void cloneCapabilitiesEvent(PlayerEvent.Clone event) {
@@ -67,39 +70,40 @@ public class EventHandlerEntity {
 
     @SubscribeEvent
     public static void playerDeath(PlayerDropsEvent event) {
-        if (event.getEntity() instanceof EntityPlayer
-                && !event.getEntity().world.isRemote
-                && !event.getEntity().world.getGameRules().getBoolean("keepInventory")
-                && !Config.keepBaubles) {
-            dropItemsAt(event.getEntityPlayer(), event.getDrops());
-        }
+        if (event.getEntity().world.isRemote || event.getEntity().world.getGameRules().getBoolean("keepInventory") || Config.keepBaubles) return;
+
+        EntityPlayer player = event.getEntityPlayer();
+        List<EntityItem> drops = event.getDrops();
+
+        double posX = player.posX;
+        double posY = player.posY + player.getEyeHeight();
+        double posZ = player.posZ;
+        Random rand = player.world.rand;
+
+        BaublesApi.applyByIndex(player, (baubles, i) -> dropItemsAt(player, drops, baubles, i, posX, posY, posZ, rand));
     }
 
-    private static void dropItemsAt(EntityPlayer player, List<EntityItem> drops) {
-        BaublesApi.applyByIndex(player, (baubles, i) -> {
-            ItemStack stack = baubles.getStackInSlot(i);
-            if (!stack.isEmpty() && ((IBauble) stack.getItem()).canDrop(stack, player)) {
-                if (EnchantmentHelper.hasVanishingCurse(stack)) {
-                    baubles.setStackInSlot(i, ItemStack.EMPTY);
-                }
-                else if (CoFHLoaded && EnchantmentHelper.getEnchantmentLevel(soulbound, stack) > 0) {
-                    handleSoulbound(stack);
-                }
-                else {//todo improve
-                    EntityItem ei = new EntityItem(player.world,
-                            player.posX, player.posY + player.getEyeHeight(), player.posZ,
-                            stack.copy());
-                    ei.setPickupDelay(40);
-                    float f1 = player.world.rand.nextFloat() * 0.5F;
-                    float f2 = player.world.rand.nextFloat() * (float) Math.PI * 2.0F;
-                    ei.motionX = -MathHelper.sin(f2) * f1;
-                    ei.motionZ = MathHelper.cos(f2) * f1;
-                    ei.motionY = 0.20000000298023224D;
-                    drops.add(ei);
-                    baubles.setStackInSlot(i, ItemStack.EMPTY);
-                }
+    private static void dropItemsAt(EntityPlayer player, List<EntityItem> drops, IBaublesModifiable baubles, Integer i, double posX, double posY, double posZ, Random rand) {
+        ItemStack stack = baubles.getStackInSlot(i);
+        if (!stack.isEmpty() && ((IBauble) stack.getItem()).canDrop(stack, player)) {
+            if (EnchantmentHelper.hasVanishingCurse(stack)) {
+                baubles.setStackInSlot(i, ItemStack.EMPTY);
             }
-        });
+            else if (CoFHLoaded && EnchantmentHelper.getEnchantmentLevel(soulbound, stack) > 0) {
+                handleSoulbound(stack);
+            }
+            else {
+                EntityItem ei = new EntityItem(player.world, posX, posY, posZ, stack.copy());
+                ei.setPickupDelay(PICKUP_DELAY);
+                float f1 = rand.nextFloat() * 0.5F;
+                float f2 = rand.nextFloat() * (float) Math.PI * 2.0F;
+                ei.motionX = -MathHelper.sin(f2) * f1;
+                ei.motionZ = MathHelper.cos(f2) * f1;
+                ei.motionY = 0.20000000298023224D;
+                drops.add(ei);
+                baubles.setStackInSlot(i, ItemStack.EMPTY);
+            }
+        }
     }
 
     private static void handleSoulbound(ItemStack stack) {

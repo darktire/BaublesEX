@@ -1,12 +1,13 @@
 package baubles.common.config.json;
 
 import baubles.api.BaubleTypeEx;
+import baubles.api.registries.TypesData;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TypeDataAdapter extends TypeAdapter<List<BaubleTypeEx>> {
@@ -16,9 +17,17 @@ public class TypeDataAdapter extends TypeAdapter<List<BaubleTypeEx>> {
         for (BaubleTypeEx type: value) {
             out.name(String.valueOf(type.getRegistryName()));
             out.beginObject();
-            out.name("typeName").value(type.getTypeName());
+            out.name("name").value(type.getName());
             out.name("amount").value(type.getAmount());
             out.name("priority").value(type.getPriority());
+            if (!BaubleTypeEx.isGlobal(type)) {
+                out.name("parent");
+                out.beginArray();
+                for (BaubleTypeEx parent : type.getParents()) {
+                    out.value(parent.getRegistryName().toString());
+                }
+                out.endArray();
+            }
             out.name("texture").value(type.getTexture());
             out.name("translateKey").value(type.getTranslateKey());
             out.endObject();
@@ -28,28 +37,33 @@ public class TypeDataAdapter extends TypeAdapter<List<BaubleTypeEx>> {
 
     @Override
     public List<BaubleTypeEx> read(JsonReader in) throws IOException {
-        List<BaubleTypeEx> types = new LinkedList<>();
         in.beginObject();
         while (in.hasNext()) {
-            String typeName = null;
-            int amount = 1, priority = 0;
+            String name = null;
+            int amount = 0, priority = 0;
+            List<BaubleTypeEx> parents = new ArrayList<>();
             in.nextName();
             in.beginObject();
             while (in.hasNext()) {
                 switch (in.nextName()) {
-                    case "typeName": typeName = in.nextString().toLowerCase(); break;
+                    case "name": name = in.nextString().toLowerCase(); break;
                     case "amount": amount = in.nextInt(); break;
                     case "priority": priority = in.nextInt(); break;
+                    case "parent":
+                        in.beginArray();
+                        while (in.hasNext()) {
+                            BaubleTypeEx parent = TypesData.getTypeByName(in.nextString());
+                            if (parent != null) parents.add(parent);
+                        }
+                        in.endArray();
+                        break;
                     default: in.skipValue(); break;
                 }
             }
             in.endObject();
-            if (typeName!= null) {
-                types.add(new BaubleTypeEx(typeName, amount).setPriority(priority));
-            }
+            TypesData.registerType(name, amount, priority, parents);
         }
         in.endObject();
-        return types;
+        return null;
     }
 }
-//todo improve

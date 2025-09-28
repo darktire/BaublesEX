@@ -12,7 +12,7 @@ import com.google.gson.stream.JsonWriter;
 import net.minecraft.item.Item;
 
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemDataAdapter extends TypeAdapter<List<IWrapper>>  {
@@ -49,7 +49,7 @@ public class ItemDataAdapter extends TypeAdapter<List<IWrapper>>  {
         while (in.hasNext()) {
             //start item
             Item item = Item.getByNameOrId(in.nextName());
-            List<BaubleTypeEx> types = new LinkedList<>();
+            List<BaubleTypeEx> types = new ArrayList<>();
             in.beginObject();
             while (in.hasNext()) {
                 //start item info

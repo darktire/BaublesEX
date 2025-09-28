@@ -63,7 +63,7 @@ public class CrTContainer implements IContainer {
 
     @Override
     public String getTypeInSlot(int slot) {
-        return this.baubles.getTypeInSlot(slot).getTypeName();
+        return this.baubles.getTypeInSlot(slot).getName();
     }
 
     @Override

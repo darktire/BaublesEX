@@ -1,25 +1,19 @@
 package baubles.api;
 
+import baubles.api.registries.TypesData;
+
 /**
  * Default bauble types
  **/
 public enum BaubleType {
 
-	HEAD(1, 10),
-	AMULET(1, 10),
-	BODY(1, 10),
-	RING(2, 0),
-	BELT(1, 0),
-	CHARM(1, 0),
-	TRINKET(0, -1),
-	ELYTRA(0, 5);
+	HEAD, AMULET, BODY, RING, BELT, CHARM, TRINKET;
 
-	public final int amount;
     private final BaubleTypeEx baubleTypeEx;
+	private final static int[] EMPTY = new int[0];
 
-	BaubleType(int amount, int priority) {
-		this.amount = amount;
-		this.baubleTypeEx = new BaubleTypeEx(this.toString().toLowerCase(), amount).setPriority(priority);
+	BaubleType() {
+		this.baubleTypeEx = TypesData.Preset.enumRef(this.toString().toLowerCase());
     }
 
 	public BaubleTypeEx getExpansion() {

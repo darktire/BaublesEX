@@ -9,12 +9,16 @@ import baubles.api.render.IRenderBauble;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public class ItemsData {
 
-    private static final Map<Item, Function<ItemStack, IWrapper>> BAUBLE_ITEMS = new HashMap<>();
+    private static final Map<Item, Function<ItemStack, IWrapper>> BAUBLE_ITEMS = new ConcurrentHashMap<>();
     private static final BaublesWrapper.CSTMap CST_MAP = BaublesWrapper.CSTMap.instance();
 
     /**

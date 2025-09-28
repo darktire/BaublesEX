@@ -10,11 +10,11 @@ button.normal=Normal
 key.categories.baubles=Baubles
 #
 # Description
-baubles.tooltip=Bauble
+name.bauble=Bauble
 name.amulet=Amulet
 name.ring=Ring
 name.belt=Belt
-name.trinket=Any
+name.trinket=Trinket
 name.head=Head
 name.body=Body
 name.charm=Charm

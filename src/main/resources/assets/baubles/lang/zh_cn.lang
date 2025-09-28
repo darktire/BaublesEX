@@ -10,11 +10,11 @@ button.normal=普通
 key.categories.baubles=饰品
 #
 # Description
-baubles.tooltip=饰品
+name.bauble=饰品
 name.amulet=护身符
 name.ring=指环
 name.belt=腰带
-name.trinket=任意
+name.trinket=小玩意
 name.head=头部
 name.body=身体
 name.charm=坠饰

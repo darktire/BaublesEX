@@ -103,7 +103,7 @@ To set a new type:
 ```json
 {
   "baubles:elytra": {
-    "typeName": "elytra",
+    "name": "elytra",
     "amount": 1,
     "priority": 5
   }

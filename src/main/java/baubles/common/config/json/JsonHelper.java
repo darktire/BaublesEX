@@ -36,13 +36,12 @@ public class JsonHelper {
         FileUtils.write(output, GSON.toJson(types, TOKEN1.getType()), StandardCharsets.UTF_8);
     }
 
-    public static List<BaubleTypeEx> jsonToType() throws IOException {
+    public static void jsonToType() throws IOException {
         try {
-            return GSON.fromJson(new FileReader(TYPE_JSON), TOKEN1.getType());
+            GSON.fromJson(new FileReader(TYPE_JSON), TOKEN1.getType());
         } catch (FileNotFoundException e) {
             FileUtils.write(TYPE_JSON, null, StandardCharsets.UTF_8, true);
         }
-        return null;
     }
 
     public static void itemToJson(List<IWrapper> items, boolean dump) throws IOException {
