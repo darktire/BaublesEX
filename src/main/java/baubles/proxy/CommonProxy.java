@@ -2,6 +2,7 @@ package baubles.proxy;
 
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.container.ContainerPlayerExpanded;
+import baubles.common.network.PacketPool;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
@@ -33,4 +34,8 @@ public class CommonProxy implements IGuiHandler {
     public void preInit() {}
 
     public void init() {}
+
+    public void postInit() {
+        PacketPool.warmup();
+    }
 }

@@ -4,7 +4,6 @@ import baubles.api.BaublesApi;
 import baubles.api.BaublesWrapper;
 import baubles.api.cap.BaublesCapabilityProvider;
 import baubles.api.registries.ItemsData;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -24,11 +23,10 @@ public class EventHandlerItem {
         ItemStack stack = event.getObject();
 
         if (stack.isEmpty()) return;
-        Item item = stack.getItem();
 
-        if (!(ItemsData.isBauble(item))) return;
+        if (!(ItemsData.isBauble(stack.getItem()))) return;
 
-        if (BaublesWrapper.CSTMap.isRemoved(item)) return;
+        if (BaublesWrapper.Attribute.isRemoved(stack)) return;
 
         event.addCapability(ITEM_CAP, new BaublesCapabilityProvider(stack, null));
     }

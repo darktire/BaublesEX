@@ -6,6 +6,10 @@ import baubles.api.IBauble;
 import baubles.api.IWrapper;
 import baubles.api.cap.BaubleItem;
 import baubles.api.render.IRenderBauble;
+import baubles.api.util.MapKey;
+import com.google.common.base.Equivalence;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -14,11 +18,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
 
 public class ItemsData {
 
     private static final Map<Item, Function<ItemStack, IWrapper>> BAUBLE_ITEMS = new ConcurrentHashMap<>();
+    private static final Cache<Equivalence.Wrapper<ItemStack>, IWrapper> CACHE = CacheBuilder.newBuilder()
+            .maximumSize(1024)
+            .expireAfterAccess(600, TimeUnit.SECONDS)
+            .concurrencyLevel(Runtime.getRuntime().availableProcessors())
+            .build();
+    private static final LongAdder HIT  = new LongAdder();
+    private static final LongAdder MISS   = new LongAdder();
     private static final BaublesWrapper.CSTMap CST_MAP = BaublesWrapper.CSTMap.instance();
 
     /**
@@ -56,11 +69,26 @@ public class ItemsData {
     }
 
     public static IWrapper toBauble(ItemStack stack) {
-        return BAUBLE_ITEMS.get(stack.getItem()).apply(stack);
+        Equivalence.Wrapper<ItemStack> cacheKey = MapKey.CacheKey.getWrap(stack);
+
+        IWrapper wrapper = CACHE.getIfPresent(cacheKey);
+        if (wrapper == null) {
+            Function<ItemStack, IWrapper> func = BAUBLE_ITEMS.get(stack.getItem());
+
+            wrapper = func.apply(stack);
+            CACHE.put(cacheKey, wrapper);
+            MISS.increment();
+        }
+        else HIT.increment();
+        return wrapper;
     }
 
     public static boolean isBauble(Item item) {
         return BAUBLE_ITEMS.containsKey(item);
+    }
+
+    public static String getStats() {
+        return String.format("Baubles WrapperCache: hit=%d, miss=%d, content=%d", HIT.sum(), MISS.sum(), CACHE.size());
     }
 
     public static List<IWrapper> getList() {
@@ -68,5 +96,4 @@ public class ItemsData {
         BAUBLE_ITEMS.forEach(((item, function) -> list.add(function.apply(new ItemStack(item)))));
         return list;
     }
-
 }

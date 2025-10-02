@@ -4,6 +4,7 @@ import baubles.api.cap.IBaublesListener;
 import baubles.api.event.BaublesEvent;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
+import baubles.api.util.MapKey;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
@@ -14,7 +15,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.ref.WeakReference;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +26,7 @@ public final class BaublesWrapper implements IWrapper {
     private IBauble bauble;
     private IRenderBauble render;
     private boolean edited = false;
-    private CSTMap.Attribute attribute;
+    private Attribute attribute;
 
     public BaublesWrapper() {}
 
@@ -39,7 +39,7 @@ public final class BaublesWrapper implements IWrapper {
         if (item instanceof IRenderBauble) {
             this.render = (IRenderBauble) item;
         }
-        this.attribute = CSTMap.INSTANCE.get(this.stack.getItem());
+        this.attribute = CSTMap.INSTANCE.get(stack);
         this.updateBaubles();
     }
 
@@ -158,7 +158,7 @@ public final class BaublesWrapper implements IWrapper {
 
     @Override
     public IWrapper startListening() {
-        CSTMap.Attribute attribute = CSTMap.INSTANCE.get(this.stack.getItem());
+        Attribute attribute = CSTMap.INSTANCE.get(this.stack);
         if (attribute != null) {
             attribute.addListener(this);
         }
@@ -167,80 +167,76 @@ public final class BaublesWrapper implements IWrapper {
 
     public final static class CSTMap {
         private static final CSTMap INSTANCE = new CSTMap();
-        private final Map<Map.Entry<Item, Object>, Attribute> map = new ConcurrentHashMap<>();
+        private final Map<MapKey.CrossKey, BaublesWrapper.Attribute> map = new ConcurrentHashMap<>();
 
         public static CSTMap instance() {
             return INSTANCE;
         }
 
-        public Attribute get(Item item) {
-            return this.get(item, null);
+        public BaublesWrapper.Attribute get(ItemStack stack) {
+            return this.map.get(MapKey.CrossKey.wrap(stack));
         }
 
-        public void update(Item item, Consumer<Attribute> editor) {
-            this.update(item, null, editor);
+        public void update(ItemStack stack, Consumer<BaublesWrapper.Attribute> editor) {
+            editor.accept(this.map.computeIfAbsent(MapKey.CrossKey.wrap(stack), i -> new BaublesWrapper.Attribute()));
         }
 
-        public Attribute get(Item item, Object o) {
-            return this.map.get(new AbstractMap.SimpleEntry<>(item, o));
+        public void update(Item item, Consumer<BaublesWrapper.Attribute> editor) {
+            editor.accept(this.map.computeIfAbsent(MapKey.CrossKey.wrap(item), i -> new BaublesWrapper.Attribute()));
         }
+    }
 
-        public void update(Item item, Object o, Consumer<Attribute> editor) {
-            editor.accept(this.map.computeIfAbsent(new AbstractMap.SimpleEntry<>(item, o), i -> new Attribute()));
-        }
+    public final static class Attribute {
+        private final List<WeakReference<IBaublesListener<?>>> listeners = new ArrayList<>();
+        private final Object lock = new Object();
+        private IBauble bauble;
+        private IRenderBauble render;
+        private List<BaubleTypeEx> types;
+        private boolean remove = false;
 
-        public final static class Attribute {
-            private final List<WeakReference<IBaublesListener<?>>> listeners = new ArrayList<>();
-            private final Object lock = new Object();
-            private IBauble bauble;
-            private IRenderBauble render;
-            private List<BaubleTypeEx> types;
-            private boolean remove = false;
-
-            private void broadcast() {
-                List<IBaublesListener<?>> snap;
-                synchronized (lock) {
-                    listeners.removeIf(ref -> ref.get() == null);
-                    snap = new ArrayList<>(listeners.size());
-                    for (WeakReference<IBaublesListener<?>> ref : listeners) {
-                        IBaublesListener<?> l = ref.get();
-                        if (l != null) snap.add(l);
-                    }
-                }
-                for (IBaublesListener<?> l : snap) {
-                    l.updateBaubles();
+        private void broadcast() {
+            List<IBaublesListener<?>> snap;
+            synchronized (lock) {
+                listeners.removeIf(ref -> ref.get() == null);
+                snap = new ArrayList<>(listeners.size());
+                for (WeakReference<IBaublesListener<?>> ref : listeners) {
+                    IBaublesListener<?> l = ref.get();
+                    if (l != null) snap.add(l);
                 }
             }
-
-            public void addListener(IBaublesListener<?> listener) {
-                synchronized (lock) {
-                    this.listeners.add(new WeakReference<>(listener));
-                }
-            }
-
-            public void bauble(IBauble bauble) {
-                this.bauble = bauble;
-                this.broadcast();
-            }
-
-            public void render(IRenderBauble render) {
-                this.render = render;
-                this.broadcast();
-            }
-
-            public void types(List<BaubleTypeEx> types) {
-                this.types = types;
-                this.broadcast();
-            }
-
-            public void remove(boolean remove) {
-                this.remove = remove;
-                this.broadcast();
+            for (IBaublesListener<?> l : snap) {
+                l.updateBaubles();
             }
         }
 
-        public static boolean isRemoved(Item item) {
-            CSTMap.Attribute attribute = CSTMap.INSTANCE.get(item);
+        public void addListener(IBaublesListener<?> listener) {
+            synchronized (lock) {
+                this.listeners.add(new WeakReference<>(listener));
+            }
+        }
+
+        public void bauble(IBauble bauble) {
+            this.bauble = bauble;
+            this.broadcast();
+        }
+
+        public void render(IRenderBauble render) {
+            this.render = render;
+            this.broadcast();
+        }
+
+        public void types(List<BaubleTypeEx> types) {
+            this.types = types;
+            this.broadcast();
+        }
+
+        public void remove(boolean remove) {
+            this.remove = remove;
+            this.broadcast();
+        }
+
+        public static boolean isRemoved(ItemStack stack) {
+            BaublesWrapper.Attribute attribute = CSTMap.INSTANCE.get(stack);
             if (attribute == null) return false;
             return attribute.remove;
         }

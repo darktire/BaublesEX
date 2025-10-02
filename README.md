@@ -105,7 +105,10 @@ To set a new type:
   "baubles:elytra": {
     "name": "elytra",
     "amount": 1,
-    "priority": 5
+    "priority": 5,
+    "parent": [
+      "baubles:body"
+    ]
   }
 }
 ```

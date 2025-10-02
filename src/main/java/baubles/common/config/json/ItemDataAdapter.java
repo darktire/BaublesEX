@@ -10,6 +10,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,17 +24,17 @@ public class ItemDataAdapter extends TypeAdapter<List<IWrapper>>  {
     public void write(JsonWriter out, List<IWrapper> value) throws IOException {
         out.beginObject();
         for (IWrapper wrapper: value) {
-            Item item = wrapper.getItemStack().getItem();
-            out.name(item.getRegistryName().toString());
+            ItemStack stack = wrapper.getItemStack();
+            out.name(String.valueOf(stack.getItem().getRegistryName()));
             out.beginObject();
-            if (BaublesWrapper.CSTMap.isRemoved(item)) {
+            if (BaublesWrapper.Attribute.isRemoved(stack)) {
                 out.name("addition").value("remove");
             }
             else {
                 out.name("types");
                 out.beginArray();
-                for (BaubleTypeEx type : wrapper.getTypes(null)) {
-                    out.value(type.getRegistryName().toString());
+                for (BaubleTypeEx type : wrapper.getTypes(stack)) {
+                    out.value(String.valueOf(type.getRegistryName()));
                 }
                 out.endArray();
             }

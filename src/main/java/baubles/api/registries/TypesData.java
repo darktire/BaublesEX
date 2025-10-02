@@ -26,15 +26,21 @@ public class TypesData {
     public static BaubleTypeEx registerType(String name, Integer amount, Integer priority, Collection<BaubleTypeEx> parents) {
         if (name == null) return null;
         BaubleTypeEx type;
-        if (TypesData.hasType(name)) {
-             type = TypesData.getTypeByName(name);
-            if (amount != null) type.setAmount(amount);
-            if (priority != null) type.setPriority(priority);
-        }
-        else {
+        if (REGISTRY == null) {
             if (amount == null) amount = 0;
             if (priority == null) priority = 0;
             type = BaubleTypeEx.create(name, amount, priority);
+        }
+        else {
+            if (TypesData.hasType(name)) {
+                type = TypesData.getTypeByName(name);
+                if (amount != null) type.setAmount(amount);
+                if (priority != null) type.setPriority(priority);
+            }
+            else {
+                BaublesApi.log.error("{} is registered too late", name);
+                return null;
+            }
         }
         if (!parents.isEmpty() && !BaubleTypeEx.isGlobal(type)) type.setParents(parents);
         return type;
@@ -43,7 +49,11 @@ public class TypesData {
     public static void registerTypes() {
         while (!BaubleTypeEx.REG_QUE.isEmpty()) {
             BaubleTypeEx poll = BaubleTypeEx.REG_QUE.poll();
-            if (poll != null && !REGISTRY.containsKey(poll.getRegistryName())) {
+            if (poll == null) continue;
+            if (REGISTRY.containsKey(poll.getRegistryName())) {
+                BaublesApi.log.error("{} is registered too early", poll.getName());
+            }
+            else {
                 REGISTRY.register(poll);
             }
         }

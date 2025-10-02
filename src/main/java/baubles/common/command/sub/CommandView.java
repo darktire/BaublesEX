@@ -4,6 +4,7 @@ import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesModifiable;
+import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
 import baubles.common.command.BaublesCommand;
 import baubles.common.network.PacketPool;
@@ -24,7 +25,7 @@ public class CommandView extends BaublesCommand {
     public CommandView() {
         super(false);
         this.addSubcommand(new Hand());
-        this.addSubcommand(new Network());
+        this.addSubcommand(new Cache());
     }
 
     @Override
@@ -102,10 +103,10 @@ public class CommandView extends BaublesCommand {
     }
 
 
-    private static class Network extends CommandBase {
+    private static class Cache extends CommandBase {
         @Override
         public String getName() {
-            return "network";
+            return "cache";
         }
 
         @Override
@@ -115,7 +116,12 @@ public class CommandView extends BaublesCommand {
 
         @Override
         public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
-            sender.sendMessage(new TextComponentTranslation(PacketPool.getStats()));
+            if (args[0].equals("network")) {
+                sender.sendMessage(new TextComponentTranslation(PacketPool.getStats()));
+            }
+            else if (args[0].equals("wrapper")) {
+                sender.sendMessage(new TextComponentTranslation(ItemsData.getStats()));
+            }
         }
     }
 }
