@@ -14,7 +14,7 @@ public class CommonProxy implements IGuiHandler {
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         if (ID == GUI) {
-            return new GuiPlayerExpanded(player);
+            return new GuiPlayerExpanded(player).startListening();
         }
         return null;
     }
@@ -22,7 +22,7 @@ public class CommonProxy implements IGuiHandler {
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         if (ID == GUI) {
-            return new ContainerPlayerExpanded(player);
+            return new ContainerPlayerExpanded(player).startListening();
         }
         return null;
     }

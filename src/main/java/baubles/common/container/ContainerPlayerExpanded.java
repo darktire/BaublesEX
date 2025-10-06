@@ -111,7 +111,6 @@ public class ContainerPlayerExpanded extends Container implements IBaublesListen
         else this.addSlimBaubles();
 
         this.onCraftMatrixChanged(this.craftMatrix);
-        this.startListening();
     }
 
     public void addSlimBaubles() {

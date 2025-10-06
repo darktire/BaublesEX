@@ -18,13 +18,10 @@ public class CommandHelp extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
-        if (args[0].equalsIgnoreCase("help")) {
-            sender.sendMessage(new TextComponentTranslation("/baubles view <player>"));
-            sender.sendMessage(new TextComponentTranslation("/baubles hand"));
-            sender.sendMessage(new TextComponentTranslation("/baubles clear <player> <slot>"));
-            sender.sendMessage(new TextComponentTranslation("/baubles slots <option> <player> <type> <number>"));
-            sender.sendMessage(new TextComponentTranslation("/baubles set <player> <slot> <item> <meta> {nbt}"));
-            sender.sendMessage(new TextComponentTranslation("/baubles dump"));
-        }
+        sender.sendMessage(new TextComponentTranslation("/baubles view <player>"));
+        sender.sendMessage(new TextComponentTranslation("/baubles clear <player> <slot>"));
+        sender.sendMessage(new TextComponentTranslation("/baubles slots <option> <player> <type> <number>"));
+        sender.sendMessage(new TextComponentTranslation("/baubles set <player> <slot> <item> <meta> {nbt}"));
+        sender.sendMessage(new TextComponentTranslation("/baubles dump"));
     }
 }

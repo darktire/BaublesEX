@@ -39,7 +39,7 @@ public class ItemsData {
      * @param item target item
      */
     public static void registerBauble(Item item) {
-        BAUBLE_ITEMS.put(item, BaublesWrapper::instance);
+        BAUBLE_ITEMS.put(item, BaublesWrapper::wrap);
     }
 
     /**

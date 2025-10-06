@@ -43,7 +43,7 @@ public final class BaublesWrapper implements IWrapper {
         this.updateBaubles();
     }
 
-    public static IWrapper instance(ItemStack stack) {
+    public static IWrapper wrap(ItemStack stack) {
         return new BaublesWrapper(stack).startListening();
     }
 

@@ -13,7 +13,7 @@ import net.minecraftforge.server.command.CommandTreeBase;
 
 public class BaublesCommand extends CommandTreeBase {
 	private static final CommandHelp COMMAND_HELP = new CommandHelp();
-	private static final String[] HELP = {"help"};
+	private static final String[] EMPTY = {};
 
 	public BaublesCommand() {
 		this.addSubcommand(COMMAND_HELP);
@@ -45,7 +45,7 @@ public class BaublesCommand extends CommandTreeBase {
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if (args.length < 1) {
-			COMMAND_HELP.execute(server, sender, HELP);
+			COMMAND_HELP.execute(server, sender, EMPTY);
 		}
 		else {
 			ICommand cmd = this.getSubCommand(args[0]);
