@@ -36,3 +36,10 @@ commands.baubles.clear.claim=§4Your baubles slot %s §4has been cleared by admi
 commands.baubles.hand=<%s%s> [type: %s]
 commands.baubles.set=Set %s in [slot: %s] of %s's baubles container
 commands.baubles.dump=The file was dumped to %s
+#
+# Compat
+name.glove=Glove
+name.pendant=Pendant
+name.cape=Cape
+name.misc=Misc
+name.shield=Shield

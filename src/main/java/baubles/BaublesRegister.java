@@ -14,7 +14,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
@@ -25,8 +24,6 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
 public class BaublesRegister {
-    public BaublesRegister() {
-    }
 
     public static void registerItems() {
         ForgeRegistries.ITEMS.getValuesCollection().stream()
@@ -103,12 +100,10 @@ public class BaublesRegister {
         TypesData.create();
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent
     public static void onRegistering(RegistryEvent.Register<BaubleTypeEx> event) {
         TypesData.registerTypes();
-        setTypes();
         loadValidSlots();
         registerItems();
-        Config.setupBlacklist();
     }
 }

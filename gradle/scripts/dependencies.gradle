@@ -52,7 +52,7 @@ dependencies {
 //    implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:2503041")
     //Botania
     compileOnly fg.deobf("curse.maven:botania-225643:3330934")
-//    runtimeOnly fg.deobf("curse.maven:botania-225643:3330934")
+    runtimeOnly fg.deobf("curse.maven:botania-225643:3330934")
 //    runtimeOnly fg.deobf("curse.maven:botania-ceu-1179448:6900692")
     //Wings
     compileOnly fg.deobf("curse.maven:wings-302584:2829351")
@@ -70,7 +70,7 @@ dependencies {
 //    runtimeOnly fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:6816073")
     //aether
     compileOnly fg.deobf("curse.maven:aether-255308:6316434")
-//    runtimeOnly fg.deobf("curse.maven:aether-255308:6316434")
+    runtimeOnly fg.deobf("curse.maven:aether-255308:6316434")
     //crafttweaker
     compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}:deobf"
     compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}:deobf"

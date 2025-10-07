@@ -41,6 +41,7 @@ public class Baubles {
     public void preInit(FMLPreInitializationEvent event) {
         TypesData.Preset.init();
         Config.loadConfig(event);
+        BaublesRegister.setTypes();
 
         CapabilityManager.INSTANCE.register(
                 IBaublesModifiable.class,
@@ -62,8 +63,9 @@ public class Baubles {
         proxy.init();
     }
 
-    @Mod.EventHandler
+    @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        Config.setupBlacklist();
         proxy.postInit();
     }
 

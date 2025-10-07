@@ -20,42 +20,43 @@ public class TypesData {
     private static final List<BaubleTypeEx> BAUBLE_SLOTS = new ArrayList<>();
 
     public static void create() {
-        REGISTRY = (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>().setType(BaubleTypeEx.class).allowModification().setName(BAUBLE_TYPE).create();
+        REGISTRY = (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>().setType(BaubleTypeEx.class).setName(BAUBLE_TYPE).create();
     }
 
     public static BaubleTypeEx registerType(String name, Integer amount, Integer priority, Collection<BaubleTypeEx> parents) {
         if (name == null) return null;
-        BaubleTypeEx type;
-        if (REGISTRY == null) {
-            if (amount == null) amount = 0;
-            if (priority == null) priority = 0;
-            type = BaubleTypeEx.create(name, amount, priority);
-        }
-        else {
+        BaubleTypeEx type = null;
+        if (REGISTRY.isLocked()) {
             if (TypesData.hasType(name)) {
                 type = TypesData.getTypeByName(name);
-                if (amount != null) type.setAmount(amount);
-                if (priority != null) type.setPriority(priority);
             }
             else {
                 BaublesApi.log.error("{} is registered too late", name);
                 return null;
             }
         }
+        else if (BaubleTypeEx.REG_MAP.containsKey(name)) {
+            type = BaubleTypeEx.REG_MAP.get(name);
+        }
+
+        if (type == null) {
+            if (amount == null) amount = 0;
+            if (priority == null) priority = 0;
+            type = BaubleTypeEx.create(name, amount, priority);
+        }
+        else {
+            if (amount != null) type.setAmount(amount);
+            if (priority != null) type.setPriority(priority);
+        }
         if (!parents.isEmpty() && !BaubleTypeEx.isGlobal(type)) type.setParents(parents);
         return type;
     }
 
     public static void registerTypes() {
+        BaubleTypeEx.REG_MAP.clear();
         while (!BaubleTypeEx.REG_QUE.isEmpty()) {
             BaubleTypeEx poll = BaubleTypeEx.REG_QUE.poll();
-            if (poll == null) continue;
-            if (REGISTRY.containsKey(poll.getRegistryName())) {
-                BaublesApi.log.error("{} is registered too early", poll.getName());
-            }
-            else {
-                REGISTRY.register(poll);
-            }
+            REGISTRY.register(poll);
         }
     }
 

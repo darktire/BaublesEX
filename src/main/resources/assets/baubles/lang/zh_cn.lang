@@ -11,13 +11,13 @@ key.categories.baubles=饰品
 #
 # Description
 name.bauble=饰品
-name.amulet=护身符
+name.amulet=项链
 name.ring=指环
 name.belt=腰带
 name.trinket=小玩意
 name.head=头部
 name.body=身体
-name.charm=坠饰
+name.charm=护身符
 name.elytra=鞘翅
 #
 # Command
@@ -36,3 +36,10 @@ commands.baubles.clear.claim=§4你槽位 %s §4的饰品被管理员 %s §4清�
 commands.baubles.hand=<%s%s> [种类: %s]
 commands.baubles.set=把 %s 设置在饰品栏的槽位: %s中 （玩家 %s）
 commands.baubles.dump=文件被导出至 %s
+#
+# Compat
+name.glove=手套
+name.pendant=坠饰
+name.cape=披风
+name.misc=杂项
+name.shield=盾徽

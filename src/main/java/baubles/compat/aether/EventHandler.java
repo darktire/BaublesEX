@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -34,11 +35,17 @@ public class EventHandler {
             .put(AccessoryType.SHIELD, TypesData.Preset.TRINKET)
             .build();
 
+    private static void init() {}
     static {
         for (AccessoryType a : AccessoryType.values()) {
             String name = a.toString().toLowerCase();
             map.put(a, TypesData.registerType(name, null, null, Collections.singleton(extension.get(a))));
         }
+    }
+
+    @SubscribeEvent
+    public static void onRegistering(RegistryEvent.Register<Item> event) {
+        init(); // some mods like jei will trigger static initialization before, this is just for ensuring
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
