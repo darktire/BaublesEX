@@ -5,6 +5,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import java.util.BitSet;
+
 public interface IBaublesItemHandler extends IItemHandlerModifiable {
 
     boolean isItemValidForSlot(int slot, ItemStack stack, EntityLivingBase entity);
@@ -29,4 +31,35 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 
 	void setVisible(int slot, boolean v);
 	boolean getVisible(int slot);
+
+
+	//---------------------------Modifiable---------------------------//
+
+
+	void addListener(IBaublesListener<?> listener);
+	void removeListener(IBaublesListener<?> listener);
+
+	void setSlot(String typeName, int n);
+
+	/**
+	 * Set the modifier if this type
+	 */
+	void modifySlot(String typeName, int modifier);
+
+	/**
+	 * Modify base on the original modifier
+	 */
+	void modifySlotOA(String typeName, int modifier);
+
+	void clearModifier();
+
+	/**
+	 * Update stacks in container
+	 */
+	void updateContainer();
+
+	int getModifier(String typeName);
+
+	void markDirty(int index);
+	BitSet getDirty();
 }

@@ -1,7 +1,7 @@
 package baubles.common.command.sub;
 
 import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.command.BaublesCommand;
 import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
@@ -29,7 +29,7 @@ public class CommandClear extends CommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         EntityPlayerMP player = BaublesCommand.checkPlayer(server, sender, args);
-        IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
         if (args.length < 2) {
             for (int a = 0;;a++) {
                 if (a >= baubles.getSlots()) break;
@@ -62,7 +62,7 @@ public class CommandClear extends CommandBase {
         }
     }
 
-    private void clearOne(ICommandSender sender, String s, IBaublesModifiable baubles, EntityPlayerMP player) throws CommandException {
+    private void clearOne(ICommandSender sender, String s, IBaublesItemHandler baubles, EntityPlayerMP player) throws CommandException {
         int slot = Integer.parseInt(s);
         BaublesCommand.checkSlot(baubles, slot);
         ItemStack stack = baubles.getStackInSlot(slot);

@@ -2,7 +2,7 @@ package baubles.common.container;
 
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.event.BaublesChangeEvent;
 import baubles.api.event.BaublesValidationEvent;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,7 +20,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
     private final int startYPos;
     private final EntityLivingBase entity;
 
-    public SlotBaubleHandler(EntityLivingBase entity, IBaublesModifiable itemHandler, int index, int xPosition, int yPosition) {
+    public SlotBaubleHandler(EntityLivingBase entity, IBaublesItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);
         this.entity = entity;
         this.index = index;
@@ -124,8 +124,8 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
 
     @Override
-    public IBaublesModifiable getItemHandler() {
-        return (IBaublesModifiable) super.getItemHandler();
+    public IBaublesItemHandler getItemHandler() {
+        return (IBaublesItemHandler) super.getItemHandler();
     }
 
     @Override

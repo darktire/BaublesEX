@@ -3,7 +3,7 @@ package baubles.util;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
 import baubles.common.config.Config;
 import baubles.common.items.BaubleElytra;
@@ -42,7 +42,7 @@ public class HookHelper {
 
     public static boolean tryEquipping(EntityPlayer playerIn, ItemStack stack) {
         IBauble bauble = BaublesApi.toBauble(stack);
-        IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) playerIn);
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) playerIn);
         for (BaubleTypeEx type : bauble.getTypes(stack)) {
             for (int i = 0, s = baubles.getSlots(); i < s; i++) {
                 boolean match = baubles.getTypeInSlot(i) == type || type == TypesData.Preset.TRINKET;

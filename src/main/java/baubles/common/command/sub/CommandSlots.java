@@ -1,7 +1,7 @@
 package baubles.common.command.sub;
 
 import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
 import baubles.common.command.BaublesCommand;
 import baubles.common.config.Config;
@@ -49,7 +49,7 @@ public class CommandSlots extends BaublesCommand {
             EntityPlayerMP player = BaublesCommand.checkPlayer(server, sender, args);
             if (TypesData.hasType(args[1]) && args[2].matches("-?\\d+")) {
                 int modifier = Integer.parseInt(args[2]);
-                IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
+                IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
                 baubles.modifySlotOA(args[1], modifier);
                 PacketHandler.INSTANCE.sendTo(new PacketModifySlots(player, args[1], modifier, 1), player);
                 baubles.updateContainer();
@@ -89,7 +89,7 @@ public class CommandSlots extends BaublesCommand {
                 EntityPlayerMP player = BaublesCommand.checkPlayer(server, sender, args);
                 if (TypesData.hasType(args[1]) && args[2].matches("-?\\d+")) {
                     int modifier = Integer.parseInt(args[2]);
-                    IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
+                    IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
                     baubles.setSlot(args[1], modifier);
                     PacketHandler.INSTANCE.sendTo(new PacketModifySlots(player, args[1], modifier, 0), player);
                     baubles.updateContainer();
@@ -117,7 +117,7 @@ public class CommandSlots extends BaublesCommand {
             EntityPlayerMP player = BaublesCommand.checkPlayer(server, sender, args);
             if (TypesData.hasType(args[1]) && args[2].matches("-?\\d+")) {
                 int modifier = Integer.parseInt(args[2]);
-                IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
+                IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
                 baubles.modifySlot(args[1], modifier);
                 PacketHandler.INSTANCE.sendTo(new PacketModifySlots(player, args[1], modifier, 0), player);
                 baubles.updateContainer();

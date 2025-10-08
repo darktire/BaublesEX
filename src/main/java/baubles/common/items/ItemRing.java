@@ -5,7 +5,7 @@ import baubles.api.BaubleType;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
 import baubles.common.config.Config;
 import net.minecraft.creativetab.CreativeTabs;
@@ -97,7 +97,7 @@ public class ItemRing extends Item implements IBauble {
 
 	public static void updatePotionStatus(EntityLivingBase entity) {
 		int level = -1;
-		IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
+		IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
 		Potion potion = Potion.REGISTRY.getObject(new ResourceLocation("haste"));
 
 		BaubleTypeEx target = TypesData.Preset.RING;

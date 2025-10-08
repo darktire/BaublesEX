@@ -70,7 +70,7 @@ dependencies {
 //    runtimeOnly fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:6816073")
     //aether
     compileOnly fg.deobf("curse.maven:aether-255308:6316434")
-    runtimeOnly fg.deobf("curse.maven:aether-255308:6316434")
+//    runtimeOnly fg.deobf("curse.maven:aether-255308:6316434")
     //crafttweaker
     compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}:deobf"
     compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}:deobf"
@@ -90,4 +90,6 @@ dependencies {
     //thaumcraft
     compileOnly fg.deobf("curse.maven:thaumcraft-223628:2629023")
     compileOnly fg.deobf("curse.maven:thaumic-periphery-293505:2766866")
+    //Tool Belt
+//    runtimeOnly fg.deobf("curse.maven:tool-belt-260262:3459767")
 }

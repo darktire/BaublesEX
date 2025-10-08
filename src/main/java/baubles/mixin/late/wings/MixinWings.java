@@ -1,7 +1,7 @@
 package baubles.mixin.late.wings;
 
 import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import me.paulf.wings.server.apparatus.FlightApparatus;
 import me.paulf.wings.server.config.WingsConfig;
 import me.paulf.wings.util.CapabilityHolder;
@@ -30,7 +30,7 @@ public abstract class MixinWings extends CapabilityHolder.PresentState<ItemStack
             cir.setReturnValue(stack);
             return;
         }
-        IBaublesModifiable baubles = BaublesApi.getBaublesHandler(player);
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
         if (baubles != null) {
             for (int i = 0; i < baubles.getSlots(); i++) {
                 ItemStack stack1 = baubles.getStackInSlot(i);

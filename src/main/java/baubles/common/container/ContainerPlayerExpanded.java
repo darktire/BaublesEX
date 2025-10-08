@@ -2,8 +2,8 @@ package baubles.common.container;
 
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.cap.IBaublesListener;
-import baubles.api.cap.IBaublesModifiable;
 import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketSync;
@@ -26,7 +26,7 @@ import java.util.Set;
 public class ContainerPlayerExpanded extends Container implements IBaublesListener<ContainerPlayerExpanded> {
     private final EntityPlayer player;
     private final EntityLivingBase entity;
-    public IBaublesModifiable baubles;
+    public IBaublesItemHandler baubles;
     public int baublesAmount;
     public final InventoryCrafting craftMatrix = new InventoryCrafting(this, 2, 2);
     public final InventoryCraftResult craftResult = new InventoryCraftResult();

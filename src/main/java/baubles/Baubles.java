@@ -6,7 +6,7 @@ import baubles.api.IWrapper;
 import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
 import baubles.api.cap.BaublesCapabilities.CapabilityItemBaubleStorage;
 import baubles.api.cap.BaublesContainer;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
 import baubles.common.command.BaublesCommand;
 import baubles.common.config.Config;
@@ -44,7 +44,7 @@ public class Baubles {
         BaublesRegister.setTypes();
 
         CapabilityManager.INSTANCE.register(
-                IBaublesModifiable.class,
+                IBaublesItemHandler.class,
                 new CapabilityBaubles(),
                 BaublesContainer::new);
         CapabilityManager.INSTANCE.register(

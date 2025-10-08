@@ -2,7 +2,7 @@ package baubles.compat.rlartifacts;
 
 import artifacts.common.init.ModItems;
 import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.model.ModelBauble;
 import baubles.api.registries.TypesData;
 import baubles.proxy.ClientProxy;
@@ -54,7 +54,7 @@ public class ModelGlove extends ModelBauble {
     }
 
     private EnumHandSide getHand(EntityLivingBase entity) {
-        IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
         int k = baubles.indexOf(TypesData.Preset.RING, 0);
         int j = baubles.indexOf(this.item, 0);
         return ((k - j) & 1) == 0 ? EnumHandSide.RIGHT : EnumHandSide.LEFT;

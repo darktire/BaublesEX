@@ -3,7 +3,7 @@ package baubles.common.command.sub;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
 import baubles.common.command.BaublesCommand;
@@ -43,7 +43,7 @@ public class CommandView extends BaublesCommand {
         try {
             EntityPlayerMP player = BaublesCommand.checkPlayer(server, sender, args);
 
-            IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
+            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
 
             sender.sendMessage(new TextComponentTranslation("commands.baubles.view.info", player.getName()));
             for (int i = 0; i < baubles.getSlots(); i++) {

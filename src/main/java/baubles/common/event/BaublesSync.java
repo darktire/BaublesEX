@@ -1,7 +1,7 @@
 package baubles.common.event;
 
 import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
 import baubles.common.container.ContainerPlayerExpanded;
 import baubles.common.network.PacketHandler;
@@ -64,7 +64,7 @@ public class BaublesSync {
     }
 
     private static void syncModifier(EntityLivingBase entity, Collection<? extends EntityPlayerMP> receivers) {
-        IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
         TypesData.applyToTypes(type -> {
             String typeName = type.getName();
             int modifier = baubles.getModifier(typeName);

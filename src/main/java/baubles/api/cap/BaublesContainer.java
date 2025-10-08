@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class BaublesContainer extends ItemStackHandler implements IBaublesModifiable {
+public class BaublesContainer extends ItemStackHandler implements IBaublesItemHandler {
 
     private boolean blockEvents = false;
     private EntityLivingBase entity;

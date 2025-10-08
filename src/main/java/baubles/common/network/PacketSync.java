@@ -2,7 +2,7 @@ package baubles.common.network;
 
 import baubles.Baubles;
 import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -94,7 +94,7 @@ public class PacketSync implements IMessage {
         }
 
         private void handleSever(PacketSync msg, EntityLivingBase player) {
-            IBaublesModifiable baubles = BaublesApi.getBaublesHandler(player);
+            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
             baubles.setVisible(msg.slot, msg.visible);
             baubles.markDirty(msg.slot);
             PacketPool.release(msg);
@@ -105,7 +105,7 @@ public class PacketSync implements IMessage {
             if (world == null) return;
             Entity entity = world.getEntityByID(msg.entityId);
             if (entity instanceof EntityLivingBase) {
-                IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
+                IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
                 baubles.setStackInSlot(msg.slot, msg.stack);
                 baubles.setVisible(msg.slot, msg.visible);
             }

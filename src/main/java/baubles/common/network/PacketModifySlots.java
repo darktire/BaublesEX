@@ -3,7 +3,7 @@ package baubles.common.network;
 import baubles.Baubles;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -73,7 +73,7 @@ public class PacketModifySlots implements IMessage {
             if (world == null) return;
             Entity entity = world.getEntityByID(message.entityId);
             if (entity instanceof EntityLivingBase) {
-                IBaublesModifiable baublesCL = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
+                IBaublesItemHandler baublesCL = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
                 if (message.typeId > -1) {
                     if (message.addition == 0) baublesCL.modifySlot(TypesData.getTypeById(message.typeId).getName(), message.modifier);
                     else if (message.addition == 1) baublesCL.modifySlotOA(TypesData.getTypeById(message.typeId).getName(), message.modifier);

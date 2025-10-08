@@ -4,7 +4,7 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.BaublesContainerProvider;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.config.Config;
 import cofh.core.enchantment.EnchantmentSoulbound;
 import cofh.core.util.helpers.ItemHelper;
@@ -83,7 +83,7 @@ public class EventHandlerEntity {
         BaublesApi.applyByIndex(player, (baubles, i) -> dropItemsAt(player, drops, baubles, i, posX, posY, posZ, rand));
     }
 
-    private static void dropItemsAt(EntityPlayer player, List<EntityItem> drops, IBaublesModifiable baubles, Integer i, double posX, double posY, double posZ, Random rand) {
+    private static void dropItemsAt(EntityPlayer player, List<EntityItem> drops, IBaublesItemHandler baubles, Integer i, double posX, double posY, double posZ, Random rand) {
         ItemStack stack = baubles.getStackInSlot(i);
         if (!stack.isEmpty() && ((IBauble) stack.getItem()).canDrop(stack, player)) {
             if (EnchantmentHelper.hasVanishingCurse(stack)) {

@@ -11,8 +11,8 @@ public class BaublesCapabilities {
     /**
      * Access to the player's baubles' capability.
      */
-    @CapabilityInject(IBaublesModifiable.class)
-    public static Capability<IBaublesModifiable> CAPABILITY_BAUBLES;
+    @CapabilityInject(IBaublesItemHandler.class)
+    public static Capability<IBaublesItemHandler> CAPABILITY_BAUBLES;
 
     /**
      * Access to the bauble items capability.
@@ -20,15 +20,15 @@ public class BaublesCapabilities {
     @CapabilityInject(IWrapper.class)
     public static Capability<IWrapper> CAPABILITY_ITEM_BAUBLE;
 
-    public static class CapabilityBaubles implements IStorage<IBaublesModifiable> {
+    public static class CapabilityBaubles implements IStorage<IBaublesItemHandler> {
 
         @Override
-        public NBTBase writeNBT(Capability<IBaublesModifiable> capability, IBaublesModifiable instance, EnumFacing side) {
+        public NBTBase writeNBT(Capability<IBaublesItemHandler> capability, IBaublesItemHandler instance, EnumFacing side) {
             return null;
         }
 
         @Override
-        public void readNBT(Capability<IBaublesModifiable> capability, IBaublesModifiable instance, EnumFacing side, NBTBase nbt) {
+        public void readNBT(Capability<IBaublesItemHandler> capability, IBaublesItemHandler instance, EnumFacing side, NBTBase nbt) {
         }
     }
 

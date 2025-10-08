@@ -2,7 +2,7 @@ package baubles.client.render;
 
 import baubles.api.BaublesApi;
 import baubles.api.IWrapper;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.event.BaublesRenderEvent;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
@@ -182,9 +182,9 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
     }
 
     private static final class BaubleRef extends SlotRef {
-        private final IBaublesModifiable baubles;
+        private final IBaublesItemHandler baubles;
         private final int index;
-        private BaubleRef(IBaublesModifiable baubles, int index) {
+        private BaubleRef(IBaublesItemHandler baubles, int index) {
             super(index);
             this.baubles = baubles;
             this.index = index;

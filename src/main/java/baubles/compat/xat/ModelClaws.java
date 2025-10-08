@@ -1,7 +1,7 @@
 package baubles.compat.xat;
 
 import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.model.ModelBauble;
 import baubles.api.registries.TypesData;
 import baubles.api.render.IRenderBauble;
@@ -72,7 +72,7 @@ public class ModelClaws extends ModelBauble {
         if (!TrinketsConfig.SERVER.Items.FAELIS_CLAW.compat.baubles.equip_multiple) {
             return RenderMap.of(slim).init().both;
         }
-        IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
         int j = baubles.indexOf(TypesData.Preset.RING, 0);
         int k = baubles.indexOf(ModItems.baubles.BaubleFaelisClaw, 0);
         if (k != -1) {

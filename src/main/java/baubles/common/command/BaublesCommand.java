@@ -1,6 +1,6 @@
 package baubles.common.command;
 
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.command.sub.*;
 import baubles.common.config.Config;
 import net.minecraft.command.CommandException;
@@ -84,7 +84,7 @@ public class BaublesCommand extends CommandTreeBase {
         return getPlayer(server, sender, args[0]);
 	}
 
-	public static void checkSlot(IBaublesModifiable baubles, int slot) throws CommandException {
+	public static void checkSlot(IBaublesItemHandler baubles, int slot) throws CommandException {
 		if (slot >= baubles.getSlots()) {
 			throw new CommandException("commands.baubles.index.out", slot);
 		}

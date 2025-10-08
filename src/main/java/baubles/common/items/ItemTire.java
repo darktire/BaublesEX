@@ -3,7 +3,7 @@ package baubles.common.items;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.model.ModelBauble;
 import baubles.api.registries.TypesData;
 import baubles.api.render.IRenderBauble;
@@ -75,7 +75,7 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 		if (entity.world.isRemote) {
 			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 0.9f);
 		}
-		IBaublesModifiable handler = BaublesApi.getBaublesHandler(entity);
+		IBaublesItemHandler handler = BaublesApi.getBaublesHandler(entity);
 		handler.modifySlotOA("trinket", 2);
 		handler.updateContainer();
 	}
@@ -85,7 +85,7 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 		if (entity.world.isRemote) {
 			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 0.9f);
 		}
-		IBaublesModifiable handler = BaublesApi.getBaublesHandler(entity);
+		IBaublesItemHandler handler = BaublesApi.getBaublesHandler(entity);
 		handler.modifySlotOA("trinket", -2);
 		handler.updateContainer();
 	}

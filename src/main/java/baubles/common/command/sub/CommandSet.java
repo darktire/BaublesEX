@@ -1,7 +1,7 @@
 package baubles.common.command.sub;
 
 import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.command.BaublesCommand;
 import baubles.common.config.Config;
 import net.minecraft.command.CommandBase;
@@ -33,7 +33,7 @@ public class CommandSet extends CommandBase {
         Item item = Item.getByNameOrId(args[2]);
         if (item != null && args[1].matches("\\d+")) {
             int slot = Integer.parseInt(args[1]);
-            IBaublesModifiable baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
+            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
             BaublesCommand.checkSlot(baubles, slot);
             ItemStack stack = baubles.getStackInSlot(slot);
             ItemStack stack1 = new ItemStack(item, 1, args.length > 3 ? parseInt(args[3]) : 0);

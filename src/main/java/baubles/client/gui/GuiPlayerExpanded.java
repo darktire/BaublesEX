@@ -1,8 +1,8 @@
 package baubles.client.gui;
 
 import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.cap.IBaublesListener;
-import baubles.api.cap.IBaublesModifiable;
 import baubles.client.gui.element.ElementButton;
 import baubles.client.gui.element.ElementController;
 import baubles.client.gui.element.ElementScroller;
@@ -42,7 +42,7 @@ public class GuiPlayerExpanded extends GuiBase implements IBaublesListener<GuiPl
     private final EntityLivingBase entity;
     private final static boolean jeiLoaded = HookHelper.isModLoaded("jei");
     private final ContainerPlayerExpanded containerEx = (ContainerPlayerExpanded) this.inventorySlots;
-    public IBaublesModifiable baubles = (this.containerEx).baubles;
+    public IBaublesItemHandler baubles = (this.containerEx).baubles;
     public int baublesAmount = (this.containerEx).baublesAmount;
     public boolean wider = Config.Gui.widerBar;
     private int column = this.wider ? Config.Gui.column : 1;

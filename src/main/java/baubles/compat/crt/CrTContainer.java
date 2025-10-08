@@ -1,6 +1,6 @@
 package baubles.compat.crt;
 
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.util.HookHelper;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
@@ -13,15 +13,15 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 public class CrTContainer implements IContainer {
-    private static final Map<IBaublesModifiable, CrTContainer> CACHE = new WeakHashMap<>();
-    private final IBaublesModifiable baubles;
+    private static final Map<IBaublesItemHandler, CrTContainer> CACHE = new WeakHashMap<>();
+    private final IBaublesItemHandler baubles;
     private static final Field FIELD_STACKS = HookHelper.getField("net.minecraftforge.items.ItemStackHandler", "stacks");
 
-    private CrTContainer(IBaublesModifiable baubles) {
+    private CrTContainer(IBaublesItemHandler baubles) {
         this.baubles = baubles;
     }
 
-    public static CrTContainer of(IBaublesModifiable baubles) {
+    public static CrTContainer of(IBaublesItemHandler baubles) {
         return CACHE.computeIfAbsent(baubles, CrTContainer::new);
     }
 

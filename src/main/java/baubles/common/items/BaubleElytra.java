@@ -3,7 +3,7 @@ package baubles.common.items;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.IBaublesModifiable;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.model.ModelBauble;
 import baubles.api.registries.TypesData;
 import baubles.api.render.IRenderBauble;
@@ -76,7 +76,7 @@ public class BaubleElytra implements IBauble, IRenderBauble {
     }
 
     private static boolean initWearing(EntityLivingBase entity) {
-        IBaublesModifiable baubles = BaublesApi.getBaublesHandler(entity);
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
         if (baubles == null) return false;
 
         boolean flag1 = false;
