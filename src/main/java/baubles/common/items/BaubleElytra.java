@@ -30,8 +30,8 @@ public class BaubleElytra implements IBauble, IRenderBauble {
 
     @Override
     public List<BaubleTypeEx> getTypes(ItemStack stack) {
-    return TYPE;
-}
+        return TYPE;
+    }
 
     @Override
     public void onEquipped(ItemStack itemstack, EntityLivingBase entity) {

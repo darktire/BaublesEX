@@ -4,7 +4,6 @@ import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.registries.TypesData;
 import baubles.common.config.Config;
 import baubles.common.items.BaubleElytra;
 import baubles.compat.ModOnly;
@@ -21,10 +20,7 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class HookHelper {
 
@@ -43,17 +39,16 @@ public class HookHelper {
     public static boolean tryEquipping(EntityPlayer playerIn, ItemStack stack) {
         IBauble bauble = BaublesApi.toBauble(stack);
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) playerIn);
-        for (BaubleTypeEx type : bauble.getTypes(stack)) {
-            for (int i = 0, s = baubles.getSlots(); i < s; i++) {
-                boolean match = baubles.getTypeInSlot(i) == type || type == TypesData.Preset.TRINKET;
-                if (match && baubles.getStackInSlot(i).isEmpty()) {
-                    baubles.setStackInSlot(i, stack.copy());
-                    if (!playerIn.capabilities.isCreativeMode) {
-                        playerIn.inventory.setInventorySlotContents(playerIn.inventory.currentItem, ItemStack.EMPTY);
-                    }
-                    bauble.onEquipped(stack, playerIn);
-                    return true;
+        List<BaubleTypeEx> types = bauble.getTypes(stack);
+        for (int i = 0, s = baubles.getSlots(); i < s; i++) {
+            boolean match = baubles.getTypeInSlot(i).contains(types);
+            if (match && baubles.getStackInSlot(i).isEmpty()) {
+                baubles.setStackInSlot(i, stack.copy());
+                if (!playerIn.capabilities.isCreativeMode) {
+                    playerIn.inventory.setInventorySlotContents(playerIn.inventory.currentItem, ItemStack.EMPTY);
                 }
+                bauble.onEquipped(stack, playerIn);
+                return true;
             }
         }
         return false;
