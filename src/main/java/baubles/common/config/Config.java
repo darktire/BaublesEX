@@ -85,7 +85,7 @@ public class Config extends PartialConfig {
         }
     }
 
-    public static Configuration getConfigIns() {
+    public static Configuration getInstance() {
         return configIns;
     }
 
@@ -200,7 +200,7 @@ public class Config extends PartialConfig {
             if (eventArgs.getModID().equals(BaublesApi.MOD_ID)) {
                 PartialConfig.create(Config.class);
                 Config.saveConfig();
-                if (Config.rightClick) Config.setupBlacklist();
+                Config.setupBlacklist();
                 syncToBaubles();
             }
         }

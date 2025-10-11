@@ -30,8 +30,8 @@ public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        String modId = HookHelper.getTargetModId(mixinClassName);
-        return HookHelper.isModLoaded(modId);
+        String modid = HookHelper.getTargetModId(mixinClassName);
+        return HookHelper.isModLoaded(modid) && HookHelper.doApplyMixin(modid);
     }
 
     @Override

@@ -20,8 +20,8 @@ public class BaublesConfigGui extends GuiConfig {
     private static List<IConfigElement> getConfigElements() {
         List<IConfigElement> list = new ArrayList<>();
 
-        list.add(new ConfigElement(Config.getConfigIns().getCategory(Configuration.CATEGORY_GENERAL)));
-        list.add(new ConfigElement(Config.getConfigIns().getCategory(Configuration.CATEGORY_CLIENT)));
+        list.add(new ConfigElement(Config.getInstance().getCategory(Configuration.CATEGORY_GENERAL)));
+        list.add(new ConfigElement(Config.getInstance().getCategory(Configuration.CATEGORY_CLIENT)));
 
         return list;
     }
@@ -31,6 +31,6 @@ public class BaublesConfigGui extends GuiConfig {
     }
 
     private static String getTitle(GuiScreen parent) {
-        return GuiConfig.getAbridgedConfigPath(Config.getConfigIns().toString());
+        return GuiConfig.getAbridgedConfigPath(Config.getInstance().toString());
     }
 }

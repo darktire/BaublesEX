@@ -85,7 +85,7 @@ public class EventHandlerEntity {
 
     private static void dropItemsAt(EntityPlayer player, List<EntityItem> drops, IBaublesItemHandler baubles, Integer i, double posX, double posY, double posZ, Random rand) {
         ItemStack stack = baubles.getStackInSlot(i);
-        if (!stack.isEmpty() && ((IBauble) stack.getItem()).canDrop(stack, player)) {
+        if (!stack.isEmpty() && BaublesApi.toBauble(stack).canDrop(stack, player)) {
             if (EnchantmentHelper.hasVanishingCurse(stack)) {
                 baubles.setStackInSlot(i, ItemStack.EMPTY);
             }

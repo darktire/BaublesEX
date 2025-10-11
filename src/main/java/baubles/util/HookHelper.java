@@ -118,6 +118,13 @@ public class HookHelper {
         return substring.substring(0, substring.indexOf('.'));
     }
 
+    public static boolean doApplyMixin(String modid) {
+        switch (modid) {
+//            case "aether_legacy": return Compat.aether;
+            default: return true;
+        }
+    }
+
     public static void patchModsEvents(ASMDataTable table) {
         Set<ASMDataTable.ASMData> list = table.getAll(ModOnly.class.getName());
         ModClassLoader mcl = Loader.instance().getModClassLoader();
