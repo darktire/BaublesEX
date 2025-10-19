@@ -3,7 +3,6 @@ package baubles.common.config;
 import baubles.BaublesRegister;
 import baubles.api.BaublesApi;
 import baubles.api.cap.BaublesContainer;
-import baubles.api.registries.TypesData;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -21,14 +20,14 @@ import java.util.Map;
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
 public class Config extends PartialConfig {
-    private static Configuration configIns;
-    public static File MOD_DIR;
+    private static Configuration config;
+    private static File MOD_DIR;
 
-    //    Configuration Options
-    public static boolean keepBaubles = false;
-    public static boolean rightClick = true;
+    public static boolean keepBaubles;
+    public static boolean rightClick;
 //    public static boolean armorStand = false;
-    private static String[] clickBlacklist = {"wct:wct"};
+    private static String[] clickBlacklist;
+    private static final String[] defList = {"wct:wct"};
 
     public final static String BAUBLES_SLOTS = "general.slots";
     public final static String CLIENT_GUI = "client.gui";
@@ -40,23 +39,22 @@ public class Config extends PartialConfig {
     public static void loadConfig(FMLPreInitializationEvent event) {
         MOD_DIR =new File(event.getModConfigurationDirectory(), BaublesApi.MOD_ID);
         try {
-            configIns = new Configuration(event.getSuggestedConfigurationFile());
-            configIns.load();
-
+            config = new Configuration(new File(event.getModConfigurationDirectory(), BaublesApi.MOD_ID + ".cfg"));
+            config.load();
             PartialConfig.create(Config.class);
         } catch (Exception e) {
             BaublesApi.log.error("BAUBLES has a problem loading it's configuration");
         }
-        checkConfig(configIns);
+        checkConfig(config);
         saveConfig();
     }
 
     public void loadData() {
-        keepBaubles = configIns.getBoolean("keepBaubles", CATEGORY_GENERAL, keepBaubles, "Whether baubles can drop when player dies.");
-        rightClick = configIns.getBoolean("rightClick", CATEGORY_GENERAL, rightClick, "Whether player can use right click to equip baubles.");
-//        armorStand = configIns.getBoolean("armorStand", CATEGORY_GENERAL, armorStand, "Whether armorStand has baubles container (need to place armorStand again)");
+        keepBaubles = config.getBoolean("keepBaubles", CATEGORY_GENERAL, false, "Whether baubles can drop when player dies.");
+        rightClick = config.getBoolean("rightClick", CATEGORY_GENERAL, true, "Whether player can use right click to equip baubles.");
+//        armorStand = config.getBoolean("armorStand", CATEGORY_GENERAL, armorStand, "Whether armorStand has baubles container (need to place armorStand again)");
 
-        clickBlacklist = configIns.getStringList("clickBlacklist", CATEGORY_GENERAL, clickBlacklist, "");
+        clickBlacklist = config.getStringList("clickBlacklist", CATEGORY_GENERAL, defList, "");
 
         PartialConfig.create(Slots.class, Gui.class, ModItems.class, Commands.class);
     }
@@ -80,13 +78,17 @@ public class Config extends PartialConfig {
     }
 
     public static void saveConfig() {
-        if (configIns != null && configIns.hasChanged()) {
-            configIns.save();
+        if (config != null && config.hasChanged()) {
+            config.save();
         }
     }
 
     public static Configuration getInstance() {
-        return configIns;
+        return config;
+    }
+
+    public static File getModDir() {
+        return MOD_DIR;
     }
 
     public static List<Item> getBlacklist() {
@@ -113,23 +115,23 @@ public class Config extends PartialConfig {
 
         @Override
         public void loadData() {
-            AMULET = getCfgAmount("amuletSlot", TypesData.Preset.AMULET.getAmount());
-            RING = getCfgAmount("ringSlot", TypesData.Preset.RING.getAmount());
-            BELT = getCfgAmount("beltSlot", TypesData.Preset.BELT.getAmount());
-            TRINKET = getCfgAmount("trinketSlot", TypesData.Preset.TRINKET.getAmount());
-            HEAD = getCfgAmount("headSlot", TypesData.Preset.HEAD.getAmount());
-            BODY = getCfgAmount("bodySlot", TypesData.Preset.BODY.getAmount());
-            CHARM = getCfgAmount("charmSlot", TypesData.Preset.CHARM.getAmount());
+            AMULET = getCfgAmount("amuletSlot", 1);
+            RING = getCfgAmount("ringSlot", 2);
+            BELT = getCfgAmount("beltSlot", 1);
+            TRINKET = getCfgAmount("trinketSlot", 0);
+            HEAD = getCfgAmount("headSlot", 1);
+            BODY = getCfgAmount("bodySlot", 1);
+            CHARM = getCfgAmount("charmSlot", 1);
 
             getCategory().setComment("Modify the quantity of initial baubles.");
         }
 
         private int getCfgAmount(String key, int value) {
-            return configIns.getInt(key, BAUBLES_SLOTS, value, 0, 100, "Set slots for " + key.replace("Slot", ""));
+            return config.getInt(key, BAUBLES_SLOTS, value, 0, 100, "Set slots for " + key.replace("Slot", ""));
         }
 
         public static ConfigCategory getCategory() {
-            return configIns.getCategory(BAUBLES_SLOTS);
+            return config.getCategory(BAUBLES_SLOTS);
         }
 
         public static int getCfgAmount(String key){
@@ -140,56 +142,54 @@ public class Config extends PartialConfig {
     }
 
     public static class Gui extends PartialConfig {
-        public static boolean baublesButton = true;
-        public static boolean scrollerBar = true;
-        public static boolean widerBar = false;
-        public static boolean visibleSwitchers = true;
-        public static int column = 2;
-        public static boolean aetherButton = false;
+        public static boolean baublesButton;
+        public static boolean scrollerBar;
+        public static boolean widerBar;
+        public static boolean visibleSwitchers;
+        public static int column;
 
         @Override
         public void loadData() {
-            baublesButton = configIns.getBoolean("baublesButton", CLIENT_GUI, baublesButton, "Show baubles button or not");
-            scrollerBar = configIns.getBoolean("scrollerBar", CLIENT_GUI, scrollerBar, "Default visibility of the scroller bar");
-            widerBar = configIns.getBoolean("widerBar", CLIENT_GUI, widerBar, "Default selection of the sidebar");
-            column = configIns.getInt("column", CLIENT_GUI, column, 2,5, "Columns of the wider sidebar");
-            visibleSwitchers = configIns.getBoolean("visibleSwitchers", CLIENT_GUI, visibleSwitchers, "Show visible switchers or not");
-            aetherButton = configIns.getBoolean("aetherButton", CLIENT_GUI, aetherButton, "Show aether accessory button or not");
-            configIns.getCategory(CLIENT_GUI).setComment("Edit new gui.");
+            baublesButton = config.getBoolean("baublesButton", CLIENT_GUI, true, "Show baubles button or not");
+            scrollerBar = config.getBoolean("scrollerBar", CLIENT_GUI, true, "Default visibility of the scroller bar");
+            widerBar = config.getBoolean("widerBar", CLIENT_GUI, false, "Default selection of the sidebar");
+            column = config.getInt("column", CLIENT_GUI, 2, 2,5, "Columns of the wider sidebar");
+            visibleSwitchers = config.getBoolean("visibleSwitchers", CLIENT_GUI, true, "Show visible switchers or not");
+            config.getCategory(CLIENT_GUI).setComment("Edit new gui.");
         }
     }
 
     public static class ModItems extends PartialConfig {
-        public static boolean testItem = false;
-        public static boolean itemRing = true;
-        public static int maxLevel = 1;
-        public static boolean elytraBauble = false;
-        public static String elytraSlot = "elytra";
+        public static boolean testItem;
+        public static boolean itemRing;
+        public static int maxLevel;
+        public static boolean elytraBauble;
+        public static String elytraSlot;
         private final String[] elytraValidSlot = {"amulet", "ring", "belt", "trinket", "head", "body", "charm", "elytra"};
 
         @Override
         public void loadData() {
-            testItem = configIns.getBoolean("testItem", BAUBLES_ITEMS, testItem, "For test, or you want");
-            itemRing = configIns.getBoolean("itemRing", BAUBLES_ITEMS, itemRing, "The ring added by original Baubles");
-            maxLevel = configIns.getInt("maxLevel", BAUBLES_ITEMS, maxLevel, 0, 255, "Max level of haste given by Miner's Ring");
-            elytraBauble = configIns.getBoolean("elytraBauble", BAUBLES_ITEMS, elytraBauble, "Set elytra as bauble");
-            elytraSlot = configIns.getString("elytraSlot", BAUBLES_ITEMS, elytraSlot, "Get a specific slot for elytra", elytraValidSlot);
-            ConfigCategory category = configIns.getCategory(BAUBLES_ITEMS);
+            testItem = config.getBoolean("testItem", BAUBLES_ITEMS, false, "For test, or you want");
+            itemRing = config.getBoolean("itemRing", BAUBLES_ITEMS, true, "The ring added by original Baubles");
+            maxLevel = config.getInt("maxLevel", BAUBLES_ITEMS, 1, 0, 255, "Max level of haste given by Miner's Ring");
+            elytraBauble = config.getBoolean("elytraBauble", BAUBLES_ITEMS, false, "Set elytra as bauble");
+            elytraSlot = config.getString("elytraSlot", BAUBLES_ITEMS, "elytra", "Get a specific slot for elytra", elytraValidSlot);
+            ConfigCategory category = config.getCategory(BAUBLES_ITEMS);
             category.setComment("Item modified by BaublesEX. (need to restart)");
             category.requiresMcRestart();
         }
     }
 
     public static class Commands extends PartialConfig {
-        public static boolean debug = false;
-        public static boolean commandLogs = true;
-        public static boolean dropBaubles = true;
+        public static boolean debug;
+        public static boolean commandLogs;
+        public static boolean dropBaubles;
 
         @Override
         public void loadData() {
-            debug = configIns.getBoolean("debug", BAUBLES_COMMANDS, debug, "Make /baubles debug commands available for use");
-            commandLogs = configIns.getBoolean("commandLogs", BAUBLES_COMMANDS, commandLogs, "Whether /baubles commands send logs when commands have executed successfully");
-            dropBaubles = configIns.getBoolean("dropBaubles", BAUBLES_COMMANDS, dropBaubles, "Whether /baubles clear will drop baubles");
+            debug = config.getBoolean("debug", BAUBLES_COMMANDS, false, "Make /baubles debug commands available for use");
+            commandLogs = config.getBoolean("commandLogs", BAUBLES_COMMANDS, true, "Whether /baubles commands send logs when commands have executed successfully");
+            dropBaubles = config.getBoolean("dropBaubles", BAUBLES_COMMANDS, true, "Whether /baubles clear will drop baubles");
         }
     }
 

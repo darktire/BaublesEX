@@ -87,7 +87,7 @@ public class ClientEventHandler {
         EntityPlayer player = Minecraft.getMinecraft().player;
         Minecraft mc = Minecraft.getMinecraft();
         if (KeyBindings.KEY_BAUBLES.isPressed()) {
-            mc.displayGuiScreen(new GuiPlayerExpanded(player).startListening());
+            mc.displayGuiScreen(GuiPlayerExpanded.createGui(player, player));
             PacketHandler.INSTANCE.sendToServer(new PacketOpenBaublesInventory());
         }
     }

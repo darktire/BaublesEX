@@ -1,6 +1,5 @@
 package baubles.compat.aether;
 
-import baubles.common.config.Config;
 import baubles.compat.ModOnly;
 import com.gildedgames.the_aether.client.gui.button.GuiAccessoryButton;
 import net.minecraft.client.gui.GuiButton;
@@ -19,23 +18,19 @@ import java.util.List;
 public class ClientEventHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void blockAdding(GuiScreenEvent.InitGuiEvent.Post event) {
-        if (!Config.Gui.aetherButton) {
-            GuiScreen gui = event.getGui();
-            if (gui instanceof GuiContainerCreative || gui instanceof GuiInventory) {
-                List<GuiButton> buttonList = ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, gui, "field_146292_n");;
-                buttonList.removeIf(GuiAccessoryButton.class::isInstance);
-            }
+        GuiScreen gui = event.getGui();
+        if (gui instanceof GuiContainerCreative || gui instanceof GuiInventory) {
+            List<GuiButton> buttonList = ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, gui, "field_146292_n");;
+            buttonList.removeIf(GuiAccessoryButton.class::isInstance);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onMouse(GuiScreenEvent.MouseInputEvent.Post event) {
-        if (!Config.Gui.aetherButton) {
-            GuiScreen gui = event.getGui();
-            if (gui instanceof GuiContainerCreative && ((GuiContainerCreative) gui).getSelectedTabIndex() == CreativeTabs.INVENTORY.getIndex()) {
-                List<GuiButton> buttonList = ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, gui, "field_146292_n");;
-                buttonList.removeIf(GuiAccessoryButton.class::isInstance);
-            }
+        GuiScreen gui = event.getGui();
+        if (gui instanceof GuiContainerCreative && ((GuiContainerCreative) gui).getSelectedTabIndex() == CreativeTabs.INVENTORY.getIndex()) {
+            List<GuiButton> buttonList = ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, gui, "field_146292_n");;
+            buttonList.removeIf(GuiAccessoryButton.class::isInstance);
         }
     }
 }

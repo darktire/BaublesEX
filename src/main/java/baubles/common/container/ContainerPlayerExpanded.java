@@ -4,26 +4,23 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.cap.IBaublesListener;
+import baubles.api.util.IBaublesSync;
 import baubles.common.config.Config;
-import baubles.common.network.PacketHandler;
-import baubles.common.network.PacketSync;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.BitSet;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class ContainerPlayerExpanded extends Container implements IBaublesListener<ContainerPlayerExpanded> {
+public class ContainerPlayerExpanded extends Container implements IBaublesListener<ContainerPlayerExpanded>, IBaublesSync {
     private final EntityPlayer player;
     private final EntityLivingBase entity;
     public IBaublesItemHandler baubles;
@@ -33,8 +30,8 @@ public class ContainerPlayerExpanded extends Container implements IBaublesListen
     private static final EntityEquipmentSlot[] equipmentSlots = new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
     private final BitSet visibility = new BitSet();
 
-    public ContainerPlayerExpanded(EntityPlayer player) {
-        this(player, player);
+    public static ContainerPlayerExpanded createContainer(EntityPlayer player, EntityLivingBase entity) {
+        return new ContainerPlayerExpanded(player, entity).startListening();
     }
 
     public ContainerPlayerExpanded(EntityPlayer player, EntityLivingBase entity) {
@@ -349,6 +346,7 @@ public class ContainerPlayerExpanded extends Container implements IBaublesListen
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void setAll(List<ItemStack> list) {
         for (int i = 0; i < list.size(); ++i) {
             Slot slot = this.getSlot(i);
@@ -378,45 +376,6 @@ public class ContainerPlayerExpanded extends Container implements IBaublesListen
         }
     }
 
-    public void syncBaubles() {
-        Set<EntityPlayer> receivers = null;
-        for (int i = 0, slots = this.baubles.getSlots(); i < slots; i++) {
-            if (!this.baubles.getDirty().get(i)) continue;
-
-            ItemStack stack = this.baubles.getStackInSlot(i);
-            ItemStack stack1 = this.inventoryItemStacks.get(i + 46);
-
-            boolean clientStackChanged = false;
-            if (!ItemStack.areItemStacksEqual(stack1, stack)) {
-                clientStackChanged = !ItemStack.areItemStacksEqualUsingNBTShareTag(stack1, stack);
-                stack1 = stack.isEmpty() ? ItemStack.EMPTY : stack.copy();
-                this.inventoryItemStacks.set(i + 46, stack1);
-            }
-
-            boolean v = this.baubles.getVisible(i);
-            boolean v1 = this.visibility.get(i);
-
-            boolean visibilityChanged = v == v1;
-            if (visibilityChanged) {
-                if (v) this.visibility.clear(i);
-                else this.visibility.set(i);
-            }
-
-            if (clientStackChanged || visibilityChanged) {
-                if (receivers == null) {
-                    receivers = new HashSet<>(((WorldServer) entity.world).getEntityTracker().getTrackingPlayers(this.entity));
-                    if (this.entity instanceof EntityPlayer) receivers.add((EntityPlayer) this.entity);
-                }
-                PacketSync pkt = PacketSync.severPack(this.entity, i, stack1, v);
-                for (EntityPlayer receiver : receivers) {
-                    PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) receiver);
-                }
-            }
-
-            this.baubles.getDirty().clear(i);
-        }
-    }
-
     @Override
     public void updateBaubles() {
         this.clearBaubles();
@@ -435,5 +394,20 @@ public class ContainerPlayerExpanded extends Container implements IBaublesListen
     public void clearBaubles() {
         this.inventorySlots.subList(46, 46 + this.baublesAmount).clear();
         this.inventoryItemStacks.subList(46, 46 + this.baublesAmount).clear();
+    }
+
+    @Override
+    public EntityLivingBase getEntity() {
+        return this.entity;
+    }
+
+    @Override
+    public List<ItemStack> getStacks() {
+        return this.inventoryItemStacks.subList(46, 46 + this.baublesAmount);
+    }
+
+    @Override
+    public BitSet getVisibilities() {
+        return this.visibility;
     }
 }

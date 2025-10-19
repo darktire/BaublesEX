@@ -8,10 +8,13 @@
     "aether_legacy.MixinAetherAPI",
     "aether_legacy.MixinInventoryAccessories",
     "aether_legacy.MixinItemAccessory",
+    "botania.MixinContainerBaubleBox",
+    "botania.MixinHUDHandler",
     "wings.MixinWings"
   ],
   "client": [
     "artifacts.MixinLayerBauble",
+    "botania.MixinGuiBaubleBox",
     "bountifulbaubles.MixinAmulet",
     "bountifulbaubles.MixinItemShieldCobalt",
     "bountifulbaubles.MixinItemSunglasses",

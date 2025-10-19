@@ -52,12 +52,12 @@ public class GuiPlayerExpanded extends GuiBase implements IBaublesListener<GuiPl
     private ElementSwitchers switchers;
     private final List<Rectangle> extraArea = new ArrayList<>();
 
-    public GuiPlayerExpanded(EntityPlayer player) {
-        this(player, player);
+    public static GuiPlayerExpanded createGui(EntityPlayer player, EntityLivingBase entity) {
+        return new GuiPlayerExpanded(player, entity).startListening();
     }
 
     public GuiPlayerExpanded(EntityPlayer player, EntityLivingBase entity) {
-        super(new ContainerPlayerExpanded(player, entity));
+        super(ContainerPlayerExpanded.createContainer(player, entity));
         this.player = player;
         this.entity = entity;
         this.allowUserInput = true;

@@ -33,7 +33,7 @@ public class CommandDump extends CommandBase {
             throw new RuntimeException(e);
         }
         if (Config.Commands.commandLogs) {
-            sender.sendMessage(new TextComponentTranslation("commands.baubles.dump", Config.MOD_DIR.getAbsoluteFile()));
+            sender.sendMessage(new TextComponentTranslation("commands.baubles.dump", Config.getModDir().getAbsoluteFile()));
         }
     }
 }

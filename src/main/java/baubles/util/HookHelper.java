@@ -7,6 +7,7 @@ import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.config.Config;
 import baubles.common.items.BaubleElytra;
 import baubles.compat.ModOnly;
+import baubles.compat.config.Compat;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -88,9 +89,9 @@ public class HookHelper {
         return loaded;
     }
 
-    public static boolean isModLoaded(ArrayList<String> mods) {
+    public static boolean doApply(ArrayList<String> mods) {
         for (String mod : mods) {
-            if (!isModLoaded(mod)) return false;
+            if (!isModLoaded(mod) || !getConfig(mod)) return false;
         }
         return true;
     }
@@ -113,9 +114,10 @@ public class HookHelper {
         return substring.substring(0, substring.indexOf('.'));
     }
 
-    public static boolean doApplyMixin(String modid) {
+    public static boolean getConfig(String modid) {
         switch (modid) {
-//            case "aether_legacy": return Compat.aether;
+            case "aether_legacy": return Compat.aether;
+            case "botania": return Compat.botania;
             default: return true;
         }
     }
@@ -130,7 +132,7 @@ public class HookHelper {
                 ArrayList<String> mods = (ArrayList<String>) data.getAnnotationInfo().get("value");
                 boolean client = Boolean.TRUE.equals(data.getAnnotationInfo().get("client"));
 
-                if (!isModLoaded(mods)) continue;
+                if (!doApply(mods)) continue;
                 if (client && FMLCommonHandler.instance().getSide() == Side.SERVER) continue;
 
                 String className = data.getClassName();

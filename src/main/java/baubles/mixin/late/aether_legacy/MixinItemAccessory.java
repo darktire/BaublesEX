@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = ItemAccessory.class, remap = false)
 public class MixinItemAccessory {
     @Inject(method = "onItemRightClick", at = @At("HEAD"), cancellable = true)
-    void injected(World worldIn, EntityPlayer player, EnumHand hand, CallbackInfoReturnable<ActionResult<ItemStack>> cir) {
+    public void injected(World worldIn, EntityPlayer player, EnumHand hand, CallbackInfoReturnable<ActionResult<ItemStack>> cir) {
         cir.setReturnValue(new ActionResult<>(EnumActionResult.PASS, player.getHeldItem(hand)));
     }
 }
