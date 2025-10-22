@@ -40,7 +40,7 @@ public class Baubles {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         TypesData.Preset.init();
-        Config.loadConfig(event);
+        Config.loadConfig();
         BaublesRegister.setTypes();
 
         CapabilityManager.INSTANCE.register(

@@ -4,12 +4,12 @@ import baubles.BaublesRegister;
 import baubles.api.BaublesApi;
 import baubles.api.cap.BaublesContainer;
 import net.minecraft.item.Item;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
@@ -20,8 +20,16 @@ import java.util.Map;
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
 public class Config extends PartialConfig {
-    private static Configuration config;
-    private static File MOD_DIR;
+    private static final File CONFIG_DIR;
+    private static final Configuration config;
+
+    static {
+        CONFIG_DIR = new File(Launch.minecraftHome, "config");
+        config = new Configuration(new File(CONFIG_DIR, BaublesApi.MOD_ID + ".cfg"));
+        config.load();
+    }
+
+    private static final File MOD_DIR = new File(CONFIG_DIR, BaublesApi.MOD_ID);
 
     public static boolean keepBaubles;
     public static boolean rightClick;
@@ -36,11 +44,8 @@ public class Config extends PartialConfig {
 
     private static final List<Item> blacklist = new ArrayList<>();
 
-    public static void loadConfig(FMLPreInitializationEvent event) {
-        MOD_DIR =new File(event.getModConfigurationDirectory(), BaublesApi.MOD_ID);
+    public static void loadConfig() {
         try {
-            config = new Configuration(new File(event.getModConfigurationDirectory(), BaublesApi.MOD_ID + ".cfg"));
-            config.load();
             PartialConfig.create(Config.class);
         } catch (Exception e) {
             BaublesApi.log.error("BAUBLES has a problem loading it's configuration");
