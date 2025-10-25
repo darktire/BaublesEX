@@ -5,6 +5,7 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.config.Config;
+import baubles.common.config.json.JsonHelper;
 import baubles.common.items.BaubleElytra;
 import baubles.compat.ModOnly;
 import baubles.compat.config.Compat;
@@ -14,6 +15,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModClassLoader;
@@ -53,6 +55,34 @@ public class HookHelper {
             }
         }
         return false;
+    }
+
+    public static void configSlot(String typeName, int n, boolean modifying) {
+        Property property = Config.Slots.getCategory().get(typeName + "Slot");
+        if (property == null) {
+            try {
+                List<BaubleTypeEx> types = JsonHelper.jsonToType();
+                for (BaubleTypeEx type : types) {
+                    if (type.getName().equals(typeName)) {
+                        if (modifying) {
+                            n += type.getAmount();
+                        }
+                        type.setAmount(n);
+                    }
+                }
+                JsonHelper.typeToJson(types, false);
+            } catch (Throwable e) {
+                BaublesApi.log.error(e);
+            }
+        }
+        else {
+            if (modifying) {
+                n += property.getInt();
+            }
+            property.set(n);
+            Config.saveConfig();
+            Config.syncToBaubles();
+        }
     }
 
     public static Field getField(String className, String fieldName) {

@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -36,12 +37,13 @@ public class JsonHelper {
         FileUtils.write(output, GSON.toJson(types, TOKEN1.getType()), StandardCharsets.UTF_8);
     }
 
-    public static void jsonToType() throws IOException {
+    public static List<BaubleTypeEx> jsonToType() throws IOException {
         try {
-            GSON.fromJson(new FileReader(TYPE_JSON), TOKEN1.getType());
+            return GSON.fromJson(new FileReader(TYPE_JSON), TOKEN1.getType());
         } catch (FileNotFoundException e) {
             FileUtils.write(TYPE_JSON, null, StandardCharsets.UTF_8, true);
         }
+        return new ArrayList<>();
     }
 
     public static void itemToJson(List<IWrapper> items, boolean dump) throws IOException {

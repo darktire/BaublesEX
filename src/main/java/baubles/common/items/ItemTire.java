@@ -76,7 +76,7 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 0.9f);
 		}
 		IBaublesItemHandler handler = BaublesApi.getBaublesHandler(entity);
-		handler.modifySlotOA("trinket", 2);
+		handler.modifySlot("trinket", 2);
 		handler.updateContainer();
 	}
 
@@ -86,7 +86,7 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 0.9f);
 		}
 		IBaublesItemHandler handler = BaublesApi.getBaublesHandler(entity);
-		handler.modifySlotOA("trinket", -2);
+		handler.modifySlot("trinket", -2);
 		handler.updateContainer();
 	}
 

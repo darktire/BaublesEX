@@ -1,5 +1,6 @@
 package baubles.compat.crt;
 
+import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.util.HookHelper;
 import crafttweaker.api.item.IItemStack;
@@ -32,8 +33,13 @@ public class CrTContainer implements IContainer {
     }
 
     @Override
-    public void modifySlotOA(String typeName, int modifier) {
-        this.baubles.modifySlotOA(typeName, modifier);
+    public void modifySlot(String typeName, int modifier) {
+        this.baubles.modifySlot(typeName, modifier);
+    }
+
+    @Override
+    public void configSlot(String typeName, int modifier) {
+        HookHelper.configSlot(typeName, modifier, true);
     }
 
     @Override
@@ -53,7 +59,7 @@ public class CrTContainer implements IContainer {
 
     @Override
     public String asString() {
-        return null;
+        return BaublesApi.MOD_ID;
     }
 
     @Override

@@ -45,14 +45,9 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 	void setSlot(String typeName, int n);
 
 	/**
-	 * Set the modifier of this type
-	 */
-	void modifySlot(String typeName, int modifier);
-
-	/**
 	 * Modify base on the previous modifier
 	 */
-	void modifySlotOA(String typeName, int modifier);
+	void modifySlot(String typeName, int modifier);
 
 	void clearModifier();
 

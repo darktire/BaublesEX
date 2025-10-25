@@ -16,7 +16,10 @@ public interface IContainer extends crafttweaker.api.container.IContainer {
     int indexOf(IItemStack crtStack, int start);
 
     @ZenMethod
-    void modifySlotOA(String typeName, int modifier);
+    void modifySlot(String typeName, int modifier);
+
+    @ZenMethod
+    void configSlot(String typeName, int modifier);
 
     @ZenMethod
     String getTypeInSlot(int slot);

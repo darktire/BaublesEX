@@ -53,16 +53,16 @@ public class CommandClear extends CommandBase {
             }
         }
         else if (args[1].matches("\\d+")) {
-            clearOne(sender, args[1], baubles, player);
+            clearOnce(sender, args[1], baubles, player);
             if (args.length > 2) {
                 for (int i = 2; i < args.length; i++){
-                    clearOne(sender, args[i], baubles, player);
+                    clearOnce(sender, args[i], baubles, player);
                 }
             }
         }
     }
 
-    private void clearOne(ICommandSender sender, String s, IBaublesItemHandler baubles, EntityPlayerMP player) throws CommandException {
+    private void clearOnce(ICommandSender sender, String s, IBaublesItemHandler baubles, EntityPlayerMP player) throws CommandException {
         int slot = Integer.parseInt(s);
         BaublesCommand.checkSlot(baubles, slot);
         ItemStack stack = baubles.getStackInSlot(slot);

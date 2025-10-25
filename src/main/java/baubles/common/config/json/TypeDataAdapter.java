@@ -37,6 +37,7 @@ public class TypeDataAdapter extends TypeAdapter<List<BaubleTypeEx>> {
 
     @Override
     public List<BaubleTypeEx> read(JsonReader in) throws IOException {
+        List<BaubleTypeEx> list = new ArrayList<>();
         in.beginObject();
         while (in.hasNext()) {
             String name = null;
@@ -61,9 +62,9 @@ public class TypeDataAdapter extends TypeAdapter<List<BaubleTypeEx>> {
                 }
             }
             in.endObject();
-            TypesData.registerType(name, amount, priority, parents);
+            list.add(TypesData.registerType(name, amount, priority, parents));
         }
         in.endObject();
-        return null;
+        return list;
     }
 }
