@@ -187,7 +187,7 @@ public final class BaublesWrapper implements IWrapper {
     }
 
     public final static class Attribute {
-        private final List<WeakReference<IBaublesListener<?>>> listeners = new ArrayList<>();
+        private final List<WeakReference<IBaublesListener>> listeners = new ArrayList<>();
         private final Object lock = new Object();
         private IBauble bauble;
         private IRenderBauble render;
@@ -195,21 +195,21 @@ public final class BaublesWrapper implements IWrapper {
         private boolean remove = false;
 
         private void broadcast() {
-            List<IBaublesListener<?>> snap;
+            List<IBaublesListener> snap;
             synchronized (lock) {
                 listeners.removeIf(ref -> ref.get() == null);
                 snap = new ArrayList<>(listeners.size());
-                for (WeakReference<IBaublesListener<?>> ref : listeners) {
-                    IBaublesListener<?> l = ref.get();
+                for (WeakReference<IBaublesListener> ref : listeners) {
+                    IBaublesListener l = ref.get();
                     if (l != null) snap.add(l);
                 }
             }
-            for (IBaublesListener<?> l : snap) {
+            for (IBaublesListener l : snap) {
                 l.updateBaubles();
             }
         }
 
-        public void addListener(IBaublesListener<?> listener) {
+        public void addListener(IBaublesListener listener) {
             synchronized (lock) {
                 this.listeners.add(new WeakReference<>(listener));
             }

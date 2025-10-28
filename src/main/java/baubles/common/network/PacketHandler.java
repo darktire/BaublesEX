@@ -15,5 +15,6 @@ public class PacketHandler {
         INSTANCE.registerMessage(PacketSync.Handler.class, PacketSync.class, START_ID++, Side.CLIENT);
         INSTANCE.registerMessage(PacketSync.Handler.class, PacketSync.class, START_ID++, Side.SERVER);
         INSTANCE.registerMessage(PacketModifySlots.Handler.class, PacketModifySlots.class, START_ID++, Side.CLIENT);
+        INSTANCE.registerMessage(PacketOpenExpansion.Handler.class, PacketOpenExpansion.class, START_ID++, Side.SERVER);
     }
 }

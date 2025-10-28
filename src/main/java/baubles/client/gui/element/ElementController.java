@@ -1,7 +1,6 @@
 package baubles.client.gui.element;
 
-import baubles.client.gui.GuiBase;
-import baubles.client.gui.GuiPlayerExpanded;
+import baubles.client.gui.GuiExpanded;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -11,7 +10,7 @@ public class ElementController extends ElementBase {
 
     private boolean pressed;
 
-    public ElementController(int id, GuiPlayerExpanded parentGui, int x, int y, int buttonID) {
+    public ElementController(int id, GuiExpanded parentGui, int x, int y, int buttonID) {
         super(id, x, y, 8, 8, "", parentGui);
     }
 
@@ -30,14 +29,14 @@ public class ElementController extends ElementBase {
         if (this.visible) {
             updateHovered(mouseX, mouseY);
             glPush();
-            mc.getTextureManager().bindTexture(GuiBase.BAUBLES_TEX);
+            mc.getTextureManager().bindTexture(GuiExpanded.BAUBLES_TEX);
             drawTexturedModalRect(this.x, this.y, 6 + (this.pressed ? 8 : 0), controllerId * 8 + 185, 8, 8);
             glPop();
         }
     }
 
     public static class f extends ElementController {
-        public f(int id, GuiPlayerExpanded parentGui, int x, int y, int buttonID) {
+        public f(int id, GuiExpanded parentGui, int x, int y, int buttonID) {
             super(id, parentGui, x, y, buttonID);
         }
 
@@ -48,7 +47,7 @@ public class ElementController extends ElementBase {
     }
 
     public static class e extends ElementController {
-        public e(int id, GuiPlayerExpanded parentGui, int x, int y, int buttonID) {
+        public e(int id, GuiExpanded parentGui, int x, int y, int buttonID) {
             super(id, parentGui, x, y, buttonID);
         }
 
@@ -66,7 +65,7 @@ public class ElementController extends ElementBase {
     }
 
     public static class h extends ElementController {
-        public h(int id, GuiPlayerExpanded parentGui, int x, int y, int buttonID) {
+        public h(int id, GuiExpanded parentGui, int x, int y, int buttonID) {
             super(id, parentGui, x, y, buttonID);
         }
 

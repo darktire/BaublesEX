@@ -36,8 +36,8 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 	//---------------------------Modifiable---------------------------//
 
 
-	void addListener(IBaublesListener<?> listener);
-	void removeListener(IBaublesListener<?> listener);
+	void addListener(IBaublesListener listener);
+	void removeListener(IBaublesListener listener);
 
 	/**
 	 * Set the slots of this type
@@ -60,4 +60,6 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 
 	void markDirty(int index);
 	BitSet getDirty();
+
+	EntityLivingBase getOwner();
 }

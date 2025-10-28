@@ -1,7 +1,6 @@
 package baubles.client.gui.element;
 
-import baubles.client.gui.GuiBase;
-import baubles.client.gui.GuiPlayerExpanded;
+import baubles.client.gui.GuiExpanded;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -18,12 +17,16 @@ public class ElementScroller extends ElementBase {
     private boolean dragging;
     private final int rest = 142 - 89;
 
-    public ElementScroller(int id, GuiPlayerExpanded parentGui, int x, int y, boolean visible) {
+    public ElementScroller(int id, GuiExpanded parentGui, int x, int y, boolean visible) {
         super(id, x, y, 18, 166, "", parentGui);
         this.visible = visible;
         this.barPos = 0;
+        initArea();
+    }
+
+    public void initArea() {
         this.area = new Rectangle(this.x, this.y, 18, 166);
-        if (visible) this.parentGui.getExtraArea().add( this.area);
+        if (this.visible) this.parentGui.getExtraArea().add(this.area);
     }
 
     @Override
@@ -50,7 +53,7 @@ public class ElementScroller extends ElementBase {
             updateHovered(mouseX, mouseY);
             handleDrag(mouseY);
             glPush();
-            mc.getTextureManager().bindTexture(GuiBase.BAUBLES_TEX);
+            mc.getTextureManager().bindTexture(GuiExpanded.BAUBLES_TEX);
             drawTexturedModalRect(x, y, 0, 0, 18, 166);
             drawTexturedModalRect(x + 6, y + 16 + barPos + movement, 0, 167, 6, 52 + 36);
             drawTexturedModalRect(x + 6, y + 16 + 52 + 36 + barPos + movement, 0, 167 + 52 + 36, 6, 1);
@@ -62,10 +65,9 @@ public class ElementScroller extends ElementBase {
     public void playPressSound(SoundHandler soundHandlerIn) {}
 
     public void handleWider() {
-        this.x = this.parentGui.getGuiLeft() - 30 - 18 * this.parentGui.getColumn();
+        this.x = this.parentGui.getGuiLeft() - 30 - 18 * this.parentGui.getCol();
         this.barPos = 0;
-        this.area = new Rectangle(this.x, this.y, 18, 166);
-        if (this.visible) this.parentGui.getExtraArea().add( this.area);
+        initArea();
     }
 
     public void switchVisible() {
@@ -97,7 +99,7 @@ public class ElementScroller extends ElementBase {
                 movement = rest - barPos;
                 if (y + 16 + barPos <= mouseY && mouseY < y + 16 + 89 + barPos) dragStartY = mouseY + barPos - rest;
             }
-            float pixelPerSlot = (float) rest / (parentGui.baublesAmount - 8 * this.parentGui.getColumn());
+            float pixelPerSlot = (float) rest / (parentGui.baublesAmount - 8 * this.parentGui.getCol());
             int offset = -Math.round((this.barPos + this.movement) / pixelPerSlot);
             int value = offset - parentGui.getOffset();
             if (value != 0) {

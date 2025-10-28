@@ -2,9 +2,6 @@ package baubles.common.container;
 
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.cap.IBaublesListener;
-import baubles.api.util.IBaublesSync;
 import baubles.common.config.Config;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
@@ -17,29 +14,30 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.BitSet;
 import java.util.List;
 
-public class ContainerPlayerExpanded extends Container implements IBaublesListener<ContainerPlayerExpanded>, IBaublesSync {
+public class ContainerPlayerExpanded extends ContainerExpanded {
     private final EntityPlayer player;
-    private final EntityLivingBase entity;
-    public IBaublesItemHandler baubles;
-    public int baublesAmount;
     public final InventoryCrafting craftMatrix = new InventoryCrafting(this, 2, 2);
     public final InventoryCraftResult craftResult = new InventoryCraftResult();
     private static final EntityEquipmentSlot[] equipmentSlots = new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
-    private final BitSet visibility = new BitSet();
 
-    public static ContainerPlayerExpanded createContainer(EntityPlayer player, EntityLivingBase entity) {
+    public static ContainerPlayerExpanded create(EntityPlayer player, EntityLivingBase entity) {
         return new ContainerPlayerExpanded(player, entity).startListening();
     }
 
-    public ContainerPlayerExpanded(EntityPlayer player, EntityLivingBase entity) {
+    private ContainerPlayerExpanded(EntityPlayer player, EntityLivingBase entity) {
         this.player = player;
         this.entity = entity;
         this.baubles = BaublesApi.getBaublesHandler(entity);
         this.baublesAmount = this.baubles.getSlots();
-        InventoryPlayer playerInv = player.inventory;
+
+        initSlots();
+    }
+
+    @Override
+    protected void initSlots() {
+        InventoryPlayer playerInv = this.player.inventory;
 
         //add craftResult (1) [0,1)
         this.addSlotToContainer(new SlotCrafting(player, this.craftMatrix, this.craftResult, 0, 154, 28));
@@ -104,24 +102,9 @@ public class ContainerPlayerExpanded extends Container implements IBaublesListen
         });
 
         //add bauble slots (amount)
-        if (Config.Gui.widerBar) this.addWideBaubles();
-        else this.addSlimBaubles();
+        super.addBaubleSlots(Config.Gui.widerBar);
 
         this.onCraftMatrixChanged(this.craftMatrix);
-    }
-
-    public void addSlimBaubles() {
-        for (int i = 0; i < this.baublesAmount; i++) {
-            this.addSlotToContainer(new SlotBaubleHandler(this.entity, this.baubles, i, -23, 16 + i * 18));
-        }
-    }
-
-    public void addWideBaubles() {
-        for (int i = 0; i < this.baublesAmount; i++) {
-            int j = i / Config.Gui.column;
-            int k = i % Config.Gui.column;
-            this.addSlotToContainer(new SlotBaubleHandler(this.entity, this.baubles, i, -23 + (k - Config.Gui.column + 1) * 18, 16 + j * 18));
-        }
     }
 
     /**
@@ -381,7 +364,7 @@ public class ContainerPlayerExpanded extends Container implements IBaublesListen
         this.clearBaubles();
         this.baublesAmount = this.baubles.getSlots();
         if (!this.entity.world.isRemote) {
-            this.addSlimBaubles();
+            this.addBaubleSlots(false);
         }
     }
 
@@ -391,23 +374,13 @@ public class ContainerPlayerExpanded extends Container implements IBaublesListen
         return this;
     }
 
-    public void clearBaubles() {
-        this.inventorySlots.subList(46, 46 + this.baublesAmount).clear();
-        this.inventoryItemStacks.subList(46, 46 + this.baublesAmount).clear();
+    @Override
+    public List<Slot> getBaubleSlots() {
+        return this.inventorySlots.subList(46, 46 + this.baublesAmount);
     }
 
     @Override
-    public EntityLivingBase getEntity() {
-        return this.entity;
-    }
-
-    @Override
-    public List<ItemStack> getStacks() {
+    public List<ItemStack> getBaubleStacks() {
         return this.inventoryItemStacks.subList(46, 46 + this.baublesAmount);
-    }
-
-    @Override
-    public BitSet getVisibilities() {
-        return this.visibility;
     }
 }

@@ -1,6 +1,6 @@
 package baubles.client.gui.element;
 
-import baubles.client.gui.GuiPlayerExpanded;
+import baubles.client.gui.GuiExpanded;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -12,14 +12,14 @@ import java.util.List;
 public class ElementSwitchers extends ElementBase {
     private final List<ElementSwitcher> buttonList = new ArrayList<>();
 
-    public ElementSwitchers(int buttonId, GuiPlayerExpanded parentGui, int x, int y) {
+    public ElementSwitchers(int buttonId, GuiExpanded parentGui, int x, int y) {
         super(buttonId, x, y, 0, 0, "", parentGui);
         this.initSwitchers(false);
     }
 
     public void initSwitchers(boolean flag) {
         if (flag) this.buttonList.clear();
-        int column = this.parentGui.getColumn();
+        int column = this.parentGui.getCol();
         for (int i = 0; i < this.parentGui.baublesAmount; i++) {
             int j = i / column;
             int k = i % column;

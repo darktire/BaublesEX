@@ -23,6 +23,7 @@ public class PacketSync implements IMessage {
     private boolean toClient;
     private int entityId;
     private int slot;
+    private boolean hasStack;
     private ItemStack stack;
     private boolean visible;
 
@@ -37,8 +38,8 @@ public class PacketSync implements IMessage {
         return pkt;
     }
 
-    public static PacketSync clientPack(int slot, boolean visible) {
-        PacketSync pkt = PacketPool.borrow(null, slot, null, visible);
+    public static PacketSync clientPack(int slot, ItemStack stack, boolean visible) {
+        PacketSync pkt = PacketPool.borrow(null, slot, stack, visible);
         pkt.toClient = false;
         return pkt;
     }
@@ -47,6 +48,7 @@ public class PacketSync implements IMessage {
         this.entityId = entityId;
         this.slot = slot;
         this.visible = visible;
+        this.hasStack = stack != null;
         this.stack = stack;
         return this;
     }
@@ -54,7 +56,8 @@ public class PacketSync implements IMessage {
     void reset() {
         this.entityId = -1;
         this.slot = -1;
-        this.stack = ItemStack.EMPTY;
+        this.hasStack = false;
+        this.stack = null;
         this.visible = false;
     }
 
@@ -63,6 +66,9 @@ public class PacketSync implements IMessage {
         buffer.writeBoolean(this.toClient);
         if (this.toClient) {
             buffer.writeInt(this.entityId);
+        }
+        buffer.writeBoolean(this.hasStack);
+        if (this.hasStack) {
             ByteBufUtils.writeItemStack(buffer, this.stack);
         }
         buffer.writeInt(this.slot);
@@ -74,6 +80,9 @@ public class PacketSync implements IMessage {
         this.toClient = buffer.readBoolean();
         if (this.toClient) {
             this.entityId = buffer.readInt();
+        }
+        this.hasStack = buffer.readBoolean();
+        if (this.hasStack) {
             this.stack = ByteBufUtils.readItemStack(buffer);
         }
         this.slot = buffer.readInt();
@@ -95,6 +104,7 @@ public class PacketSync implements IMessage {
 
         private void handleSever(PacketSync msg, EntityLivingBase player) {
             IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
+            if (msg.hasStack) baubles.setStackInSlot(msg.slot, msg.stack);
             baubles.setVisible(msg.slot, msg.visible);
             baubles.markDirty(msg.slot);
             PacketPool.release(msg);

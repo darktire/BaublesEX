@@ -1,13 +1,15 @@
 package baubles.compat.jei;
 
-import baubles.client.gui.GuiPlayerExpanded;
+import baubles.client.gui.GuiOverlayHandler;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.gui.IAdvancedGuiHandler;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import org.lwjgl.input.Mouse;
 
 import java.awt.*;
+import java.util.Collections;
 import java.util.List;
 
 @JEIPlugin
@@ -20,20 +22,26 @@ public class JeiPlugin implements IModPlugin {
         registry.addAdvancedGuiHandlers(JEI_COMPAT);
     }
 
-    public static final class JeiCompatProvider implements IAdvancedGuiHandler<GuiPlayerExpanded> {
+    public static final class JeiCompatProvider implements IAdvancedGuiHandler<GuiContainer> {
 
         @Override
-        public Class<GuiPlayerExpanded> getGuiContainerClass() {
-            return GuiPlayerExpanded.class;
+        public Class<GuiContainer> getGuiContainerClass() {
+            return GuiContainer.class;
         }
 
         @Override
-        public List<Rectangle> getGuiExtraAreas(GuiPlayerExpanded gui) {
-            return gui.getExtraArea();
+        public List<Rectangle> getGuiExtraAreas(GuiContainer gui) {
+            if (gui instanceof IArea) {
+                return ((IArea) gui).getExtraArea();
+            }
+            else if (GuiOverlayHandler.isTarget(gui)) {
+                return GuiOverlayHandler.getExpansion(gui).getExtraArea();
+            }
+            else return Collections.emptyList();
         }
 
         @Override
-        public Integer getIngredientUnderMouse(GuiPlayerExpanded guiContainer, int mouseX, int mouseY) {
+        public Integer getIngredientUnderMouse(GuiContainer gui, int mouseX, int mouseY) {
             return Mouse.getDWheel();
         }
     }

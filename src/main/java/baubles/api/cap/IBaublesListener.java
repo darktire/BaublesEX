@@ -1,6 +1,6 @@
 package baubles.api.cap;
 
-public interface IBaublesListener<T extends IBaublesListener<T>> {
+public interface IBaublesListener {
     void updateBaubles();
-    T startListening();
+    IBaublesListener startListening();
 }

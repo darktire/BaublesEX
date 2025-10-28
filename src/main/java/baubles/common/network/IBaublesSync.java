@@ -1,9 +1,7 @@
-package baubles.api.util;
+package baubles.common.network;
 
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.common.network.PacketHandler;
-import baubles.common.network.PacketSync;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -25,13 +23,13 @@ public interface IBaublesSync {
             if (!baubles.getDirty().get(i)) continue;
 
             ItemStack stack = baubles.getStackInSlot(i);
-            ItemStack stack1 = getStacks().get(i);
+            ItemStack stack1 = getBaubleStacks().get(i);
 
             boolean clientStackChanged = false;
             if (!ItemStack.areItemStacksEqual(stack1, stack)) {
                 clientStackChanged = !ItemStack.areItemStacksEqualUsingNBTShareTag(stack1, stack);
                 stack1 = stack.isEmpty() ? ItemStack.EMPTY : stack.copy();
-                getStacks().set(i, stack1);
+                getBaubleStacks().set(i, stack1);
             }
 
             boolean v = baubles.getVisible(i);
@@ -63,7 +61,7 @@ public interface IBaublesSync {
 
     EntityLivingBase getEntity();
 
-    List<ItemStack> getStacks();
+    List<ItemStack> getBaubleStacks();
 
     BitSet getVisibilities();
 }

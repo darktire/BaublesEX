@@ -1,6 +1,5 @@
 package baubles.client.gui;
 
-import baubles.api.BaublesApi;
 import baubles.common.config.KeyBindings;
 import com.google.common.collect.Ordering;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -9,7 +8,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Container;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -18,8 +16,6 @@ import java.util.Collection;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiBase extends GuiContainer {
-    public static final ResourceLocation BAUBLES_TEX = new ResourceLocation(BaublesApi.MOD_ID, "textures/gui/baubles_container.png");
-
     public GuiBase(Container inventorySlotsIn) {
         super(inventorySlotsIn);
     }

@@ -1,7 +1,6 @@
 package baubles.client.gui.element;
 
-import baubles.client.gui.GuiBase;
-import baubles.client.gui.GuiPlayerExpanded;
+import baubles.client.gui.GuiExpanded;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketSync;
 import net.minecraft.client.Minecraft;
@@ -13,7 +12,7 @@ public class ElementSwitcher extends ElementBase {
     private boolean on;
     public final int startY;
 
-    public ElementSwitcher(int buttonId, GuiPlayerExpanded parentGui, int x, int y) {
+    public ElementSwitcher(int buttonId, GuiExpanded parentGui, int x, int y) {
         super(buttonId, x, y, 5, 5, "", parentGui);
         this.on = parentGui.baubles.getVisible(buttonId);
         this.startY = y;
@@ -26,7 +25,7 @@ public class ElementSwitcher extends ElementBase {
             if (pressed) {
                 this.on = !this.on;
                 this.parentGui.baubles.setVisible(id, this.on);
-                PacketHandler.INSTANCE.sendToServer(PacketSync.clientPack(id, this.on));
+                PacketHandler.INSTANCE.sendToServer(PacketSync.clientPack(id, null, this.on));
             }
             return pressed;
         }
@@ -40,7 +39,7 @@ public class ElementSwitcher extends ElementBase {
             updateHovered(mouseX, mouseY);
 
             glPush();
-            mc.getTextureManager().bindTexture(GuiBase.BAUBLES_TEX);
+            mc.getTextureManager().bindTexture(GuiExpanded.BAUBLES_TEX);
             drawTexturedModalRect(this.x, this.y, this.on ? 6 : 14, 209, 5, 5);
             glPop();
         }

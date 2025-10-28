@@ -1,6 +1,6 @@
 package baubles.client.gui.element;
 
-import baubles.client.gui.GuiBase;
+import baubles.client.gui.GuiExpanded;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketOpenBaublesInventory;
@@ -48,7 +48,7 @@ public class ElementButton extends ElementBase {
             updateHovered(mouseX, mouseY);
 
             glPush();
-            mc.getTextureManager().bindTexture(GuiBase.BAUBLES_TEX);
+            mc.getTextureManager().bindTexture(GuiExpanded.BAUBLES_TEX);
             if (this.hovered) {
                 drawTexturedModalRect(this.x, this.y, 16, 217, 10, 10);
                 FontRenderer fontrenderer = mc.fontRenderer;

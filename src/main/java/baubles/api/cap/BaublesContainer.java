@@ -31,7 +31,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     private final Map<Integer, Boolean> visibility = new HashMap<>();
 
     public static final List<BaublesContainer> CONTAINERS = new ArrayList<>();
-    private final List<WeakReference<IBaublesListener<?>>> listeners = new ArrayList<>();
+    private final List<WeakReference<IBaublesListener>> listeners = new ArrayList<>();
     public boolean containerUpdated = true;
 
     public BaublesContainer() { super(TypesData.getSum()); }
@@ -126,7 +126,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
             this.onSlotChanged();
             this.dirty.set(0, this.getSlots());
             this.listeners.removeIf(ref -> {
-                IBaublesListener<?> listener = ref.get();
+                IBaublesListener listener = ref.get();
                 if (listener == null) return true;
                 listener.updateBaubles();
                 return false;
@@ -237,12 +237,12 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
 	@Override public void setPlayer(EntityLivingBase entity) { this.entity = entity; }
 
     @Override
-    public void addListener(IBaublesListener<?> listener) {
+    public void addListener(IBaublesListener listener) {
         this.listeners.add(new WeakReference<>(listener));
     }
 
     @Override
-    public void removeListener(IBaublesListener<?> listener) {
+    public void removeListener(IBaublesListener listener) {
         this.listeners.removeIf(ref -> ref.get() == listener);
     }
 
@@ -264,6 +264,11 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     @Override
     public BitSet getDirty() {
         return this.dirty;
+    }
+
+    @Override
+    public EntityLivingBase getOwner() {
+        return this.entity;
     }
 
     @Override

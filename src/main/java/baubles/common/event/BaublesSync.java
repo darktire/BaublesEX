@@ -3,7 +3,7 @@ package baubles.common.event;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
-import baubles.api.util.IBaublesSync;
+import baubles.common.network.IBaublesSync;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
 import baubles.common.network.PacketSync;
