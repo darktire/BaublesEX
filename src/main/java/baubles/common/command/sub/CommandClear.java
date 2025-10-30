@@ -46,7 +46,7 @@ public class CommandClear extends CommandBase {
         }
         else if (args[1].equals("modifier")) {
             baubles.clearModifier();
-            PacketHandler.INSTANCE.sendTo(new PacketModifySlots(player), player);
+            PacketHandler.INSTANCE.sendTo(new PacketModifySlots(player, null, 0, 0), player);
             baubles.updateContainer();
             if (Config.Commands.commandLogs) {
                 player.sendMessage(new TextComponentTranslation("commands.baubles.success"));

@@ -14,13 +14,11 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
 public class BaublesRegister {
@@ -64,20 +62,8 @@ public class BaublesRegister {
     }
 
     public static void loadValidSlots() {
-        int pointer = 0;
-        List<BaubleTypeEx> types = new ArrayList<>();
-        TypesData.applyToTypes(types::add);
-        types.sort(Collections.reverseOrder());
+        TypesData.initOrderList();
         TypesData.initLazyList();
-        for (BaubleTypeEx type : types) {
-            int amount = type.getAmount();
-            for (int i = 0; i < amount; i++) {
-                type.addOriSlots(pointer + i);
-                TypesData.addLazySlots(type);
-            }
-            pointer += amount;
-        }
-        TypesData.setSum(pointer);
 
         BaubleTypeEx trinket = TypesData.Preset.TRINKET;
         TypesData.applyToTypes(trinket::addOriSlots);
@@ -101,9 +87,13 @@ public class BaublesRegister {
     }
 
     @SubscribeEvent
+    public static void beforeRegistering(RegistryEvent.Register<BaubleTypeEx> event) {
+        registerItems();
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onRegistering(RegistryEvent.Register<BaubleTypeEx> event) {
         TypesData.registerTypes();
         loadValidSlots();
-        registerItems();
     }
 }

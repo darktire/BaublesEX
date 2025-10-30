@@ -9,12 +9,15 @@ import net.minecraftforge.registries.RegistryBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class TypesData {
     private static final ResourceLocation BAUBLE_TYPE = getLoc("types", false);
+    private static List<BaubleTypeEx> ORDER = new ArrayList<>();
     private static ForgeRegistry<BaubleTypeEx> REGISTRY;
+    private static boolean REGISTERED = false;
 
     private static int sum = 7;
     private static final List<BaubleTypeEx> BAUBLE_SLOTS = new ArrayList<>();
@@ -26,7 +29,7 @@ public class TypesData {
     public static BaubleTypeEx registerType(String name, Integer amount, Integer priority, Collection<BaubleTypeEx> parents) {
         if (name == null) return null;
         BaubleTypeEx type = null;
-        if (REGISTRY.isLocked()) {
+        if (REGISTERED) {
             if (TypesData.hasType(name)) {
                 type = TypesData.getTypeByName(name);
             }
@@ -58,29 +61,40 @@ public class TypesData {
             BaubleTypeEx poll = BaubleTypeEx.REG_QUE.poll();
             REGISTRY.register(poll);
         }
+        REGISTERED = true;
     }
 
-    public static void setSum(int value) {
-        sum = value;
-    }
     public static int getSum() {
         return sum;
     }
 
     public static void initLazyList() {
-        if(!BAUBLE_SLOTS.isEmpty()) BAUBLE_SLOTS.clear();
-    }
-    public static void addLazySlots(BaubleTypeEx type) {
-        BAUBLE_SLOTS.add(type);
+        BAUBLE_SLOTS.clear();
+        int pointer = 0;
+        for (BaubleTypeEx type : getList()) {
+            int amount = type.getAmount();
+            for (int i = 0; i < amount; i++) {
+                type.addOriSlots(pointer + i);
+                BAUBLE_SLOTS.add(type);
+            }
+            pointer += amount;
+        }
+        sum = pointer;
     }
     public static List<BaubleTypeEx> getLazyList() {
         return ImmutableList.copyOf(BAUBLE_SLOTS);
     }
 
     public static BaubleTypeEx getTypeByName(String typeName) {
-        BaubleTypeEx type = REGISTRY.getValue(getLoc(typeName, false));
-        if (type == null) type = REGISTRY.getValue(getLoc(typeName, true));
-        return type;
+        if (REGISTERED) {
+            BaubleTypeEx type = REGISTRY.getValue(getLoc(typeName, false));
+            if (type == null) type = REGISTRY.getValue(getLoc(typeName, true));
+            return type;
+        }
+        else {
+            typeName = typeName.substring(typeName.indexOf(":") + 1);
+            return BaubleTypeEx.REG_MAP.get(typeName);
+        }
     }
     public static BaubleTypeEx getTypeById(int id) {
         return REGISTRY.getValue(id);
@@ -95,8 +109,12 @@ public class TypesData {
         return contained;
     }
 
+    public static void initOrderList() {
+        ORDER = new ArrayList<>(REGISTRY.getValuesCollection());
+        ORDER.sort(Collections.reverseOrder());
+    }
     public static List<BaubleTypeEx> getList() {
-        return new ArrayList<>(REGISTRY.getValuesCollection());
+        return Collections.unmodifiableList(ORDER);
     }
 
     public static void applyToTypes(Consumer<BaubleTypeEx> c) {

@@ -26,23 +26,19 @@ public class PacketModifySlots implements IMessage {
     /**
      * @param entity sever player
      * @param typeName  bauble type
-     * @param modifier value of modifier, be used when addition == 3
-     * @param addition 0 means setting; 1 means modifying base on previous; 2 means modifying base on normal; 3 means reset
+     * @param modifier value of modifier, be used when addition == 0
+     * @param addition 0 means resetting; 1 means modifying base on previous; 2 means modifying base on normal
      */
     public PacketModifySlots(EntityLivingBase entity, String typeName, int modifier, int addition) {
         this.entityId = entity.getEntityId();
-        BaubleTypeEx type = TypesData.getTypeByName(typeName);
-        if (type == null) this.typeId = -1;
-        else this.typeId = TypesData.getId(type);
+        try {
+            BaubleTypeEx type = TypesData.getTypeByName(typeName);
+            this.typeId = TypesData.getId(type);
+        } catch (Throwable e) {
+            this.typeId = -1;
+        }
         this.modifier = modifier;
         this.addition = addition;
-    }
-
-    public PacketModifySlots(EntityLivingBase entity) {
-        this.entityId = entity.getEntityId();
-        this.typeId = -1;
-        this.modifier = 0;
-        this.addition = 3;
     }
 
     @Override
@@ -74,12 +70,12 @@ public class PacketModifySlots implements IMessage {
             Entity entity = world.getEntityByID(message.entityId);
             if (entity instanceof EntityLivingBase) {
                 IBaublesItemHandler baublesCL = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
-                if (message.typeId > -1) {
+                if (message.typeId == -1) {
                     if (message.addition == 0) baublesCL.clearModifier();
-                    else if (message.addition == 1) baublesCL.modifySlot(TypesData.getTypeById(message.typeId).getName(), message.modifier);
-                    else if (message.addition == 2) baublesCL.setSlot(TypesData.getTypeById(message.typeId).getName(), message.modifier);
-                    baublesCL.updateContainer();
                 }
+                else if (message.addition == 1) baublesCL.modifySlot(TypesData.getTypeById(message.typeId).getName(), message.modifier);
+                else if (message.addition == 2) baublesCL.setSlot(TypesData.getTypeById(message.typeId).getName(), message.modifier);
+                baublesCL.updateContainer();
             }
         }
     }

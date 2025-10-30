@@ -72,12 +72,13 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         if (modifier > 0) {
             int index = this.MODIFIED_SLOTS.indexOf(type);
             if (index == -1) {
+                List<BaubleTypeEx> order = TypesData.getList();
                 for (int i = 1;; i++) {
-                    int id = TypesData.getId(type);
-                    BaubleTypeEx previous = TypesData.getTypeById(id - i);
+                    int id = order.indexOf(type);
+                    BaubleTypeEx previous = order.get(id - i);
                     index = this.MODIFIED_SLOTS.lastIndexOf(previous) + 1;
                     if (index != 0) break;
-                    if (id - i == 0) break;
+                    if (id - i == -1) break;
                 }
             }
             for (int i = 0; i < modifier; i++) {
