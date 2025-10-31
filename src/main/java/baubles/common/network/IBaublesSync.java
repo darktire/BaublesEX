@@ -49,7 +49,7 @@ public interface IBaublesSync {
                     receivers = new HashSet<>(((WorldServer) entity.world).getEntityTracker().getTrackingPlayers(entity));
                     if (entity instanceof EntityPlayer) receivers.add((EntityPlayer) entity);
                 }
-                PacketSync pkt = PacketSync.severPack(entity, i, stack1, v);
+                PacketSync pkt = PacketSync.S2CPack(entity, i, stack1, v);
                 for (EntityPlayer receiver : receivers) {
                     PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) receiver);
                 }

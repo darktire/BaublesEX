@@ -9,6 +9,8 @@ import baubles.client.gui.element.ElementSwitchers;
 import baubles.common.config.Config;
 import baubles.common.container.ContainerExpanded;
 import baubles.common.container.SlotBaubleHandler;
+import baubles.common.network.PacketFakeTransaction;
+import baubles.common.network.PacketHandler;
 import baubles.compat.jei.IArea;
 import baubles.compat.jei.JeiPlugin;
 import baubles.util.HookHelper;
@@ -46,6 +48,7 @@ public class GuiExpanded extends GuiContainer implements IBaublesListener, IArea
     protected ElementScroller scroller;
     protected ElementSwitchers switchers;
     protected final List<Rectangle> extraArea = new ArrayList<>();
+    private Rectangle occlusion;
 
     private boolean isExpanded = false;
 
@@ -74,10 +77,44 @@ public class GuiExpanded extends GuiContainer implements IBaublesListener, IArea
         this.initElements();
     }
 
+    public void setOcclusion(List<Slot> slots, int left, int top) {
+        int minX = 0;
+        int maxX = 0;
+        int minY = 0;
+        int maxY = 0;
+        boolean first = true;
+        for (Slot slot : slots) {
+            if (slot instanceof SlotBaubleHandler) {
+                if (first) {
+                    minX = slot.xPos;
+                    maxX = slot.xPos;
+                    minY = slot.yPos;
+                    maxY = slot.yPos;
+                    first = false;
+                }
+                else {
+                    minX = Math.min(minX, slot.xPos);
+                    maxX = Math.max(maxX, slot.xPos);
+                    minY = Math.min(minY, slot.yPos);
+                    maxY = Math.max(maxY, slot.yPos);
+                }
+            }
+        }
+        this.occlusion = new Rectangle(minX + left - 1, minY + top - 1, maxX - minX + 18, maxY - minY + 18);
+    }
+
+    public void drawOcclusion() {
+        this.mc.getTextureManager().bindTexture(BAUBLES_TEX);
+        drawScaledCustomSizeModalRect(this.occlusion.x, this.occlusion.y, 24, 167, 18, 18, this.occlusion.width, this.occlusion.height, 256, 256);
+    }
+
     public void drawAll(int mouseX, int mouseY, float partialTicks) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.disableLighting();
         this.drawScreen(mouseX, mouseY, partialTicks);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.disableLighting();
+        this.drawOcclusion();
         GlStateManager.enableLighting();
     }
 
@@ -194,7 +231,8 @@ public class GuiExpanded extends GuiContainer implements IBaublesListener, IArea
     @Override
     protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
         if (this.isExpanded) {
-
+            ItemStack itemstack = this.containerEx.slotClick(slotIn.slotNumber, mouseButton, type, this.mc.player);
+            PacketHandler.INSTANCE.sendToServer(PacketFakeTransaction.C2SPack(slotId, mouseButton, type, itemstack));
         }
         else {
             super.handleMouseClick(slotIn, slotId, mouseButton, type);

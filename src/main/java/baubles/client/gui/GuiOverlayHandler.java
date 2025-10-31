@@ -4,12 +4,14 @@ import baubles.api.BaublesApi;
 import baubles.client.gui.element.ElementButton;
 import baubles.common.config.Config;
 import baubles.compat.jei.IArea;
+import baubles.util.HookHelper;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -25,6 +27,19 @@ import java.util.WeakHashMap;
 @SideOnly(Side.CLIENT)
 public class GuiOverlayHandler {
     private static final WeakHashMap<GuiScreen, GuiExpanded> EXPANSION = new WeakHashMap<>();
+    private static final boolean BOTANIA = HookHelper.isModLoaded("botania");
+
+    @SubscribeEvent
+    public static void onGuiOpen(GuiOpenEvent event) {
+        GuiScreen gui = event.getGui();
+        if (!isTarget(gui)) return;
+        GuiExpanded ex = EXPANSION.get(gui);
+        if (ex == null) {
+            EntityLivingBase owner = ((ContainerBaubleBox) (((GuiBaubleBox) gui).inventorySlots)).baubles.getOwner();
+            ex = GuiExpanded.create(owner);
+            EXPANSION.put(gui, ex);
+        }
+    }
 
     @SubscribeEvent
     public static void guiPostInit(GuiScreenEvent.InitGuiEvent.Post event) {
@@ -43,19 +58,18 @@ public class GuiOverlayHandler {
             }
         }
 
-        expand(gui);
+        initExpansion(gui);
     }
 
-    private static void expand(GuiScreen gui) {
+    private static void initExpansion(GuiScreen gui) {
         if (!isTarget(gui)) return;
 
         GuiExpanded ex = EXPANSION.get(gui);
-        if (ex == null) {
-            EntityLivingBase owner = ((ContainerBaubleBox) (((GuiBaubleBox) gui).inventorySlots)).baubles.getOwner();
-            ex = GuiExpanded.create(owner);
-            EXPANSION.put(gui, ex);
+        if (ex != null) {
+            ex.initScreen(gui.mc, gui.width, gui.height);
+            GuiContainer guiContainer = (GuiContainer) gui;
+            ex.setOcclusion(guiContainer.inventorySlots.inventorySlots, guiContainer.getGuiLeft(), guiContainer.getGuiTop());
         }
-        ex.initScreen(gui.mc, gui.width, gui.height);
     }
 
     @SubscribeEvent
@@ -95,8 +109,22 @@ public class GuiOverlayHandler {
         }
     }
 
+    @SubscribeEvent
+    public static void onGuiClose(GuiCloseEvent e) {
+        GuiScreen gui = e.getGui();
+        if (!isTarget(gui)) return;
+
+        GuiExpanded ex = EXPANSION.remove(gui);
+        if (ex != null) {
+            ex.onGuiClosed();
+        }
+    }
+
     public static boolean isTarget(GuiScreen gui) {
-        return gui instanceof GuiBaubleBox;
+        if (BOTANIA) {
+            return gui instanceof GuiBaubleBox;
+        }
+        return false;
     }
 
     public static IArea getExpansion(GuiScreen gui) {

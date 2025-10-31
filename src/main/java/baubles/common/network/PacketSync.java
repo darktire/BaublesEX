@@ -32,13 +32,13 @@ public class PacketSync implements IMessage {
     @SuppressWarnings("unused")
     public PacketSync(EntityPlayer p, int slot, ItemStack bauble) {}
 
-    public static PacketSync severPack(EntityLivingBase entity, int slot, ItemStack stack, boolean visible) {
+    public static PacketSync S2CPack(EntityLivingBase entity, int slot, ItemStack stack, boolean visible) {
         PacketSync pkt = PacketPool.borrow(entity, slot, stack, visible);
         pkt.toClient = true;
         return pkt;
     }
 
-    public static PacketSync clientPack(int slot, ItemStack stack, boolean visible) {
+    public static PacketSync C2SPack(int slot, ItemStack stack, boolean visible) {
         PacketSync pkt = PacketPool.borrow(null, slot, stack, visible);
         pkt.toClient = false;
         return pkt;

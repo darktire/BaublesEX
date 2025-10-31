@@ -244,7 +244,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
 
     @Override
     public void removeListener(IBaublesListener listener) {
-        this.listeners.removeIf(ref -> ref.get() == listener);
+        this.listeners.removeIf(ref -> ref.get() == listener || ref.get() == null);
     }
 
     @Override
