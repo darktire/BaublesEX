@@ -16,7 +16,7 @@ public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
         return lateMixin;
     }
 
-    private static final List<String> lateMixin = ImmutableList.<String>builder().add("mixins.baubles.late.json").build();
+    private static final List<String> lateMixin = ImmutableList.of("mixins.baubles.late.json");
 
     @Override
     public void onLoad(String mixinPackage) {

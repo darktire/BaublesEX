@@ -10,6 +10,11 @@
     "aether_legacy.MixinItemAccessory",
     "botania.MixinContainerBaubleBox",
     "botania.MixinHUDHandler",
+    "botania.MixinItemFlightTiara",
+    "botania.MixinItemGoddessCharm",
+    "botania.MixinItemHolyCloak",
+    "botania.MixinItemTravelBelt",
+    "botania.MixinItemWaterRing",
     "wings.MixinWings"
   ],
   "client": [

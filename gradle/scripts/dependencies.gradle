@@ -92,4 +92,6 @@ dependencies {
     compileOnly fg.deobf("curse.maven:thaumic-periphery-293505:2766866")
     //Tool Belt
 //    runtimeOnly fg.deobf("curse.maven:tool-belt-260262:3459767")
+    //Wearable Backpack
+    implementation fg.deobf("curse.maven:wearable-backpacks-rlcraft-edition-684624:4203074")
 }
