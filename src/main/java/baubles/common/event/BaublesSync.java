@@ -3,6 +3,8 @@ package baubles.common.event;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
+import baubles.common.container.ContainerExpansionHandler;
+import baubles.common.container.ExpansionManager;
 import baubles.common.network.IBaublesSync;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
@@ -28,6 +30,9 @@ public class BaublesSync {
         if (event.phase == TickEvent.Phase.START) return;
         if (!event.player.world.isRemote && event.player.openContainer instanceof IBaublesSync) {
             ((IBaublesSync) event.player.openContainer).syncBaubles();
+            if (ContainerExpansionHandler.isTarget(event.player.openContainer)) {
+                ExpansionManager.getInstance().getPlayerExpansion((EntityPlayerMP) event.player).syncBaubles();
+            }
         }
     }
 

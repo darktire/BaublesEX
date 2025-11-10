@@ -2,6 +2,7 @@ package baubles.common.container;
 
 import baubles.api.BaublesApi;
 import baubles.util.HookHelper;
+import cursedflames.bountifulbaubles.block.ContainerReforger;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
@@ -12,6 +13,7 @@ import vazkii.botania.client.gui.box.ContainerBaubleBox;
 @Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
 public class ContainerExpansionHandler {
     private static final boolean BOTANIA = HookHelper.isModLoaded("botania");
+    private static final boolean BOUNTIFUL_BAUBLES = HookHelper.isModLoaded("bountifulbaubles");
 
     @SubscribeEvent
     public static void onContainerOpen(PlayerContainerEvent.Open event) {
@@ -31,10 +33,8 @@ public class ContainerExpansionHandler {
         if (manager.hasOpenExpansion(player)) manager.closeExpansion(player);
     }
 
-    private static boolean isTarget(Container container) {
-        if (BOTANIA) {
-            return container instanceof ContainerBaubleBox;
-        }
-        return false;
+    public static boolean isTarget(Container container) {
+        return BOTANIA && container instanceof ContainerBaubleBox
+                || BOUNTIFUL_BAUBLES && container instanceof ContainerReforger;
     }
 }

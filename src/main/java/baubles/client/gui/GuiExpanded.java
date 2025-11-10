@@ -14,6 +14,7 @@ import baubles.common.network.PacketHandler;
 import baubles.compat.jei.IArea;
 import baubles.compat.jei.JeiPlugin;
 import baubles.util.HookHelper;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -48,7 +49,7 @@ public class GuiExpanded extends GuiContainer implements IBaublesListener, IArea
     protected ElementScroller scroller;
     protected ElementSwitchers switchers;
     protected final List<Rectangle> extraArea = new ArrayList<>();
-    private Rectangle occlusion;
+    private List<Rectangle> occlusion;
 
     private boolean isExpanded = false;
 
@@ -78,19 +79,16 @@ public class GuiExpanded extends GuiContainer implements IBaublesListener, IArea
     }
 
     public void setOcclusion(List<Slot> slots, int left, int top) {
-        int minX = 0;
-        int maxX = 0;
-        int minY = 0;
-        int maxY = 0;
-        boolean first = true;
+        int minX = 0, maxX = 0, minY = 0, maxY = 0;
+        boolean initialized = true;
         for (Slot slot : slots) {
             if (slot instanceof SlotBaubleHandler) {
-                if (first) {
+                if (initialized) {
                     minX = slot.xPos;
                     maxX = slot.xPos;
                     minY = slot.yPos;
                     maxY = slot.yPos;
-                    first = false;
+                    initialized = false;
                 }
                 else {
                     minX = Math.min(minX, slot.xPos);
@@ -100,21 +98,27 @@ public class GuiExpanded extends GuiContainer implements IBaublesListener, IArea
                 }
             }
         }
-        this.occlusion = new Rectangle(minX + left - 1, minY + top - 1, maxX - minX + 18, maxY - minY + 18);
+        left = minX + left - 1;
+        top = minY + top - 1;
+        int width = maxX - minX + 18;
+        int height = maxY - minY;
+        Rectangle o1 = new Rectangle(left, top, width, height);
+        Rectangle o2 = new Rectangle(left, top + height, width - 18, 18);
+        this.occlusion = ImmutableList.of(o1, o2);
     }
 
     public void drawOcclusion() {
         this.mc.getTextureManager().bindTexture(BAUBLES_TEX);
-        drawScaledCustomSizeModalRect(this.occlusion.x, this.occlusion.y, 24, 167, 18, 18, this.occlusion.width, this.occlusion.height, 256, 256);
+        this.occlusion.forEach(o ->
+                drawScaledCustomSizeModalRect(o.x, o.y, 24, 167, 18, 18, o.width, o.height, 256, 256)
+        );
     }
 
     public void drawAll(int mouseX, int mouseY, float partialTicks) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.disableLighting();
-        this.drawScreen(mouseX, mouseY, partialTicks);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.disableLighting();
         this.drawOcclusion();
+        this.drawScreen(mouseX, mouseY, partialTicks);
         GlStateManager.enableLighting();
     }
 
@@ -246,7 +250,7 @@ public class GuiExpanded extends GuiContainer implements IBaublesListener, IArea
             if (mouseY >= yLoc && mouseY < yLoc + 18 * 8) {
                 int dWheel;
                 if (jeiLoaded) dWheel = JeiPlugin.JEI_COMPAT.getIngredientUnderMouse(this, mouseX, mouseY);
-                else dWheel = Mouse.getDWheel();
+                else dWheel = Mouse.getEventDWheel();
                 int value = dWheel / 120;
                 if (value != 0) {
                     this.moveSlots(value);
@@ -352,5 +356,10 @@ public class GuiExpanded extends GuiContainer implements IBaublesListener, IArea
         int i = mouseX * this.width / this.mc.displayWidth;
         int j = this.height - mouseY * this.height / this.mc.displayHeight - 1;
         return this.extraArea.stream().anyMatch(r -> r.contains(i,  j));
+    }
+
+    @Override
+    protected boolean hasClickedOutside(int mouseX, int mouseY, int p_193983_3_, int p_193983_4_) {
+        return super.hasClickedOutside(mouseX, mouseY, p_193983_3_, p_193983_4_) && this.extraArea.stream().noneMatch(r -> r.contains(mouseX,  mouseY));
     }
 }

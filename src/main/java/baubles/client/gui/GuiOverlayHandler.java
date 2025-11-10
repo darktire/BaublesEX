@@ -5,22 +5,24 @@ import baubles.client.gui.element.ElementButton;
 import baubles.common.config.Config;
 import baubles.compat.jei.IArea;
 import baubles.util.HookHelper;
+import cursedflames.bountifulbaubles.block.GuiReforger;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
-import vazkii.botania.client.gui.box.ContainerBaubleBox;
 import vazkii.botania.client.gui.box.GuiBaubleBox;
 
+import java.lang.reflect.Method;
 import java.util.WeakHashMap;
 
 @Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID, value = Side.CLIENT)
@@ -28,6 +30,8 @@ import java.util.WeakHashMap;
 public class GuiOverlayHandler {
     private static final WeakHashMap<GuiScreen, GuiExpanded> EXPANSION = new WeakHashMap<>();
     private static final boolean BOTANIA = HookHelper.isModLoaded("botania");
+    private static final boolean BOUNTIFUL_BAUBLES = HookHelper.isModLoaded("bountifulbaubles");
+    private static final Method RENDER_TOOLTIP = ObfuscationReflectionHelper.findMethod(GuiContainer.class, "func_191948_b", void.class, int.class, int.class);
 
     @SubscribeEvent
     public static void onGuiOpen(GuiOpenEvent event) {
@@ -35,8 +39,7 @@ public class GuiOverlayHandler {
         if (!isTarget(gui)) return;
         GuiExpanded ex = EXPANSION.get(gui);
         if (ex == null) {
-            EntityLivingBase owner = ((ContainerBaubleBox) (((GuiBaubleBox) gui).inventorySlots)).baubles.getOwner();
-            ex = GuiExpanded.create(owner);
+            ex = GuiExpanded.create( Minecraft.getMinecraft().player);
             EXPANSION.put(gui, ex);
         }
     }
@@ -73,7 +76,7 @@ public class GuiOverlayHandler {
     }
 
     @SubscribeEvent
-    public static void onGuiRender(GuiScreenEvent.DrawScreenEvent.Post e) {
+    public static void onGuiRender(GuiScreenEvent.DrawScreenEvent.Post e) throws Throwable {
         GuiScreen gui = e.getGui();
         if (!isTarget(gui)) return;
 
@@ -84,6 +87,7 @@ public class GuiOverlayHandler {
             float partial = e.getRenderPartialTicks();
 
             ex.drawAll(x, y, partial);
+            RENDER_TOOLTIP.invoke(gui, x, y);
         }
     }
 
@@ -121,10 +125,8 @@ public class GuiOverlayHandler {
     }
 
     public static boolean isTarget(GuiScreen gui) {
-        if (BOTANIA) {
-            return gui instanceof GuiBaubleBox;
-        }
-        return false;
+        return BOTANIA && gui instanceof GuiBaubleBox
+                || BOUNTIFUL_BAUBLES && gui instanceof GuiReforger;
     }
 
     public static IArea getExpansion(GuiScreen gui) {
