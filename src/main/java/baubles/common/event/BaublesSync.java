@@ -3,7 +3,6 @@ package baubles.common.event;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
-import baubles.common.container.ContainerExpansionHandler;
 import baubles.common.container.ExpansionManager;
 import baubles.common.network.IBaublesSync;
 import baubles.common.network.PacketHandler;
@@ -28,10 +27,12 @@ public class BaublesSync {
     @SubscribeEvent
     public static void syncBaubles(TickEvent.PlayerTickEvent event) {
         if (event.phase == TickEvent.Phase.START) return;
-        if (!event.player.world.isRemote && event.player.openContainer instanceof IBaublesSync) {
-            ((IBaublesSync) event.player.openContainer).syncBaubles();
-            if (ContainerExpansionHandler.isTarget(event.player.openContainer)) {
-                ExpansionManager.getInstance().getPlayerExpansion((EntityPlayerMP) event.player).syncBaubles();
+        if (!event.player.world.isRemote) {
+            if (event.player.openContainer instanceof IBaublesSync) {
+                ((IBaublesSync) event.player.openContainer).syncBaubles();
+            }
+            if (ExpansionManager.getInstance().isExpanded(event.player)) {
+                ExpansionManager.getInstance().getExpansion(event.player).syncBaubles();
             }
         }
     }

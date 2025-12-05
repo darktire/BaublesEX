@@ -1,40 +1,28 @@
 package baubles.common.container;
 
 import baubles.api.BaublesApi;
-import baubles.util.HookHelper;
-import cursedflames.bountifulbaubles.block.ContainerReforger;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import vazkii.botania.client.gui.box.ContainerBaubleBox;
 
 @Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
 public class ContainerExpansionHandler {
-    private static final boolean BOTANIA = HookHelper.isModLoaded("botania");
-    private static final boolean BOUNTIFUL_BAUBLES = HookHelper.isModLoaded("bountifulbaubles");
-
-    @SubscribeEvent
-    public static void onContainerOpen(PlayerContainerEvent.Open event) {
-        if (!isTarget(event.getContainer())) return;
-
-        EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
-        ExpansionManager manager = ExpansionManager.getInstance();
-        manager.openExpansion(player, ContainerExpanded.create(player));
-    }
+//    @SubscribeEvent
+//    public static void onContainerOpen(PlayerContainerEvent.Open event) {
+//        ExpansionManager manager = ExpansionManager.getInstance();
+//        if (!manager.isExpanded(event.getContainer())) return;
+//
+//        EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
+//        manager.openExpansion(player, ContainerExpansion.create(player));
+//    }
 
     @SubscribeEvent
     public static void onContainerClose(PlayerContainerEvent.Close event) {
-        if (!isTarget(event.getContainer())) return;
+        ExpansionManager manager = ExpansionManager.getInstance();
+        if (!manager.isMarked(event.getContainer())) return;
 
         EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
-        ExpansionManager manager = ExpansionManager.getInstance();
-        if (manager.hasOpenExpansion(player)) manager.closeExpansion(player);
-    }
-
-    public static boolean isTarget(Container container) {
-        return BOTANIA && container instanceof ContainerBaubleBox
-                || BOUNTIFUL_BAUBLES && container instanceof ContainerReforger;
+        if (manager.isExpanded(player)) manager.closeExpansion(player);
     }
 }

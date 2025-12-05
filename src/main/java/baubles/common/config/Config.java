@@ -151,6 +151,11 @@ public class Config extends PartialConfig {
         public static boolean scrollerBar;
         public static boolean widerBar;
         public static boolean visibleSwitchers;
+        public static boolean typeTip;
+        public static boolean overlay;
+        private static String[] guiList;
+        private static final String[] defList = {"vazkii.botania.client.gui.box.GuiBaubleBox", "cursedflames.bountifulbaubles.block.GuiReforger"};
+        private static final List<Class<?>> guis = new ArrayList<>();
         public static int column;
 
         @Override
@@ -160,7 +165,24 @@ public class Config extends PartialConfig {
             widerBar = config.getBoolean("widerBar", CLIENT_GUI, false, "Default selection of the sidebar");
             column = config.getInt("column", CLIENT_GUI, 2, 2,5, "Columns of the wider sidebar");
             visibleSwitchers = config.getBoolean("visibleSwitchers", CLIENT_GUI, true, "Show visible switchers or not");
+            typeTip = config.getBoolean("typeTip", CLIENT_GUI, true, "Show the tip for baubles' type or not");
+            overlay = config.getBoolean("guiOverlay", CLIENT_GUI, true, "Patch some containers such as BaubleBox. If false, it will patch after the selected key pressed");
+            guiList = config.getStringList("guiList", CLIENT_GUI, defList, "Gui needed baubles overlay");
             config.getCategory(CLIENT_GUI).setComment("Edit new gui.");
+
+            try {
+                initCls();
+            } catch (Throwable ignored) {}
+        }
+
+        private void initCls() throws ClassNotFoundException {
+            for (String s : guiList) {
+                guis.add(Class.forName(s, false, this.getClass().getClassLoader()));
+            }
+        }
+
+        public static boolean isTarget(Object o) {
+            return guis.stream().anyMatch(cls -> cls.isInstance(o));
         }
     }
 

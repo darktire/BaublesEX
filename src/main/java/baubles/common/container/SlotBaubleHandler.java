@@ -19,6 +19,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
     private final int index;
     private final int startYPos;
     private final EntityLivingBase entity;
+    protected boolean locked = false;
 
     public SlotBaubleHandler(EntityLivingBase entity, IBaublesItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);
@@ -133,5 +134,8 @@ public class SlotBaubleHandler extends SlotItemHandler {
         return super.isSameInventory(other);
     }
 
+    public void setLocked(boolean lock) {
+        this.locked = lock;
+    }
 }
 //todo lock

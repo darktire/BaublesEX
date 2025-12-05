@@ -16,11 +16,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.io.IOException;
 
 @SideOnly(Side.CLIENT)
-public class GuiPlayerExpanded extends GuiExpanded {
+public class GuiPlayerExpanded extends GuiOverlay {
     @Deprecated public static final ResourceLocation background = new ResourceLocation(BaublesApi.MOD_ID,"textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
     private final EntityPlayer player;
 
-    public static GuiExpanded create(EntityPlayer player, EntityLivingBase entity) {
+    public static GuiOverlay create(EntityPlayer player, EntityLivingBase entity) {
         return new GuiPlayerExpanded(player, entity).startListening();
     }
 

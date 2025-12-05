@@ -1,6 +1,6 @@
 package baubles.client.gui.element;
 
-import baubles.client.gui.GuiExpanded;
+import baubles.client.gui.GuiOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -17,7 +17,7 @@ public class ElementScroller extends ElementBase {
     private boolean dragging;
     private final int rest = 142 - 89;
 
-    public ElementScroller(int id, GuiExpanded parentGui, int x, int y, boolean visible) {
+    public ElementScroller(int id, GuiOverlay parentGui, int x, int y, boolean visible) {
         super(id, x, y, 18, 166, "", parentGui);
         this.visible = visible;
         this.barPos = 0;
@@ -53,7 +53,7 @@ public class ElementScroller extends ElementBase {
             updateHovered(mouseX, mouseY);
             handleDrag(mouseY);
             glPush();
-            mc.getTextureManager().bindTexture(GuiExpanded.BAUBLES_TEX);
+            mc.getTextureManager().bindTexture(GuiOverlay.BAUBLES_TEX);
             drawTexturedModalRect(x, y, 0, 0, 18, 166);
             drawTexturedModalRect(x + 6, y + 16 + barPos + movement, 0, 167, 6, 52 + 36);
             drawTexturedModalRect(x + 6, y + 16 + 52 + 36 + barPos + movement, 0, 167 + 52 + 36, 6, 1);

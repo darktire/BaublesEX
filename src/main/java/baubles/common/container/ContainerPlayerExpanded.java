@@ -16,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-public class ContainerPlayerExpanded extends ContainerExpanded {
+public class ContainerPlayerExpanded extends ContainerExpansion {
     private final EntityPlayer player;
     public final InventoryCrafting craftMatrix = new InventoryCrafting(this, 2, 2);
     public final InventoryCraftResult craftResult = new InventoryCraftResult();

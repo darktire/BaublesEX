@@ -1,6 +1,6 @@
 package baubles.common.network;
 
-import baubles.common.container.ContainerExpanded;
+import baubles.common.container.ContainerExpansion;
 import baubles.common.container.ExpansionManager;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -25,7 +25,9 @@ public class PacketOpenExpansion implements IMessage {
         public IMessage onMessage(PacketOpenExpansion message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().player;
             ((WorldServer) player.world).addScheduledTask(() -> {
-                ExpansionManager.getInstance().openExpansion(player, ContainerExpanded.create(player));
+                ExpansionManager instance = ExpansionManager.getInstance();
+                instance.closeExpansion(player);
+                instance.openExpansion(player, ContainerExpansion.create(player));
             });
             return null;
         }

@@ -11,16 +11,16 @@ public class SlotBauble  extends SlotBaubleHandler{
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return !this.locked;
     }
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        return false;
+        return !this.locked && super.isItemValid(stack);
     }
 
     @Override
     public boolean canTakeStack(EntityPlayer player) {
-        return false;
+        return !this.locked && super.canTakeStack(player);
     }
 }

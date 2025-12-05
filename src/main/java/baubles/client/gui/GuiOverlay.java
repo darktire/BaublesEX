@@ -7,7 +7,7 @@ import baubles.client.gui.element.ElementController;
 import baubles.client.gui.element.ElementScroller;
 import baubles.client.gui.element.ElementSwitchers;
 import baubles.common.config.Config;
-import baubles.common.container.ContainerExpanded;
+import baubles.common.container.ContainerExpansion;
 import baubles.common.container.SlotBaubleHandler;
 import baubles.common.network.PacketFakeTransaction;
 import baubles.common.network.PacketHandler;
@@ -36,10 +36,10 @@ import java.util.Collections;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class GuiExpanded extends GuiContainer implements IBaublesListener, IArea {
+public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea {
     public static final ResourceLocation BAUBLES_TEX = new ResourceLocation(BaublesApi.MOD_ID, "textures/gui/baubles_container.png");
     protected final static boolean jeiLoaded = HookHelper.isModLoaded("jei");
-    protected final ContainerExpanded containerEx = (ContainerExpanded) this.inventorySlots;
+    protected final ContainerExpansion containerEx = (ContainerExpansion) this.inventorySlots;
     public IBaublesItemHandler baubles = (this.containerEx).baubles;
     public int baublesAmount = (this.containerEx).baublesAmount;
     public boolean wider = Config.Gui.widerBar;
@@ -51,20 +51,20 @@ public class GuiExpanded extends GuiContainer implements IBaublesListener, IArea
     protected final List<Rectangle> extraArea = new ArrayList<>();
     private List<Rectangle> occlusion;
 
-    private boolean isExpanded = false;
+    private boolean isOverlay = false;
 
-    public static GuiExpanded create(EntityLivingBase entity) {
-        return new GuiExpanded(entity).startListening();
+    public static GuiOverlay create(EntityLivingBase entity) {
+        return new GuiOverlay(entity).startListening();
     }
 
-    public GuiExpanded(Container inventorySlotsIn) {
+    public GuiOverlay(Container inventorySlotsIn) {
         super(inventorySlotsIn);
     }
 
-    private GuiExpanded(EntityLivingBase entity) {
-        super(ContainerExpanded.create(entity));
+    private GuiOverlay(EntityLivingBase entity) {
+        super(ContainerExpansion.create(entity));
         this.allowUserInput = true;
-        this.isExpanded = true;
+        this.isOverlay = true;
     }
 
     public void initScreen(Minecraft mc, int width, int height) {
@@ -83,6 +83,7 @@ public class GuiExpanded extends GuiContainer implements IBaublesListener, IArea
         boolean initialized = true;
         for (Slot slot : slots) {
             if (slot instanceof SlotBaubleHandler) {
+                ((SlotBaubleHandler) slot).setLocked(true);
                 if (initialized) {
                     minX = slot.xPos;
                     maxX = slot.xPos;
@@ -157,7 +158,7 @@ public class GuiExpanded extends GuiContainer implements IBaublesListener, IArea
     }
 
     @Override
-    public GuiExpanded startListening() {
+    public GuiOverlay startListening() {
         this.baubles.addListener(this);
         return this;
     }
@@ -202,19 +203,21 @@ public class GuiExpanded extends GuiContainer implements IBaublesListener, IArea
      */
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        int xLoc = this.guiLeft - 7;
-        if (xLoc - 18 * this.col < mouseX && mouseX <= xLoc) {
-            int yLoc = this.guiTop + 15;
-            if (mouseY >= yLoc && mouseY < yLoc + 18 * this.baublesAmount) {
-                int indexY = (mouseY - yLoc) / 18 - this.offset;
-                int index = indexY * this.col + (mouseX - xLoc) / 18 + this.col - 1;
-                if (index >= this.baublesAmount) return;
-                ItemStack stack = this.baubles.getStackInSlot(index);
-                if (!stack.isEmpty()) return;
+        if (Config.Gui.typeTip && this.mc.player.inventory.getItemStack().isEmpty()) {
+            int xLoc = this.guiLeft - 7;
+            if (xLoc - 18 * this.col < mouseX && mouseX <= xLoc) {
+                int yLoc = this.guiTop + 15;
+                if (mouseY >= yLoc && mouseY < yLoc + 18 * this.baublesAmount) {
+                    int indexY = (mouseY - yLoc) / 18 - this.offset;
+                    int index = indexY * this.col + (mouseX - xLoc) / 18 + this.col - 1;
+                    if (index >= this.baublesAmount) return;
+                    ItemStack stack = this.baubles.getStackInSlot(index);
+                    if (!stack.isEmpty()) return;
 
-                String str = I18n.format("name." + this.baubles.getTypeInSlot(index).getName());
+                    String str = I18n.format("name." + this.baubles.getTypeInSlot(index).getName());
 
-                this.drawHoveringText(Collections.singletonList(str), mouseX - this.guiLeft, mouseY - this.guiTop + 7);
+                    this.drawHoveringText(Collections.singletonList(str), mouseX - this.guiLeft, mouseY - this.guiTop + 7);
+                }
             }
         }
     }
@@ -234,7 +237,7 @@ public class GuiExpanded extends GuiContainer implements IBaublesListener, IArea
 
     @Override
     protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
-        if (this.isExpanded) {
+        if (this.isOverlay) {
             ItemStack itemstack = this.containerEx.slotClick(slotIn.slotNumber, mouseButton, type, this.mc.player);
             PacketHandler.INSTANCE.sendToServer(PacketFakeTransaction.C2SPack(slotId, mouseButton, type, itemstack));
         }

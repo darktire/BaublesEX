@@ -94,4 +94,11 @@ dependencies {
 //    runtimeOnly fg.deobf("curse.maven:tool-belt-260262:3459767")
     //Wearable Backpack
     implementation fg.deobf("curse.maven:wearable-backpacks-rlcraft-edition-684624:4203074")
+    //wizardry
+    implementation fg.deobf("curse.maven:electroblobs-wizardry-265642:6950392")
+    implementation fg.deobf("curse.maven:wizardryutils-608287:7158305")
+    implementation fg.deobf("curse.maven:ancient-spellcraft-358124:7134366")
+
+//    implementation fg.deobf("curse.maven:mouse-tweaks-60089:2671937")
+//    implementation fg.deobf("curse.maven:simple-magnets-394140:5822732")
 }

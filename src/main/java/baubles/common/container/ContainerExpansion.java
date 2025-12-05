@@ -16,19 +16,19 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.BitSet;
 import java.util.List;
 
-public class ContainerExpanded extends Container implements IBaublesListener, IBaublesSync {
+public class ContainerExpansion extends Container implements IBaublesListener, IBaublesSync {
     protected EntityLivingBase entity;
     public IBaublesItemHandler baubles;
     public int baublesAmount;
     protected final BitSet visibility = new BitSet();
 
-    public static ContainerExpanded create(EntityLivingBase entity) {
-        return new ContainerExpanded(entity).startListening();
+    public static ContainerExpansion create(EntityLivingBase entity) {
+        return new ContainerExpansion(entity).startListening();
     }
 
-    public ContainerExpanded() {}
+    public ContainerExpansion() {}
 
-    private ContainerExpanded(EntityLivingBase entity) {
+    private ContainerExpansion(EntityLivingBase entity) {
         this.entity = entity;
         this.baubles = BaublesApi.getBaublesHandler(entity);
         this.baublesAmount = this.baubles.getSlots();
@@ -115,7 +115,7 @@ public class ContainerExpanded extends Container implements IBaublesListener, IB
     }
 
     @Override
-    public ContainerExpanded startListening() {
+    public ContainerExpansion startListening() {
         this.baubles.addListener(this);
         return this;
     }

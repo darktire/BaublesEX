@@ -1,13 +1,15 @@
 package baubles.common.container;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ExpansionManager {
     private static final ExpansionManager INSTANCE = new ExpansionManager();
-    private static final Map<EntityPlayerMP, ContainerExpanded> DATA = new ConcurrentHashMap<>();
+    private final Map<EntityPlayer, ContainerExpansion> map = new ConcurrentHashMap<>();
+    private Container marked;
 
     private ExpansionManager() {}
 
@@ -15,22 +17,32 @@ public class ExpansionManager {
         return INSTANCE;
     }
 
-    public void openExpansion(EntityPlayerMP player, ContainerExpanded container) {
-        closeExpansion(player);
-        DATA.put(player, container);
+    public void openExpansion(EntityPlayer player, ContainerExpansion container) {
+        this.map.put(player, container);
+        this.mark(player.openContainer);
     }
 
-    public void closeExpansion(EntityPlayerMP player) {
-        ContainerExpanded removed = DATA.remove(player);
+    public void closeExpansion(EntityPlayer player) {
+        ContainerExpansion removed = map.remove(player);
         if (removed == null) return;
         removed.onContainerClosed(player);
     }
 
-    public ContainerExpanded getPlayerExpansion(EntityPlayerMP player) {
-        return DATA.get(player);
+    public ContainerExpansion getExpansion(EntityPlayer player) {
+        return map.get(player);
     }
 
-    public boolean hasOpenExpansion(EntityPlayerMP player) {
-        return DATA.containsKey(player);
+    public boolean isExpanded(EntityPlayer player) {
+        return map.containsKey(player);
+    }
+
+    public void mark(Container container) {
+        this.marked = container;
+    }
+
+    public boolean isMarked(Container container) {
+        boolean flag = this.marked == container;
+        if (flag) this.marked = null;
+        return flag;
     }
 }

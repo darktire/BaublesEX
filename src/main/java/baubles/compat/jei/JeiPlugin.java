@@ -34,8 +34,8 @@ public class JeiPlugin implements IModPlugin {
             if (gui instanceof IArea) {
                 return ((IArea) gui).getExtraArea();
             }
-            else if (GuiOverlayHandler.isTarget(gui)) {
-                return GuiOverlayHandler.getExpansion(gui).getExtraArea();
+            else if (GuiOverlayHandler.isCovered(gui)) {
+                return GuiOverlayHandler.getOverlay(gui).getExtraArea();
             }
             else return Collections.emptyList();
         }

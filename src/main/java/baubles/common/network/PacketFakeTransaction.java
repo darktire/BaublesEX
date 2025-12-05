@@ -1,6 +1,6 @@
 package baubles.common.network;
 
-import baubles.common.container.ContainerExpanded;
+import baubles.common.container.ContainerExpansion;
 import baubles.common.container.ExpansionManager;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -58,7 +58,7 @@ public class PacketFakeTransaction implements IMessage {
                 EntityPlayerMP player = ctx.getServerHandler().player;
                 ExpansionManager manager = ExpansionManager.getInstance();
 
-                ContainerExpanded expansion = manager.getPlayerExpansion(player);
+                ContainerExpansion expansion = manager.getExpansion(player);
                 if (!expansion.canInteractWith(player)) return;
 
                 expansion.slotClick(msg.slot, msg.button, msg.type, player);
