@@ -19,7 +19,7 @@ public final class PacketPool {
     private static final LongAdder RECYCLED = new LongAdder();
     private static final AtomicInteger SIZE = new AtomicInteger();
 
-    public static PacketSync borrow(EntityLivingBase entity, int slot, ItemStack stack, boolean visible) {
+    public static PacketSync borrow(EntityLivingBase entity, int slot, ItemStack stack, int visible) {
         int entityId = -1;
         if (entity != null) entityId = entity.getEntityId();
         PacketSync pkt = POOL.poll();

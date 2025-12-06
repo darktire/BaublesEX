@@ -8,14 +8,19 @@
     "aether_legacy.MixinAetherAPI",
     "aether_legacy.MixinInventoryAccessories",
     "aether_legacy.MixinItemAccessory",
+    "ancientspellcraft.MixinBaubles",
     "botania.MixinContainerBaubleBox",
     "botania.MixinHUDHandler",
+    "botania.MixinItemDivaCharm",
     "botania.MixinItemFlightTiara",
     "botania.MixinItemGoddessCharm",
     "botania.MixinItemHolyCloak",
+    "botania.MixinItemItemFinder",
     "botania.MixinItemTravelBelt",
     "botania.MixinItemWaterRing",
-    "wings.MixinWings"
+    "ebwizardry.MixinBaubles",
+    "wings.MixinWings",
+    "wizardryutils.MixinBaubles"
   ],
   "client": [
     "artifacts.MixinLayerBauble",

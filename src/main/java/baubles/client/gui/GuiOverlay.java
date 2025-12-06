@@ -28,6 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
+import yalter.mousetweaks.api.MouseTweaksDisableWheelTweak;
 
 import java.awt.*;
 import java.io.IOException;
@@ -36,6 +37,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
+@MouseTweaksDisableWheelTweak
 public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea {
     public static final ResourceLocation BAUBLES_TEX = new ResourceLocation(BaublesApi.MOD_ID, "textures/gui/baubles_container.png");
     protected final static boolean jeiLoaded = HookHelper.isModLoaded("jei");

@@ -143,7 +143,7 @@ public class TypesData {
 
             ELYTRA.addParent(BODY);
 
-            ENUM_HELPER = new BaubleTypeEx[]{HEAD, AMULET, BODY, RING, BELT, CHARM, TRINKET};
+            ENUM_HELPER = new BaubleTypeEx[]{AMULET, RING, RING, BELT, HEAD, BODY, CHARM, TRINKET};
         }
         public static void init() {
         }
@@ -152,6 +152,9 @@ public class TypesData {
                 if (type.getName().equals(name)) return type;
             }
             return null;
+        }
+        public static BaubleTypeEx enumRef(int idx) {
+            return ENUM_HELPER[idx];
         }
     }
 }

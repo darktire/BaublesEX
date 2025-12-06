@@ -54,6 +54,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:botania-225643:3330934")
     runtimeOnly fg.deobf("curse.maven:botania-225643:3330934")
 //    runtimeOnly fg.deobf("curse.maven:botania-ceu-1179448:6900692")
+    implementation fg.deobf("curse.maven:extrabotany-299086:3112313")
     //Wings
     compileOnly fg.deobf("curse.maven:wings-302584:2829351")
 //    runtimeOnly fg.deobf("curse.maven:wings-302584:2829351")
@@ -65,9 +66,9 @@ dependencies {
     //trinkets-and-baubles
     implementation fg.deobf("curse.maven:trinkets-and-baubles-279900:5717039")
     //enigmatic
-//    runtimeOnly fg.deobf("curse.maven:fermiumbooter2mixinbooter-1163720:6552152")
-    compileOnly fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:6816073")
-//    runtimeOnly fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:6816073")
+    runtimeOnly 'com.cleanroommc:configanytime:3.0'
+    runtimeOnly fg.deobf("curse.maven:fermiumbooter2mixinbooter-1163720:6552152")
+    implementation fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:7173695")
     //aether
     compileOnly fg.deobf("curse.maven:aether-255308:6316434")
 //    runtimeOnly fg.deobf("curse.maven:aether-255308:6316434")
@@ -99,6 +100,5 @@ dependencies {
     implementation fg.deobf("curse.maven:wizardryutils-608287:7158305")
     implementation fg.deobf("curse.maven:ancient-spellcraft-358124:7134366")
 
-//    implementation fg.deobf("curse.maven:mouse-tweaks-60089:2671937")
-//    implementation fg.deobf("curse.maven:simple-magnets-394140:5822732")
+    implementation fg.deobf("curse.maven:mouse-tweaks-unofficial-461660:5876158")
 }

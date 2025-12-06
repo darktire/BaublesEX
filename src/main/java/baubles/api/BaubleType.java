@@ -7,13 +7,20 @@ import baubles.api.registries.TypesData;
  **/
 public enum BaubleType {
 
-	HEAD, AMULET, BODY, RING, BELT, CHARM, TRINKET;
+	AMULET(0),
+	RING(1,2),
+	BELT(3),
+	TRINKET(7),
+	HEAD(4),
+	BODY(5),
+	CHARM(6);
 
     private final BaubleTypeEx baubleTypeEx;
-	private final static int[] EMPTY = new int[0];
+	private final int[] idx;
 
-	BaubleType() {
-		this.baubleTypeEx = TypesData.Preset.enumRef(this.toString().toLowerCase());
+	BaubleType(int ... idx) {
+		this.baubleTypeEx = TypesData.Preset.enumRef(idx[0]);
+		this.idx = idx;
     }
 
 	public BaubleTypeEx getExpansion() {
@@ -27,6 +34,6 @@ public enum BaubleType {
 
 	@Deprecated
 	public int[] getValidSlots() {
-        return baubleTypeEx.getOriSlots().stream().mapToInt(Integer::intValue).toArray();
+        return idx;
 	}
 }

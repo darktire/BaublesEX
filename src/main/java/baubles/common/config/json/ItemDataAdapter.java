@@ -3,7 +3,6 @@ package baubles.common.config.json;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesWrapper;
 import baubles.api.IWrapper;
-import baubles.api.cap.BaubleItem;
 import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
 import com.google.gson.TypeAdapter;
@@ -63,7 +62,7 @@ public class ItemDataAdapter extends TypeAdapter<List<IWrapper>>  {
                             if (type != null) types.add(type);
                         }
                         in.endArray();
-                        if (!types.isEmpty() && item != null) ItemsData.registerBauble(item, new BaubleItem(types));
+                        if (!types.isEmpty() && item != null) ItemsData.registerBauble(item, types);
                         break;
                     case "addition":
                         if (in.nextString().equals("remove")) CST_MAP.update(item, attribute -> attribute.remove(true));

@@ -6,11 +6,11 @@ import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import vazkii.botania.common.item.equipment.bauble.ItemWaterRing;
+import vazkii.botania.common.item.equipment.bauble.ItemDivaCharm;
 
-@Mixin(value = ItemWaterRing.class, remap = false)
-public class MixinItemWaterRing {
-    @Redirect(at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;getStackInSlot(I)Lnet/minecraft/item/ItemStack;"), method = "onWornTick")
+@Mixin(value = ItemDivaCharm.class, remap = false)
+public class MixinItemDivaCharm {
+    @Redirect(at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;getStackInSlot(I)Lnet/minecraft/item/ItemStack;"), method = "lambda$onEntityDamaged$0")
     private ItemStack redirect(IBaublesItemHandler instance, int i) {
         return HookHelper.getStack(instance, i, this);
     }

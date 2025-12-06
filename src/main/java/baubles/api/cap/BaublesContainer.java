@@ -193,7 +193,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     public int indexOf(Object o, int start) {
         if (o instanceof ItemStack) return indexOf(this.stacks, start, stack -> ItemStack.areItemStacksEqual(stack, (ItemStack) o));
         else if (o instanceof Item) return indexOf(this.stacks, start, stack -> stack.getItem() == o);
-        else if (o instanceof BaubleTypeEx) return indexOf(this.MODIFIED_SLOTS, start, type -> type == o);
+        else if (o instanceof BaubleTypeEx) return indexOf(this.MODIFIED_SLOTS, start, type -> type.contains((BaubleTypeEx) o));
         return -1;
     }
 

@@ -4,9 +4,11 @@ import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
+import baubles.api.registries.TypesData;
 import baubles.common.config.Config;
 import baubles.common.config.json.JsonHelper;
 import baubles.common.items.BaubleElytra;
+import baubles.common.network.IBaublesSync;
 import baubles.compat.ModOnly;
 import baubles.compat.config.Compat;
 import net.minecraft.entity.EntityLivingBase;
@@ -31,8 +33,9 @@ public class HookHelper {
 
     public static ItemStack universalCondition(EntityLivingBase entity, EntityEquipmentSlot slot, boolean using) {
         ItemStack stack = entity.getItemStackFromSlot(slot);
-        boolean unusable = using && stack.getItem() instanceof ItemElytra && !ItemElytra.isUsable(stack);
-        boolean toFind = !(stack.getItem() instanceof ItemElytra) || unusable;
+        boolean isElytra = stack.getItem() instanceof ItemElytra;
+        boolean unusable = using && isElytra && !ItemElytra.isUsable(stack);
+        boolean toFind = !isElytra || unusable;
         if (Config.ModItems.elytraBauble && toFind && BaubleElytra.isWearing(entity, using)) {
             return BaubleElytra.getWearing(entity, using);
         }
@@ -51,6 +54,7 @@ public class HookHelper {
                     playerIn.inventory.setInventorySlotContents(playerIn.inventory.currentItem, ItemStack.EMPTY);
                 }
                 bauble.onEquipped(stack, playerIn);
+                if (!playerIn.world.isRemote) IBaublesSync.forceSync(playerIn);
                 return true;
             }
         }
@@ -171,6 +175,27 @@ public class HookHelper {
             } catch (ClassNotFoundException e) {
                 BaublesApi.log.warn("An error occurred trying to load the compat event {} for mod {}", data.getClassName(), data.getAnnotationInfo().get("value"));
             }
+        }
+    }
+
+    //-----------------------------------FOR HARD CODING-----------------------------------//
+
+    public static ItemStack getStack(IBaublesItemHandler baubles, int hardcode, Object symbol) {// todo cache
+        int idx = baubles.indexOf(TypesData.Preset.enumRef(hardcode), 0);
+        if (idx != -1 && hardcode == 2) {
+            idx = baubles.indexOf(TypesData.Preset.RING, ++idx);
+        }
+        if (symbol == null) return baubles.getStackInSlot(idx);
+        if (symbol instanceof Class) {
+            for (int i = idx; i < baubles.getSlots(); i++) {
+                ItemStack get = baubles.getStackInSlot(idx);
+                if (((Class<?>) symbol).isInstance(get.getItem())) return get;
+            }
+            return ItemStack.EMPTY;
+        }
+        else {
+            idx = baubles.indexOf(symbol, idx);
+            return baubles.getStackInSlot(idx);
         }
     }
 }

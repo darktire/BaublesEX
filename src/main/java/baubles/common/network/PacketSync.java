@@ -25,26 +25,26 @@ public class PacketSync implements IMessage {
     private int slot;
     private boolean hasStack;
     private ItemStack stack;
-    private boolean visible;
+    private int visible;
 
     public PacketSync() {}
 
     @SuppressWarnings("unused")
     public PacketSync(EntityPlayer p, int slot, ItemStack bauble) {}
 
-    public static PacketSync S2CPack(EntityLivingBase entity, int slot, ItemStack stack, boolean visible) {
+    public static PacketSync S2CPack(EntityLivingBase entity, int slot, ItemStack stack, int visible) {
         PacketSync pkt = PacketPool.borrow(entity, slot, stack, visible);
         pkt.toClient = true;
         return pkt;
     }
 
-    public static PacketSync C2SPack(int slot, ItemStack stack, boolean visible) {
+    public static PacketSync C2SPack(int slot, ItemStack stack, int visible) {
         PacketSync pkt = PacketPool.borrow(null, slot, stack, visible);
         pkt.toClient = false;
         return pkt;
     }
 
-    PacketSync set(int entityId, int slot, ItemStack stack, boolean visible) {
+    PacketSync set(int entityId, int slot, ItemStack stack, int visible) {
         this.entityId = entityId;
         this.slot = slot;
         this.visible = visible;
@@ -58,7 +58,7 @@ public class PacketSync implements IMessage {
         this.slot = -1;
         this.hasStack = false;
         this.stack = null;
-        this.visible = false;
+        this.visible = -1;
     }
 
     @Override
@@ -72,7 +72,7 @@ public class PacketSync implements IMessage {
             ByteBufUtils.writeItemStack(buffer, this.stack);
         }
         buffer.writeInt(this.slot);
-        buffer.writeBoolean(this.visible);
+        buffer.writeInt(this.visible);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class PacketSync implements IMessage {
             this.stack = ByteBufUtils.readItemStack(buffer);
         }
         this.slot = buffer.readInt();
-        this.visible = buffer.readBoolean();
+        this.visible = buffer.readInt();
     }
 
     public static class Handler implements IMessageHandler<PacketSync, IMessage> {
@@ -105,7 +105,7 @@ public class PacketSync implements IMessage {
         private void handleSever(PacketSync msg, EntityLivingBase player) {
             IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
             if (msg.hasStack) baubles.setStackInSlot(msg.slot, msg.stack);
-            baubles.setVisible(msg.slot, msg.visible);
+            if (msg.visible != -1) baubles.setVisible(msg.slot, msg.visible == 1);
             baubles.markDirty(msg.slot);
             PacketPool.release(msg);
         }
@@ -117,7 +117,7 @@ public class PacketSync implements IMessage {
             if (entity instanceof EntityLivingBase) {
                 IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
                 baubles.setStackInSlot(msg.slot, msg.stack);
-                baubles.setVisible(msg.slot, msg.visible);
+                baubles.setVisible(msg.slot, msg.visible == 1);
             }
             PacketPool.release(msg);
         }

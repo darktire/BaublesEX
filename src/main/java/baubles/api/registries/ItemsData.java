@@ -55,13 +55,17 @@ public class ItemsData {
     /**
      * Simply register item as a bauble. (only with types)
      */
-    public static void registerBauble(Item item, BaubleTypeEx... types) {
+    public static void registerBauble(Item item, List<BaubleTypeEx> types) {
         if (BAUBLE_ITEMS.containsKey(item)) {
-            CST_MAP.update(item, attribute -> attribute.types(Arrays.asList(types)));
+            CST_MAP.update(item, attribute -> attribute.types(types));
         }
         else {
             registerBauble(item, new BaubleItem(types));
         }
+    }
+
+    public static void registerBauble(Item item, BaubleTypeEx... types) {
+        registerBauble(item, Arrays.asList(types));
     }
 
     public static void registerRender(Item item, IRenderBauble render) {

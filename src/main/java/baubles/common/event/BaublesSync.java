@@ -62,7 +62,7 @@ public class BaublesSync {
 
     private static void syncAllSlots(EntityLivingBase entity, Collection<? extends EntityPlayer> receivers) {
         BaublesApi.applyByIndex(entity, (baubles, i) -> {
-            PacketSync pkt = PacketSync.S2CPack(entity, i, baubles.getStackInSlot(i), baubles.getVisible(i));
+            PacketSync pkt = PacketSync.S2CPack(entity, i, baubles.getStackInSlot(i), baubles.getVisible(i) ? 1 : 0);
             for (EntityPlayer receiver : receivers) {
                 PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) receiver);
             }
