@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 @ModOnly("wings")
 public class EventHandler {
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void itemBaubleWrap(RegistryEvent.Register<BaubleTypeEx> event) {
         ForgeRegistries.ITEMS.getValuesCollection().stream()
                 .filter(ItemWings.class::isInstance)
