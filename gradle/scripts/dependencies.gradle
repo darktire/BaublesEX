@@ -28,6 +28,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:mouse-tweaks-unofficial-461660:5876158")
     compileOnly fg.deobf("curse.maven:simple-magnets-394140:5822732")
     compileOnly files("libs/tomb.jar")
+    compileOnly fg.deobf("curse.maven:night-vision-goggles-321288:2738564")
 
     //JEI
 //    compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")

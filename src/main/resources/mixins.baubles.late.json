@@ -20,6 +20,7 @@
     "botania.MixinItemWaterRing",
     "ebwizardry.MixinBaubles",
     "enigmaticlegacy.MixinEnigmaticEvents",
+    "nvg.MixinBaubleInventoryUtil",
     "tombstone.MixinCompatibilityBaubles",
     "wings.MixinWings",
     "wizardryutils.MixinBaubles"
