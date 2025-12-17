@@ -6,7 +6,7 @@ import baubles.api.IBauble;
 import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
 import baubles.common.config.Config;
-import baubles.common.config.json.JsonHelper;
+import baubles.common.config.json.ConversionHelper;
 import baubles.common.items.BaubleElytra;
 import baubles.common.items.ItemRing;
 import baubles.common.items.ItemTire;
@@ -35,7 +35,7 @@ public class BaublesRegister {
         }
 
         try {
-            JsonHelper.jsonToItem();
+            ConversionHelper.jsonToItem();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -55,7 +55,7 @@ public class BaublesRegister {
         }
 
         try {
-            JsonHelper.jsonToType();
+            ConversionHelper.jsonToType(BaubleTypeEx.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

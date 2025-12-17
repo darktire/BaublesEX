@@ -40,8 +40,8 @@ public abstract class MixinCapability {
                 ICapabilityProvider provider = this.caps[i];
                 IBauble bauble = provider.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
                 if (bauble != null && !(bauble instanceof BaublesWrapper)) {
-                    if (!ItemsData.isBauble(this.bs$stack.getItem())) {
-                        ItemsData.registerBauble(this.bs$stack.getItem(), bauble.getBaubleType(this.bs$stack).getExpansion());
+                    if (!ItemsData.isBauble(this.bs$stack)) {
+                        ItemsData.registerBauble(this.bs$stack, bauble.getBaubleType(this.bs$stack).getExpansion());
                     }
                     this.caps[i] = new BaublesCapabilityProvider(this.bs$stack, provider);
                     break;

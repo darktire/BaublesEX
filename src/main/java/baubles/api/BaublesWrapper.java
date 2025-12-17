@@ -4,7 +4,6 @@ import baubles.api.cap.IBaublesListener;
 import baubles.api.event.BaublesEvent;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.api.util.MapKey;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
@@ -45,10 +44,6 @@ public final class BaublesWrapper implements IWrapper {
 
     public static IWrapper wrap(ItemStack stack) {
         return new BaublesWrapper(stack).startListening();
-    }
-
-    public ItemStack getItemStack() {
-        return this.stack;
     }
 
     @Override
@@ -167,22 +162,29 @@ public final class BaublesWrapper implements IWrapper {
 
     public final static class CSTMap {
         private static final CSTMap INSTANCE = new CSTMap();
-        private final Map<MapKey.CrossKey, BaublesWrapper.Attribute> map = new ConcurrentHashMap<>();
+        private final Map<IBaubleKey, BaublesWrapper.Attribute> map = new ConcurrentHashMap<>();
 
         public static CSTMap instance() {
             return INSTANCE;
         }
 
         public BaublesWrapper.Attribute get(ItemStack stack) {
-            return this.map.get(MapKey.CrossKey.wrap(stack));
+            IBaubleKey key = IBaubleKey.BaubleKey.wrap(stack);
+            Attribute a = this.map.get(key);
+            if (a == null) a = this.map.get(key.fuzzier());
+            return a;
         }
 
         public void update(ItemStack stack, Consumer<BaublesWrapper.Attribute> editor) {
-            editor.accept(this.map.computeIfAbsent(MapKey.CrossKey.wrap(stack), i -> new BaublesWrapper.Attribute()));
+            update(IBaubleKey.BaubleKey.wrap(stack), editor);
         }
 
         public void update(Item item, Consumer<BaublesWrapper.Attribute> editor) {
-            editor.accept(this.map.computeIfAbsent(MapKey.CrossKey.wrap(item), i -> new BaublesWrapper.Attribute()));
+            update(IBaubleKey.BaubleKey.wrap(item), editor);
+        }
+
+        public void update(IBaubleKey key, Consumer<BaublesWrapper.Attribute> editor) {
+            editor.accept(this.map.computeIfAbsent(key, i -> new BaublesWrapper.Attribute()));
         }
     }
 

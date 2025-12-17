@@ -35,7 +35,8 @@ commands.baubles.clear=§3清除槽位 %s §3的饰品（玩家： %s §3）
 commands.baubles.clear.claim=§4你槽位 %s §4的饰品被管理员 %s §4清除了
 commands.baubles.hand=<%s%s> [种类: %s]
 commands.baubles.set=把 %s 设置在饰品栏的槽位: %s中 （玩家 %s）
-commands.baubles.dump=文件被导出至 %s
+commands.baubles.dump=文件被导出至:
+commands.baubles.dump.tip=点击以打开文件夹
 #
 # Compat
 name.glove=手套

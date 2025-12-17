@@ -53,11 +53,10 @@ public class EventHandler {
         ItemStack stack = event.getObject();
 
         if (stack.isEmpty()) return;
-        Item item = stack.getItem();
-        if (ItemsData.isBauble(item)) return;
+        if (ItemsData.isBauble(stack)) return;
         if (AETHER_API.isAccessory(stack)) {
-            if (!ItemsData.isBauble(item)) {
-                ItemsData.registerBauble(item, map.get(AETHER_API.getAccessory(stack).getAccessoryType()));
+            if (!ItemsData.isBauble(stack)) {
+                ItemsData.registerBauble(stack, map.get(AETHER_API.getAccessory(stack).getAccessoryType()));
                 event.addCapability(EventHandlerItem.ITEM_CAP, new BaublesCapabilityProvider(stack, null));
             }
         }

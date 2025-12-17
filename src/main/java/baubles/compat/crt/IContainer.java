@@ -2,7 +2,6 @@ package baubles.compat.crt;
 
 import baubles.api.BaublesApi;
 import crafttweaker.annotations.ZenRegister;
-import crafttweaker.api.item.IItemStack;
 import stanhebben.zenscript.annotations.IterableSimple;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -13,7 +12,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public interface IContainer extends crafttweaker.api.container.IContainer {
 
     @ZenMethod
-    int indexOf(IItemStack crtStack, int start);
+    int indexOf(Object o, int start);
 
     @ZenMethod
     void modifySlot(String typeName, int modifier);

@@ -18,7 +18,7 @@ public class BaubleItem implements IBauble {
 	}
 
 	public BaubleItem(BaubleTypeEx... types) {
-		this.types.addAll(Arrays.asList(types));
+		this(Arrays.asList(types));
 	}
 
 	@SuppressWarnings("unused")// for old api

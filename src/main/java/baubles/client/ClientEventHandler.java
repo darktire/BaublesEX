@@ -86,7 +86,7 @@ public class ClientEventHandler {
     public static void onKeyInput(InputEvent.KeyInputEvent event) {
         EntityPlayer player = Minecraft.getMinecraft().player;
         Minecraft mc = Minecraft.getMinecraft();
-        if (KeyBindings.KEY_BAUBLES.isPressed()) {
+        if (KeyBindings.KEY_BAUBLES.isKeyDown()) {
             mc.displayGuiScreen(GuiPlayerExpanded.create(player, player));
             PacketHandler.INSTANCE.sendToServer(new PacketOpenBaublesInventory());
         }

@@ -24,7 +24,7 @@ public class EventHandlerItem {
 
         if (stack.isEmpty()) return;
 
-        if (!(ItemsData.isBauble(stack.getItem()))) return;
+        if (!(ItemsData.isBauble(stack))) return;
 
         if (BaublesWrapper.Attribute.isRemoved(stack)) return;
 

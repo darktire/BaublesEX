@@ -22,10 +22,10 @@ repositories {
 
 dependencies {
     runtimeOnly fileTree(dir: 'libs/runtime', includes: ['*.jar'])
+    implementation fg.deobf("curse.maven:mouse-tweaks-unofficial-461660:5876158")
 
     //compileOnly
     compileOnly fg.deobf("curse.maven:wings-302584:2829351")
-    compileOnly fg.deobf("curse.maven:mouse-tweaks-unofficial-461660:5876158")
     compileOnly fg.deobf("curse.maven:simple-magnets-394140:5822732")
     compileOnly files("libs/tomb.jar")
     compileOnly fg.deobf("curse.maven:night-vision-goggles-321288:2738564")

@@ -3,6 +3,7 @@ package baubles.compat.crt;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.util.HookHelper;
+import crafttweaker.api.item.IItemDefinition;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import net.minecraft.item.ItemStack;
@@ -27,9 +28,16 @@ public class CrTContainer implements IContainer {
     }
 
     @Override
-    public int indexOf(IItemStack crtStack, int start) {
-        ItemStack stack = CraftTweakerMC.getItemStack(crtStack);
-        return this.baubles.indexOf(stack, start);
+    public int indexOf(Object o, int start) {
+        if (o instanceof IItemStack) {
+            Object stack = CraftTweakerMC.getItemStack((IItemStack) o);
+            return this.baubles.indexOf(stack, start);
+        }
+        else if (o instanceof IItemDefinition) {
+            Object item = ((IItemDefinition) o).getInternal();
+            return this.baubles.indexOf(item, start);
+        }
+        return -1;
     }
 
     @Override

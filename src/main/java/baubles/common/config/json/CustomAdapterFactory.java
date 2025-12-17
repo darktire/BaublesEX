@@ -1,7 +1,7 @@
 package baubles.common.config.json;
 
 import baubles.api.BaubleTypeEx;
-import baubles.api.BaublesWrapper;
+import baubles.api.IBaubleKey;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
@@ -10,7 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public class CustomTypeAdapterFactory implements TypeAdapterFactory {
+public class CustomAdapterFactory implements TypeAdapterFactory {
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
         ParameterizedType pType = (ParameterizedType) type.getType();
@@ -20,7 +20,7 @@ public class CustomTypeAdapterFactory implements TypeAdapterFactory {
             TypeAdapter<T> typeDataAdapter = (TypeAdapter<T>) new TypeDataAdapter();
             return typeDataAdapter;
         }
-        else if (actualArg == BaublesWrapper.class) {
+        else if (actualArg == IBaubleKey.class) {
             @SuppressWarnings("unchecked")
             TypeAdapter<T> itemDataAdapter = (TypeAdapter<T>) new ItemDataAdapter();
             return itemDataAdapter;

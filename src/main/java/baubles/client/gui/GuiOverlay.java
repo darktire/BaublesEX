@@ -248,7 +248,7 @@ public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea 
         }
     }
 
-    private void handleMouseInput(int mouseX, int mouseY) {
+    protected void handleMouseInput(int mouseX, int mouseY) {
         int xLoc = this.guiLeft - 7;
         if (xLoc - 18 * this.col < mouseX && mouseX < xLoc) {
             int yLoc = this.guiTop + 15;

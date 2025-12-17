@@ -2,7 +2,6 @@ package baubles.common.config.json;
 
 import baubles.api.BaubleTypeEx;
 import baubles.api.registries.TypesData;
-import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
@@ -10,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TypeDataAdapter extends TypeAdapter<List<BaubleTypeEx>> {
+public class TypeDataAdapter extends CustomAdapter<List<BaubleTypeEx>> {
     @Override
     public void write(JsonWriter out, List<BaubleTypeEx> value) throws IOException {
         out.beginObject();
@@ -38,33 +37,42 @@ public class TypeDataAdapter extends TypeAdapter<List<BaubleTypeEx>> {
     @Override
     public List<BaubleTypeEx> read(JsonReader in) throws IOException {
         List<BaubleTypeEx> list = new ArrayList<>();
-        in.beginObject();
-        while (in.hasNext()) {
-            String name = null;
-            int amount = 0, priority = 0;
-            List<BaubleTypeEx> parents = new ArrayList<>();
-            in.nextName();
-            in.beginObject();
-            while (in.hasNext()) {
-                switch (in.nextName()) {
-                    case "name": name = in.nextString().toLowerCase(); break;
-                    case "amount": amount = in.nextInt(); break;
-                    case "priority": priority = in.nextInt(); break;
-                    case "parent":
-                        in.beginArray();
-                        while (in.hasNext()) {
-                            BaubleTypeEx parent = TypesData.getTypeByName(in.nextString());
-                            if (parent != null) parents.add(parent);
-                        }
-                        in.endArray();
-                        break;
-                    default: in.skipValue(); break;
-                }
-            }
-            in.endObject();
-            list.add(TypesData.registerType(name, amount, priority, parents));
-        }
-        in.endObject();
+
+        parseObject(in, (reader, key) -> {
+            list.add(parseType(reader));
+        });
+        
         return list;
+    }
+
+    private BaubleTypeEx parseType(JsonReader in) throws IOException {
+        Temp temp = new Temp();
+        parseObject(in, (unused, key) -> {
+            switch (key) {
+                case "name": temp.name = in.nextString().toLowerCase(); break;
+                case "amount": temp.amount = in.nextInt(); break;
+                case "priority": temp.priority = in.nextInt(); break;
+                case "parent":
+                    List<BaubleTypeEx> parents = new ArrayList<>();
+                    parseArray(in, typeName -> {
+                        BaubleTypeEx parent = TypesData.getTypeByName(typeName);
+                        if (parent != null) parents.add(parent);
+                    });
+                    temp.parents = parents;
+                    break;
+                default: in.skipValue(); break;
+            }
+        });
+        return temp.apply();
+    }
+
+    static final class Temp {
+        String name;
+        int amount, priority;
+        List<BaubleTypeEx> parents;
+
+        BaubleTypeEx apply() {
+            return TypesData.registerType(name, amount, priority, parents);
+        }
     }
 }

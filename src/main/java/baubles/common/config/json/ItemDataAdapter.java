@@ -1,38 +1,46 @@
 package baubles.common.config.json;
 
 import baubles.api.BaubleTypeEx;
+import baubles.api.BaublesApi;
 import baubles.api.BaublesWrapper;
-import baubles.api.IWrapper;
+import baubles.api.IBaubleKey;
 import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
-import com.google.gson.TypeAdapter;
+import baubles.util.ItemParser;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class ItemDataAdapter extends TypeAdapter<List<IWrapper>>  {
-
-    private static final BaublesWrapper.CSTMap CST_MAP = BaublesWrapper.CSTMap.instance();
+public class ItemDataAdapter extends CustomAdapter<List<IBaubleKey>> {
 
     @Override
-    public void write(JsonWriter out, List<IWrapper> value) throws IOException {
+    public void write(JsonWriter out, List<IBaubleKey> value) throws IOException {
+        Map<GroupKey, GroupResult> map = sort(value);
         out.beginObject();
-        for (IWrapper wrapper: value) {
-            ItemStack stack = wrapper.getItemStack();
-            out.name(String.valueOf(stack.getItem().getRegistryName()));
+        int i = 0;
+        for (Map.Entry<GroupKey, GroupResult> entry : map.entrySet()) {
+            out.name("block" + i++);
             out.beginObject();
-            if (BaublesWrapper.Attribute.isRemoved(stack)) {
+            GroupKey key = entry.getKey();
+            GroupResult result = entry.getValue();
+            out.name("content");
+            out.beginArray();
+            for (String inner : result.names) {
+                out.value(inner);
+            }
+            out.endArray();
+            if (key.removed) {
                 out.name("addition").value("remove");
             }
             else {
                 out.name("types");
                 out.beginArray();
-                for (BaubleTypeEx type : wrapper.getTypes(stack)) {
+                for (BaubleTypeEx type : key.types) {
                     out.value(String.valueOf(type.getRegistryName()));
                 }
                 out.endArray();
@@ -40,41 +48,128 @@ public class ItemDataAdapter extends TypeAdapter<List<IWrapper>>  {
             out.endObject();
         }
         out.endObject();
+    }
 
+    private static Map<GroupKey, GroupResult> sort(List<IBaubleKey> value) {
+        List<ItemStack> stacks = value.stream().map(IBaubleKey::ref).collect(Collectors.toList());
+        return stacks.stream().collect(
+                Collectors.groupingBy(
+                        GroupKey::new,
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                s -> {
+                                    GroupResult result = new GroupResult();
+                                    s.forEach(result::add);
+                                    return result;
+                                })));
     }
 
     @Override
-    public List<IWrapper> read(JsonReader in) throws IOException {
-        in.beginObject();
-        while (in.hasNext()) {
-            //start item
-            Item item = Item.getByNameOrId(in.nextName());
-            List<BaubleTypeEx> types = new ArrayList<>();
-            in.beginObject();
-            while (in.hasNext()) {
-                //start item info
-                switch (in.nextName()) {
-                    case "types":
-                        in.beginArray();
-                        //start types list
-                        while (in.hasNext()) {
-                            BaubleTypeEx type = TypesData.getTypeByName(in.nextString());
-                            if (type != null) types.add(type);
+    public List<IBaubleKey> read(JsonReader in) throws IOException {
+        parseObject(in, this::parseItem);
+        return null;
+    }
+
+    private void parseItem(JsonReader in, String name) throws IOException {
+        Temp temp = new Temp();
+        List<String> content = new ArrayList<>();
+        content.add(name);
+        parseObject(in, (reader, key) -> {
+            switch (key) {
+                case "content":
+                    content.clear();
+                    parseArray(in, content::add);
+                    break;
+                case "types":
+                    List<BaubleTypeEx> types = new ArrayList<>();
+                    parseArray(in, typeName -> {
+                        BaubleTypeEx type = TypesData.getTypeByName(typeName);
+                        if (type != null) types.add(type);
+                    });
+                    temp.types = types;
+                    break;
+                case "addition":
+                    parseArray(in, s -> {
+                        switch (s) {
+                            case "remove": temp.remove = true; break;
                         }
-                        in.endArray();
-                        if (!types.isEmpty() && item != null) ItemsData.registerBauble(item, types);
-                        break;
-                    case "addition":
-                        if (in.nextString().equals("remove")) CST_MAP.update(item, attribute -> attribute.remove(true));
-                        break;
-                    default:
-                        in.skipValue();
-                        break;
+                    });
+                    break;
+                default:
+                    in.skipValue();
+                    break;
+            }
+        });
+        temp.content = content;
+        temp.apply();
+    }
+
+    static final class Temp {
+        List<String> content;
+        List<BaubleTypeEx> types;
+        boolean remove;
+
+        void apply() {
+            for (IBaubleKey key : getContent(this.content)) {
+                ItemsData.registerBauble(key, types);
+                if (this.remove) BaublesWrapper.CSTMap.instance().update(key, attribute -> attribute.remove(true));
+            }
+        }
+
+        static Set<IBaubleKey> getContent(List<String> names) {
+            Set<IBaubleKey> set = new HashSet<>();
+            for (String name : names) {
+                if (OreDictionary.doesOreNameExist(name)) {
+                    set.addAll(OreDictionary.getOres(name).stream().map(IBaubleKey.BaubleKey::wrap).collect(Collectors.toList()));
+                }
+                else {
+                    try {
+                        set.add(ItemParser.parse(name));
+                    } catch (Throwable e) {
+                        BaublesApi.log.error("items loading error", e);
+                    }
                 }
             }
-            in.endObject();
+            return set;
         }
-        in.endObject();
-        return null;
+    }
+
+    static class GroupKey {
+        boolean removed;
+        List<BaubleTypeEx> types;
+
+        GroupKey(ItemStack stack) {
+            if (BaublesWrapper.Attribute.isRemoved(stack)) {
+                this.removed = true;
+                this.types = null;
+            }
+            else {
+                this.removed = false;
+                this.types = BaublesApi.toBauble(stack).getTypes(stack);
+            }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            GroupKey groupKey = (GroupKey) o;
+            return this.removed == groupKey.removed && Objects.equals(this.types, groupKey.types);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(removed, types);
+        }
+    }
+
+    static class GroupResult {
+        List<ItemStack> stacks = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+
+        public void add(ItemStack stack) {
+            this.stacks.add(stack);
+            this.names.add(ItemParser.itemDef(stack));
+        }
     }
 }

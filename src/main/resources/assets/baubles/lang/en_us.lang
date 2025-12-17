@@ -35,7 +35,8 @@ commands.baubles.clear=§3Cleared baubles slot %s §3for %s
 commands.baubles.clear.claim=§4Your baubles slot %s §4has been cleared by admin %s
 commands.baubles.hand=<%s%s> [type: %s]
 commands.baubles.set=Set %s in [slot: %s] of %s's baubles container
-commands.baubles.dump=The file was dumped to %s
+commands.baubles.dump=The file was dumped to:
+commands.baubles.dump.tip=Click to open the folder
 #
 # Compat
 name.glove=Glove

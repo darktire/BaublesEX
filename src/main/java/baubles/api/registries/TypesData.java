@@ -51,7 +51,7 @@ public class TypesData {
             if (amount != null) type.setAmount(amount);
             if (priority != null) type.setPriority(priority);
         }
-        if (!parents.isEmpty() && !BaubleTypeEx.isGlobal(type)) type.setParents(parents);
+        if (parents != null && !BaubleTypeEx.isGlobal(type)) type.setParents(parents);
         return type;
     }
 

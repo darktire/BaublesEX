@@ -6,7 +6,7 @@ import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
 import baubles.common.config.Config;
-import baubles.common.config.json.JsonHelper;
+import baubles.common.config.json.ConversionHelper;
 import baubles.common.items.BaubleElytra;
 import baubles.common.network.IBaublesSync;
 import baubles.compat.ModOnly;
@@ -65,7 +65,7 @@ public class HookHelper {
         Property property = Config.Slots.getCategory().get(typeName + "Slot");
         if (property == null) {
             try {
-                List<BaubleTypeEx> types = JsonHelper.jsonToType();
+                List<BaubleTypeEx> types = ConversionHelper.jsonToType(BaubleTypeEx.class);
                 for (BaubleTypeEx type : types) {
                     if (type.getName().equals(typeName)) {
                         if (modifying) {
@@ -74,7 +74,7 @@ public class HookHelper {
                         type.setAmount(n);
                     }
                 }
-                JsonHelper.typeToJson(types, false);
+                ConversionHelper.typeToJson(types, false);
             } catch (Throwable e) {
                 BaublesApi.log.error(e);
             }
@@ -187,8 +187,8 @@ public class HookHelper {
         }
         if (symbol == null) return baubles.getStackInSlot(idx);
         if (symbol instanceof Class) {
-            for (int i = idx; i < baubles.getSlots(); i++) {
-                ItemStack get = baubles.getStackInSlot(idx);
+            while (idx < baubles.getSlots()) {
+                ItemStack get = baubles.getStackInSlot(idx++);
                 if (((Class<?>) symbol).isInstance(get.getItem())) return get;
             }
             return ItemStack.EMPTY;

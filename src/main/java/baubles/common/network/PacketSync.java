@@ -105,7 +105,7 @@ public class PacketSync implements IMessage {
         private void handleSever(PacketSync msg, EntityLivingBase player) {
             IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
             if (msg.hasStack) baubles.setStackInSlot(msg.slot, msg.stack);
-            if (msg.visible != -1) baubles.setVisible(msg.slot, msg.visible == 1);
+            baubles.setVisible(msg.slot, msg.visible == 1);
             baubles.markDirty(msg.slot);
             PacketPool.release(msg);
         }
@@ -117,7 +117,7 @@ public class PacketSync implements IMessage {
             if (entity instanceof EntityLivingBase) {
                 IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
                 baubles.setStackInSlot(msg.slot, msg.stack);
-                baubles.setVisible(msg.slot, msg.visible == 1);
+                if (msg.visible != -1) baubles.setVisible(msg.slot, msg.visible == 1);
             }
             PacketPool.release(msg);
         }

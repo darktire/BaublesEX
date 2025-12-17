@@ -35,7 +35,8 @@ public class Config extends PartialConfig {
     public static boolean rightClick;
 //    public static boolean armorStand = false;
     private static String[] clickBlacklist;
-    private static final String[] defList = {"wct:wct"};
+    private static String[] itemsJson;
+    private static String[] typesJson;
 
     public final static String BAUBLES_SLOTS = "general.slots";
     public final static String CLIENT_GUI = "client.gui";
@@ -59,9 +60,20 @@ public class Config extends PartialConfig {
         rightClick = config.getBoolean("rightClick", CATEGORY_GENERAL, true, "Whether player can use right click to equip baubles.");
 //        armorStand = config.getBoolean("armorStand", CATEGORY_GENERAL, armorStand, "Whether armorStand has baubles container (need to place armorStand again)");
 
-        clickBlacklist = config.getStringList("clickBlacklist", CATEGORY_GENERAL, defList, "");
+        clickBlacklist = config.getStringList("clickBlacklist", CATEGORY_GENERAL, new String[]{"wct:wct"}, "");
+        itemsJson = config.getStringList("itemsJson", CATEGORY_GENERAL, new String[]{"items_data.json"}, "");
+        typesJson = config.getStringList("typesJson", CATEGORY_GENERAL, new String[]{"types_data.json"}, "");
 
         PartialConfig.create(Slots.class, Gui.class, ModItems.class, Commands.class);
+    }
+
+    public static List<File> getJson(int i) {
+        String[] names = i == 0 ? itemsJson : typesJson;
+        List<File> files = new ArrayList<>();
+        for (String name : names) {
+            files.add(new File(getModDir(), name));
+        }
+        return files;
     }
 
     private static void checkConfig(Configuration cfg) {
