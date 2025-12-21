@@ -103,4 +103,5 @@ dependencies {
     implementation fg.deobf("curse.maven:electroblobs-wizardry-265642:6950392")
     implementation fg.deobf("curse.maven:wizardryutils-608287:7158305")
     implementation fg.deobf("curse.maven:ancient-spellcraft-358124:7134366")
+    implementation fg.deobf("curse.maven:arcane-apprentices-907405:7212770")
 }

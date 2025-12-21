@@ -78,7 +78,7 @@ public class CommandView extends BaublesCommand {
         }
 
         @Override
-        public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
+        public void execute(MinecraftServer server, ICommandSender sender, String[] args) {//todo
             if(sender.getCommandSenderEntity() instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) sender.getCommandSenderEntity();
                 ItemStack heldItem = player.getHeldItemMainhand();
