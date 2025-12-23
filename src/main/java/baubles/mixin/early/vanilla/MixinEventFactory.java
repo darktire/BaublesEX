@@ -17,7 +17,7 @@ public class MixinEventFactory {
     private static void redirectBaubleCap(ItemStack stack, ICapabilityProvider parent, CallbackInfoReturnable<CapabilityDispatcher> cir) {
         CapabilityDispatcher caps = cir.getReturnValue();
         if (caps != null) {
-            ((ICapabilityModifiable) (Object) caps).patchCap(stack);
+            ((ICapabilityModifiable) (Object) caps).patch(stack);
         }
     }
 }

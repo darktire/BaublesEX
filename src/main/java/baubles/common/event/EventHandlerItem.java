@@ -1,7 +1,6 @@
 package baubles.common.event;
 
 import baubles.api.BaublesApi;
-import baubles.api.BaublesWrapper;
 import baubles.api.cap.BaublesCapabilityProvider;
 import baubles.api.registries.ItemsData;
 import net.minecraft.item.ItemStack;
@@ -24,9 +23,7 @@ public class EventHandlerItem {
 
         if (stack.isEmpty()) return;
 
-        if (!(ItemsData.isBauble(stack))) return;
-
-        if (BaublesWrapper.Attribute.isRemoved(stack)) return;
+        if (!(ItemsData.isBauble(stack.getItem()))) return;
 
         event.addCapability(ITEM_CAP, new BaublesCapabilityProvider(stack, null));
     }

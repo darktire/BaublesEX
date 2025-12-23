@@ -27,7 +27,7 @@ public class ItemsData {
             .concurrencyLevel(Runtime.getRuntime().availableProcessors())
             .build();
     private static final LongAdder HIT  = new LongAdder();
-    private static final LongAdder MISS   = new LongAdder();
+    private static final LongAdder MISS = new LongAdder();
     private static final BaublesWrapper.CSTMap CST_MAP = BaublesWrapper.CSTMap.instance();
 
     public static void registerBauble(IBaubleKey key) {
@@ -122,11 +122,11 @@ public class ItemsData {
         return wrapper;
     }
 
-    public static boolean isBauble(ItemStack stack)  {
+    public static boolean isBauble(ItemStack stack) {
         return BAUBLE_ITEMS.containsKey(IBaubleKey.BaubleKey.wrap(stack.getItem())) || BAUBLE_ITEMS.containsKey(IBaubleKey.BaubleKey.wrap(stack));
     }
 
-    public static boolean isBauble(Item item)  {
+    public static boolean isBauble(Item item) {
         return BAUBLE_ITEMS.containsKey(IBaubleKey.BaubleKey.wrap(item).fuzzier());
     }
 
