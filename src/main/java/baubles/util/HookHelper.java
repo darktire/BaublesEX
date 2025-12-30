@@ -3,16 +3,18 @@ package baubles.util;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
+import baubles.api.IWrapper;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.registries.TypesData;
 import baubles.common.config.Config;
 import baubles.common.config.json.ConversionHelper;
 import baubles.common.items.BaubleElytra;
-import baubles.common.network.IBaublesSync;
+import baubles.common.network.PacketHandler;
+import baubles.common.network.PacketSync;
 import baubles.compat.ModOnly;
 import baubles.compat.config.Compat;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
@@ -49,12 +51,16 @@ public class HookHelper {
         for (int i = 0, s = baubles.getSlots(); i < s; i++) {
             boolean match = baubles.getTypeInSlot(i).contains(types);
             if (match && baubles.getStackInSlot(i).isEmpty()) {
-                baubles.setStackInSlot(i, stack.copy());
+                stack = stack.copy();
+                baubles.setStackInSlot(i, stack);
                 if (!playerIn.capabilities.isCreativeMode) {
                     playerIn.inventory.setInventorySlotContents(playerIn.inventory.currentItem, ItemStack.EMPTY);
                 }
                 bauble.onEquipped(stack, playerIn);
-                if (!playerIn.world.isRemote) IBaublesSync.forceSync(playerIn);
+                if (!playerIn.world.isRemote) {
+                    PacketSync pkt = PacketSync.S2CPack(playerIn, i, stack, -1);
+                    PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) playerIn);
+                }
                 return true;
             }
         }
@@ -180,12 +186,8 @@ public class HookHelper {
 
     //-----------------------------------FOR HARD CODING-----------------------------------//
 
-    public static ItemStack getStack(IBaublesItemHandler baubles, int hardcode, Object symbol) {// todo cache
-        int idx = baubles.indexOf(TypesData.Preset.enumRef(hardcode), 0);
-        if (idx != -1 && hardcode == 2) {
-            idx = baubles.indexOf(TypesData.Preset.RING, ++idx);
-        }
-        if (symbol == null) return baubles.getStackInSlot(idx);
+    public static ItemStack getStack(IBaublesItemHandler baubles, Object symbol) {// todo cache
+        int idx = 0;
         if (symbol instanceof Class) {
             while (idx < baubles.getSlots()) {
                 ItemStack get = baubles.getStackInSlot(idx++);
@@ -197,5 +199,11 @@ public class HookHelper {
             idx = baubles.indexOf(symbol, idx);
             return baubles.getStackInSlot(idx);
         }
+    }
+
+    public static BaubleTypeEx getMainType(ItemStack stack) {
+        IWrapper bauble = BaublesApi.toBauble(stack);
+        if (bauble == null) return null;
+        return bauble.getTypes(stack).get(0);
     }
 }

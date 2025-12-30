@@ -12,11 +12,11 @@ import vazkii.botania.common.item.equipment.bauble.ItemFlightTiara;
 public class MixinItemFlightTiara {
     @Redirect(at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;getStackInSlot(I)Lnet/minecraft/item/ItemStack;"), method = "updatePlayerFlyStatus(Lnet/minecraftforge/event/entity/living/LivingEvent$LivingUpdateEvent;)V")
     private ItemStack redirect1(IBaublesItemHandler instance, int i) {
-        return HookHelper.getStack(instance, i, this);
+        return HookHelper.getStack(instance, this);
     }
 
     @Redirect(at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;getStackInSlot(I)Lnet/minecraft/item/ItemStack;"), method = "shouldPlayerHaveFlight")
     private ItemStack redirect2(IBaublesItemHandler instance, int i) {
-        return HookHelper.getStack(instance, i, this);
+        return HookHelper.getStack(instance, this);
     }
 }

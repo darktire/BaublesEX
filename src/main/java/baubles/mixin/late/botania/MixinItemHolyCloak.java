@@ -12,6 +12,6 @@ import vazkii.botania.common.item.equipment.bauble.ItemHolyCloak;
 public class MixinItemHolyCloak {
     @Redirect(at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;getStackInSlot(I)Lnet/minecraft/item/ItemStack;"), method = "onPlayerDamage")
     private ItemStack redirect(IBaublesItemHandler instance, int i) {
-        return HookHelper.getStack(instance, i, this.getClass());
+        return HookHelper.getStack(instance, this.getClass());
     }
 }

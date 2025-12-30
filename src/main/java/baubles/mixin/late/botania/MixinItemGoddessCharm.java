@@ -13,6 +13,6 @@ import vazkii.botania.common.item.equipment.bauble.ItemGoddessCharm;
 public class MixinItemGoddessCharm {
     @Redirect(at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;getStackInSlot(I)Lnet/minecraft/item/ItemStack;"), method = "onExplosion")
     private static ItemStack redirect(IBaublesItemHandler instance, int i) {
-        return HookHelper.getStack(instance, i, ModItems.goddessCharm);
+        return HookHelper.getStack(instance, ModItems.goddessCharm);
     }
 }

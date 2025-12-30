@@ -12,6 +12,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinBaubleAmulet {
     @Redirect(method = "onLivingDeath", at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;getStackInSlot(I)Lnet/minecraft/item/ItemStack;"))
     private static ItemStack redirect(IBaublesItemHandler instance, int i) {
-        return HookHelper.getStack(instance, i, BaubleAmulet.class);
+        return HookHelper.getStack(instance, BaubleAmulet.class);
     }
 }

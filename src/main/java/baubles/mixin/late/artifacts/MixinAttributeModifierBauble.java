@@ -12,6 +12,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinAttributeModifierBauble {
     @Redirect(method = "applyModifiers", at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;getStackInSlot(I)Lnet/minecraft/item/ItemStack;"))
     private ItemStack redirect(IBaublesItemHandler instance, int i) {
-        return HookHelper.getStack(instance, i, AttributeModifierBauble.class);
+        return HookHelper.getStack(instance, AttributeModifierBauble.class);
     }
 }

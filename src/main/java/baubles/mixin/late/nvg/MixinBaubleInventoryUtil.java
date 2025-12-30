@@ -14,6 +14,6 @@ public class MixinBaubleInventoryUtil {
 
     @Redirect(method = "getGoggles", at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;getStackInSlot(I)Lnet/minecraft/item/ItemStack;"))
     private static ItemStack redirect(IBaublesItemHandler instance, int i) {
-        return HookHelper.getStack(instance, i, Items.goggles);
+        return HookHelper.getStack(instance, Items.goggles);
     }
 }

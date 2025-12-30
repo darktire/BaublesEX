@@ -12,6 +12,6 @@ import vazkii.botania.common.item.equipment.bauble.ItemDivaCharm;
 public class MixinItemDivaCharm {
     @Redirect(at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;getStackInSlot(I)Lnet/minecraft/item/ItemStack;"), method = "lambda$onEntityDamaged$0")
     private ItemStack redirect(IBaublesItemHandler instance, int i) {
-        return HookHelper.getStack(instance, i, this);
+        return HookHelper.getStack(instance, this);
     }
 }

@@ -26,7 +26,7 @@ public class MixinBaubles {
 
     @Redirect(method = "getBeltSlotItemStack", at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;getStackInSlot(I)Lnet/minecraft/item/ItemStack;"))
     private static ItemStack redirect(IBaublesItemHandler instance, int i) {
-        return HookHelper.getStack(instance, i, ItemArtefact.class);
+        return HookHelper.getStack(instance, ItemArtefact.class);
     }
 
     @Inject(method = "setArtefactToSlot(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/item/ItemStack;Lelectroblob/wizardry/item/ItemArtefact$Type;)V", at = @At("HEAD"), cancellable = true)
