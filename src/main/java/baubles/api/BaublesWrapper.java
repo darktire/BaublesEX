@@ -1,11 +1,13 @@
 package baubles.api;
 
+import baubles.api.cap.BaubleItem;
 import baubles.api.cap.IBaublesListener;
 import baubles.api.event.BaublesEvent;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -64,6 +66,9 @@ public final class BaublesWrapper implements IWrapper {
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled()) return;
         this.bauble.onWornTick(itemstack, entity);
+        if (this.bauble instanceof BaubleItem && entity instanceof EntityPlayer) {
+            this.stack.getItem().onArmorTick(entity.world, (EntityPlayer) entity, this.stack);
+        }
     }
 
     @Override

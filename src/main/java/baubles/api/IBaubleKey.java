@@ -32,8 +32,8 @@ public interface IBaubleKey {
         }
 
         private static boolean isEqual(ItemStack a, ItemStack b) {
-            if (a == null || a == b) return true;
-            if (b == null) return false;
+            if (a == b) return true;
+            if (a == null || b == null) return false;
             return a.getItem() == b.getItem() && a.getMetadata() == b.getMetadata() && Objects.equals(a.getTagCompound(), b.getTagCompound());
         }
 
@@ -92,8 +92,8 @@ public interface IBaubleKey {
         }
 
         private static boolean isStackMatch(ItemStack a, ItemStack b) {
-            if (a == b) return true;
-            if (a == null || b == null) return false;
+            if (a == null || a == b) return true;
+            if (b == null) return false;
             return a.getItem() == b.getItem() && a.getMetadata() == b.getMetadata() && isNbtMatch(b.getTagCompound(), a.getTagCompound());
         }
 

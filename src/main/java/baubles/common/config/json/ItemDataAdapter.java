@@ -145,7 +145,7 @@ public class ItemDataAdapter extends CustomAdapter<List<IBaubleKey>> {
             }
             else {
                 this.removed = false;
-                this.types = BaublesApi.toBauble(stack).getTypes(stack);
+                this.types = ItemsData.toBauble(stack).getTypes(stack);
             }
         }
 
