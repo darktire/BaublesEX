@@ -1,6 +1,6 @@
 package baubles.compat.thaumicperiphery;
 
-import baubles.api.model.ModelBauble;
+import baubles.client.model.ModelInherit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -11,9 +11,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import thaumcraft.api.items.RechargeHelper;
 
-public class ModelQuiver extends ModelBauble {
+public class ModelQuiver extends ModelInherit {
     public ModelQuiver() {
-        super(new Edit());
+        super(new Edit(), Resources.getLoc("magic_quiver.png"));
     }
 
     @Override

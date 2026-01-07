@@ -9,46 +9,51 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelItemHelper extends ModelBauble {
-    protected final ItemStack stack;
-    protected static final RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
-    protected final IBakedModel model;
-    public ModelItemHelper(Item item, int meta) {
-        this.item = item;
-        this.stack = new ItemStack(item, 1, meta);
-        this.model = itemRender.getItemModelWithOverrides(this.stack, null, null);
-    }
+import java.lang.ref.WeakReference;
 
-    public ModelItemHelper(Item item) {
-        this(item, 0);
-    }
+public class ModelItem extends ModelBauble {
+    protected static final RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
+    protected WeakReference<ItemStack> ref;
+    protected IBakedModel model;
 
     @Override
     public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
-        this.renderItem();
+        this.renderItem(stack);
     }
 
     @Override
     public void renderEnchantedGlint(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, ModelBauble model, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        this.renderItemGlint();
+        this.renderItemGlint(stack);
     }
 
-    protected void renderItem() {
-        itemRender.renderItem(this.stack, this.model);
+    @Override
+    public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+        return TextureMap.LOCATION_BLOCKS_TEXTURE;
     }
 
-    protected void renderItemGlint() {
+    protected void renderItem(ItemStack stack) {
+        itemRender.renderItem(stack, getModel(stack));
+    }
+
+    protected void renderItemGlint(ItemStack stack) {
         GlStateManager.translate(-0.5F, -0.5F, -0.5F);
         GlStateManager.enableBlend();
-        ((AccessorRenderItem) itemRender).renderItemGlint(this.model);
+        ((AccessorRenderItem) itemRender).renderItemGlint(getModel(stack));
         GlStateManager.disableBlend();
     }
 
-    public static ResourceLocation getTexture() {
-        return TextureMap.LOCATION_BLOCKS_TEXTURE;
+    protected IBakedModel getModel(ItemStack stack) {
+        if (this.ref == null || isDiff(stack, this.ref.get())) {
+            this.ref = new WeakReference<>(stack);
+            this.model = itemRender.getItemModelWithOverrides(stack, null, null);
+        }
+        return this.model;
+    }
+
+    private boolean isDiff(ItemStack stack, ItemStack stack1) {
+        return stack1 == null || !stack1.isItemEqual(stack);
     }
 }

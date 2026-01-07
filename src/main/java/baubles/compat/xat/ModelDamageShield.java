@@ -1,27 +1,19 @@
 package baubles.compat.xat;
 
-import baubles.client.model.ModelItemHelper;
+import baubles.api.model.ModelBauble;
+import baubles.client.model.ModelItem;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import xzeroair.trinkets.init.ModItems;
 import xzeroair.trinkets.util.TrinketsConfig;
 
-public class ModelDamageShield extends ModelItemHelper {
-    private static ModelDamageShield instance;
+public class ModelDamageShield extends ModelItem {
 
-    public ModelDamageShield() {
-        super(ModItems.baubles.BaubleDamageShield);
-    }
+    public static final ModelBauble INSTANCE = new ModelDamageShield();
 
-    public static ModelDamageShield instance() {
-        if (instance == null) {
-            instance = new ModelDamageShield();
-        }
-        return instance;
-    }
+    private ModelDamageShield() {}
 
     @Override
     public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
@@ -36,6 +28,6 @@ public class ModelDamageShield extends ModelItemHelper {
         }
         final float bS = 3f;
         GlStateManager.scale(scale * bS, scale * bS, scale * bS);
-        this.renderItem();
+        this.renderItem(stack);
     }
 }

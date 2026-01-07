@@ -1,42 +1,25 @@
 package baubles.mixin.late.rlartifacts;
 
 import artifacts.common.item.BaubleStarCloak;
-import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.compat.rlartifacts.Resources;
-import com.google.common.collect.ImmutableMap;
+import baubles.compat.rlartifacts.CloakRender;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import java.util.Map;
+import java.util.List;
 
 
 @Mixin(BaubleStarCloak.class)
 @Implements(@Interface(iface = IRenderBauble.class, prefix = "brs$"))
 public abstract class MixinBaubleStarCloak {
-    @Unique
-    private static final ImmutableMap<ModelBauble, IRenderBauble.RenderType> brs$renderMap = ImmutableMap.of(
-            Resources.CLOAK_MODEL_UP, IRenderBauble.RenderType.HEAD,
-            Resources.CLOAK_MODEL_DOWN, IRenderBauble.RenderType.BODY
-    );
 
     @Unique
-    public Map<ModelBauble, IRenderBauble.RenderType> brs$getRenderMap(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        return brs$renderMap;
-    }
-
-    @Unique
-    public ResourceLocation brs$getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        return Resources.CLOAK_NORMAL;
-    }
-
-    @Unique
-    public ResourceLocation brs$getEmissiveMap(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        return Resources.CLOAK_OVERLAY;
+    public List<IRenderBauble> brs$getSubRender(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+        return CloakRender.SUB;
     }
 }

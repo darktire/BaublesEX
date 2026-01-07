@@ -9,12 +9,10 @@ import baubles.api.registries.TypesData;
 import baubles.api.render.IRenderBauble;
 import baubles.client.model.ModelElytra;
 import baubles.common.config.Config;
-import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
 import java.util.AbstractMap;
 import java.util.Collections;
@@ -26,7 +24,6 @@ public class BaubleElytra implements IBauble, IRenderBauble {
     private static final Map<EntityLivingBase, Boolean> EQUIPPED = new ConcurrentHashMap<>();
     private static final Map<Map.Entry<EntityLivingBase, Boolean>, ItemStack> WEARING = new ConcurrentHashMap<>();
     private static final List<BaubleTypeEx> TYPE = Collections.singletonList(TypesData.getTypeByName(Config.ModItems.elytraSlot));
-    private static final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("minecraft", "textures/entity/elytra.png");
 
     @Override
     public List<BaubleTypeEx> getTypes(ItemStack stack) {
@@ -46,32 +43,12 @@ public class BaubleElytra implements IBauble, IRenderBauble {
     }
 
     @Override
-    public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        return ModelElytra.instance(slim);
+    public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+        return ModelElytra.INSTANCE;
     }
 
     @Override
-    public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        if (entity instanceof AbstractClientPlayer) {
-            AbstractClientPlayer abstractclientplayer = (AbstractClientPlayer)entity;
-
-            if (abstractclientplayer.isPlayerInfoSet() && abstractclientplayer.getLocationElytra() != null) {
-                return abstractclientplayer.getLocationElytra();
-            }
-            else if (abstractclientplayer.hasPlayerInfo() && abstractclientplayer.getLocationCape() != null && abstractclientplayer.isWearing(EnumPlayerModelParts.CAPE)) {
-                return abstractclientplayer.getLocationElytra();
-            }
-            else {
-                return TEXTURE_ELYTRA;
-            }
-        }
-        else {
-            return TEXTURE_ELYTRA;
-        }
-    }
-
-    @Override
-    public IRenderBauble.RenderType getRenderType(ItemStack stack, EntityLivingBase entity, boolean slim) {
+    public IRenderBauble.RenderType getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return IRenderBauble.RenderType.BODY;
     }
 

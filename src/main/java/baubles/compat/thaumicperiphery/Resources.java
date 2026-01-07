@@ -15,7 +15,6 @@ public class Resources extends CommonRcs {
     public static final ResourceLocation PAULDRON_REPULSION = getLoc("pauldron_repulsion.png");
     public static final ResourceLocation FOCUS_POUCH = getLoc("focus_pouch.png");
 
-    public static final ResourceLocation QUIVER_TEXTURE = getLoc("magic_quiver.png");
     public static final ResourceLocation ARROW_TEXTURE = getLoc("magic_arrow.png");
 
     public static final ResourceLocation VIS_PHYLACTERY = getLoc("vis_phylactery.png");

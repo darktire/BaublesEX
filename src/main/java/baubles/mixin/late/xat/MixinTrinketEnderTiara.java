@@ -3,9 +3,9 @@ package baubles.mixin.late.xat;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
 import baubles.compat.xat.ModelEnderTiara;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,17 +17,12 @@ import xzeroair.trinkets.items.trinkets.TrinketEnderTiara;
 public class MixinTrinketEnderTiara {
 
     @Unique
-    public ModelBauble brs$getModel(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        return ModelEnderTiara.instance();
+    public ModelBauble brs$getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+        return ModelEnderTiara.instance;
     }
 
     @Unique
-    public ResourceLocation brs$getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        return ModelEnderTiara.getTexture();
-    }
-
-    @Unique
-    public IRenderBauble.RenderType brs$getRenderType(ItemStack stack, EntityLivingBase entity, boolean slim) {
+    public IRenderBauble.RenderType brs$getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return IRenderBauble.RenderType.HEAD;
     }
 }

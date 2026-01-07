@@ -3,9 +3,10 @@ package baubles.compat.rlartifacts;
 import artifacts.common.init.ModItems;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.model.ModelBauble;
 import baubles.api.registries.TypesData;
-import baubles.proxy.ClientProxy;
+import baubles.client.model.ModelInherit;
+import baubles.client.model.ModelManager;
+import baubles.mixin.early.vanilla.AccessorRenderPlayer;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -16,21 +17,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
-
-public class ModelGlove extends ModelBauble {
-    private static final Map<Map.Entry<Item, Boolean>, ModelGlove> instances = new HashMap<>();
+public class ModelGlove extends ModelInherit {
+    private final Item item;
     private final ResourceLocation texture;
     private final ResourceLocation emissive;
 
-    public ModelGlove(Item item, boolean slim) {
-        super(item, slim);
+    public static ModelGlove getInstance(ItemStack stack, RenderPlayer renderPlayer) {
+        return ModelManager.getInstance(stack, renderPlayer, s -> new ModelGlove(s.getItem(), renderPlayer));
+    }
+
+    public ModelGlove(Item item, RenderPlayer renderPlayer) {
+        super(renderPlayer.getMainModel(), null);
+        this.item = item;
+        boolean slim = ((AccessorRenderPlayer) renderPlayer).isSlim();
         this.texture = getResourceLocation(switchTex(item), slim);
         this.emissive = getResourceLocation(switchLum(item), slim);
-//        this.model = new ModelPlayer(1, slim);
-        this.model = slim ? ClientProxy.SLIM_LAYER.getModelPlayer() : ClientProxy.NORMAL_LAYER.getModelPlayer();
     }
 
     private static ResourceLocation getResourceLocation(ResourceLocation texture, boolean slim) {
@@ -41,16 +42,6 @@ public class ModelGlove extends ModelBauble {
         else {
             return texture;
         }
-    }
-
-    public static ModelGlove instance(Item item, boolean slim) {
-        Map.Entry<Item, Boolean> pair = new AbstractMap.SimpleEntry<>(item, slim);
-        ModelGlove model = instances.get(pair);
-        if (model == null) {
-            model = new ModelGlove(item, slim);
-            instances.put(pair, model);
-        }
-        return model;
     }
 
     private EnumHandSide getHand(EntityLivingBase entity) {
@@ -74,11 +65,13 @@ public class ModelGlove extends ModelBauble {
         return null;
     }
 
-    public ResourceLocation getTexture() {
+    @Override
+    public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return this.texture;
     }
 
-    public ResourceLocation getEmissive() {
+    @Override
+    public ResourceLocation getEmissiveMap(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return this.emissive;
     }
 

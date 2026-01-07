@@ -1,7 +1,5 @@
 package baubles.client.model;
 
-import baubles.api.model.ModelBauble;
-import baubles.proxy.ClientProxy;
 import baubles.util.HookHelper;
 import goblinbob.mobends.core.util.BenderHelper;
 import goblinbob.mobends.standard.data.PlayerData;
@@ -9,29 +7,23 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
-public class ModelElytra extends ModelBauble {
-    private static ModelElytra instance;
-    private final RenderPlayer renderPlayer;
+public class ModelElytra extends ModelInherit {
+    public static ModelElytra INSTANCE = new ModelElytra();
     private static final boolean FLAG = HookHelper.isModLoaded("mobends");
+    private static final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("minecraft", "textures/entity/elytra.png");
 
-    public ModelElytra(boolean slim) {
-        this.model = new net.minecraft.client.model.ModelElytra();
-        this.renderPlayer = slim ? ClientProxy.SLIM_LAYER.getRenderPlayer() : ClientProxy.NORMAL_LAYER.getRenderPlayer();
-    }
-
-    public static ModelElytra instance(boolean slim) {
-        if (instance == null) {
-            instance = new ModelElytra(slim);
-        }
-        return instance;
+    public ModelElytra() {
+        super(new net.minecraft.client.model.ModelElytra(), null);
     }
 
     @Override
     public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
         if (FLAG && entity instanceof AbstractClientPlayer) {
-            PlayerData data = BenderHelper.getData((AbstractClientPlayer) entity, this.renderPlayer);
+            PlayerData data = BenderHelper.getData((AbstractClientPlayer) entity, renderPlayer);
             assert data != null;
             data.body.applyCharacterTransform(0.0625F);
             GlStateManager.translate(0.0F, -12.0F * scale, 0.0F);
@@ -41,6 +33,26 @@ public class ModelElytra extends ModelBauble {
         }
         this.model.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
         this.model.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+    }
+
+    @Override
+    public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+        if (entity instanceof AbstractClientPlayer) {
+            AbstractClientPlayer abstractclientplayer = (AbstractClientPlayer)entity;
+
+            if (abstractclientplayer.isPlayerInfoSet() && abstractclientplayer.getLocationElytra() != null) {
+                return abstractclientplayer.getLocationElytra();
+            }
+            else if (abstractclientplayer.hasPlayerInfo() && abstractclientplayer.getLocationCape() != null && abstractclientplayer.isWearing(EnumPlayerModelParts.CAPE)) {
+                return abstractclientplayer.getLocationElytra();
+            }
+            else {
+                return TEXTURE_ELYTRA;
+            }
+        }
+        else {
+            return TEXTURE_ELYTRA;
+        }
     }
 
     @Override

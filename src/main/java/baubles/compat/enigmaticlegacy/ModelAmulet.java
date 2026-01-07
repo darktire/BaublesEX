@@ -1,6 +1,6 @@
 package baubles.compat.enigmaticlegacy;
 
-import baubles.api.model.ModelBauble;
+import baubles.client.model.ModelInherit;
 import com.google.common.collect.ImmutableList;
 import keletu.enigmaticlegacy.EnigmaticLegacy;
 import net.minecraft.client.model.ModelRenderer;
@@ -13,46 +13,20 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import java.lang.reflect.Field;
-import java.util.AbstractMap;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class ModelAmulet extends ModelBauble {
-    private static final Map<Map.Entry<Item, Integer>, ModelAmulet> instances = new HashMap<>();
+public class ModelAmulet extends ModelInherit {
     private static final List<String> COLOR_LIST = ImmutableList.<String>builder().add("red", "red", "aqua", "violet", "magenta", "green", "black", "blue").build();
     private static final String DEFAULT_PATH = "textures/models/layer/amulet_red.png";
-    private final ResourceLocation texture;
+    private final boolean flag;
     private final ModelRenderer bipedBody;
     private final ModelRenderer gem;
 
-    public ModelAmulet(Item item, int meta) {
-        this.item = item;
-        this.model = new keletu.enigmaticlegacy.client.ModelAmulet(ItemStack.EMPTY);
-        try {
-            this.bipedBody = this.getInner("bipedBody");
-            this.gem = this.getInner("gem");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        this.texture = switchTex(item, meta);
-    }
-
-    private ModelRenderer getInner(String name) throws Exception {
-        Field f = this.model.getClass().getDeclaredField(name);
-        f.setAccessible(true);
-        return (ModelRenderer) f.get(this.model);
-    }
-
-    public static ModelAmulet instance(Item item, int meta) {
-        Map.Entry<Item, Integer> pair = new AbstractMap.SimpleEntry<>(item, meta);
-        ModelAmulet model = instances.get(pair);
-        if (model == null) {
-            model = new ModelAmulet(item, meta);
-            instances.put(pair, model);
-        }
-        return model;
+    public ModelAmulet(ItemStack stack) {
+        super(new Edited(stack), switchTex(stack));
+        this.flag = stack.getItem() == EnigmaticLegacy.eldritchAmulet;
+        this.bipedBody = ((Edited) this.model).getInner(true);
+        this.gem = ((Edited) this.model).getInner(false);
     }
 
     @Override
@@ -73,7 +47,7 @@ public class ModelAmulet extends ModelBauble {
         GlStateManager.scale(0.5F, 0.5F, 0.5F);
         this.bipedBody.render(scale);
         GlStateManager.translate(-0.15625, 0.375, -0.28125);
-        if (this.item == EnigmaticLegacy.eldritchAmulet) {
+        if (this.flag) {
             float lastLightmapX = OpenGlHelper.lastBrightnessX;
             float lastLightmapY = OpenGlHelper.lastBrightnessY;
             float light = 2.0F * (ageInTicks % 100.0F);
@@ -92,7 +66,9 @@ public class ModelAmulet extends ModelBauble {
         GlStateManager.popMatrix();
     }
 
-    private static ResourceLocation switchTex(Item item, int meta) {
+    private static ResourceLocation switchTex(ItemStack stack) {
+        Item item = stack.getItem();
+        int meta = stack.getMetadata();
         if (item == EnigmaticLegacy.enigmaticAmulet) {
             String path = DEFAULT_PATH;
             if (1 <= meta && meta < 8) {
@@ -111,7 +87,14 @@ public class ModelAmulet extends ModelBauble {
         return null;
     }
 
-    public ResourceLocation getTexture() {
-        return this.texture;
+    private static class Edited extends keletu.enigmaticlegacy.client.ModelAmulet {
+        public Edited(ItemStack stack) {
+            super(stack);
+        }
+
+        public ModelRenderer getInner(boolean b) {
+            if (b) return this.bipedBody;
+            else return this.gem;
+        }
     }
 }

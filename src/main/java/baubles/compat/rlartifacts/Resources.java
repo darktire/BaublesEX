@@ -2,32 +2,25 @@ package baubles.compat.rlartifacts;
 
 import artifacts.Artifacts;
 import artifacts.client.model.*;
+import artifacts.common.init.ModItems;
 import baubles.api.model.ModelBauble;
+import baubles.client.model.ModelInherit;
 import baubles.compat.CommonRcs;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class Resources extends CommonRcs {
-    
+
     public static final ResourceLocation SHOCK_TEXTURE = getLoc("shock_pendant.png");
     public static final ResourceLocation FLAME_TEXTURE = getLoc("flame_pendant.png");
     public static final ResourceLocation THORN_TEXTURE = getLoc("thorn_pendant.png");
-    public static final ResourceLocation PANIC_TEXTURE = getLoc("panic_necklace.png");
-    public static final ResourceLocation ULTIMATE_TEXTURE = getLoc("ultimate_pendant.png");
     public static final ResourceLocation SACRIFICIAL_TEXTURE = getLoc("sacrificial_amulet.png");
-
-    public static final ResourceLocation BOTTLED_CLOUD = getLoc("bottled_cloud.png");
-    public static final ResourceLocation BOTTLED_FART = getLoc("bottled_fart.png");
-    public static final ResourceLocation ANTIDOTE_VESSEL = getLoc("antidote_vessel.png");
-    public static final ResourceLocation BUBBLE_WRAP = getLoc("bubble_wrap.png");
-    public static final ResourceLocation OBSIDIAN_SKULL = getLoc("obsidian_skull.png");
-
-    public static final ResourceLocation CLOAK_NORMAL = getLoc("star_cloak.png");
-    public static final ResourceLocation CLOAK_OVERLAY = getLoc("star_cloak_overlay.png");
 
     public static final ResourceLocation HAT_TEXTURE = getLoc("drinking_hat.png");
     public static final ResourceLocation HAT_SPECIAL_TEXTURE = getLoc("drinking_hat_special.png");
@@ -39,73 +32,41 @@ public class Resources extends CommonRcs {
     public static final ResourceLocation FIRE_GAUNTLET_OVERLAY_TEXTURE = getLoc("fire_gauntlet_overlay_normal.png");
     public static final ResourceLocation POCKET_PISTON_TEXTURE = getLoc("pocket_piston_normal.png");
 
-    public static final ResourceLocation GOGGLES_TEXTURE = getLoc("night_vision_goggles.png");
-    
-    public static final ResourceLocation SNORKEL_TEXTURE = getLoc("snorkel.png");
-
     static ResourceLocation getLoc(String path) {
         return getLoc(Artifacts.MODID, ENTITY_LAYER, path);
     }
 
-    public static final ModelBauble AMULET_MODEL = new ModelArtifacts(new ModelAmulet());
-    public static final ModelBauble PANIC_MODEL = new ModelArtifacts(new ModelPanicNecklace());
-    public static final ModelBauble ULTIMATE_MODEL = new ModelArtifacts(new ModelUltimatePendant());
-
-    public static final ModelBauble BOTTLE_MODEL = new ModelArtifacts(new ModelBottledCloud()) {
+    public static final ModelBauble AMULET_MODEL = new ModelArtifacts(new ModelAmulet(), null) {
         @Override
-        public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-            boolean hasPants = !((EntityPlayer)entity).getItemStackFromSlot(EntityEquipmentSlot.LEGS).isEmpty();
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(1.1666666F, 1.1666666F, 1.1666666F);
-            GlStateManager.scale(1.0F, 1.0F, hasPants ? 1.2F : 1.1F);
-            ((ModelBottledCloud) this.model).belt.render(scale);
-            GlStateManager.scale(1.0F, 1.0F, hasPants ? 0.8333333F : 0.9090909F);
-            GlStateManager.scale(0.5F, 0.5F, 0.5F);
-            GlStateManager.translate(0.0F, 1.0F, -0.6666667F);
-            GlStateManager.translate(0.2F, 0.0F, 0.0F);
-            GlStateManager.rotate(-15.0F, 0.0F, 1.0F, 0.0F);
-            ((ModelBottledCloud) this.model).jar.render(scale);
-            ((ModelBottledCloud) this.model).lid.render(scale);
-            GlStateManager.popMatrix();
+        public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+            Item item = stack.getItem();
+            if (item == ModItems.SHOCK_PENDANT) return Resources.SHOCK_TEXTURE;
+            else if(item == ModItems.FLAME_PENDANT) return Resources.FLAME_TEXTURE;
+            else if(item == ModItems.THORN_PENDANT) return Resources.THORN_TEXTURE;
+            else if(item == ModItems.SACRIFICIAL_AMULET) return Resources.SACRIFICIAL_TEXTURE;
+            return null;
         }
     };
-    public static final ModelBauble ANTIDOTE_MODEL = new ModelArtifacts(new ModelAntidoteVessel());
-    public static final ModelBauble BUBBLE_MODEL = new ModelBauble(new ModelBubbleWrap()) {
+    public static final ModelBauble PANIC_MODEL = new ModelArtifacts(new ModelPanicNecklace(), getLoc("panic_necklace.png"));
+    public static final ModelBauble ULTIMATE_MODEL = new ModelArtifacts(new ModelUltimatePendant(), getLoc("ultimate_pendant.png"));
+
+    public static final ModelBauble BOTTLED_CLOUD = new ModelBottle(getLoc("bottled_cloud.png"));
+    public static final ModelBauble BOTTLED_FART = new ModelBottle(getLoc("bottled_fart.png"));
+    public static final ModelBauble ANTIDOTE_MODEL = new ModelArtifacts(new ModelAntidoteVessel(), getLoc("antidote_vessel.png"));
+    public static final ModelBauble BUBBLE_MODEL = new ModelInherit(new ModelBubbleWrap(), getLoc("bubble_wrap.png")) {
         @Override
         public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             ((ModelBubbleWrap) this.model).belt.render(scale);
         }
     };
-    public static final ModelBauble SKULL_MODEL = new ModelArtifacts(new ModelObsidianSkull());
+    public static final ModelBauble SKULL_MODEL = new ModelArtifacts(new ModelObsidianSkull(), getLoc("obsidian_skull.png"));
 
-    public static final ModelBauble CLOAK_MODEL_UP = new ModelBauble(new ModelCloak() {
-        @Override
-        public void render(Entity entity, float f1, float f2, float f3, float f4, float f5, float scale) {
-            this.renderHood(entity, 0, 0, 0, 0, 0, scale, renderHood);
-        }
-    });
-    public static final ModelBauble CLOAK_MODEL_DOWN = new ModelBauble(new ModelCloak() {
-        @Override
-        public void render(Entity entity, float f1, float f2, float f3, float f4, float f5, float scale) {
-            this.renderCloak(entity, 0, 0, 0, 0, 0, scale, renderHood);
-        }
-    });
+    public static final ModelBauble CLOAK_MODEL_UP = new ModelCloak(true);
+    public static final ModelBauble CLOAK_MODEL_DOWN = new ModelCloak(false);
 
-    public static final ModelBauble HAT_MODEL = new ModelBauble(new ModelDrinkingHat() {
-        @Override
-        public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-            if (entity instanceof EntityPlayer) {
-                if (entity.getName().equals("wouterke")) {
-                    this.hatShade.showModel = ((EntityPlayer) entity).getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty();
-                } else {
-                    this.hatShade.showModel = false;
-                }
-            }
-            this.hat.render(scale);
-        }
-    });
+    public static final ModelBauble HAT_MODEL = new ModelHat();
 
-    public static final ModelBauble GOGGLES = new ModelBauble(new ModelNightVisionGoggles() {
+    public static final ModelBauble GOGGLES = new ModelInherit(new ModelNightVisionGoggles() {
         @Override
         public void render(Entity entity, float f1, float f2, float f3, float f4, float f5, float scale) {
             this.headBand.showModel = true;
@@ -130,10 +91,10 @@ public class Resources extends CommonRcs {
             this.eyeLeftOverlay.showModel = false;
             this.eyeRightOverlay.showModel = false;
         }
-    });
+    }, getLoc("night_vision_goggles.png"));
 
     private static boolean renderFull = true;
-    public static final ModelBauble SNORKEL = new ModelBauble(new ModelSnorkel() {
+    public static final ModelBauble SNORKEL = new ModelInherit(new ModelSnorkel() {
         public void render(Entity entity, float f1, float f2, float f3, float f4, float f5, float scale) {
             this.snorkelMouthPiece.showModel = true;
             this.snorkelTubeThing.showModel = true;
@@ -152,13 +113,6 @@ public class Resources extends CommonRcs {
                 GlStateManager.disableBlend();
             }
         }
-    });
+    }, getLoc("snorkel.png"));
 
-    private static boolean renderHood = true;
-    public static void setHoodState(boolean render) {
-        renderHood = render;
-    }
-    public static boolean getHoodState() {
-        return renderHood;
-    }
 }

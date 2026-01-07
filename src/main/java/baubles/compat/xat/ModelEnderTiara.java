@@ -10,18 +10,11 @@ import xzeroair.trinkets.init.ModItems;
 import xzeroair.trinkets.util.TrinketsConfig;
 
 public class ModelEnderTiara extends ModelXat {
-    private static ModelEnderTiara instance;
+    public static ModelEnderTiara instance = new ModelEnderTiara();
     private static final ResourceLocation MODEL_LOCATION = new ResourceLocation(ModItems.baubles.BaubleEnderTiara.getRegistryName().toString() + "_model");
 
     public ModelEnderTiara() {
         super(MODEL_LOCATION);
-    }
-
-    public static ModelEnderTiara instance() {
-        if (instance == null) {
-            instance = new ModelEnderTiara();
-        }
-        return instance;
     }
 
     @Override

@@ -2,36 +2,28 @@ package baubles.api.render;
 
 import baubles.api.model.ModelBauble;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * You can register render by implementing IRender or setting in {@link baubles.api.BaublesWrapper}.
  */
 public interface IRenderBauble {
 
-    default Map<ModelBauble, RenderType> getRenderMap(ItemStack stack, EntityLivingBase entity, boolean slim) {
+    default <T extends IRenderBauble> List<T> getSubRender(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return null;
     }
 
-    default ModelBauble getModel(ItemStack stack, EntityLivingBase entity, boolean slim) {
+    default ModelBauble getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return null;
     }
 
-    default ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        return null;
-    }
-
-    default ResourceLocation getEmissiveMap(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        return null;
-    }
-
-    default RenderType getRenderType(ItemStack stack, EntityLivingBase entity, boolean slim) {
+    default RenderType getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return getRenderType();
     }
 

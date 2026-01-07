@@ -9,6 +9,7 @@ import baubles.api.registries.TypesData;
 import baubles.api.render.IRenderBauble;
 import baubles.client.model.ModelTire;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.SoundEvents;
@@ -91,17 +92,12 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 	}
 
 	@Override
-	public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, boolean slim) {
-		return ModelTire.instance();
+	public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+		return ModelTire.instance;
 	}
 
 	@Override
-	public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
-		return ModelTire.getTexture();
-	}
-
-	@Override
-	public RenderType getRenderType(ItemStack stack, EntityLivingBase entity, boolean slim) {
+	public RenderType getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
 		return RenderType.BODY;
 	}
 }

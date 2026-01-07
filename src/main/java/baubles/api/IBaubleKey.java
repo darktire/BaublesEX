@@ -92,14 +92,14 @@ public interface IBaubleKey {
         }
 
         private static boolean isStackMatch(ItemStack a, ItemStack b) {
-            if (a == null || a == b) return true;
-            if (b == null) return false;
+            if (a == b) return true;
+            if (a == null || b == null) return false;
             return a.getItem() == b.getItem() && a.getMetadata() == b.getMetadata() && isNbtMatch(b.getTagCompound(), a.getTagCompound());
         }
 
         private static boolean isNbtMatch(NBTTagCompound a, NBTTagCompound b) {
-            if (a == b) return true;
-            if (a == null || b == null) return false;
+            if (a == null || a == b) return true;
+            if (b == null) return false;
             Set<String> ref = a.getKeySet();
             if (b.getKeySet().containsAll(ref)) {
                 return ref.stream().allMatch(key -> Objects.equals(a.getTag(key), b.getTag(key)));

@@ -1,6 +1,6 @@
 package baubles.compat.bountifulbaubles;
 
-import baubles.api.model.ModelBauble;
+import baubles.client.model.ModelInherit;
 import cursedflames.bountifulbaubles.item.ModItems;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
@@ -12,25 +12,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.HashMap;
-import java.util.Map;
+public class ModelAmulet extends ModelInherit {
 
-public class ModelAmulet extends ModelBauble {
-    private static final Map<Item, ModelAmulet> instances = new HashMap<>();
-    private final ResourceLocation texture;
-
-    public ModelAmulet(Item item) {
-        this.texture = switchTex(item);
-        this.model = new ModelBiped();
-    }
-
-    public static ModelAmulet instance(Item item) {
-        ModelAmulet model = instances.get(item);
-        if (model == null) {
-            model = new ModelAmulet(item);
-            instances.put(item, model);
-        }
-        return model;
+    public ModelAmulet(ItemStack stack) {
+        super(new ModelBiped(), switchTex(stack.getItem()));
     }
 
     private static ResourceLocation switchTex(Item item) {
@@ -58,9 +43,5 @@ public class ModelAmulet extends ModelBauble {
         GlStateManager.scale(s, s, s);
 
         ((ModelBiped) model).bipedBody.render(scale);
-    }
-
-    public ResourceLocation getTexture() {
-        return this.texture;
     }
 }

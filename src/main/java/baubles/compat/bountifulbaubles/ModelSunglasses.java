@@ -1,18 +1,16 @@
 package baubles.compat.bountifulbaubles;
 
-import baubles.api.model.ModelBauble;
-import cursedflames.bountifulbaubles.item.ModItems;
+import baubles.client.model.ModelInherit;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
-public class ModelSunglasses extends ModelBauble {
+public class ModelSunglasses extends ModelInherit {
 
     public ModelSunglasses() {
-        super(ModItems.trinketMagicLenses, false);
-        this.model = new cursedflames.bountifulbaubles.client.model.ModelSunglasses();
+        super(new cursedflames.bountifulbaubles.client.model.ModelSunglasses(), Resources.getLoc("sunglasses_layer_1.png"));
     }
 
     @Override

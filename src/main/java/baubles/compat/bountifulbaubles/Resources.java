@@ -12,8 +12,6 @@ public class Resources extends CommonRcs {
     public static final ResourceLocation PRIDE_TEXTURE = getLoc("amulet_sin_pride.png");
     public static final ResourceLocation WRATH_TEXTURE = getLoc("amulet_sin_wrath.png");
 
-    public static final ResourceLocation SUNGLASSES_TEXTURE = getLoc("sunglasses_layer_1.png");
-
     public static final ModelBauble SUNGLASSES = new ModelSunglasses();
 
     static ResourceLocation getLoc(String path) {

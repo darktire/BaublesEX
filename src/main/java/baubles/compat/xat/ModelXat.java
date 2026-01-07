@@ -20,7 +20,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
 
-public class ModelXat extends ModelBauble {
+public abstract class ModelXat extends ModelBauble {
     private static final RenderItem renderer = Minecraft.getMinecraft().getRenderItem();
     private final IBakedModel model;
 
@@ -29,7 +29,8 @@ public class ModelXat extends ModelBauble {
         this.model = renderer.getItemModelMesher().getModelManager().getModel(modelLoc);
     }
 
-    public static ResourceLocation getTexture() {
+    @Override
+    public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return TextureMap.LOCATION_BLOCKS_TEXTURE;
     }
 

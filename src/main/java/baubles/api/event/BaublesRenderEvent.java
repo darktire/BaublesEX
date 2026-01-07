@@ -1,29 +1,30 @@
 package baubles.api.event;
 
 
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class BaublesRenderEvent extends BaublesEvent {
-    private final boolean slim;
+    private final RenderPlayer renderPlayer;
 
-    public BaublesRenderEvent(EntityLivingBase entity, boolean slim, ItemStack stack) {
+    public BaublesRenderEvent(EntityLivingBase entity, RenderPlayer renderPlayer, ItemStack stack) {
         super(entity, stack);
-        this.slim = slim;
+        this.renderPlayer = renderPlayer;
     }
 
-    public boolean isSlim() {
-        return this.slim;
+    public RenderPlayer getRenderPlayer() {
+        return this.renderPlayer;
     }
 
-    public static BaublesRenderEvent of(EntityLivingBase entity, boolean slim, ItemStack stack, Object slotId) {
+    public static BaublesRenderEvent of(EntityLivingBase entity, RenderPlayer renderPlayer, ItemStack stack, Object slotId) {
         if (slotId instanceof Integer) {
-            return new InBaubles(entity, slim, stack, (Integer) slotId);
+            return new InBaubles(entity, renderPlayer, stack, (Integer) slotId);
         }
         else if (slotId instanceof EntityEquipmentSlot) {
-            return new InEquipments(entity, slim, stack, (EntityEquipmentSlot) slotId);
+            return new InEquipments(entity, renderPlayer, stack, (EntityEquipmentSlot) slotId);
         }
         throw new IllegalArgumentException("slotId illegal");
     }
@@ -31,8 +32,8 @@ public class BaublesRenderEvent extends BaublesEvent {
     public static class InBaubles extends BaublesRenderEvent {
         private final int slot;
 
-        public InBaubles(EntityLivingBase entity, boolean slim, ItemStack stack, int slot) {
-            super(entity, slim, stack);
+        public InBaubles(EntityLivingBase entity, RenderPlayer renderPlayer, ItemStack stack, int slot) {
+            super(entity, renderPlayer, stack);
             this.slot = slot;
         }
 
@@ -44,8 +45,8 @@ public class BaublesRenderEvent extends BaublesEvent {
     public static class InEquipments extends BaublesRenderEvent {
         private final EntityEquipmentSlot slotIn;
 
-        public InEquipments(EntityLivingBase entity, boolean slim, ItemStack stack, EntityEquipmentSlot slotIn) {
-            super(entity, slim, stack);
+        public InEquipments(EntityLivingBase entity, RenderPlayer renderPlayer, ItemStack stack, EntityEquipmentSlot slotIn) {
+            super(entity, renderPlayer, stack);
             this.slotIn = slotIn;
         }
 
@@ -59,8 +60,8 @@ public class BaublesRenderEvent extends BaublesEvent {
         private boolean changed;
         private final boolean isEmissiveMap;
 
-        public SwitchTexture(EntityLivingBase entity, boolean slim, ItemStack stack, ResourceLocation texture, boolean flag) {
-            super(entity, slim, stack);
+        public SwitchTexture(EntityLivingBase entity, RenderPlayer renderPlayer, ItemStack stack, ResourceLocation texture, boolean flag) {
+            super(entity, renderPlayer, stack);
             this.texture = texture;
             this.isEmissiveMap = flag;
             this.changed = false;

@@ -22,17 +22,13 @@ import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 
 public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
     private final RenderPlayer renderPlayer;
-    private final ModelPlayer modelPlayer;
-    private final boolean slim;
 
-    public BaublesRenderLayer(RenderPlayer renderPlayer, boolean slim) {
+    public BaublesRenderLayer(RenderPlayer renderPlayer) {
         this.renderPlayer = renderPlayer;
-        this.modelPlayer = renderPlayer.getMainModel();
-        this.slim = slim;
     }
 
     @Override
@@ -50,29 +46,26 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
             IWrapper wrapper = BaublesApi.toBauble(stack);
             if (wrapper != null) {
                 ctx.setStack(stack);
-                ctx.setWrapper(wrapper);
-                BaublesRenderEvent event = BaublesRenderEvent.of(ctx.entity, this.slim, stack, slot.id);
+                BaublesRenderEvent event = BaublesRenderEvent.of(ctx.entity, this.renderPlayer, stack, slot.id);
                 MinecraftForge.EVENT_BUS.post(event);
                 if (!event.isCanceled()) {
-                    this.renderLayer(ctx);
+                    this.renderLayer(ctx, wrapper);
                 }
             }
         }
     }
 
-    private void renderLayer(QueryCtx ctx) {
-        Map<ModelBauble, IRenderBauble.RenderType> collection = ctx.wrapper.getRenderMap(ctx.stack, ctx.entity, this.slim);
-        if (collection == null) {
-            ModelBauble model = ctx.wrapper.getModel(ctx.stack, ctx.entity, this.slim);
-            IRenderBauble.RenderType render = ctx.wrapper.getRenderType(ctx.stack, ctx.entity, this.slim);
-            renderModelPart(ctx, model, render);
+    private void renderLayer(QueryCtx ctx, IRenderBauble renderBauble) {
+        List<IRenderBauble> list = renderBauble.getSubRender(ctx.stack, ctx.entity, this.renderPlayer);
+        if (list != null) {
+            list.forEach(render -> renderLayer(ctx, render));
         }
-        else {
-            collection.forEach((model, render) -> renderModelPart(ctx, model, render));
-        }
+        renderModelPart(ctx, renderBauble);
     }
 
-    private void renderModelPart(QueryCtx ctx, ModelBauble model, IRenderBauble.RenderType render) {
+    private void renderModelPart(QueryCtx ctx, IRenderBauble renderBauble) {
+        ModelBauble model = renderBauble.getModel(ctx.stack, ctx.entity, this.renderPlayer);
+        IRenderBauble.RenderType render = renderBauble.getRenderType(ctx.stack, ctx.entity, this.renderPlayer);
         if (model != null && render != null) {
             GlStateManager.pushMatrix();
             GlStateManager.enableRescaleNormal();
@@ -80,10 +73,10 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
             GlStateManager.enableLighting();
             if (ctx.entity.isSneaking() && model.needLocating()) GlStateManager.translate(0, 0.2F, 0);
 
-            ResourceLocation texture = ctx.wrapper.getTexture(ctx.stack, ctx.entity, this.slim);
+            ResourceLocation texture = model.getTexture(ctx.stack, ctx.entity, this.renderPlayer);
             if (texture != null) renderEachTexture(ctx, render, texture, model, true);
 
-            texture = ctx.wrapper.getEmissiveMap(ctx.stack, ctx.entity, this.slim);
+            texture = model.getEmissiveMap(ctx.stack, ctx.entity, this.renderPlayer);
             if (texture != null) {
                 float lastSky = OpenGlHelper.lastBrightnessX;
                 float lastBlock = OpenGlHelper.lastBrightnessY;
@@ -111,7 +104,7 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
 
     private void switchTex(QueryCtx ctx, ResourceLocation texture, boolean ems) {
         if (texture != null) {
-            BaublesRenderEvent.SwitchTexture event = new BaublesRenderEvent.SwitchTexture(ctx.entity, this.slim, ctx.stack, texture, ems);
+            BaublesRenderEvent.SwitchTexture event = new BaublesRenderEvent.SwitchTexture(ctx.entity, this.renderPlayer, ctx.stack, texture, ems);
             MinecraftForge.EVENT_BUS.post(event);
             if (event.isChanged()) texture = event.getTexture();
             Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
@@ -121,17 +114,17 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
     private void switchBip(IRenderBauble.RenderType render, float scale) {
         switch (render) {
             case HEAD:
-                modelPlayer.bipedHead.postRender(scale); break;
+                renderPlayer.getMainModel().bipedHead.postRender(scale); break;
             case BODY:
-                modelPlayer.bipedBody.postRender(scale); break;
+                renderPlayer.getMainModel().bipedBody.postRender(scale); break;
             case ARM_LEFT:
-                modelPlayer.bipedLeftArm.postRender(scale); break;
+                renderPlayer.getMainModel().bipedLeftArm.postRender(scale); break;
             case ARM_RIGHT:
-                modelPlayer.bipedRightArm.postRender(scale); break;
+                renderPlayer.getMainModel().bipedRightArm.postRender(scale); break;
             case LEG_LEFT:
-                modelPlayer.bipedLeftLeg.postRender(scale); break;
+                renderPlayer.getMainModel().bipedLeftLeg.postRender(scale); break;
             case LEG_RIGHT:
-                modelPlayer.bipedRightLeg.postRender(scale); break;
+                renderPlayer.getMainModel().bipedRightLeg.postRender(scale); break;
         }
     }
 
@@ -141,7 +134,7 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
     }
 
     public ModelPlayer getModelPlayer() {
-        return this.modelPlayer;
+        return this.renderPlayer.getMainModel();
     }
 
     public RenderPlayer getRenderPlayer() {
@@ -152,7 +145,6 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
         private final EntityLivingBase entity;
         private final float limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale;
         private ItemStack stack;
-        private IWrapper wrapper;
 
         private QueryCtx(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             this.entity = entity;
@@ -167,10 +159,6 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
 
         public void setStack(ItemStack stack) {
             this.stack = stack;
-        }
-
-        public void setWrapper(IWrapper wrapper) {
-            this.wrapper = wrapper;
         }
     }
 

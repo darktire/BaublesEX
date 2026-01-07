@@ -13,6 +13,7 @@
   ],
   "client": [
     "vanilla.AccessorRenderItem",
+    "vanilla.AccessorRenderPlayer",
     "vanilla.MixinCape",
     "vanilla.MixinElytra$MixinPlayerSP",
     "vanilla.MixinGuiScreen"

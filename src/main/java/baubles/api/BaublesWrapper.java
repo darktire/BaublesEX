@@ -5,12 +5,12 @@ import baubles.api.cap.IBaublesListener;
 import baubles.api.event.BaublesEvent;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -110,37 +110,22 @@ public final class BaublesWrapper implements IWrapper {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public Map<ModelBauble, RenderType> getRenderMap(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        if (this.render == null) return null;
-        return this.render.getRenderMap(stack, entity, slim);
+    public <T extends IRenderBauble> List<T> getSubRender(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+        return this.render.getSubRender(stack, entity, renderPlayer);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, boolean slim) {
+    public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         if (this.render == null) return null;
-        return this.render.getModel(stack, entity, slim);
+        return this.render.getModel(stack, entity, renderPlayer);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, boolean slim) {
+    public RenderType getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         if (this.render == null) return null;
-        return this.render.getTexture(stack, entity, slim);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public ResourceLocation getEmissiveMap(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        if (this.render == null) return null;
-        return this.render.getEmissiveMap(stack, entity, slim);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public RenderType getRenderType(ItemStack stack, EntityLivingBase entity, boolean slim) {
-        if (this.render == null) return null;
-        return this.render.getRenderType(stack, entity, slim);
+        return this.render.getRenderType(stack, entity, renderPlayer);
     }
 
     @Override

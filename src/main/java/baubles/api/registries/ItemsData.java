@@ -122,6 +122,27 @@ public class ItemsData {
         return wrapper;
     }
 
+    public static IBaubleKey trueBaubleKey(Item item) {
+        return trueBaubleKey(IBaubleKey.BaubleKey.wrap(item), true);
+    }
+
+    public static IBaubleKey trueBaubleKey(IBaubleKey key, boolean isItem) {
+        if (isItem) {
+            return BAUBLE_ITEMS.keySet().stream()
+                    .filter(get -> get.equals(key))
+                    .findFirst()
+                    .orElse(null);
+        }
+        else {
+            IBaubleKey trueKey = BAUBLE_ITEMS.keySet().stream()
+                    .filter(get -> get.equals(key))
+                    .findFirst()
+                    .orElse(null);
+            if (trueKey == null) return trueBaubleKey(key.fuzzier(), true);
+        }
+        return null;
+    }
+
     public static boolean isBauble(ItemStack stack) {
         return BAUBLE_ITEMS.containsKey(IBaubleKey.BaubleKey.wrap(stack.getItem())) || BAUBLE_ITEMS.containsKey(IBaubleKey.BaubleKey.wrap(stack));
     }

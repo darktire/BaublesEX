@@ -30,12 +30,12 @@ public class ClientProxy extends CommonProxy {
     public void init() {
         Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
 
-        NORMAL_LAYER = addLayersToSkin(skinMap.get("default"), false);
-        SLIM_LAYER = addLayersToSkin(skinMap.get("slim"), true);
+        NORMAL_LAYER = addLayersToSkin(skinMap.get("default"));
+        SLIM_LAYER = addLayersToSkin(skinMap.get("slim"));
     }
 
-    private static BaublesRenderLayer addLayersToSkin(RenderPlayer renderPlayer, boolean slim) {
-        BaublesRenderLayer layer = new BaublesRenderLayer(renderPlayer, slim);
+    private static BaublesRenderLayer addLayersToSkin(RenderPlayer renderPlayer) {
+        BaublesRenderLayer layer = new BaublesRenderLayer(renderPlayer);
         renderPlayer.addLayer(layer);
         return layer;
     }

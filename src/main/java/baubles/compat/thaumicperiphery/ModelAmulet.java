@@ -1,6 +1,6 @@
 package baubles.compat.thaumicperiphery;
 
-import baubles.api.model.ModelBauble;
+import baubles.client.model.ModelInherit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
@@ -11,38 +11,22 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import thaumcraft.api.items.ItemsTC;
 import thaumcraft.client.lib.UtilsFX;
+import thaumicperiphery.ModContent;
 import thaumicperiphery.render.LayerExtraBaubles;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
-
-public class ModelAmulet extends ModelBauble {
-    private static final Map<Map.Entry<Item, Boolean>, ModelAmulet> instances = new HashMap<>();
-    private final ModelBiped model1;
+public class ModelAmulet extends ModelInherit {
     private final boolean flag;
     private final int width, height;
 
-    private ModelAmulet(Item item, boolean flag) {
-        super(item, false);
-        this.model1 = new ModelBiped();
-        this.flag = flag;
-        this.width = getWidth(flag);
-        this.height = getHeight();
-    }
-
-    private int getWidth(boolean flag) {
-        return this.item == ItemsTC.baubles ? 5 : flag ? 6 : 5;
-    }
-
-    private int getHeight() {
-        return this.item == ItemsTC.baubles ? 5 : 6;
-    }
-
-    public static ModelAmulet instance(Item item, boolean flag) {
-        return instances.putIfAbsent(new AbstractMap.SimpleEntry<>(item, flag), new ModelAmulet(item, flag));
+    public ModelAmulet(ItemStack stack) {
+        super(new ModelBiped(), switchTex(stack.getItem(), stack.getMetadata()));
+        Item item = stack.getItem();
+        this.flag = item == ItemsTC.amuletVis && stack.getMetadata() == 1;
+        this.width = item == ItemsTC.baubles ? 5 : (flag ? 6 : 5);
+        this.height = item == ItemsTC.baubles ? 5 : 6;
     }
 
     @Override
@@ -50,7 +34,7 @@ public class ModelAmulet extends ModelBauble {
         GlStateManager.translate(0.0F, -5.0E-4F, 0.0F);
         float s = 1.05F;
         GlStateManager.scale(s, s, s);
-        this.model1.bipedBody.render(scale);
+        ((ModelBiped) this.model).bipedBody.render(scale);
 
         GlStateManager.pushMatrix();
         drawIcon(scale);
@@ -80,5 +64,23 @@ public class ModelAmulet extends ModelBauble {
     @Override
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+    }
+
+    @Override
+    public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+        return super.getTexture(stack, entity, renderPlayer);
+    }
+
+    private static ResourceLocation switchTex(Item item, int meta) {
+        if (item == ItemsTC.amuletVis) {
+            if (meta == 0) return Resources.AMULET_VIS_STONE;
+            else if (meta == 1) return Resources.AMULET_VIS;
+        }
+        else if (item == ItemsTC.baubles) {
+            if (meta == 0) return Resources.AMULET_MUNDANE;
+            else if (meta == 4) return Resources.AMULET_FANCY;
+        }
+        else if (item == ModContent.vis_phylactery) return Resources.VIS_PHYLACTERY;
+        return null;
     }
 }

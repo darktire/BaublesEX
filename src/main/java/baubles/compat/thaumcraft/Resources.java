@@ -1,6 +1,7 @@
 package baubles.compat.thaumcraft;
 
 import baubles.api.model.ModelBauble;
+import baubles.client.model.ModelInherit;
 import baubles.compat.CommonRcs;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,10 +16,7 @@ import thaumcraft.client.lib.UtilsFX;
 
 public class Resources extends CommonRcs {
 
-    public static final ResourceLocation GOGGLES_TEX = getLoc("textures/entity/armor/goggles.png");
-    public static final ResourceLocation CURIOUS_BAND_TEX = getLoc("textures/items/curiosity_band_worn.png");
-
-    public static final ModelBauble GOGGLES = new ModelBauble(new ModelBiped()) {
+    public static final ModelBauble GOGGLES = new ModelInherit(new ModelBiped(), getLoc("textures/entity/armor/goggles.png")) {
         @Override
         public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
             boolean armor = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty();
@@ -35,6 +33,8 @@ public class Resources extends CommonRcs {
     };
 
     public static final ModelBauble CURIOUS_BAND = new ModelBauble() {
+        private final ResourceLocation res = getLoc("textures/items/curiosity_band_worn.png");
+
         @Override
         public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
             boolean armor = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty();
@@ -48,6 +48,11 @@ public class Resources extends CommonRcs {
         @Override
         public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             UtilsFX.renderTextureIn3D(0.0f, 0.0f, 1.0f, 1.0f, 16, 26, 0.1f);
+        }
+
+        @Override
+        public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+            return res;
         }
     };
 
