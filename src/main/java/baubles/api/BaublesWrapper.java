@@ -111,6 +111,7 @@ public final class BaublesWrapper implements IWrapper {
     @Override
     @SideOnly(Side.CLIENT)
     public <T extends IRenderBauble> List<T> getSubRender(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+        if (this.render == null) return null;
         return this.render.getSubRender(stack, entity, renderPlayer);
     }
 

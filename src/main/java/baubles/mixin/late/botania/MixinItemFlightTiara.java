@@ -10,13 +10,14 @@ import vazkii.botania.common.item.equipment.bauble.ItemFlightTiara;
 
 @Mixin(value = ItemFlightTiara.class, remap = false)
 public class MixinItemFlightTiara {
-    @Redirect(at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;getStackInSlot(I)Lnet/minecraft/item/ItemStack;"), method = "updatePlayerFlyStatus(Lnet/minecraftforge/event/entity/living/LivingEvent$LivingUpdateEvent;)V")
-    private ItemStack redirect1(IBaublesItemHandler instance, int i) {
-        return HookHelper.getStack(instance, this);
-    }
-
-    @Redirect(at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;getStackInSlot(I)Lnet/minecraft/item/ItemStack;"), method = "shouldPlayerHaveFlight")
-    private ItemStack redirect2(IBaublesItemHandler instance, int i) {
+    @Redirect(
+            method = {"updatePlayerFlyStatus(Lnet/minecraftforge/event/entity/living/LivingEvent$LivingUpdateEvent;)V", "shouldPlayerHaveFlight"},
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lbaubles/api/cap/IBaublesItemHandler;getStackInSlot(I)Lnet/minecraft/item/ItemStack;"
+            )
+    )
+    private ItemStack redirect(IBaublesItemHandler instance, int i) {
         return HookHelper.getStack(instance, this);
     }
 }

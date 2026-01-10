@@ -57,7 +57,9 @@ public class EventHandler {
         if (AETHER_API.isAccessory(stack)) {
             if (!ItemsData.isBauble(stack)) {
                 ItemsData.registerBauble(stack, map.get(AETHER_API.getAccessory(stack).getAccessoryType()));
-                event.addCapability(EventHandlerItem.ITEM_CAP, new BaublesCapabilityProvider(stack, null));
+                if (!ItemsData.isBauble(stack.getItem())) {
+                    event.addCapability(EventHandlerItem.ITEM_CAP, new BaublesCapabilityProvider(stack, null));
+                }
             }
         }
     }

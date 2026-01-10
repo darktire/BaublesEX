@@ -27,8 +27,11 @@ public abstract class MixinStack {
         if (cir.getReturnValue().getType() == EnumActionResult.SUCCESS) {
             heldItem = (ItemStack) (Object) this;
             if (BaublesApi.isBauble(heldItem) && !playerIn.world.isRemote && playerIn instanceof EntityPlayerMP) {
-                PacketSync pkt = PacketSync.S2CPack(playerIn, BaublesApi.getIndexInBaubles(playerIn, heldItem, 0), heldItem, -1);
-                PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) playerIn);
+                int index = BaublesApi.getIndexInBaubles(playerIn, heldItem, 0);
+                if (index != -1) {
+                    PacketSync pkt = PacketSync.S2CPack(playerIn, index, heldItem, -1);
+                    PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) playerIn);
+                }
             }
         }
 

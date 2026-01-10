@@ -12,6 +12,8 @@
     "artifacts.MixinAttributeModifierBauble",
     "artifacts.MixinBaubleAmulet",
     "artifacts.MixinBaubleBottledCloud",
+    "backpacked.MixinBaubleBackpackItem",
+    "backpacked.MixinIntegration",
     "botania.MixinContainerBaubleBox",
     "botania.MixinHUDHandler",
     "botania.MixinItemDivaCharm",
@@ -24,6 +26,8 @@
     "ebwizardry.MixinBaubles",
     "enigmaticlegacy.MixinEnigmaticEvents",
     "nvg.MixinBaubleInventoryUtil",
+    "setbonus.MixinBonus",
+    "setbonus.MixinSlot",
     "tombstone.MixinCompatibilityBaubles",
     "wings.MixinWings",
     "wizardryutils.MixinBaubles"

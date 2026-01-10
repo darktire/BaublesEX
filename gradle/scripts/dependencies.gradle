@@ -27,14 +27,19 @@ dependencies {
     //compileOnly
     compileOnly fg.deobf("curse.maven:wings-302584:2829351")
     compileOnly fg.deobf("curse.maven:simple-magnets-394140:5822732")
-    compileOnly files("libs/tomb.jar")
+    compileOnly files("libs/tombstone-1.12.2-4.7.5-dev.jar")
     compileOnly fg.deobf("curse.maven:night-vision-goggles-321288:2738564")
 
+    implementation fg.deobf("curse.maven:fantastic-lib-315773:6807019")
+    implementation fg.deobf("curse.maven:set-bonus-317158:6587304")
+
+    compileOnly fg.deobf("curse.maven:backpacked-352835:3252551")
+
     //JEI
-//    compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")
-//    runtimeOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}")
     //HEI
-    implementation 'mezz:jei:4.29.7'
+//    implementation 'mezz:jei:4.29.14'
     //CoFH
 //    runtimeOnly fg.deobf("curse.maven:redstone-flux-270789:2920436")
 //    runtimeOnly fg.deobf("curse.maven:cofh-core-69162:2920433")
