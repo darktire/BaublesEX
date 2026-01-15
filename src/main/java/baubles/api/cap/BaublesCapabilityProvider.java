@@ -26,13 +26,13 @@ public class BaublesCapabilityProvider implements ICapabilityProvider {
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
         this.initialize();
-        return (capability == CAPABILITY_ITEM_BAUBLE && this.isDefined()) || (this.other != null && this.other.hasCapability(capability, facing));
+        return capability == CAPABILITY_ITEM_BAUBLE ? this.isDefined() : this.other != null && this.other.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         this.initialize();
-        return (capability == CAPABILITY_ITEM_BAUBLE && this.isDefined()) ? CAPABILITY_ITEM_BAUBLE.cast(wrapper) : (this.other == null ? null : this.other.getCapability(capability, facing));
+        return capability == CAPABILITY_ITEM_BAUBLE ? (this.isDefined() ? CAPABILITY_ITEM_BAUBLE.cast(wrapper) : null) : (this.other == null ? null : this.other.getCapability(capability, facing));
     }
 
     private void initialize() {
