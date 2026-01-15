@@ -1,6 +1,7 @@
-package baubles.client.gui;
+package baubles.client.gui.event;
 
 import baubles.api.BaublesApi;
+import baubles.client.gui.GuiOverlay;
 import baubles.client.gui.element.ElementButton;
 import baubles.common.config.Config;
 import baubles.common.config.KeyBindings;

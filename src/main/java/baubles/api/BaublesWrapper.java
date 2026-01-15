@@ -20,14 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public final class BaublesWrapper implements IWrapper {
     private ItemStack stack;
     private IBauble bauble;
     private IRenderBauble render;
     private boolean edited = false;
-    private Attribute attribute;
+    private Addition addition;
 
     public BaublesWrapper() {}
 
@@ -40,7 +40,7 @@ public final class BaublesWrapper implements IWrapper {
         if (item instanceof IRenderBauble) {
             this.render = (IRenderBauble) item;
         }
-        this.attribute = CSTMap.INSTANCE.get(stack);
+        this.addition = CSTMap.INSTANCE.get(stack);
         this.updateBaubles();
     }
 
@@ -50,13 +50,13 @@ public final class BaublesWrapper implements IWrapper {
 
     @Override
     public List<BaubleTypeEx> getTypes(ItemStack itemStack) {
-        if (this.edited) return this.attribute.types;
+        if (this.edited) return this.addition.types;
         return this.bauble.getTypes(itemStack);
     }
 
     @Override
     public BaubleType getBaubleType(ItemStack itemStack) {
-        if (this.edited) return this.attribute.types.get(0).getOldType();
+        if (this.edited) return this.addition.types.get(0).getOldType();
         return this.bauble.getTypes(itemStack).get(0).getOldType();
     }
 
@@ -131,55 +131,55 @@ public final class BaublesWrapper implements IWrapper {
 
     @Override
     public void updateBaubles() {
-        if (this.attribute != null) {
-            if (this.attribute.bauble != null) {
-                this.bauble = this.attribute.bauble;
+        if (this.addition != null) {
+            if (this.addition.bauble != null) {
+                this.bauble = this.addition.bauble;
             }
-            if (this.attribute.render != null) {
-                this.render = this.attribute.render;
+            if (this.addition.render != null) {
+                this.render = this.addition.render;
             }
-            if (this.attribute.types != null) this.edited = true;
+            if (this.addition.types != null) this.edited = true;
         }
     }
 
     @Override
     public IWrapper startListening() {
-        Attribute attribute = CSTMap.INSTANCE.get(this.stack);
-        if (attribute != null) {
-            attribute.addListener(this);
+        Addition addition = CSTMap.INSTANCE.get(this.stack);
+        if (addition != null) {
+            addition.addListener(this);
         }
         return this;
     }
 
     public final static class CSTMap {
         private static final CSTMap INSTANCE = new CSTMap();
-        private final Map<IBaubleKey, BaublesWrapper.Attribute> map = new ConcurrentHashMap<>();
+        private final Map<IBaubleKey, Addition> map = new ConcurrentHashMap<>();
 
         public static CSTMap instance() {
             return INSTANCE;
         }
 
-        public BaublesWrapper.Attribute get(ItemStack stack) {
+        public Addition get(ItemStack stack) {
             IBaubleKey key = IBaubleKey.BaubleKey.wrap(stack);
-            Attribute a = this.map.get(key);
+            Addition a = this.map.get(key);
             if (a == null) a = this.map.get(key.fuzzier());
             return a;
         }
 
-        public void update(ItemStack stack, Consumer<BaublesWrapper.Attribute> editor) {
-            update(IBaubleKey.BaubleKey.wrap(stack), editor);
+        public <T> void update(ItemStack stack, BiConsumer<Addition, T> editor, T param) {
+            update(IBaubleKey.BaubleKey.wrap(stack), editor, param);
         }
 
-        public void update(Item item, Consumer<BaublesWrapper.Attribute> editor) {
-            update(IBaubleKey.BaubleKey.wrap(item), editor);
+        public <T> void update(Item item, BiConsumer<Addition, T> editor, T param) {
+            update(IBaubleKey.BaubleKey.wrap(item), editor, param);
         }
 
-        public void update(IBaubleKey key, Consumer<BaublesWrapper.Attribute> editor) {
-            editor.accept(this.map.computeIfAbsent(key, i -> new BaublesWrapper.Attribute()));
+        public <T> void update(IBaubleKey key, BiConsumer<Addition, T> editor, T param) {
+            editor.accept(this.map.computeIfAbsent(key, i -> new Addition()), param);
         }
     }
 
-    public final static class Attribute {
+    public final static class Addition {
         private final List<WeakReference<IBaublesListener>> listeners = new ArrayList<>();
         private final Object lock = new Object();
         private IBauble bauble;
@@ -229,9 +229,9 @@ public final class BaublesWrapper implements IWrapper {
         }
 
         public static boolean isRemoved(ItemStack stack) {
-            BaublesWrapper.Attribute attribute = CSTMap.INSTANCE.get(stack);
-            if (attribute == null) return false;
-            return attribute.remove;
+            Addition addition = CSTMap.INSTANCE.get(stack);
+            if (addition == null) return false;
+            return addition.remove;
         }
     }
 }

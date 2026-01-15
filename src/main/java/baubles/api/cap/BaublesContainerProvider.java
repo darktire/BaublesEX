@@ -1,5 +1,6 @@
 package baubles.api.cap;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -12,8 +13,8 @@ public class BaublesContainerProvider implements ICapabilityProvider, INBTSerial
 
     private final BaublesContainer container;
 
-    public BaublesContainerProvider(BaublesContainer container) {
-        this.container = container;
+    public BaublesContainerProvider(EntityLivingBase entity) {
+        this.container = new BaublesContainer(entity);
     }
 
     @Override

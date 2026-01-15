@@ -50,9 +50,14 @@ public class EventHandlerEntity {
 
     @SubscribeEvent
     public static void attachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof EntityPlayer) {
-            event.addCapability(BAUBLES_CAP, new BaublesContainerProvider(new BaublesContainer((EntityLivingBase) event.getObject())));
+        Entity entity = event.getObject();
+        if (shouldAttach(entity)) {
+            event.addCapability(BAUBLES_CAP, new BaublesContainerProvider((EntityLivingBase) entity));
         }
+    }
+
+    private static boolean shouldAttach(Entity entity) {//todo
+        return entity instanceof EntityPlayer;
     }
 
     @SubscribeEvent

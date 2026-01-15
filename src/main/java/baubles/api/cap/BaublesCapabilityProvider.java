@@ -45,6 +45,6 @@ public class BaublesCapabilityProvider implements ICapabilityProvider {
     private boolean isDefined() {
         ItemStack stack = this.ref.get();
         if (stack == null) return false;
-        return ItemsData.isBauble(stack) && !BaublesWrapper.Attribute.isRemoved(stack);
+        return ItemsData.isBauble(stack) && !BaublesWrapper.Addition.isRemoved(stack);
     }
 }

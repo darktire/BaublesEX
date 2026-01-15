@@ -20,7 +20,7 @@ import java.io.IOException;
 @MouseTweaksDisableWheelTweak
 public class GuiPlayerExpanded extends GuiOverlay {
     @Deprecated public static final ResourceLocation background = new ResourceLocation(BaublesApi.MOD_ID,"textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
-    private final EntityPlayer player;
+    private final EntityLivingBase entity;
 
     public static GuiOverlay create(EntityPlayer player, EntityLivingBase entity) {
         return new GuiPlayerExpanded(player, entity).startListening();
@@ -28,7 +28,7 @@ public class GuiPlayerExpanded extends GuiOverlay {
 
     private GuiPlayerExpanded(EntityPlayer player, EntityLivingBase entity) {
         super(ContainerPlayerExpanded.create(player, entity));
-        this.player = player;
+        this.entity = entity;
         this.allowUserInput = true;
     }
 
@@ -95,7 +95,7 @@ public class GuiPlayerExpanded extends GuiOverlay {
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 
         // draw player
-        GuiInventory.drawEntityOnScreen(left + 51, top + 75, 30, (left + 51) - mouseX, (top + 75 - 50) - mouseY, this.player);
+        GuiInventory.drawEntityOnScreen(left + 51, top + 75, 30, (left + 51) - mouseX, (top + 75 - 50) - mouseY, this.entity);
     }
 
 //    @Override

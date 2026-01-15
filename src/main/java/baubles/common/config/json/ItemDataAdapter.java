@@ -112,7 +112,7 @@ public class ItemDataAdapter extends CustomAdapter<List<IBaubleKey>> {
         void apply() {
             for (IBaubleKey key : getContent(this.content)) {
                 ItemsData.registerBauble(key, types);
-                if (this.remove) BaublesWrapper.CSTMap.instance().update(key, attribute -> attribute.remove(true));
+                if (this.remove) BaublesWrapper.CSTMap.instance().update(key, BaublesWrapper.Addition::remove, true);
             }
         }
 
@@ -139,7 +139,7 @@ public class ItemDataAdapter extends CustomAdapter<List<IBaubleKey>> {
         List<BaubleTypeEx> types;
 
         GroupKey(ItemStack stack) {
-            if (BaublesWrapper.Attribute.isRemoved(stack)) {
+            if (BaublesWrapper.Addition.isRemoved(stack)) {
                 this.removed = true;
                 this.types = null;
             }

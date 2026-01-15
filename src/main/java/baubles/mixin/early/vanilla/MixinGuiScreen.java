@@ -1,6 +1,6 @@
 package baubles.mixin.early.vanilla;
 
-import baubles.client.gui.GuiCloseEvent;
+import baubles.client.gui.event.GuiCloseEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.MinecraftForge;

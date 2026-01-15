@@ -1,6 +1,6 @@
 package baubles.compat.jei;
 
-import baubles.client.gui.GuiOverlayHandler;
+import baubles.client.gui.event.GuiOverlayHandler;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;

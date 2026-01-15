@@ -81,6 +81,12 @@ public class TypesData {
         }
         sum = pointer;
     }
+//    public static List<BaubleTypeEx> getLazyList(EntityLivingBase entity) {
+//        if (entity instanceof EntityPlayer) {
+//            return ImmutableList.copyOf(BAUBLE_SLOTS);
+//        }
+//        return new ArrayList<>();
+//    }
     public static List<BaubleTypeEx> getLazyList() {
         return ImmutableList.copyOf(BAUBLE_SLOTS);
     }

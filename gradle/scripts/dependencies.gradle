@@ -29,17 +29,22 @@ dependencies {
     compileOnly fg.deobf("curse.maven:simple-magnets-394140:5822732")
     compileOnly files("libs/tombstone-1.12.2-4.7.5-dev.jar")
     compileOnly fg.deobf("curse.maven:night-vision-goggles-321288:2738564")
-
-    implementation fg.deobf("curse.maven:fantastic-lib-315773:6807019")
-    implementation fg.deobf("curse.maven:set-bonus-317158:6587304")
-
     compileOnly fg.deobf("curse.maven:backpacked-352835:3252551")
+    //Set Bonus
+//    runtimeOnly fg.deobf("curse.maven:fantastic-lib-315773:6807019")
+    compileOnly fg.deobf("curse.maven:set-bonus-317158:6587304")
+    //Roots
+//    runtimeOnly "epicsquid.mysticallib:mysticallib:1.12.2-1.13.0-89:deobf"
+//    runtimeOnly fg.deobf("curse.maven:patchouli-306770:3162874")
+//    runtimeOnly fg.deobf("curse.maven:mystical-world-282940:3460961")
+//    implementation fg.deobf("curse.maven:roots-246183:5193525")
+
 
     //JEI
-    compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}")
+//    compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")
+//    runtimeOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}")
     //HEI
-//    implementation 'mezz:jei:4.29.14'
+    implementation 'mezz:jei:4.29.14'
     //CoFH
 //    runtimeOnly fg.deobf("curse.maven:redstone-flux-270789:2920436")
 //    runtimeOnly fg.deobf("curse.maven:cofh-core-69162:2920433")
@@ -55,7 +60,7 @@ dependencies {
 //    runtimeOnly fg.deobf("curse.maven:lolasm-460609:6854259")
 
     //TOP
-    runtimeOnly fg.deobf("curse.maven:the-one-probe-community-edition-885670:6736118")
+//    runtimeOnly fg.deobf("curse.maven:the-one-probe-community-edition-885670:6736118")
 //    runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:2667280")
     //Mo' Bends
     compileOnly fg.deobf("curse.maven:mo-bends-231347:3573346")

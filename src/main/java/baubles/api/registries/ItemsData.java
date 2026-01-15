@@ -36,12 +36,12 @@ public class ItemsData {
 
     public static void registerBauble(IBaubleKey key, IBauble bauble) {
         registerBauble(key);
-        CST_MAP.update(key, attribute -> attribute.bauble(bauble));
+        CST_MAP.update(key, BaublesWrapper.Addition::bauble, bauble);
     }
 
     public static void registerBauble(IBaubleKey key, List<BaubleTypeEx> types) {
         if (BAUBLE_ITEMS.containsKey(key)) {
-            CST_MAP.update(key, attribute -> attribute.types(types));
+            CST_MAP.update(key, BaublesWrapper.Addition::types, types);
         }
         else {
             registerBauble(key, new BaubleItem(types));
@@ -80,7 +80,7 @@ public class ItemsData {
     }
 
     public static void registerRender(Item item, IRenderBauble render) {
-        CST_MAP.update(item, attribute -> attribute.render(render));
+        CST_MAP.update(item, BaublesWrapper.Addition::render, render);
     }
 
     public static void registerBauble(ItemStack stack) {
@@ -100,7 +100,7 @@ public class ItemsData {
     }
 
     public static void registerRender(ItemStack stack, IRenderBauble render) {
-        CST_MAP.update(stack, attribute -> attribute.render(render));
+        CST_MAP.update(stack, BaublesWrapper.Addition::render, render);
     }
 
     public static IWrapper toBauble(ItemStack stack) {
