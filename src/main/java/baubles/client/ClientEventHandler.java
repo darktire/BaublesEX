@@ -29,7 +29,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import org.lwjgl.input.Keyboard;
 
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID, value = Side.CLIENT)
@@ -63,13 +65,22 @@ public class ClientEventHandler {
         if (!stack.isEmpty() && BaublesApi.isBauble(stack)) {
             try {
                 IWrapper bauble = BaublesApi.toBauble(stack);
-                String tooltip = TextFormatting.GOLD + I18n.format("name.bauble") + ": " +
-                        bauble.getTypes(stack)
-                            .stream()
+                String base = TextFormatting.GOLD + I18n.format("key.baubles") + ": " +
+                        bauble.getTypes(stack).stream()
                             .map(BaubleTypeEx::getTranslateKey)
                             .map(I18n::format)
                             .collect(Collectors.joining(", "));
-                event.getToolTip().add(tooltip);
+                event.getToolTip().add(base);
+                if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+                    String parents = bauble.getTypes(stack).stream()
+                            .map(BaubleTypeEx::getParents)
+                            .flatMap(Collection::stream)
+                            .distinct()
+                            .map(BaubleTypeEx::getTranslateKey)
+                            .map(I18n::format)
+                            .collect(Collectors.joining(", "));
+                    event.getToolTip().add(TextFormatting.ITALIC + I18n.format("key.baubles.parents") + ": " + parents);
+                }
             } catch (Exception e) {
                 throw new RuntimeException(String.format("baubles_cap for %s is outdated", stack.getItem().getRegistryName()));
             }

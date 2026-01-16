@@ -12,11 +12,10 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.server.command.CommandTreeBase;
 
 public class BaublesCommand extends CommandTreeBase {
-	private static final CommandHelp COMMAND_HELP = new CommandHelp();
-	private static final String[] EMPTY = {};
+	private final CommandHelp help = new CommandHelp();
 
 	public BaublesCommand() {
-		this.addSubcommand(COMMAND_HELP);
+		this.addSubcommand(help);
 		this.addSubcommand(new CommandView());
 		this.addSubcommand(new CommandClear());
 		this.addSubcommand(new CommandSlots());
@@ -25,7 +24,7 @@ public class BaublesCommand extends CommandTreeBase {
 		if (Config.Commands.debug) this.addSubcommand(new CommandDebug());
 	}
 
-	public BaublesCommand(Object unused) {}
+	public BaublesCommand(Object unused) {} // todo move
 
 	@Override
 	public String getName() {
@@ -45,7 +44,7 @@ public class BaublesCommand extends CommandTreeBase {
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if (args.length < 1) {
-			COMMAND_HELP.execute(server, sender, EMPTY);
+			this.help.execute(server, sender, new String[]{});
 		}
 		else {
 			ICommand cmd = this.getSubCommand(args[0]);

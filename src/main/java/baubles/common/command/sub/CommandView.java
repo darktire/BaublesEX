@@ -9,7 +9,6 @@ import baubles.api.registries.TypesData;
 import baubles.common.command.BaublesCommand;
 import baubles.common.network.PacketPool;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityLivingBase;
@@ -17,8 +16,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommandView extends BaublesCommand {
@@ -66,7 +69,14 @@ public class CommandView extends BaublesCommand {
 
     }
 
-    private static class Hand extends CommandBase {
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+        List<String> strings = super.getTabCompletions(server, sender, args, pos);
+        strings.addAll(args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()) : Collections.emptyList());
+        return strings;
+    }
+
+    private static class Hand extends CmdBase {
         @Override
         public String getName() {
             return "hand";
@@ -103,7 +113,7 @@ public class CommandView extends BaublesCommand {
     }
 
 
-    private static class Cache extends CommandBase {
+    private static class Cache extends CmdBase {
         @Override
         public String getName() {
             return "cache";

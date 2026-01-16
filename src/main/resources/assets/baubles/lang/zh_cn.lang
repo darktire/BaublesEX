@@ -6,10 +6,12 @@ item.Ring.0.name=矿工指环
 button.baubles=饰品
 button.normal=普通
 #
-# Keybinding
-key.categories.baubles=饰品
+# DESCRIPTION
+key.baubles=饰品
+key.baubles.inventory=打开饰品侧栏
+key.baubles.parents=能被放入以下种类的槽位
 #
-# Description
+# BAUBLES
 name.bauble=饰品
 name.amulet=项链
 name.ring=指环
@@ -20,7 +22,7 @@ name.body=身体
 name.charm=护身符
 name.elytra=鞘翅
 #
-# Command
+# COMMAND
 commands.baubles.error=§c错误的命令
 commands.baubles.success=执行成功
 commands.baubles.help.get=§c使用 /baubles help 来获取帮助
@@ -38,7 +40,7 @@ commands.baubles.set=把 %s 设置在饰品栏的槽位: %s中 （玩家 %s）
 commands.baubles.dump=文件被导出至:
 commands.baubles.dump.tip=点击以打开文件夹
 #
-# Compat
+# COMPAT
 name.glove=手套
 name.pendant=坠饰
 name.cape=披风

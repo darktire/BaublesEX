@@ -15,13 +15,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mixin(value = ASBaublesIntegration.class, remap = false)
 public class MixinBaubles {
     @Inject(method = "getEquippedArtefactStacks", at = @At("HEAD"), cancellable = true)
-    private static void inject1(EntityPlayer player, ItemArtefact.Type[] types, CallbackInfoReturnable<List<ItemArtefact>> cir) {
-        cir.setReturnValue((WizardryHelper.artefacts2Baubles(player, types).stream().map(stack -> ((ItemArtefact) stack.getItem()))).collect(Collectors.toList()));
+    private static void inject1(EntityPlayer player, ItemArtefact.Type[] types, CallbackInfoReturnable<List<ItemStack>> cir) {
+        cir.setReturnValue(WizardryHelper.artefacts2Baubles(player, types));
     }
 
     @Redirect(method = "getBeltSlotItemStack", at = @At(value = "INVOKE", target = "Lbaubles/api/cap/IBaublesItemHandler;getStackInSlot(I)Lnet/minecraft/item/ItemStack;"))

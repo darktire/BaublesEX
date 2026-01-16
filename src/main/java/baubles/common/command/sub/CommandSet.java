@@ -6,7 +6,6 @@ import baubles.common.command.BaublesCommand;
 import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketSync;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,7 +17,7 @@ import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 
-public class CommandSet extends CommandBase {
+public class CommandSet extends CmdBase {
     @Override
     public String getName() {
         return "set";

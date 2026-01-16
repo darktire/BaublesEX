@@ -6,10 +6,12 @@ item.Ring.0.name=Miner's Ring
 button.baubles=Baubles
 button.normal=Normal
 #
-# Keybinding
-key.categories.baubles=Baubles
+# DESCRIPTION
+key.baubles=Baubles
+key.baubles.inventory=Open Baubles' Sidebar
+key.baubles.parents=can be placed in the following types of slots
 #
-# Description
+# BAUBLES
 name.bauble=Bauble
 name.amulet=Amulet
 name.ring=Ring
@@ -20,7 +22,7 @@ name.body=Body
 name.charm=Charm
 name.elytra=Elytra
 #
-# Command
+# COMMAND
 commands.baubles.error=§cError command
 commands.baubles.success=Successful execution
 commands.baubles.help.get=§cUse /baubles help to get help
@@ -38,7 +40,7 @@ commands.baubles.set=Set %s in [slot: %s] of %s's baubles container
 commands.baubles.dump=The file was dumped to:
 commands.baubles.dump.tip=Click to open the folder
 #
-# Compat
+# COMPAT
 name.glove=Glove
 name.pendant=Pendant
 name.cape=Cape

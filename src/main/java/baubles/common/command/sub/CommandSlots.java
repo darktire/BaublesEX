@@ -7,7 +7,6 @@ import baubles.common.command.BaublesCommand;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
 import baubles.util.HookHelper;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityLivingBase;
@@ -35,7 +34,7 @@ public class CommandSlots extends BaublesCommand {
         return TypesData.hasType(args[1]) && args[2].matches("-?\\d+");
     }
 
-    public static class SubModify extends CommandBase {
+    public static class SubModify extends CmdBase {
         @Override
         public String getName() {
             return "modify";
@@ -68,7 +67,7 @@ public class CommandSlots extends BaublesCommand {
         }
     }
 
-    public static class SubSet extends CommandBase {
+    public static class SubSet extends CmdBase {
         @Override
         public String getName() {
             return "set";

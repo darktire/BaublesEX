@@ -39,6 +39,8 @@ dependencies {
 //    runtimeOnly fg.deobf("curse.maven:mystical-world-282940:3460961")
 //    implementation fg.deobf("curse.maven:roots-246183:5193525")
 
+//    runtimeOnly fg.deobf("curse.maven:gottschcore-272450:5067537")
+//    runtimeOnly fg.deobf("curse.maven:treasure2-289760:6007737")
 
     //JEI
 //    compileOnly fg.deobf("mezz.jei:jei_${minecraft_version}:${jei_version}:api")

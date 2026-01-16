@@ -6,7 +6,6 @@ import baubles.common.command.BaublesCommand;
 import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 
-public class CommandClear extends CommandBase {
+public class CommandClear extends CmdBase {
     @Override
     public String getName() {
         return "clear";
