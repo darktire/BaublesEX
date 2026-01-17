@@ -12,15 +12,15 @@ key.baubles.inventory=Open Baubles' Sidebar
 key.baubles.parents=can be placed in the following types of slots
 #
 # BAUBLES
-name.bauble=Bauble
-name.amulet=Amulet
-name.ring=Ring
-name.belt=Belt
-name.trinket=Trinket
-name.head=Head
-name.body=Body
-name.charm=Charm
-name.elytra=Elytra
+baubles.name.bauble=Bauble
+baubles.name.amulet=Amulet
+baubles.name.ring=Ring
+baubles.name.belt=Belt
+baubles.name.trinket=Trinket
+baubles.name.head=Head
+baubles.name.body=Body
+baubles.name.charm=Charm
+baubles.name.elytra=Elytra
 #
 # COMMAND
 commands.baubles.error=§cError command
@@ -41,8 +41,8 @@ commands.baubles.dump=The file was dumped to:
 commands.baubles.dump.tip=Click to open the folder
 #
 # COMPAT
-name.glove=Glove
-name.pendant=Pendant
-name.cape=Cape
-name.misc=Misc
-name.shield=Shield
+baubles.name.glove=Glove
+baubles.name.pendant=Pendant
+baubles.name.cape=Cape
+baubles.name.misc=Misc
+baubles.name.shield=Shield

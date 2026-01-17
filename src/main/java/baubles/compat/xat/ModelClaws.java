@@ -1,7 +1,6 @@
 package baubles.compat.xat;
 
 import baubles.api.model.ModelBauble;
-import baubles.mixin.early.vanilla.AccessorRenderPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,7 +24,7 @@ public class ModelClaws extends ModelBauble {
             return;
         }
 
-        final float offsetX = ((AccessorRenderPlayer) renderPlayer).isSlim() ? 12.4F : 18.6F;
+        final float offsetX = renderPlayer.smallArms ? 12.4F : 18.6F;
         final float offsetY = 61F;
         final float offsetZ = -21F;
         final float bS = 0.16f;

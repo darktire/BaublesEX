@@ -22,16 +22,13 @@ public class ContainerExpansion extends Container implements IBaublesListener, I
     public int baublesAmount;
     protected final BitSet visibility = new BitSet();
 
-    public static ContainerExpansion create(EntityLivingBase entity) {
-        return new ContainerExpansion(entity).startListening();
-    }
+    protected ContainerExpansion() {}
 
-    public ContainerExpansion() {}
-
-    private ContainerExpansion(EntityLivingBase entity) {
+    public ContainerExpansion(EntityLivingBase entity) {
         this.entity = entity;
         this.baubles = BaublesApi.getBaublesHandler(entity);
         this.baublesAmount = this.baubles.getSlots();
+        this.baubles.addListener(this);
 
         initSlots();
     }
@@ -106,18 +103,12 @@ public class ContainerExpansion extends Container implements IBaublesListener, I
     public void detectAndSendChanges() {}
 
     @Override
-    public void updateBaubles() {
+    public void syncChanges() {
         this.clearBaubles();
         this.baublesAmount = this.baubles.getSlots();
         if (!this.entity.world.isRemote) {
             this.initSlots();
         }
-    }
-
-    @Override
-    public ContainerExpansion startListening() {
-        this.baubles.addListener(this);
-        return this;
     }
 
     public void clearBaubles() {

@@ -1,11 +1,20 @@
 package baubles.compat.crt;
 
+import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
+import baubles.api.attribute.AdvancedInstance;
+import baubles.api.attribute.AttributeManager;
 import baubles.api.cap.IBaublesItemHandler;
+import baubles.api.registries.TypesData;
+import baubles.common.network.PacketHandler;
+import baubles.common.network.PacketModifySlots;
 import baubles.util.HookHelper;
 import crafttweaker.api.item.IItemDefinition;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
@@ -42,7 +51,15 @@ public class CrTContainer implements IContainer {
 
     @Override
     public void modifySlot(String typeName, int modifier) {
-        this.baubles.modifySlot(typeName, modifier);
+        BaubleTypeEx type = TypesData.getTypeByName(typeName);
+        if (type != null) {
+            EntityLivingBase owner = this.baubles.getOwner();
+            AbstractAttributeMap map = owner.getAttributeMap();
+            AdvancedInstance instance = AttributeManager.getInstance(map, type);
+            double present = instance.getAnonymousModifier(0);
+            instance.applyAnonymousModifier(0, present + modifier);
+            PacketHandler.INSTANCE.sendTo(new PacketModifySlots(owner, typeName, (int) (present + modifier), 0), (EntityPlayerMP) owner);
+        }
     }
 
     @Override

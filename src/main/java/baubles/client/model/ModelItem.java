@@ -1,7 +1,6 @@
 package baubles.client.model;
 
 import baubles.api.model.ModelBauble;
-import baubles.mixin.early.vanilla.AccessorRenderItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
@@ -41,7 +40,7 @@ public class ModelItem extends ModelBauble {
     protected void renderItemGlint(ItemStack stack) {
         GlStateManager.translate(-0.5F, -0.5F, -0.5F);
         GlStateManager.enableBlend();
-        ((AccessorRenderItem) itemRender).renderItemGlint(getModel(stack));
+        itemRender.renderEffect(getModel(stack));
         GlStateManager.disableBlend();
     }
 

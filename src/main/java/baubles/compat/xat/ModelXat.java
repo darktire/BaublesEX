@@ -1,7 +1,6 @@
 package baubles.compat.xat;
 
 import baubles.api.model.ModelBauble;
-import baubles.mixin.early.vanilla.AccessorRenderItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -37,7 +36,7 @@ public abstract class ModelXat extends ModelBauble {
     @Override
     public void renderEnchantedGlint(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, ModelBauble model, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         GlStateManager.enableBlend();
-        ((AccessorRenderItem) renderer).renderItemGlint(this.model);
+        renderer.renderEffect(this.model);
         GlStateManager.disableBlend();
     }
 

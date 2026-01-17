@@ -5,7 +5,6 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.ItemsData;
-import baubles.api.registries.TypesData;
 import baubles.common.command.BaublesCommand;
 import baubles.common.network.PacketPool;
 import net.minecraft.client.resources.I18n;
@@ -58,11 +57,11 @@ public class CommandView extends BaublesCommand {
                     sender.sendMessage(new TextComponentTranslation("commands.baubles.view", i, "nothing", baubles.getTypeInSlot(i)));
                 }
             }
-            TypesData.applyToTypes(type -> {
-                String typeName = type.getName();
-                int i = baubles.getModifier(typeName);
-                sender.sendMessage(new TextComponentTranslation(typeName + " " + i));
-            });
+//            TypesData.applyToTypes(type -> {
+//                String typeName = type.getName();
+//                int i = baubles.getModifier(typeName);
+//                sender.sendMessage(new TextComponentTranslation(typeName + " " + i));
+//            });
         } catch (CommandException e) {
             super.execute(server, sender, args);
         }

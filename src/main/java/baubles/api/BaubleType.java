@@ -29,7 +29,11 @@ public enum BaubleType {
 
 	@Deprecated
 	public boolean hasSlot(int slot) {
-		return baubleTypeEx.hasSlot(slot);
+		if (this == TRINKET) return true;
+		for (int s : idx) {
+			if (s == slot) return true;
+		}
+		return false;
 	}
 
 	@Deprecated

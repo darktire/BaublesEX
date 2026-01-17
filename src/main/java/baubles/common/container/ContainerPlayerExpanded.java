@@ -22,15 +22,12 @@ public class ContainerPlayerExpanded extends ContainerExpansion {
     public final InventoryCraftResult craftResult = new InventoryCraftResult();
     private static final EntityEquipmentSlot[] equipmentSlots = new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
 
-    public static ContainerPlayerExpanded create(EntityPlayer player, EntityLivingBase entity) {
-        return new ContainerPlayerExpanded(player, entity).startListening();
-    }
-
-    private ContainerPlayerExpanded(EntityPlayer player, EntityLivingBase entity) {
+    public ContainerPlayerExpanded(EntityPlayer player, EntityLivingBase entity) {
         this.player = player;
         this.entity = entity;
         this.baubles = BaublesApi.getBaublesHandler(entity);
         this.baublesAmount = this.baubles.getSlots();
+        this.baubles.addListener(this);
 
         initSlots();
     }
@@ -360,18 +357,12 @@ public class ContainerPlayerExpanded extends ContainerExpansion {
     }
 
     @Override
-    public void updateBaubles() {
+    public void syncChanges() {
         this.clearBaubles();
         this.baublesAmount = this.baubles.getSlots();
         if (!this.entity.world.isRemote) {
             this.addBaubleSlots(false);
         }
-    }
-
-    @Override
-    public ContainerPlayerExpanded startListening() {
-        this.baubles.addListener(this);
-        return this;
     }
 
     @Override

@@ -3,6 +3,7 @@ package baubles;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
+import baubles.api.attribute.AttributeManager;
 import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
 import baubles.common.config.Config;
@@ -64,9 +65,7 @@ public class BaublesRegister {
     public static void loadValidSlots() {
         TypesData.initOrderList();
         TypesData.initLazyList();
-
-        BaubleTypeEx trinket = TypesData.Preset.TRINKET;
-        TypesData.applyToTypes(trinket::addOriSlots);
+        AttributeManager.loadAttributes();
     }
 
     @Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)

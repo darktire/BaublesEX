@@ -22,14 +22,9 @@ public class GuiPlayerExpanded extends GuiOverlay {
     @Deprecated public static final ResourceLocation background = new ResourceLocation(BaublesApi.MOD_ID,"textures/gui/expanded_inventory.png");//used by 'Trinkets and Baubles'
     private final EntityLivingBase entity;
 
-    public static GuiOverlay create(EntityPlayer player, EntityLivingBase entity) {
-        return new GuiPlayerExpanded(player, entity).startListening();
-    }
-
-    private GuiPlayerExpanded(EntityPlayer player, EntityLivingBase entity) {
-        super(ContainerPlayerExpanded.create(player, entity));
+    public GuiPlayerExpanded(EntityPlayer player, EntityLivingBase entity) {
+        super(new ContainerPlayerExpanded(player, entity));
         this.entity = entity;
-        this.allowUserInput = true;
     }
 
     /**

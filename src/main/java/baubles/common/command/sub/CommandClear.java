@@ -4,8 +4,6 @@ import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.command.BaublesCommand;
 import baubles.common.config.Config;
-import baubles.common.network.PacketHandler;
-import baubles.common.network.PacketModifySlots;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityLivingBase;
@@ -43,14 +41,14 @@ public class CommandClear extends CmdBase {
                 player.sendMessage(new TextComponentTranslation("commands.baubles.clear.all.claim", sender.getName()));
             }
         }
-        else if (args[1].equals("modifier")) {
-            baubles.clearModifier();
-            PacketHandler.INSTANCE.sendTo(new PacketModifySlots(player, null, 0, 0), player);
-            baubles.updateContainer();
-            if (Config.Commands.commandLogs) {
-                player.sendMessage(new TextComponentTranslation("commands.baubles.success"));
-            }
-        }
+//        else if (args[1].equals("modifier")) {
+//            baubles.clearModifier();
+//            PacketHandler.INSTANCE.sendTo(new PacketModifySlots(player, null, 0, 0), player);
+//            baubles.updateContainer();
+//            if (Config.Commands.commandLogs) {
+//                player.sendMessage(new TextComponentTranslation("commands.baubles.success"));
+//            }
+//        }
         else if (args[1].matches("\\d+")) {
             clearOnce(sender, args[1], baubles, player);
             if (args.length > 2) {

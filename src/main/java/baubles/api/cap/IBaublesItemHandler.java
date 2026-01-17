@@ -40,23 +40,9 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 	void removeListener(IBaublesListener listener);
 
 	/**
-	 * Set the slots of this type
-	 */
-	void setSlot(String typeName, int n);
-
-	/**
-	 * Modify base on the previous modifier
-	 */
-	void modifySlot(String typeName, int modifier);
-
-	void clearModifier();
-
-	/**
 	 * Update stacks in container
 	 */
 	void updateContainer();
-
-	int getModifier(String typeName);
 
 	void markDirty(int index);
 	BitSet getDirty();

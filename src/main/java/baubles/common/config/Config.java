@@ -2,7 +2,7 @@ package baubles.common.config;
 
 import baubles.BaublesRegister;
 import baubles.api.BaublesApi;
-import baubles.api.cap.BaublesContainer;
+import baubles.api.attribute.AttributeManager;
 import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.config.ConfigCategory;
@@ -248,8 +248,6 @@ public class Config extends PartialConfig {
     public static void syncToBaubles() {
         BaublesRegister.setTypes();
         BaublesRegister.loadValidSlots();
-        for (BaublesContainer container: BaublesContainer.CONTAINERS) {
-            container.onConfigChanged();
-        }
+        AttributeManager.loadAttributes();
     }
 }

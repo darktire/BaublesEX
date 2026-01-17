@@ -55,17 +55,14 @@ public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea 
 
     private boolean isOverlay = false;
 
-    public static GuiOverlay create(EntityLivingBase entity) {
-        return new GuiOverlay(entity).startListening();
-    }
-
-    public GuiOverlay(Container inventorySlotsIn) {
+    protected GuiOverlay(Container inventorySlotsIn) {
         super(inventorySlotsIn);
+        this.baubles.addListener(this);
+        this.allowUserInput = true;
     }
 
-    private GuiOverlay(EntityLivingBase entity) {
-        super(ContainerExpansion.create(entity));
-        this.allowUserInput = true;
+    public GuiOverlay(EntityLivingBase entity) {
+        this(new ContainerExpansion(entity));
         this.isOverlay = true;
     }
 
@@ -149,7 +146,7 @@ public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea 
     }
 
     @Override
-    public void updateBaubles() {
+    public void syncChanges() {
         this.baublesAmount = this.baubles.getSlots();
         this.col = initCol();
         this.containerEx.addBaubleSlots(this.wider);
@@ -157,12 +154,6 @@ public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea 
         this.scroller.setBarPos(this.offset);
         this.switchers.initSwitchers(true);
         this.setSlotsPos();
-    }
-
-    @Override
-    public GuiOverlay startListening() {
-        this.baubles.addListener(this);
-        return this;
     }
 
     public void handleWider() {

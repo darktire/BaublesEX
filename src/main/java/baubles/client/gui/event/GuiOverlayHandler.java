@@ -40,7 +40,7 @@ public class GuiOverlayHandler {
         if (!(Config.Gui.overlay && Config.Gui.isTarget(gui))) return;
         GuiOverlay ex = OVERLAY.get(gui);
         if (ex == null) {
-            ex = GuiOverlay.create(Minecraft.getMinecraft().player);
+            ex = new GuiOverlay(Minecraft.getMinecraft().player);
             OVERLAY.put(gui, ex);
             PacketHandler.INSTANCE.sendToServer(new PacketOpenExpansion());
         }
@@ -145,7 +145,7 @@ public class GuiOverlayHandler {
                 });
             }
             else {
-                GuiOverlay ex = GuiOverlay.create(Minecraft.getMinecraft().player);
+                GuiOverlay ex = new GuiOverlay(Minecraft.getMinecraft().player);
                 OVERLAY.put(gui, ex);
                 initExpansion(gui);
                 PacketHandler.INSTANCE.sendToServer(new PacketOpenExpansion());

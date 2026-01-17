@@ -31,7 +31,7 @@ public class ItemsData {
     private static final BaublesWrapper.CSTMap CST_MAP = BaublesWrapper.CSTMap.instance();
 
     public static void registerBauble(IBaubleKey key) {
-        BAUBLE_ITEMS.put(key, BaublesWrapper::wrap);
+        BAUBLE_ITEMS.put(key, BaublesWrapper::new);
     }
 
     public static void registerBauble(IBaubleKey key, IBauble bauble) {

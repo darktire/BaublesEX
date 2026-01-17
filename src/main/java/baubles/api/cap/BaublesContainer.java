@@ -3,8 +3,11 @@ package baubles.api.cap;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
+import baubles.api.attribute.AdvancedInstance;
+import baubles.api.attribute.AttributeManager;
 import baubles.api.registries.TypesData;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,120 +26,47 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     private EntityLivingBase entity;
     private final BitSet dirty = new BitSet();
 
-    private List<BaubleTypeEx> MODIFIED_SLOTS = new ArrayList<>();
-    private List<BaubleTypeEx> PREVIOUS_SLOTS = new ArrayList<>();
-//    private final HashMap<String, Integer> MODIFIER_FACTOR = new HashMap<>();
-    private final Map<String, Integer> modifierMap = new HashMap<>();
-//    private final List<Integer> ACTIVE_SLOTS = new ArrayList<>();
+    private final List<BaubleTypeEx> MODIFIED_SLOTS = new ArrayList<>();
+    private final List<BaubleTypeEx> PREVIOUS_SLOTS = new ArrayList<>();
+
     private final Map<Integer, Boolean> visibility = new HashMap<>();
 
     public static final List<BaublesContainer> CONTAINERS = new ArrayList<>();
     private final List<WeakReference<IBaublesListener>> listeners = new ArrayList<>();
     public boolean containerUpdated = true;
 
-    public BaublesContainer() { super(TypesData.getSum()); }
+    public BaublesContainer() { super(0); }
 
     public BaublesContainer(EntityLivingBase entity) {
-        super(TypesData.getSum());
+        this();
         this.entity = entity;
-        this.MODIFIED_SLOTS.addAll(TypesData.getLazyList());
+        AttributeManager.attachAttributes(entity, this);
+        this.MODIFIED_SLOTS.addAll(AttributeManager.computeSlots(entity));
+        this.setSize(MODIFIED_SLOTS.size());
         CONTAINERS.add(this);
-    }
-
-    @Override
-    public void setSlot(String typeName, int n) {
-        BaubleTypeEx type = TypesData.getTypeByName(typeName);
-        if (type != null) {
-            int original = type.getAmount();
-            modifySlot(typeName, n - original);
-        }
-    }
-
-    @Override
-    public void modifySlot(String typeName, int modifier) {
-        if (modifier == 0) return;
-        this.storeSlots();
-        nameToT(typeName).ifPresent(type -> {
-            this.applyModifier(type, modifier, true);
-            if (this.containerUpdated) this.containerUpdated = false;
-        });
-    }
-
-    private void modifySlotOL(String typeName, int modifier) {
-        nameToT(typeName).ifPresent(type -> applyModifier(type, modifier, false));
-    }
-
-    private void applyModifier(BaubleTypeEx type, int modifier, boolean flag) {
-        String name = type.getName();
-        int oldVar = this.modifierMap.getOrDefault(name, 0);
-        if (modifier > 0) {
-            int index = this.MODIFIED_SLOTS.indexOf(type);
-            if (index == -1) {
-                List<BaubleTypeEx> order = TypesData.getList();
-                for (int i = 1;; i++) {
-                    int id = order.indexOf(type);
-                    BaubleTypeEx previous = order.get(id - i);
-                    index = this.MODIFIED_SLOTS.lastIndexOf(previous) + 1;
-                    if (index != 0) break;
-                    if (id - i == -1) break;
-                }
-            }
-            for (int i = 0; i < modifier; i++) {
-                this.MODIFIED_SLOTS.add(index, type);
-            }
-        }
-        else {
-            int lastIndex = this.MODIFIED_SLOTS.lastIndexOf(type);
-            if (lastIndex == -1) modifier = 0;
-            else {
-                if (modifier + type.getAmount() + oldVar < 0) modifier = -type.getAmount() - oldVar;
-                this.MODIFIED_SLOTS.subList(lastIndex + modifier + 1, lastIndex + 1).clear();
-            }
-        }
-
-        if (flag) {
-            int newVar = oldVar + modifier;
-            if (newVar != 0) {
-                this.modifierMap.put(name, newVar);
-            }
-            else {
-                this.modifierMap.remove(name);
-            }
-        }
-    }
-
-    private Optional<BaubleTypeEx> nameToT(String typeName) {
-        BaubleTypeEx type = TypesData.getTypeByName(typeName);
-        if (type == null) {
-            BaublesApi.log.error("no such type {}", typeName);
-        }
-        return Optional.ofNullable(type);
-    }
-
-    @Override
-    public void clearModifier() {
-        this.storeSlots();
-        this.MODIFIED_SLOTS =  new ArrayList<>(TypesData.getLazyList());
-        this.modifierMap.clear();
-        this.containerUpdated = false;
     }
 
     @Override
     public void updateContainer() {
         if (!this.containerUpdated) {
+            this.syncSlots();
             this.onSlotChanged();
             this.dirty.set(0, this.getSlots());
             this.listeners.removeIf(ref -> {
                 IBaublesListener listener = ref.get();
                 if (listener == null) return true;
-                listener.updateBaubles();
+                listener.syncChanges();
                 return false;
             });
         }
     }
 
-    private void storeSlots() {
-        this.PREVIOUS_SLOTS = new ArrayList<>(this.MODIFIED_SLOTS);
+    private void syncSlots() {
+        this.PREVIOUS_SLOTS.clear();
+        this.PREVIOUS_SLOTS.addAll(this.MODIFIED_SLOTS);
+        this.MODIFIED_SLOTS.clear();
+        this.MODIFIED_SLOTS.addAll(AttributeManager.computeSlots(entity));
+
     }
 
     private void onSlotChanged() {
@@ -168,20 +98,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
                 BaublesApi.toBauble(stack).onUnequipped(stack, this.entity);
             }
         }
-        if (!this.containerUpdated) this.containerUpdated = true;
-    }
-
-    public void onConfigChanged() {
-        this.storeSlots();
-        this.MODIFIED_SLOTS = new ArrayList<>(TypesData.getLazyList());
-        this.modifierMap.forEach(this::modifySlotOL);
-        this.containerUpdated = false;
-        this.updateContainer();
-    }
-
-    @Override
-    public int getModifier(String typeName) {
-        return modifierMap.getOrDefault(typeName, 0);
+        this.containerUpdated = true;
     }
 
     @Override
@@ -290,7 +207,14 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         }
         // modifier persistence
         NBTTagCompound modifier = new NBTTagCompound();
-        this.modifierMap.forEach(modifier::setInteger);
+        for (BaubleTypeEx type : TypesData.getOrder()) {
+            AdvancedInstance instance = AttributeManager.getInstance(this.entity.getAttributeMap(), type);
+            modifier.setIntArray(type.getName(), new int[]{
+                    (int) instance.getAnonymousModifier(0),
+                    (int) instance.getAnonymousModifier(1),
+                    (int) instance.getAnonymousModifier(2)
+            });
+        }
         NBTTagCompound visibility = new NBTTagCompound();
         this.visibility.forEach((i, v) -> {
             if (!v) {
@@ -311,11 +235,15 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         if (nbt.hasKey("Modifier")) {
             NBTTagCompound modifier = nbt.getCompoundTag("Modifier");
             for (String typeName : modifier.getKeySet()) {
-                int input = modifier.getInteger(typeName);
-                this.modifySlotOL(typeName, input);
-                this.modifierMap.put(typeName, input);
+                BaubleTypeEx type = TypesData.getTypeByName(typeName);
+                if (type != null) {
+                    int[] input = modifier.getIntArray(typeName);
+                    AbstractAttributeMap map = this.entity.getAttributeMap();
+                    for (int i = 0; i < 3; i++) {
+                        AttributeManager.getInstance(map, type).applyAnonymousModifier(i, input[i]);
+                    }
+                }
             }
-            this.storeSlots();
             this.setSize(MODIFIED_SLOTS.size());
         }
 

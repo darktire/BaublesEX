@@ -24,12 +24,14 @@ public class PacketOpenExpansion implements IMessage {
         @Override
         public IMessage onMessage(PacketOpenExpansion message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().player;
-            ((WorldServer) player.world).addScheduledTask(() -> {
-                ExpansionManager instance = ExpansionManager.getInstance();
-                instance.closeExpansion(player);
-                instance.openExpansion(player, ContainerExpansion.create(player));
-            });
+            ((WorldServer) player.world).addScheduledTask(() -> extracted(player));
             return null;
+        }
+
+        private static void extracted(EntityPlayerMP player) {
+            ExpansionManager instance = ExpansionManager.getInstance();
+            instance.closeExpansion(player);
+            instance.openExpansion(player, new ContainerExpansion(player));
         }
     }
 }

@@ -72,19 +72,6 @@ public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> impleme
         return this.priority;
     }
 
-    public void addOriSlots(int slots) {
-        oriSlots.add(slots);
-    }
-    public void addOriSlots(BaubleTypeEx type) {
-        oriSlots.addAll(type.getOriSlots());
-    }
-    public List<Integer> getOriSlots() {
-        return oriSlots;
-    }
-    public boolean hasSlot(int slot) {
-        return oriSlots.contains(slot);
-    }
-
     public String getName() {
         return name;
     }
@@ -92,7 +79,7 @@ public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> impleme
         return "baubles:gui/slots/" + name;
     }
     public String getTranslateKey() {
-        return "name." + name;
+        return "baubles.name." + name;
     }
 
     public void addParent(BaubleTypeEx parent) {

@@ -31,7 +31,7 @@ public final class BaublesWrapper implements IWrapper {
 
     public BaublesWrapper() {}
 
-    private BaublesWrapper(ItemStack stack) {
+    public BaublesWrapper(ItemStack stack) {
         this.stack = stack;
         Item item = stack.getItem();
         if (item instanceof IBauble) {
@@ -41,11 +41,10 @@ public final class BaublesWrapper implements IWrapper {
             this.render = (IRenderBauble) item;
         }
         this.addition = CSTMap.INSTANCE.get(stack);
-        this.updateBaubles();
-    }
-
-    public static IWrapper wrap(ItemStack stack) {
-        return new BaublesWrapper(stack).startListening();
+        if (this.addition != null) {
+            this.addition.addListener(this);
+        }
+        this.syncChanges();
     }
 
     @Override
@@ -130,7 +129,7 @@ public final class BaublesWrapper implements IWrapper {
     }
 
     @Override
-    public void updateBaubles() {
+    public void syncChanges() {
         if (this.addition != null) {
             if (this.addition.bauble != null) {
                 this.bauble = this.addition.bauble;
@@ -140,15 +139,6 @@ public final class BaublesWrapper implements IWrapper {
             }
             if (this.addition.types != null) this.edited = true;
         }
-    }
-
-    @Override
-    public IWrapper startListening() {
-        Addition addition = CSTMap.INSTANCE.get(this.stack);
-        if (addition != null) {
-            addition.addListener(this);
-        }
-        return this;
     }
 
     public final static class CSTMap {
@@ -198,7 +188,7 @@ public final class BaublesWrapper implements IWrapper {
                 }
             }
             for (IBaublesListener l : snap) {
-                l.updateBaubles();
+                l.syncChanges();
             }
         }
 

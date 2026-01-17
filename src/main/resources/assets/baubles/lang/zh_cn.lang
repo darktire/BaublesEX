@@ -12,15 +12,15 @@ key.baubles.inventory=打开饰品侧栏
 key.baubles.parents=能被放入以下种类的槽位
 #
 # BAUBLES
-name.bauble=饰品
-name.amulet=项链
-name.ring=指环
-name.belt=腰带
-name.trinket=小玩意
-name.head=头部
-name.body=身体
-name.charm=护身符
-name.elytra=鞘翅
+baubles.name.bauble=饰品
+baubles.name.amulet=项链
+baubles.name.ring=指环
+baubles.name.belt=腰带
+baubles.name.trinket=小玩意
+baubles.name.head=头部
+baubles.name.body=身体
+baubles.name.charm=护身符
+baubles.name.elytra=鞘翅
 #
 # COMMAND
 commands.baubles.error=§c错误的命令
@@ -41,8 +41,8 @@ commands.baubles.dump=文件被导出至:
 commands.baubles.dump.tip=点击以打开文件夹
 #
 # COMPAT
-name.glove=手套
-name.pendant=坠饰
-name.cape=披风
-name.misc=杂项
-name.shield=盾徽
+baubles.name.glove=手套
+baubles.name.pendant=坠饰
+baubles.name.cape=披风
+baubles.name.misc=杂项
+baubles.name.shield=盾徽

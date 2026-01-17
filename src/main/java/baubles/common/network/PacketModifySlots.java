@@ -3,6 +3,7 @@ package baubles.common.network;
 import baubles.Baubles;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
+import baubles.api.attribute.AttributeManager;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
 import io.netty.buffer.ByteBuf;
@@ -19,17 +20,11 @@ public class PacketModifySlots implements IMessage {
     private int entityId;
     private int typeId;
     private int modifier;
-    private int addition;
+    private int operation;
 
     public PacketModifySlots() {}
 
-    /**
-     * @param entity sever player
-     * @param typeName  bauble type
-     * @param modifier value of modifier, be used when addition == 0
-     * @param addition 0 means resetting; 1 means modifying base on previous; 2 means modifying base on normal
-     */
-    public PacketModifySlots(EntityLivingBase entity, String typeName, int modifier, int addition) {
+    public PacketModifySlots(EntityLivingBase entity, String typeName, int modifier, int operation) {
         this.entityId = entity.getEntityId();
         try {
             BaubleTypeEx type = TypesData.getTypeByName(typeName);
@@ -38,7 +33,7 @@ public class PacketModifySlots implements IMessage {
             this.typeId = -1;
         }
         this.modifier = modifier;
-        this.addition = addition;
+        this.operation = operation;
     }
 
     @Override
@@ -46,7 +41,7 @@ public class PacketModifySlots implements IMessage {
         buffer.writeInt(entityId);
         buffer.writeInt(typeId);
         buffer.writeInt(modifier);
-        buffer.writeInt(addition);
+        buffer.writeInt(operation);
     }
 
     @Override
@@ -54,7 +49,7 @@ public class PacketModifySlots implements IMessage {
         entityId = buffer.readInt();
         typeId = buffer.readInt();
         modifier = buffer.readInt();
-        addition = buffer.readInt();
+        operation = buffer.readInt();
     }
 
     public static class Handler implements IMessageHandler<PacketModifySlots, IMessage> {
@@ -70,11 +65,7 @@ public class PacketModifySlots implements IMessage {
             Entity entity = world.getEntityByID(message.entityId);
             if (entity instanceof EntityLivingBase) {
                 IBaublesItemHandler baublesCL = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
-                if (message.typeId == -1) {
-                    if (message.addition == 0) baublesCL.clearModifier();
-                }
-                else if (message.addition == 1) baublesCL.modifySlot(TypesData.getTypeById(message.typeId).getName(), message.modifier);
-                else if (message.addition == 2) baublesCL.setSlot(TypesData.getTypeById(message.typeId).getName(), message.modifier);
+                AttributeManager.getInstance(((EntityLivingBase) entity).getAttributeMap(), TypesData.getTypeById(message.typeId)).applyAnonymousModifier(message.operation, message.modifier);
                 baublesCL.updateContainer();
             }
         }

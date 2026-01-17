@@ -1,7 +1,7 @@
 package baubles.common.event;
 
 import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesItemHandler;
+import baubles.api.attribute.AttributeManager;
 import baubles.api.registries.TypesData;
 import baubles.common.container.ExpansionManager;
 import baubles.common.network.IBaublesSync;
@@ -10,6 +10,7 @@ import baubles.common.network.PacketModifySlots;
 import baubles.common.network.PacketSync;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -70,13 +71,15 @@ public class BaublesSync {
     }
 
     private static void syncModifier(EntityLivingBase entity, Collection<? extends EntityPlayerMP> receivers) {
-        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
+        AbstractAttributeMap map = entity.getAttributeMap();
         TypesData.applyToTypes(type -> {
             String typeName = type.getName();
-            int modifier = baubles.getModifier(typeName);
-            if (modifier != 0) {
-                for (EntityPlayerMP receiver : receivers) {
-                    PacketHandler.INSTANCE.sendTo(new PacketModifySlots(entity, typeName, modifier, 1), receiver);
+            for (int i = 0; i < 3; i++) {
+                int modifier = (int) AttributeManager.getInstance(map, type).getAnonymousModifier(i);
+                if (modifier != 0) {
+                    for (EntityPlayerMP receiver : receivers) {
+                        PacketHandler.INSTANCE.sendTo(new PacketModifySlots(entity, typeName, modifier, i), receiver);
+                    }
                 }
             }
         });

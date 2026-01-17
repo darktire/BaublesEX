@@ -71,22 +71,15 @@ public class TypesData {
     public static void initLazyList() {
         BAUBLE_SLOTS.clear();
         int pointer = 0;
-        for (BaubleTypeEx type : getList()) {
+        for (BaubleTypeEx type : getOrder()) {
             int amount = type.getAmount();
             for (int i = 0; i < amount; i++) {
-                type.addOriSlots(pointer + i);
                 BAUBLE_SLOTS.add(type);
             }
             pointer += amount;
         }
         sum = pointer;
     }
-//    public static List<BaubleTypeEx> getLazyList(EntityLivingBase entity) {
-//        if (entity instanceof EntityPlayer) {
-//            return ImmutableList.copyOf(BAUBLE_SLOTS);
-//        }
-//        return new ArrayList<>();
-//    }
     public static List<BaubleTypeEx> getLazyList() {
         return ImmutableList.copyOf(BAUBLE_SLOTS);
     }
@@ -119,7 +112,7 @@ public class TypesData {
         ORDER = new ArrayList<>(REGISTRY.getValuesCollection());
         ORDER.sort(Collections.reverseOrder());
     }
-    public static List<BaubleTypeEx> getList() {
+    public static List<BaubleTypeEx> getOrder() {
         return Collections.unmodifiableList(ORDER);
     }
 

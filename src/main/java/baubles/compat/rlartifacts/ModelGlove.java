@@ -6,7 +6,6 @@ import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
 import baubles.client.model.ModelInherit;
 import baubles.client.model.ModelManager;
-import baubles.mixin.early.vanilla.AccessorRenderPlayer;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -29,9 +28,8 @@ public class ModelGlove extends ModelInherit {
     public ModelGlove(Item item, RenderPlayer renderPlayer) {
         super(renderPlayer.getMainModel(), null);
         this.item = item;
-        boolean slim = ((AccessorRenderPlayer) renderPlayer).isSlim();
-        this.texture = getResourceLocation(switchTex(item), slim);
-        this.emissive = getResourceLocation(switchLum(item), slim);
+        this.texture = getResourceLocation(switchTex(item), renderPlayer.smallArms);
+        this.emissive = getResourceLocation(switchLum(item), renderPlayer.smallArms);
     }
 
     private static ResourceLocation getResourceLocation(ResourceLocation texture, boolean slim) {
