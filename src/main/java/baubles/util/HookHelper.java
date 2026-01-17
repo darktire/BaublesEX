@@ -18,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -44,7 +45,11 @@ public class HookHelper {
         return stack;
     }
 
-    public static boolean tryEquipping(EntityPlayer playerIn, ItemStack stack) {
+    public static void tryEquipping(EntityPlayer playerIn, ItemStack stack) {
+        tryEquipping(playerIn, EnumHand.MAIN_HAND, stack);
+    }
+
+    public static boolean tryEquipping(EntityPlayer playerIn, EnumHand hand, ItemStack stack) {
         IBauble bauble = BaublesApi.toBauble(stack);
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) playerIn);
         List<BaubleTypeEx> types = bauble.getTypes(stack);
@@ -54,7 +59,12 @@ public class HookHelper {
                 stack = stack.copy();
                 baubles.setStackInSlot(i, stack);
                 if (!playerIn.capabilities.isCreativeMode) {
-                    playerIn.inventory.setInventorySlotContents(playerIn.inventory.currentItem, ItemStack.EMPTY);
+                    if (hand == EnumHand.MAIN_HAND) {
+                        playerIn.inventory.setInventorySlotContents(playerIn.inventory.currentItem, ItemStack.EMPTY);
+                    }
+                    else {
+                        playerIn.inventory.offHandInventory.set(0, ItemStack.EMPTY);
+                    }
                 }
                 bauble.onEquipped(stack, playerIn);
                 if (!playerIn.world.isRemote) {

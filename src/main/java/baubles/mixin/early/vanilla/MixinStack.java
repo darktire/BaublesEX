@@ -39,7 +39,7 @@ public abstract class MixinStack {
         if (cir.getReturnValue().getType() != EnumActionResult.SUCCESS) {
             heldItem = (ItemStack) (Object) this;
             if (Config.getBlacklist().contains(heldItem.getItem()) || !BaublesApi.isBauble(heldItem)) return;
-            if (HookHelper.tryEquipping(playerIn, heldItem)) {
+            if (HookHelper.tryEquipping(playerIn, hand, heldItem)) {
                 cir.setReturnValue(new ActionResult<>(EnumActionResult.SUCCESS, heldItem));
             }
         }

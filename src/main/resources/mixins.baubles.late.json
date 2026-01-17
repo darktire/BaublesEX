@@ -23,6 +23,7 @@
     "botania.MixinItemItemFinder",
     "botania.MixinItemTravelBelt",
     "botania.MixinItemWaterRing",
+    "bountifulbaubles.MixinBaubleAttributeModifierHandler",
     "ebwizardry.MixinBaubles",
     "enigmaticlegacy.MixinEnigmaticEvents",
     "nvg.MixinBaubleInventoryUtil",
