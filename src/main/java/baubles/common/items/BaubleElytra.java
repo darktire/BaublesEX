@@ -47,11 +47,6 @@ public class BaubleElytra implements IBauble, IRenderBauble {
         return ModelElytra.INSTANCE;
     }
 
-    @Override
-    public IRenderBauble.RenderType getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        return IRenderBauble.RenderType.BODY;
-    }
-
     private static boolean initWearing(EntityLivingBase entity) {
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
         if (baubles == null) return false;

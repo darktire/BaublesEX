@@ -80,7 +80,7 @@ public final class BaublesApi {
      * Use this method to get cap from stack
      * @return null when stack doesn't have baubles:item_cap
      */
-    public static IWrapper toBauble(ItemStack stack) {
+    public static AbstractWrapper toBauble(ItemStack stack) {
         return stack.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
     }
 

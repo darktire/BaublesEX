@@ -1,9 +1,9 @@
 package baubles.util;
 
+import baubles.api.AbstractWrapper;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.IWrapper;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.config.Config;
 import baubles.common.config.json.ConversionHelper;
@@ -207,7 +207,7 @@ public class HookHelper {
     }
 
     public static BaubleTypeEx getMainType(ItemStack stack) {
-        IWrapper bauble = BaublesApi.toBauble(stack);
+        AbstractWrapper bauble = BaublesApi.toBauble(stack);
         if (bauble == null) return null;
         return bauble.getTypes(stack).get(0);
     }

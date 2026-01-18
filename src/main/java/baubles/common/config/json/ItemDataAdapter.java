@@ -1,8 +1,8 @@
 package baubles.common.config.json;
 
+import baubles.api.AbstractWrapper;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
-import baubles.api.BaublesWrapper;
 import baubles.api.IBaubleKey;
 import baubles.api.registries.ItemsData;
 import baubles.api.registries.TypesData;
@@ -112,7 +112,7 @@ public class ItemDataAdapter extends CustomAdapter<List<IBaubleKey>> {
         void apply() {
             for (IBaubleKey key : getContent(this.content)) {
                 ItemsData.registerBauble(key, types);
-                if (this.remove) BaublesWrapper.CSTMap.instance().update(key, BaublesWrapper.Addition::remove, true);
+                if (this.remove) AbstractWrapper.CSTMap.instance().update(key, AbstractWrapper.Addition::remove, true);
             }
         }
 
@@ -139,7 +139,7 @@ public class ItemDataAdapter extends CustomAdapter<List<IBaubleKey>> {
         List<BaubleTypeEx> types;
 
         GroupKey(ItemStack stack) {
-            if (BaublesWrapper.Addition.isRemoved(stack)) {
+            if (AbstractWrapper.Addition.isRemoved(stack)) {
                 this.removed = true;
                 this.types = null;
             }

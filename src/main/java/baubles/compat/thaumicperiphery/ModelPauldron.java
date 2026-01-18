@@ -1,7 +1,6 @@
 package baubles.compat.thaumicperiphery;
 
 import baubles.client.model.ModelInherit;
-import baubles.util.HookHelper;
 import goblinbob.mobends.core.util.BenderHelper;
 import goblinbob.mobends.standard.data.PlayerData;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -16,7 +15,6 @@ import net.minecraft.util.ResourceLocation;
 import thaumicperiphery.ModContent;
 
 public class ModelPauldron extends ModelInherit {
-    private static final boolean FLAG = HookHelper.isModLoaded("mobends");
 
     private ModelPauldron(Item item) {
         super(new thaumicperiphery.render.ModelPauldron(0.125F), switchTex(item));
@@ -66,11 +64,6 @@ public class ModelPauldron extends ModelInherit {
         @Override
         public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             ((ModelBiped) this.model).bipedRightArm.render(scale);
-        }
-
-        @Override
-        public boolean needLocating() {
-            return false;
         }
     }
 }

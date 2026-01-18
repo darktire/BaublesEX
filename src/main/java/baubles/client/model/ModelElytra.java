@@ -1,6 +1,5 @@
 package baubles.client.model;
 
-import baubles.util.HookHelper;
 import goblinbob.mobends.core.util.BenderHelper;
 import goblinbob.mobends.standard.data.PlayerData;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -13,7 +12,6 @@ import net.minecraft.util.ResourceLocation;
 
 public class ModelElytra extends ModelInherit {
     public static ModelElytra INSTANCE = new ModelElytra();
-    private static final boolean FLAG = HookHelper.isModLoaded("mobends");
     private static final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("minecraft", "textures/entity/elytra.png");
 
     public ModelElytra() {
@@ -53,10 +51,5 @@ public class ModelElytra extends ModelInherit {
         else {
             return TEXTURE_ELYTRA;
         }
-    }
-
-    @Override
-    public boolean needLocating() {
-        return false;
     }
 }

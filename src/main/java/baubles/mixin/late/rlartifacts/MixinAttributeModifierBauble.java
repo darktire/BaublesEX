@@ -20,9 +20,4 @@ public abstract class MixinAttributeModifierBauble extends Item {
     public ModelBauble brs$getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return ModelGlove.getInstance(stack, renderPlayer);
     }
-
-    @Unique
-    public IRenderBauble.RenderType brs$getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        return IRenderBauble.RenderType.BODY;
-    }
 }

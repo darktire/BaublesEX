@@ -1,8 +1,8 @@
 package baubles;
 
+import baubles.api.AbstractWrapper;
 import baubles.api.BaublesApi;
 import baubles.api.BaublesWrapper;
-import baubles.api.IWrapper;
 import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
 import baubles.api.cap.BaublesCapabilities.CapabilityItemBaubleStorage;
 import baubles.api.cap.BaublesContainer;
@@ -48,7 +48,7 @@ public class Baubles {
                 new CapabilityBaubles(),
                 BaublesContainer::new);
         CapabilityManager.INSTANCE.register(
-                IWrapper.class,
+                AbstractWrapper.class,
                 new CapabilityItemBaubleStorage(),
                 BaublesWrapper::new);
 

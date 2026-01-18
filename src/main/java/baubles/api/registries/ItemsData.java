@@ -17,31 +17,32 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ItemsData {
-
-    private static final Map<IBaubleKey, Function<ItemStack, IWrapper>> BAUBLE_ITEMS = new ConcurrentHashMap<>();
-    private static final Cache<Equivalence.Wrapper<ItemStack>, IWrapper> CACHE = CacheBuilder.newBuilder()
+    private static final Map<IBaubleKey, Function<ItemStack, AbstractWrapper>> BAUBLE_ITEMS = new ConcurrentHashMap<>();
+    private static final Cache<Equivalence.Wrapper<ItemStack>, AbstractWrapper> CACHE = CacheBuilder.newBuilder()
             .maximumSize(1024)
             .expireAfterAccess(600, TimeUnit.SECONDS)
             .concurrencyLevel(Runtime.getRuntime().availableProcessors())
             .build();
     private static final LongAdder HIT  = new LongAdder();
     private static final LongAdder MISS = new LongAdder();
-    private static final BaublesWrapper.CSTMap CST_MAP = BaublesWrapper.CSTMap.instance();
+    private static final BaublesWrapper.CSTMap CST_MAP = AbstractWrapper.CSTMap.instance();
+    private static final Function<ItemStack, AbstractWrapper> DEFAULT = BaublesWrapper::new;
 
     public static void registerBauble(IBaubleKey key) {
-        BAUBLE_ITEMS.put(key, BaublesWrapper::new);
+        BAUBLE_ITEMS.put(key, DEFAULT);
     }
 
     public static void registerBauble(IBaubleKey key, IBauble bauble) {
         registerBauble(key);
-        CST_MAP.update(key, BaublesWrapper.Addition::bauble, bauble);
+        CST_MAP.update(key, AbstractWrapper.Addition::bauble, bauble);
     }
 
     public static void registerBauble(IBaubleKey key, List<BaubleTypeEx> types) {
         if (BAUBLE_ITEMS.containsKey(key)) {
-            CST_MAP.update(key, BaublesWrapper.Addition::types, types);
+            CST_MAP.update(key, AbstractWrapper.Addition::types, types);
         }
         else {
             registerBauble(key, new BaubleItem(types));
@@ -80,7 +81,7 @@ public class ItemsData {
     }
 
     public static void registerRender(Item item, IRenderBauble render) {
-        CST_MAP.update(item, BaublesWrapper.Addition::render, render);
+        CST_MAP.update(item, AbstractWrapper.Addition::render, render);
     }
 
     public static void registerBauble(ItemStack stack) {
@@ -100,16 +101,16 @@ public class ItemsData {
     }
 
     public static void registerRender(ItemStack stack, IRenderBauble render) {
-        CST_MAP.update(stack, BaublesWrapper.Addition::render, render);
+        CST_MAP.update(stack, AbstractWrapper.Addition::render, render);
     }
 
-    public static IWrapper toBauble(ItemStack stack) {
+    public static AbstractWrapper toBauble(ItemStack stack) {
         Equivalence.Wrapper<ItemStack> cacheKey = IBaubleKey.CacheKey.getWrap(stack);
 
-        IWrapper wrapper = CACHE.getIfPresent(cacheKey);
+        AbstractWrapper wrapper = CACHE.getIfPresent(cacheKey);
         if (wrapper == null) {
             IBaubleKey.BaubleKey key = IBaubleKey.BaubleKey.wrap(stack);
-            Function<ItemStack, IWrapper> func = BAUBLE_ITEMS.get(key);
+            Function<ItemStack, AbstractWrapper> func = BAUBLE_ITEMS.get(key);
             if (func == null) {
                 func = BAUBLE_ITEMS.get(key.fuzzier());
             }
@@ -157,5 +158,11 @@ public class ItemsData {
 
     public static List<IBaubleKey> getList() {
         return new ArrayList<>(BAUBLE_ITEMS.keySet());
+    }
+
+    public static void redirect(Predicate<IBaubleKey> predicate, IRenderBauble render) {
+        BAUBLE_ITEMS.keySet().stream()
+                .filter(predicate)
+                .forEach(key -> CST_MAP.update(key, AbstractWrapper.Addition::render, render));
     }
 }

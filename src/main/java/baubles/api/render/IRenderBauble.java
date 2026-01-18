@@ -83,6 +83,6 @@ public interface IRenderBauble {
         ARM_LEFT_WEAR,
         ARM_RIGHT_WEAR,
         LEG_LEFT_WEAR,
-        LEG_RIGHT_WEAR;
+        LEG_RIGHT_WEAR
     }
 }

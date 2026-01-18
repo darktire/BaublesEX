@@ -1,9 +1,9 @@
 package baubles.client;
 
 import baubles.BaublesRegister;
+import baubles.api.AbstractWrapper;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
-import baubles.api.IWrapper;
 import baubles.api.event.BaublesRenderEvent;
 import baubles.api.registries.TypesData;
 import baubles.client.gui.GuiPlayerExpanded;
@@ -64,7 +64,7 @@ public class ClientEventHandler {
         ItemStack stack = event.getItemStack();
         if (!stack.isEmpty() && BaublesApi.isBauble(stack)) {
             try {
-                IWrapper bauble = BaublesApi.toBauble(stack);
+                AbstractWrapper bauble = BaublesApi.toBauble(stack);
                 String base = TextFormatting.GOLD + I18n.format("key.baubles") + ": " +
                         bauble.getTypes(stack).stream()
                             .map(BaubleTypeEx::getTranslateKey)

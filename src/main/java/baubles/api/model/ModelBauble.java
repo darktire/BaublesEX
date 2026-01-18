@@ -33,8 +33,4 @@ public abstract class ModelBauble extends ModelBase {
     public ResourceLocation getEmissiveMap(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return null;
     }
-
-    public boolean needLocating() {
-        return true;
-    }
 }

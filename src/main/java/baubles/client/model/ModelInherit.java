@@ -1,6 +1,7 @@
 package baubles.client.model;
 
 import baubles.api.model.ModelBauble;
+import baubles.util.HookHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
@@ -9,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class ModelInherit extends ModelBauble {
+    protected static final boolean FLAG = HookHelper.isModLoaded("mobends");
     protected ModelBase model;
     protected ResourceLocation texture;
 

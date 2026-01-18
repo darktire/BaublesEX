@@ -207,7 +207,7 @@ public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea 
                     ItemStack stack = this.baubles.getStackInSlot(index);
                     if (!stack.isEmpty()) return;
 
-                    String str = I18n.format("name." + this.baubles.getTypeInSlot(index).getName());
+                    String str = I18n.format(this.baubles.getTypeInSlot(index).getTranslateKey());
 
                     this.drawHoveringText(Collections.singletonList(str), mouseX - this.guiLeft, mouseY - this.guiTop + 7);
                 }

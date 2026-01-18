@@ -1,7 +1,6 @@
 package baubles.api.cap;
 
-import baubles.api.BaublesWrapper;
-import baubles.api.IWrapper;
+import baubles.api.AbstractWrapper;
 import baubles.api.registries.ItemsData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -16,7 +15,7 @@ public class BaublesCapabilityProvider implements ICapabilityProvider {
     private final WeakReference<ItemStack> ref;
     private final ICapabilityProvider other;
     private boolean initialized = false;
-    private IWrapper wrapper;
+    private AbstractWrapper wrapper;
 
     public BaublesCapabilityProvider(ItemStack stack, ICapabilityProvider other) {
         this.ref = new WeakReference<>(stack);
@@ -45,6 +44,6 @@ public class BaublesCapabilityProvider implements ICapabilityProvider {
     private boolean isDefined() {
         ItemStack stack = this.ref.get();
         if (stack == null) return false;
-        return ItemsData.isBauble(stack) && !BaublesWrapper.Addition.isRemoved(stack);
+        return ItemsData.isBauble(stack) && !AbstractWrapper.Addition.isRemoved(stack);
     }
 }

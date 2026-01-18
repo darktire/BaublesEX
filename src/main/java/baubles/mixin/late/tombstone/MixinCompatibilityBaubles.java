@@ -1,8 +1,8 @@
 package baubles.mixin.late.tombstone;
 
+import baubles.api.AbstractWrapper;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
-import baubles.api.IWrapper;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.network.IBaublesSync;
 import net.minecraft.entity.EntityLivingBase;
@@ -37,7 +37,7 @@ public class MixinCompatibilityBaubles {
             ItemStack stack = itemHandler.getStackInSlot(temp);
             if (stack.getMaxStackSize() == 1) {
                 if (!BaublesApi.isBauble(stack)) continue;
-                IWrapper bauble = BaublesApi.toBauble(stack);
+                AbstractWrapper bauble = BaublesApi.toBauble(stack);
                 for (BaubleTypeEx type : bauble.getTypes(stack)) {
                     int idx = baubles.indexOf(type, 0);
                     while (idx != -1 && !e.contains(idx)) idx = baubles.indexOf(type, idx + 1);

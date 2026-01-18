@@ -27,8 +27,6 @@ public abstract class MixinBaubleBase extends Item {
     @Unique
     public IRenderBauble.RenderType brs$getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         if ((Object) this == ModItems.DRINKING_HAT) return IRenderBauble.RenderType.HEAD;
-        else if ((Object) this == ModItems.POCKET_PISTON) return IRenderBauble.RenderType.BODY;
-        else if ((Object) this == ModItems.MAGMA_STONE) return IRenderBauble.RenderType.BODY;
         return null;
     }
 }

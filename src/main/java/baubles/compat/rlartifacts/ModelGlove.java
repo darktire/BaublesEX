@@ -91,9 +91,4 @@ public class ModelGlove extends ModelInherit {
             ((ModelPlayer) this.model).bipedLeftArm.render(scale);
         }
     }
-
-    @Override
-    public boolean needLocating() {
-        return false;
-    }
 }

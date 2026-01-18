@@ -1,14 +1,13 @@
 package baubles.client.render;
 
+import baubles.api.AbstractWrapper;
 import baubles.api.BaublesApi;
-import baubles.api.IWrapper;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.event.BaublesRenderEvent;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -44,7 +43,7 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
     private void renderPerSlots(SlotRef slot, QueryCtx ctx) {
         if (slot.visible()) {
             ItemStack stack = slot.getStack(ctx.entity);
-            IWrapper wrapper = BaublesApi.toBauble(stack);
+            AbstractWrapper wrapper = BaublesApi.toBauble(stack);
             if (wrapper != null) {
                 ctx.setStack(stack);
                 BaublesRenderEvent event = BaublesRenderEvent.of(ctx.entity, this.renderPlayer, stack, slot.id);
@@ -67,15 +66,15 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
     private void renderModelPart(QueryCtx ctx, IRenderBauble renderBauble) {
         ModelBauble model = renderBauble.getModel(ctx.stack, ctx.entity, this.renderPlayer);
         IRenderBauble.RenderType render = renderBauble.getRenderType(ctx.stack, ctx.entity, this.renderPlayer);
-        if (model != null && render != null) {
+        if (model != null) {
             GlStateManager.pushMatrix();
             GlStateManager.enableRescaleNormal();
             GlStateManager.color(1F, 1F, 1F, 1F);
             GlStateManager.enableLighting();
-            if (ctx.entity.isSneaking() && model.needLocating()) GlStateManager.translate(0, 0.2F, 0);
+            if (ctx.entity.isSneaking() && render != null) GlStateManager.translate(0, 0.2F, 0);
 
             ResourceLocation texture = model.getTexture(ctx.stack, ctx.entity, this.renderPlayer);
-            if (texture != null) renderEachTexture(ctx, render, texture, model, true);
+            renderEachTexture(ctx, render, texture, model, true);
 
             texture = model.getEmissiveMap(ctx.stack, ctx.entity, this.renderPlayer);
             if (texture != null) {
@@ -89,7 +88,7 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
                 OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastSky, lastBlock);
             }
 
-            if (ctx.stack.isItemEnchanted()) {
+            if (ctx.stack.hasEffect()) {
                 model.renderEnchantedGlint(this.renderPlayer, ctx.entity, ctx.stack, model, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale);
             }
 
@@ -99,7 +98,7 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
 
     private void renderEachTexture(QueryCtx ctx, IRenderBauble.RenderType render, ResourceLocation texture, ModelBauble model, boolean ems) {
         this.switchTex(ctx, texture, ems);
-        if (ems && model.needLocating()) this.switchBip(render).render(ctx.scale);
+        if (ems && render != null) this.switchBip(render, ctx.scale);
         model.render(this.renderPlayer, ctx.entity, ctx.stack, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale, ems);
     }
 
@@ -112,22 +111,21 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
         }
     }
 
-    public ModelRenderer switchBip(IRenderBauble.RenderType type) {
-        switch (type) {
+    private void switchBip(IRenderBauble.RenderType render, float scale) {
+        switch (render) {
             case HEAD:
-                return renderPlayer.getMainModel().bipedHead;
+                renderPlayer.getMainModel().bipedHead.postRender(scale); break;
             case BODY:
-                return renderPlayer.getMainModel().bipedBody;
+                renderPlayer.getMainModel().bipedBody.postRender(scale); break;
             case ARM_LEFT:
-                return renderPlayer.getMainModel().bipedLeftArm;
+                renderPlayer.getMainModel().bipedLeftArm.postRender(scale); break;
             case ARM_RIGHT:
-                return renderPlayer.getMainModel().bipedRightArm;
+                renderPlayer.getMainModel().bipedRightArm.postRender(scale); break;
             case LEG_LEFT:
-                return renderPlayer.getMainModel().bipedLeftLeg;
+                renderPlayer.getMainModel().bipedLeftLeg.postRender(scale); break;
             case LEG_RIGHT:
-                return renderPlayer.getMainModel().bipedRightLeg;
+                renderPlayer.getMainModel().bipedRightLeg.postRender(scale); break;
         }
-        return renderPlayer.getMainModel().bipedBody;
     }
 
     @Override
