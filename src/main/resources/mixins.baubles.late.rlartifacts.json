@@ -1,0 +1,19 @@
+{
+  "package": "baubles.mixin.late.rlartifacts",
+  "plugin": "baubles.coremod.MixinLate",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "refmap": "mixins.baubles.refmap.json",
+  "client": [
+    "MixinAttributeModifierBauble",
+    "MixinBaubleAmulet",
+    "MixinBaubleAntidoteVessel",
+    "MixinBaubleBase",
+    "MixinBaubleBottledCloud",
+    "MixinBaubleBubbleWrap",
+    "MixinBaubleObsidianSkull",
+    "MixinBaublePotionEffect",
+    "MixinBaubleStarCloak",
+    "MixinProxy"
+  ]
+}

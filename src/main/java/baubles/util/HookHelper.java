@@ -159,11 +159,6 @@ public class HookHelper {
         return true;
     }
 
-    public static String getTargetModId(String mixinClassName) {
-        String substring = mixinClassName.substring(19);
-        return substring.substring(0, substring.indexOf('.'));
-    }
-
     public static boolean getConfig(String modid) {
         switch (modid) {
             case "aether_legacy": return Compat.aether;

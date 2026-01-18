@@ -1,0 +1,18 @@
+{
+  "package": "baubles.mixin.late.enigmaticlegacy",
+  "plugin": "baubles.coremod.MixinLate",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "refmap": "mixins.baubles.refmap.json",
+  "mixins": [
+    "MixinEnigmaticEvents"
+  ],
+  "client": [
+    "MixinAmulet",
+    "MixinCharm",
+    "MixinItemHalfHeartMask",
+    "MixinLayerScroll",
+    "MixinProxy",
+    "MixinScroll"
+  ]
+}

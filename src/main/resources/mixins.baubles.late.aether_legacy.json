@@ -1,0 +1,12 @@
+{
+  "package": "baubles.mixin.late.aether_legacy",
+  "plugin": "baubles.coremod.MixinLate",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "refmap": "mixins.baubles.refmap.json",
+  "mixins": [
+    "MixinAetherAPI",
+    "MixinInventoryAccessories",
+    "MixinItemAccessory"
+  ]
+}

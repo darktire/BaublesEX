@@ -1,0 +1,16 @@
+{
+  "package": "baubles.mixin.late.bountifulbaubles",
+  "plugin": "baubles.coremod.MixinLate",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "refmap": "mixins.baubles.refmap.json",
+  "mixins": [
+    "MixinBaubleAttributeModifierHandler"
+  ],
+  "client": [
+    "MixinAmulet",
+    "MixinItemShieldCobalt",
+    "MixinItemSunglasses",
+    "MixinProxy"
+  ]
+}

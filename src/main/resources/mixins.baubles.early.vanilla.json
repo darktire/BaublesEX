@@ -16,8 +16,6 @@
     "vanilla.MixinElytra$MixinPlayerSP",
     "vanilla.MixinGuiScreen"
   ],
-  "server": [
-  ],
   "injectors": {
     "defaultRequire": 1
   }
