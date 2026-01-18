@@ -8,6 +8,7 @@ import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -98,7 +99,7 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
 
     private void renderEachTexture(QueryCtx ctx, IRenderBauble.RenderType render, ResourceLocation texture, ModelBauble model, boolean ems) {
         this.switchTex(ctx, texture, ems);
-        if (ems && model.needLocating()) this.switchBip(render, ctx.scale);
+        if (ems && model.needLocating()) this.switchBip(render).render(ctx.scale);
         model.render(this.renderPlayer, ctx.entity, ctx.stack, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale, ems);
     }
 
@@ -111,21 +112,22 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
         }
     }
 
-    private void switchBip(IRenderBauble.RenderType render, float scale) {
-        switch (render) {
+    public ModelRenderer switchBip(IRenderBauble.RenderType type) {
+        switch (type) {
             case HEAD:
-                renderPlayer.getMainModel().bipedHead.postRender(scale); break;
+                return renderPlayer.getMainModel().bipedHead;
             case BODY:
-                renderPlayer.getMainModel().bipedBody.postRender(scale); break;
+                return renderPlayer.getMainModel().bipedBody;
             case ARM_LEFT:
-                renderPlayer.getMainModel().bipedLeftArm.postRender(scale); break;
+                return renderPlayer.getMainModel().bipedLeftArm;
             case ARM_RIGHT:
-                renderPlayer.getMainModel().bipedRightArm.postRender(scale); break;
+                return renderPlayer.getMainModel().bipedRightArm;
             case LEG_LEFT:
-                renderPlayer.getMainModel().bipedLeftLeg.postRender(scale); break;
+                return renderPlayer.getMainModel().bipedLeftLeg;
             case LEG_RIGHT:
-                renderPlayer.getMainModel().bipedRightLeg.postRender(scale); break;
+                return renderPlayer.getMainModel().bipedRightLeg;
         }
+        return renderPlayer.getMainModel().bipedBody;
     }
 
     @Override

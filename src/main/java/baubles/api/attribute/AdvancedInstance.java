@@ -5,7 +5,6 @@ import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.entity.ai.attributes.*;
 
 import java.lang.ref.WeakReference;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -75,11 +74,6 @@ public class AdvancedInstance extends ModifiableAttributeInstance {
         d1 *= 1.0D + this.anonymous.get(2);
 
         return this.genericAttribute.clampValue(d1);
-    }
-
-    @Override
-    protected Collection<AttributeModifier> getAppliedModifiers(int operation) {
-        return super.getAppliedModifiers(operation);
     }
 
     public void correct() {

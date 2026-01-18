@@ -13,7 +13,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 
 public class ModelGlove extends ModelInherit {
@@ -42,13 +41,6 @@ public class ModelGlove extends ModelInherit {
         }
     }
 
-    private EnumHandSide getHand(EntityLivingBase entity) {
-        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
-        int k = baubles.indexOf(TypesData.Preset.RING, 0);
-        int j = baubles.indexOf(this.item, 0);
-        return ((k - j) & 1) == 0 ? EnumHandSide.RIGHT : EnumHandSide.LEFT;
-    }
-
     private static ResourceLocation switchTex(Item item) {
         if (item == ModItems.POWER_GLOVE) return Resources.POWER_GLOVE_TEXTURE;
         else if(item == ModItems.FERAL_CLAWS) return Resources.FERAL_CLAWS_TEXTURE;
@@ -75,21 +67,28 @@ public class ModelGlove extends ModelInherit {
 
     @Override
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        renderGlove(this.getHand((EntityLivingBase) entity), scale);
+        renderGlove((EntityLivingBase) entity, scale);
     }
 
     @Override
     public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
         if (entity.isSneaking() && flag) GlStateManager.translate(0, 0.2F, 0);
-        renderGlove(this.getHand(entity), scale);
+        renderGlove(entity, scale);
     }
 
-    private void renderGlove(EnumHandSide hand, float scale) {
-        if (hand == EnumHandSide.LEFT) {
+    private void renderGlove(EntityLivingBase entity, float scale) {
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
+        int j = baubles.indexOf(TypesData.Preset.RING, 0);
+        int k = baubles.indexOf(this.item, 0);
+        if (k != -1 && baubles.indexOf(this.item, k + 1) != -1) {
             ((ModelPlayer) this.model).bipedLeftArm.render(scale);
+            ((ModelPlayer) this.model).bipedRightArm.render(scale);
+        }
+        if (((k - j) & 1) == 0) {
+            ((ModelPlayer) this.model).bipedRightArm.render(scale);
         }
         else {
-            ((ModelPlayer) this.model).bipedRightArm.render(scale);
+            ((ModelPlayer) this.model).bipedLeftArm.render(scale);
         }
     }
 

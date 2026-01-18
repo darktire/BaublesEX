@@ -8,16 +8,18 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import thaumicperiphery.ModContent;
 
+import java.util.List;
+
 public class PauldronRender implements IRenderBauble {
     private final ModelBauble model;
     private final RenderType type;
 
-    public static final ImmutableList<IRenderBauble> PAULDRON = ImmutableList.of(
+    public static final List<IRenderBauble> PAULDRON = ImmutableList.of(
             new PauldronRender(new ModelPauldron.Body(ModContent.pauldron), RenderType.BODY),
             new PauldronRender(new ModelPauldron.Arm(ModContent.pauldron), RenderType.ARM_RIGHT)
     );
 
-    public static final ImmutableList<IRenderBauble> PAULDRON_REPULSION = ImmutableList.of(
+    public static final List<IRenderBauble> PAULDRON_REPULSION = ImmutableList.of(
             new PauldronRender(new ModelPauldron.Body(ModContent.pauldron_repulsion), RenderType.BODY),
             new PauldronRender(new ModelPauldron.Arm(ModContent.pauldron_repulsion), RenderType.ARM_RIGHT)
     );

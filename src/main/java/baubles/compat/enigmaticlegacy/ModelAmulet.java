@@ -1,7 +1,6 @@
 package baubles.compat.enigmaticlegacy;
 
 import baubles.client.model.ModelInherit;
-import com.google.common.collect.ImmutableList;
 import keletu.enigmaticlegacy.EnigmaticLegacy;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,10 +12,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.List;
-
 public class ModelAmulet extends ModelInherit {
-    private static final List<String> COLOR_LIST = ImmutableList.<String>builder().add("red", "red", "aqua", "violet", "magenta", "green", "black", "blue").build();
+    private static final String[] COLOR_LIST = new String[]{"red", "red", "aqua", "violet", "magenta", "green", "black", "blue"};
     private static final String DEFAULT_PATH = "textures/models/layer/amulet_red.png";
     private final boolean flag;
     private final ModelRenderer bipedBody;
@@ -72,7 +69,7 @@ public class ModelAmulet extends ModelInherit {
         if (item == EnigmaticLegacy.enigmaticAmulet) {
             String path = DEFAULT_PATH;
             if (1 <= meta && meta < 8) {
-                String color = COLOR_LIST.get(meta);
+                String color = COLOR_LIST[meta];
                 path = DEFAULT_PATH.replace("red", color);
             }
 

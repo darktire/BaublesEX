@@ -49,9 +49,8 @@ public class ClawsRender implements IRenderBauble {
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
         int j = baubles.indexOf(TypesData.Preset.RING, 0);
         int k = baubles.indexOf(ModItems.baubles.BaubleFaelisClaw, 0);
-        if (k != -1) {
-            int l = baubles.indexOf(ModItems.baubles.BaubleFaelisClaw, k);
-            if (l != k) return BOTH;
+        if (k != -1 && baubles.indexOf(ModItems.baubles.BaubleFaelisClaw, k + 1) != -1) {
+            return BOTH;
         }
         if (((k - j) & 1) == 0) {
             return RIGHT;

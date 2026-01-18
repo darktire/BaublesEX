@@ -55,15 +55,14 @@ public class GuiOverlayHandler {
 
     private static void initButtons(GuiScreenEvent.InitGuiEvent.Post event, GuiScreen gui) {
         if (gui instanceof GuiContainer) {
-            GuiContainer guiContainer = (GuiContainer) gui;
             if (gui instanceof GuiInventory) {
                 if (Config.Gui.baublesButton) {
-                    event.getButtonList().add(new ElementButton(55, guiContainer, 64, 9, I18n.format("button.baubles")));
+                    event.getButtonList().add(new ElementButton(55, (GuiInventory) gui, 64, 9, I18n.format("button.baubles")));
                 }
             }
             if (gui instanceof GuiContainerCreative) {
                 if (Config.Gui.baublesButton) {
-                    event.getButtonList().add(new ElementButton(55, guiContainer, 95, 6, I18n.format("button.baubles")));
+                    event.getButtonList().add(new ElementButton(55, (GuiContainer) gui, 95, 6, I18n.format("button.baubles")));
                 }
             }
         }

@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.relauncher.Side;
@@ -18,10 +19,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ElementButton extends ElementBase {
 
     private final GuiContainer parentGui;
+    private boolean offset = false;
+    private final boolean flag;
 
     public ElementButton(int buttonId, GuiContainer parentGui, int x, int y, String buttonText) {
         super(buttonId, parentGui.getGuiLeft() + x, parentGui.getGuiTop() + y, 10, 10, buttonText, null);
         this.parentGui = parentGui;
+        this.flag = parentGui instanceof GuiInventory;
     }
 
     @Override
@@ -45,6 +49,7 @@ public class ElementButton extends ElementBase {
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             if (this.parentGui instanceof GuiContainerCreative && ((GuiContainerCreative) this.parentGui).getSelectedTabIndex() != CreativeTabs.INVENTORY.getIndex()) return;
+            checkRecipeBook();
             updateHovered(mouseX, mouseY);
 
             glPush();
@@ -58,6 +63,16 @@ public class ElementButton extends ElementBase {
                 drawTexturedModalRect(this.x, this.y, 6, 217, 10, 10);
             }
             glPop();
+        }
+    }
+
+    private void checkRecipeBook() {
+        if (this.flag) {
+            boolean visible = ((GuiInventory) this.parentGui).func_194310_f().isVisible();
+            if (visible != this.offset) {
+                this.x = this.parentGui.getGuiLeft() + 64;
+                this.offset = visible;
+            }
         }
     }
 }

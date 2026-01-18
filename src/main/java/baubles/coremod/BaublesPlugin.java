@@ -2,7 +2,6 @@ package baubles.coremod;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
-import org.spongepowered.asm.launch.MixinBootstrap;
 import zone.rong.mixinbooter.IEarlyMixinLoader;
 
 import javax.annotation.Nullable;
@@ -14,12 +13,12 @@ import java.util.Map;
 @IFMLLoadingPlugin.SortingIndex(2333)
 public class BaublesPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
     public BaublesPlugin() {
-        MixinBootstrap.init();
+
     }
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[0];
+        return new String[]{BaublesTransformer.class.getName()};
     }
 
     @Override
@@ -48,5 +47,5 @@ public class BaublesPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
         return earlyMixin;
     }
 
-    private static final List<String> earlyMixin = ImmutableList.of("mixins.baubles.early.json");
+    private static final List<String> earlyMixin = ImmutableList.of("mixins.baubles.early.vanilla.json");
 }
