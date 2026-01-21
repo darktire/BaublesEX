@@ -76,7 +76,7 @@ public interface IBauble {
         return true;
     }
 
-    default Set<? extends IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
+    default Set<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
         return new HashSet<>();
     }
 }

@@ -25,10 +25,10 @@ public abstract class MixinLayerArmorBase<T extends ModelBase> {
     @Shadow @Final private RenderLivingBase<?> renderer;
 
     @Shadow public abstract T getModelFromSlot(EntityEquipmentSlot slotIn);
-    @Shadow protected abstract T getArmorModelHook(EntityLivingBase entity, ItemStack itemStack, EntityEquipmentSlot slot, T model);
+    @Shadow(remap = false) protected abstract T getArmorModelHook(EntityLivingBase entity, ItemStack itemStack, EntityEquipmentSlot slot, T model);
     @Shadow protected abstract void setModelSlotVisible(T p_188359_1_, EntityEquipmentSlot slotIn);
     @Shadow protected abstract boolean isLegSlot(EntityEquipmentSlot slotIn);
-    @Shadow public abstract ResourceLocation getArmorResource(Entity entity, ItemStack stack, EntityEquipmentSlot slot, String type);
+    @Shadow(remap = false) public abstract ResourceLocation getArmorResource(Entity entity, ItemStack stack, EntityEquipmentSlot slot, String type);
 
     @Unique
     public void brs$render(EntityLivingBase entityLivingBaseIn, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {

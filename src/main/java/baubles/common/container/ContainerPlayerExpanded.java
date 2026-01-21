@@ -333,7 +333,6 @@ public class ContainerPlayerExpanded extends ContainerExpansion {
             if (slot instanceof SlotBaubleHandler) ((SlotBaubleHandler) slot).setStack(list.get(i));
             else slot.putStack(list.get(i));
         }
-        this.baubles.getDirty().set(0, this.baublesAmount);
     }
 
     @Override
@@ -368,10 +367,5 @@ public class ContainerPlayerExpanded extends ContainerExpansion {
     @Override
     public List<Slot> getBaubleSlots() {
         return this.inventorySlots.subList(46, 46 + this.baublesAmount);
-    }
-
-    @Override
-    public List<ItemStack> getBaubleStacks() {
-        return this.inventoryItemStacks.subList(46, 46 + this.baublesAmount);
     }
 }

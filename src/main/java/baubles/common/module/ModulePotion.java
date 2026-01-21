@@ -9,17 +9,21 @@ public class ModulePotion extends AbstractModule{
     protected final Potion potion;
 
     public ModulePotion(Potion potion, int limit) {
-        this.limit = limit;
+        this.max = limit - 1;
         this.potion = potion;
     }
 
     public void updateStatus(EntityLivingBase entity, int level) {
-        if (level > this.limit) level = this.limit;
-        PotionEffect currentEffect = entity.getActivePotionEffect(this.potion);
-        int currentLevel = currentEffect != null ? currentEffect.getAmplifier() : -1;
-        if (currentLevel >= level - 1) return;
-        entity.removeActivePotionEffect(this.potion);
-        if (level != -1 && !entity.world.isRemote) {
+        level -= 1;
+
+        if (level > this.max) level = this.max;
+        if (level == -1) {
+            PotionEffect currentEffect = entity.getActivePotionEffect(this.potion);
+            if (currentEffect != null && currentEffect.getAmplifier() <= this.max) {
+                entity.removePotionEffect(this.potion);
+            }
+        }
+        else {
             entity.addPotionEffect(new PotionEffect(this.potion, Integer.MAX_VALUE, level, true, true));
         }
     }

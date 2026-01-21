@@ -104,7 +104,7 @@ public final class BaublesWrapper extends AbstractWrapper {
     }
 
     @Override
-    public Set<? extends IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
+    public Set<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
         return this.bauble.getModules(itemstack, entity);
     }
 

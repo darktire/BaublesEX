@@ -35,6 +35,7 @@ public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
             "mixins.baubles.late.iceandfire.json",
             "mixins.baubles.late.mobends.json",
             "mixins.baubles.late.nvg.json",
+            "mixins.baubles.late.potionfingers.json",
             "mixins.baubles.late.rlartifacts.json",
             "mixins.baubles.late.setbonus.json",
             "mixins.baubles.late.thaumcraft.json",

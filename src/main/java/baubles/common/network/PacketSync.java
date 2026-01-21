@@ -106,7 +106,6 @@ public class PacketSync implements IMessage {
             IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
             if (msg.hasStack) baubles.setStackInSlot(msg.slot, msg.stack);
             baubles.setVisible(msg.slot, msg.visible == 1);
-            baubles.markDirty(msg.slot);
             PacketPool.release(msg);
         }
 

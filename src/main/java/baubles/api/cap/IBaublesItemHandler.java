@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import java.util.BitSet;
+import java.util.stream.IntStream;
 
 public interface IBaublesItemHandler extends IItemHandlerModifiable {
 
@@ -44,8 +45,24 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 	 */
 	void updateContainer();
 
-	void markDirty(int index);
-	BitSet getDirty();
-
 	EntityLivingBase getOwner();
+	Monitor stx = new Monitor();
+	Monitor vis = new Monitor();
+
+
+	final class Monitor {
+		final BitSet status = new BitSet();
+
+		public boolean isDirty() {
+			return status.isEmpty();
+		}
+
+		public void clear() {
+			status.clear();
+		}
+
+		public IntStream stream() {
+			return status.stream();
+		}
+	}
 }

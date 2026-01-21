@@ -4,7 +4,6 @@ import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.cap.IBaublesListener;
 import baubles.common.config.Config;
-import baubles.common.network.IBaublesSync;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -13,14 +12,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.BitSet;
 import java.util.List;
 
-public class ContainerExpansion extends Container implements IBaublesListener, IBaublesSync {
+public class ContainerExpansion extends Container implements IBaublesListener {
     protected EntityLivingBase entity;
     public IBaublesItemHandler baubles;
     public int baublesAmount;
-    protected final BitSet visibility = new BitSet();
 
     protected ContainerExpansion() {}
 
@@ -96,7 +93,6 @@ public class ContainerExpansion extends Container implements IBaublesListener, I
         for (int i = 0; i < list.size(); ++i) {
             ((SlotBaubleHandler) this.getSlot(i)).setStack(list.get(i));
         }
-        this.baubles.getDirty().set(0, this.baublesAmount);
     }
 
     @Override
@@ -113,21 +109,5 @@ public class ContainerExpansion extends Container implements IBaublesListener, I
 
     public void clearBaubles() {
         this.getBaubleSlots().clear();
-        this.getBaubleStacks().clear();
-    }
-
-    @Override
-    public EntityLivingBase getEntity() {
-        return this.entity;
-    }
-
-    @Override
-    public List<ItemStack> getBaubleStacks() {
-        return this.inventoryItemStacks;
-    }
-
-    @Override
-    public BitSet getVisibilities() {
-        return this.visibility;
     }
 }

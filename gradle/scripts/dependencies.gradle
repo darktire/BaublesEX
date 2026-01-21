@@ -30,6 +30,10 @@ dependencies {
     compileOnly files("libs/tombstone-1.12.2-4.7.5-dev.jar")
     compileOnly fg.deobf("curse.maven:night-vision-goggles-321288:2738564")
     compileOnly fg.deobf("curse.maven:backpacked-352835:3252551")
+
+    runtimeOnly fg.deobf("curse.maven:autoreglib-250363:2746011")
+    implementation fg.deobf("curse.maven:potion-fingers-redux-344696:2825356")
+
     //Set Bonus
 //    runtimeOnly fg.deobf("curse.maven:fantastic-lib-315773:6807019")
     compileOnly fg.deobf("curse.maven:set-bonus-317158:6587304")

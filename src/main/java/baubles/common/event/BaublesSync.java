@@ -2,9 +2,8 @@ package baubles.common.event;
 
 import baubles.api.BaublesApi;
 import baubles.api.attribute.AttributeManager;
+import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
-import baubles.common.container.ExpansionManager;
-import baubles.common.network.IBaublesSync;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifySlots;
 import baubles.common.network.PacketSync;
@@ -13,6 +12,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,12 +29,7 @@ public class BaublesSync {
     public static void syncBaubles(TickEvent.PlayerTickEvent event) {
         if (event.phase == TickEvent.Phase.START) return;
         if (!event.player.world.isRemote) {
-            if (event.player.openContainer instanceof IBaublesSync) {
-                ((IBaublesSync) event.player.openContainer).syncBaubles();
-            }
-            if (ExpansionManager.getInstance().isExpanded(event.player)) {
-                ExpansionManager.getInstance().getExpansion(event.player).syncBaubles();
-            }
+            syncBaubles(event.player);
         }
     }
 
@@ -83,5 +78,24 @@ public class BaublesSync {
                 }
             }
         });
+    }
+
+    private static void syncBaubles(EntityLivingBase entity) {
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
+        if (baubles.stx.isDirty()) {
+            baubles.stx.stream().forEach(i -> {
+                ItemStack stack = baubles.getStackInSlot(i);
+                PacketSync pkt = PacketSync.S2CPack(entity, i, stack, -1);
+                PacketHandler.INSTANCE.sendToAllTracking(pkt, entity);
+            });
+            baubles.stx.clear();
+        }
+        if (baubles.vis.isDirty()) {
+            baubles.vis.stream().forEach(i -> {
+                PacketSync pkt = PacketSync.S2CPack(entity, i, null, baubles.getVisible(i) ? 1 : 0);
+                PacketHandler.INSTANCE.sendToAllTracking(pkt, entity);
+            });
+            baubles.vis.clear();
+        }
     }
 }

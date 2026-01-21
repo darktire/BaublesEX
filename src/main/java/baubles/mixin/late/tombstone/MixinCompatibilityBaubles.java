@@ -4,7 +4,6 @@ import baubles.api.AbstractWrapper;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.common.network.IBaublesSync;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -52,8 +51,6 @@ public class MixinCompatibilityBaubles {
                 }
             }
         }
-
-        if (!player.world.isRemote) IBaublesSync.forceSync(player);
 
         ci.cancel();
     }

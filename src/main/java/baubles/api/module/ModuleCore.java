@@ -3,12 +3,12 @@ package baubles.api.module;
 import net.minecraft.entity.EntityLivingBase;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ModuleCore {
-    private final Map<IModule, AtomicInteger> levels = new HashMap<>();
+    private final Map<IModule, AtomicInteger> levels = new WeakHashMap<>();
 
     public void increment(IModule module) {
         levels.computeIfAbsent(module, k -> new AtomicInteger(0)).incrementAndGet();
@@ -19,9 +19,7 @@ public class ModuleCore {
         if (count == null) {
             return;
         }
-        if (count.decrementAndGet() <= 0) {
-            levels.remove(module);
-        }
+        count.decrementAndGet();
     }
 
     public void batchIncrement(Collection<IModule> modules) {
