@@ -27,8 +27,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemTire extends Item implements IBauble, IRenderBauble {
-	private final List<BaubleTypeEx> types = ImmutableList.<BaubleTypeEx>builder()
-			.add(TypesData.Preset.HEAD, TypesData.Preset.BODY, TypesData.Preset.BELT, TypesData.Preset.CHARM).build();
+	private final List<BaubleTypeEx> types = ImmutableList.of(TypesData.Preset.HEAD, TypesData.Preset.BODY, TypesData.Preset.BELT, TypesData.Preset.CHARM);
 
 	public ItemTire() {
 		super();

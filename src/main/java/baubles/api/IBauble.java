@@ -1,10 +1,13 @@
 package baubles.api;
 
+import baubles.api.module.IModule;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -71,5 +74,9 @@ public interface IBauble {
 
     default boolean canDrop(ItemStack itemstack, EntityLivingBase entity) {
         return true;
+    }
+
+    default Set<? extends IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
+        return new HashSet<>();
     }
 }

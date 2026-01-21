@@ -3,6 +3,7 @@ package baubles.api;
 import baubles.api.cap.BaubleItem;
 import baubles.api.event.BaublesEvent;
 import baubles.api.model.ModelBauble;
+import baubles.api.module.IModule;
 import baubles.api.render.IRenderBauble;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -15,6 +16,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
+import java.util.Set;
 
 public final class BaublesWrapper extends AbstractWrapper {
     private ItemStack stack;
@@ -39,11 +41,6 @@ public final class BaublesWrapper extends AbstractWrapper {
             this.addition.addListener(this);
         }
         this.syncChanges();
-    }
-
-    public BaublesWrapper(ItemStack stack, IRenderBauble render) {
-        this(stack);
-        this.render = render;
     }
 
     @Override
@@ -104,6 +101,11 @@ public final class BaublesWrapper extends AbstractWrapper {
     @Override
     public boolean canDrop(ItemStack itemstack, EntityLivingBase entity) {
         return this.bauble.canDrop(itemstack, entity);
+    }
+
+    @Override
+    public Set<? extends IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
+        return this.bauble.getModules(itemstack, entity);
     }
 
     @Override

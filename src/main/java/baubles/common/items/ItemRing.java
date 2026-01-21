@@ -1,13 +1,10 @@
 package baubles.common.items;
 
-import baubles.BaublesRegister;
 import baubles.api.BaubleType;
-import baubles.api.BaubleTypeEx;
-import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.registries.TypesData;
+import baubles.api.module.IModule;
 import baubles.common.config.Config;
+import baubles.common.module.ModulePotion;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
@@ -15,12 +12,14 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+
+import java.util.Collections;
+import java.util.Set;
 
 public class ItemRing extends Item implements IBauble {
+
+	private final Set<IModule> module = Collections.singleton(new ModulePotion(MobEffects.HASTE, Config.ModItems.maxLevel));
 
 	public ItemRing() {
 		super();
@@ -84,7 +83,7 @@ public class ItemRing extends Item implements IBauble {
 		if (entity.world.isRemote) {
 			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 1.9f);
 		}
-		updatePotionStatus(entity);
+//		updatePotionStatus(entity);
 	}
 
 	@Override
@@ -92,30 +91,35 @@ public class ItemRing extends Item implements IBauble {
 		if (entity.world.isRemote) {
 			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 2f);
 		}
-		updatePotionStatus(entity);
+//		updatePotionStatus(entity);
 	}
 
-	public static void updatePotionStatus(EntityLivingBase entity) {
-		int level = -1;
-		IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
-		Potion potion = Potion.REGISTRY.getObject(new ResourceLocation("haste"));
+	@Override
+	public Set<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
+		return this.module;
+	}
 
-		BaubleTypeEx target = TypesData.Preset.RING;
-		for (int i = 0; i < baubles.getSlots(); i++) {
-			if (baubles.getTypeInSlot(i) != target) continue;
-			ItemStack ring1 = baubles.getStackInSlot(i);
-			if (level >= Config.ModItems.maxLevel - 1) break;
-			if (ring1.getItem() == BaublesRegister.ModItems.ring) level++;
-		}
-		if (potion != null) {
-			PotionEffect currentEffect = entity.getActivePotionEffect(potion);
-			int currentLevel = currentEffect != null ? currentEffect.getAmplifier() : -1;
-			if (currentLevel != level) {
-				entity.removeActivePotionEffect(potion);
-				if (level != -1 && !entity.world.isRemote)
-					entity.addPotionEffect(new PotionEffect(MobEffects.HASTE, Integer.MAX_VALUE, level, true, true));
-
-			}
-		}
-    }
+//	public static void updatePotionStatus(EntityLivingBase entity) {
+//		int level = -1;
+//		IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
+//		Potion potion = Potion.REGISTRY.getObject(new ResourceLocation("haste"));
+//
+//		BaubleTypeEx target = TypesData.Preset.RING;
+//		for (int i = 0; i < baubles.getSlots(); i++) {
+//			if (baubles.getTypeInSlot(i) != target) continue;
+//			ItemStack ring1 = baubles.getStackInSlot(i);
+//			if (level >= Config.ModItems.maxLevel - 1) break;
+//			if (ring1.getItem() == BaublesRegister.ModItems.ring) level++;
+//		}
+//		if (potion != null) {
+//			PotionEffect currentEffect = entity.getActivePotionEffect(potion);
+//			int currentLevel = currentEffect != null ? currentEffect.getAmplifier() : -1;
+//			if (currentLevel != level) {
+//				entity.removeActivePotionEffect(potion);
+//				if (level != -1 && !entity.world.isRemote)
+//					entity.addPotionEffect(new PotionEffect(MobEffects.HASTE, Integer.MAX_VALUE, level, true, true));
+//
+//			}
+//		}
+//    }
 }
