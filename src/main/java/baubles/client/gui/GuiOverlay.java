@@ -149,6 +149,7 @@ public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea 
     public void syncChanges() {
         this.baublesAmount = this.baubles.getSlots();
         this.col = initCol();
+        this.containerEx.clearBaubles();
         this.containerEx.addBaubleSlots(this.wider);
         this.row = initRow();
         this.scroller.setBarPos(this.offset);

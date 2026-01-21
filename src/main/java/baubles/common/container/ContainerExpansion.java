@@ -19,13 +19,10 @@ public class ContainerExpansion extends Container implements IBaublesListener {
     public IBaublesItemHandler baubles;
     public int baublesAmount;
 
-    protected ContainerExpansion() {}
-
     public ContainerExpansion(EntityLivingBase entity) {
         this.entity = entity;
         this.baubles = BaublesApi.getBaublesHandler(entity);
-        this.baublesAmount = this.baubles.getSlots();
-        this.baubles.addListener(this);
+        if (!entity.world.isRemote) this.baubles.addListener(this);
 
         initSlots();
     }
@@ -50,6 +47,7 @@ public class ContainerExpansion extends Container implements IBaublesListener {
 
     public void addBaubleSlots(boolean flag) {
         int column = flag ? Config.Gui.column : 1;
+        this.baublesAmount = this.baubles.getSlots();
         for (int i = 0; i < this.baublesAmount; i++) {
             int j = i / column;
             int k = i % column;
@@ -101,13 +99,15 @@ public class ContainerExpansion extends Container implements IBaublesListener {
     @Override
     public void syncChanges() {
         this.clearBaubles();
-        this.baublesAmount = this.baubles.getSlots();
-        if (!this.entity.world.isRemote) {
-            this.initSlots();
-        }
+        this.addBaubleSlots(false);
     }
 
     public void clearBaubles() {
         this.getBaubleSlots().clear();
+        this.getBaubleStacks().clear();
+    }
+
+    public List<ItemStack> getBaubleStacks() {
+        return this.inventoryItemStacks;
     }
 }

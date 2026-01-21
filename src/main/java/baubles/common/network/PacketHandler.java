@@ -14,7 +14,7 @@ public class PacketHandler {
         INSTANCE.registerMessage(PacketOpenNormalInventory.Handler.class, PacketOpenNormalInventory.class, START_ID++, Side.SERVER);
         INSTANCE.registerMessage(PacketSync.Handler.class, PacketSync.class, START_ID++, Side.CLIENT);
         INSTANCE.registerMessage(PacketSync.Handler.class, PacketSync.class, START_ID++, Side.SERVER);
-        INSTANCE.registerMessage(PacketModifySlots.Handler.class, PacketModifySlots.class, START_ID++, Side.CLIENT);
+        INSTANCE.registerMessage(PacketModifier.Handler.class, PacketModifier.class, START_ID++, Side.CLIENT);
         INSTANCE.registerMessage(PacketOpenExpansion.Handler.class, PacketOpenExpansion.class, START_ID++, Side.SERVER);
         INSTANCE.registerMessage(PacketFakeTransaction.Handler.class, PacketFakeTransaction.class, START_ID++, Side.SERVER);
     }

@@ -23,17 +23,15 @@ public class ContainerPlayerExpanded extends ContainerExpansion {
     private static final EntityEquipmentSlot[] equipmentSlots = new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
 
     public ContainerPlayerExpanded(EntityPlayer player, EntityLivingBase entity) {
+        super(entity);
         this.player = player;
-        this.entity = entity;
-        this.baubles = BaublesApi.getBaublesHandler(entity);
-        this.baublesAmount = this.baubles.getSlots();
-        this.baubles.addListener(this);
-
-        initSlots();
+        initPlayerSlots();
     }
 
     @Override
-    protected void initSlots() {
+    protected void initSlots() {}
+
+    private void initPlayerSlots() {
         InventoryPlayer playerInv = this.player.inventory;
 
         //add craftResult (1) [0,1)
@@ -210,8 +208,7 @@ public class ContainerPlayerExpanded extends ContainerExpansion {
 
             if (oldStack.isEmpty() && !baubles.isEventBlocked() && slot instanceof SlotBaubleHandler) {
                 IBauble bauble = BaublesApi.toBauble(newStack);
-                if (bauble != null)
-                    bauble.onUnequipped(newStack, playerIn);
+                if (bauble != null) bauble.onUnequipped(newStack, playerIn);
             }
 
             ItemStack itemstack2 = slot.onTake(playerIn, oldStack);
@@ -260,12 +257,14 @@ public class ContainerPlayerExpanded extends ContainerExpansion {
                         stack.setCount(0);
                         itemstack.setCount(j);
                         slot.onSlotChanged();
+                        if (slot instanceof SlotBaubleHandler) this.baubles.stx.markDirty(slot.getSlotIndex());
                         flag = true;
                     }
                     else if (itemstack.getCount() < maxSize) {
                         stack.shrink(maxSize - itemstack.getCount());
                         itemstack.setCount(maxSize);
                         slot.onSlotChanged();
+                        if (slot instanceof SlotBaubleHandler) this.baubles.stx.markDirty(slot.getSlotIndex());
                         flag = true;
                     }
                 }
@@ -309,6 +308,7 @@ public class ContainerPlayerExpanded extends ContainerExpansion {
                     }
 
                     slot1.onSlotChanged();
+                    if (slot1 instanceof SlotBaubleHandler) this.baubles.stx.markDirty(slot1.getSlotIndex());
                     flag = true;
                     break;
                 }
@@ -356,16 +356,12 @@ public class ContainerPlayerExpanded extends ContainerExpansion {
     }
 
     @Override
-    public void syncChanges() {
-        this.clearBaubles();
-        this.baublesAmount = this.baubles.getSlots();
-        if (!this.entity.world.isRemote) {
-            this.addBaubleSlots(false);
-        }
+    public List<Slot> getBaubleSlots() {
+        return this.inventorySlots.subList(46, 46 + this.baublesAmount);
     }
 
     @Override
-    public List<Slot> getBaubleSlots() {
-        return this.inventorySlots.subList(46, 46 + this.baublesAmount);
+    public List<ItemStack> getBaubleStacks() {
+        return this.inventoryItemStacks.subList(46, 46 + this.baublesAmount);
     }
 }

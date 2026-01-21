@@ -44,6 +44,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         AttributeManager.attachAttributes(entity, this);
         this.MODIFIED_SLOTS.addAll(AttributeManager.computeSlots(entity));
         this.setSize(MODIFIED_SLOTS.size());
+        this.snapshot = new ArrayList<>(this.stacks);
         CONTAINERS.add(this);
     }
 
@@ -52,7 +53,9 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         if (!this.containerUpdated) {
             this.syncSlots();
             this.onSlotChanged();
-            this.stx.status.set(0, this.getSlots());
+            if (!this.entity.world.isRemote) {
+                this.stx.status.set(0, this.getSlots());
+            }
             this.listeners.forEach(IBaublesListener::syncChanges);
         }
     }
@@ -66,14 +69,14 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     }
 
     private void onSlotChanged() {
-        List<ItemStack> stacks1 = new ArrayList<>(this.stacks);
         BitSet visibility1 = (BitSet) this.visibility.clone();
         setSize(this.MODIFIED_SLOTS.size());
+        List<ItemStack> temp = new ArrayList<>(this.stacks);
         this.visibility.clear();
         boolean drop;
-        for (int i = 0; i < stacks1.size(); i++) {
+        for (int i = 0; i < this.snapshot.size(); i++) {
             boolean flag = !visibility1.get(i);
-            ItemStack stack = stacks1.get(i);
+            ItemStack stack = this.snapshot.get(i);
             boolean empty = stack.isEmpty();
             if (empty && flag) continue;
             BaubleTypeEx type = this.PREVIOUS_SLOTS.get(i);
@@ -84,7 +87,10 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
                 int move = start - this.PREVIOUS_SLOTS.indexOf(type);
                 int newIndex = i + move;
                 if (newIndex < this.MODIFIED_SLOTS.size() && this.MODIFIED_SLOTS.get(newIndex) == type) {
-                    if (!empty) this.stacks.set(newIndex, stack);
+                    if (!empty) {
+                        this.stacks.set(newIndex, stack);
+                        temp.set(newIndex, stack.copy());
+                    }
                     if (!flag) this.visibility.set(newIndex);
                 }
                 else drop = true;
@@ -94,7 +100,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
                 BaublesApi.toBauble(stack).onUnequipped(stack, this.entity);
             }
         }
-        this.snapshot = new ArrayList<>(this.stacks);
+        this.snapshot = temp;
         this.containerUpdated = true;
     }
 
@@ -135,7 +141,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
             ItemStack stack1 = this.stacks.get(slot);
             if (!ItemStack.areItemStacksEqual(stack, stack1)) {
                 this.stx.status.set(slot);
-                this.snapshot.set(slot, stack1);
+                this.snapshot.set(slot, stack1.copy());
                 onExchange(this.entity, stack, stack1);
             }
         }
@@ -257,6 +263,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
                 }
             }
             this.setSize(MODIFIED_SLOTS.size());
+            this.snapshot = new ArrayList<>(this.stacks);
         }
 
         if (nbt.hasKey("Visibility")) {
@@ -277,12 +284,12 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
             }
             if (flag) {
                 this.stacks.set(slot, stack);
+                this.snapshot.set(slot, stack.copy());
             }
             else {
                 dropItem(this.entity, stack);
             }
         }
-        this.snapshot = new ArrayList<>(this.stacks);
     }
 
     private void forwardCompat(NBTTagCompound nbt) {

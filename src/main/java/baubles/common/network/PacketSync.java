@@ -115,7 +115,7 @@ public class PacketSync implements IMessage {
             Entity entity = world.getEntityByID(msg.entityId);
             if (entity instanceof EntityLivingBase) {
                 IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
-                baubles.setStackInSlot(msg.slot, msg.stack);
+                if (msg.hasStack) baubles.setStackInSlot(msg.slot, msg.stack);
                 if (msg.visible != -1) baubles.setVisible(msg.slot, msg.visible == 1);
             }
             PacketPool.release(msg);

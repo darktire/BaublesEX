@@ -11,9 +11,10 @@ import java.util.UUID;
 import java.util.function.DoubleBinaryOperator;
 
 public class AdvancedInstance extends ModifiableAttributeInstance {
-    public static final DoubleBinaryOperator MULTIPLICATION = (a, b) -> a * b;
+    private static final DoubleBinaryOperator MULTIPLICATION = (a, b) -> a * b;
     private WeakReference<IBaublesItemHandler> handler;
     private final Map<Integer, Double> anonymous = new HashMap<>();
+    public boolean isModified = false;
 
     public AdvancedInstance(AbstractAttributeMap map, IAttribute attribute) {
         super(map, attribute);
@@ -74,6 +75,12 @@ public class AdvancedInstance extends ModifiableAttributeInstance {
         d1 *= 1.0D + this.anonymous.get(2);
 
         return this.genericAttribute.clampValue(d1);
+    }
+
+    @Override
+    protected void flagForUpdate() {
+        this.needsUpdate = true;
+        this.isModified = true;
     }
 
     public void correct() {

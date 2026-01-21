@@ -53,8 +53,11 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 	final class Monitor {
 		final BitSet status = new BitSet();
 
+		public void markDirty(int slot) {
+			status.set(slot);
+		}
 		public boolean isDirty() {
-			return status.isEmpty();
+			return !status.isEmpty();
 		}
 
 		public void clear() {
@@ -64,5 +67,6 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 		public IntStream stream() {
 			return status.stream();
 		}
+
 	}
 }

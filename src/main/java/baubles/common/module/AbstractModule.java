@@ -13,6 +13,10 @@ public abstract class AbstractModule implements IModule {
         this.id = UUID.randomUUID();
     }
 
+    protected AbstractModule(UUID id) {
+        this.id = id;
+    }
+
     protected boolean validate(int value) {
         return this.min <= value && value <= this.max;
     }

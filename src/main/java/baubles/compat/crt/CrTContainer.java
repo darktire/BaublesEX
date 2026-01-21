@@ -7,7 +7,7 @@ import baubles.api.attribute.AttributeManager;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
 import baubles.common.network.PacketHandler;
-import baubles.common.network.PacketModifySlots;
+import baubles.common.network.PacketModifier;
 import baubles.util.HookHelper;
 import crafttweaker.api.item.IItemDefinition;
 import crafttweaker.api.item.IItemStack;
@@ -58,7 +58,7 @@ public class CrTContainer implements IContainer {
             AdvancedInstance instance = AttributeManager.getInstance(map, type);
             double present = instance.getAnonymousModifier(0);
             instance.applyAnonymousModifier(0, present + modifier);
-            PacketHandler.INSTANCE.sendTo(new PacketModifySlots(owner, typeName, (int) (present + modifier), 0), (EntityPlayerMP) owner);
+            PacketHandler.INSTANCE.sendTo(new PacketModifier(owner, typeName, (int) (present + modifier), 0), (EntityPlayerMP) owner);
         }
     }
 

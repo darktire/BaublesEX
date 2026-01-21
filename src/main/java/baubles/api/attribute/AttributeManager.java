@@ -8,12 +8,13 @@ import com.google.common.collect.Sets;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class AttributeManager {
-    private static final HashMap<BaubleTypeEx, IAttribute> PLAYER_BAUBLES = new HashMap<>();
+    private static final Map<BaubleTypeEx, IAttribute> PLAYER_BAUBLES = new HashMap<>();
     private static final Set<EntityLivingBase> LISTENER = Collections.newSetFromMap(new WeakHashMap<>());
 
     public static void loadAttributes() {
@@ -43,8 +44,21 @@ public class AttributeManager {
     public static IAttribute getAttribute(BaubleTypeEx type) {
         return PLAYER_BAUBLES.get(type);
     }
-    public static Collection<IAttribute> getAttributes() {
-        return PLAYER_BAUBLES.values();
+    public static Map<BaubleTypeEx, AdvancedInstance> getModified(EntityLivingBase entity) {
+        AbstractAttributeMap map = entity.getAttributeMap();
+        return PLAYER_BAUBLES.keySet().stream()
+                .map(attribute -> new AbstractMap.SimpleEntry<>(
+                        attribute,
+                        getInstance(map, attribute)
+                ))
+                .filter(wrapper -> {
+                    AdvancedInstance instance = wrapper.getValue();
+                    return instance instanceof AdvancedInstance && instance.isModified;
+                })
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                ));
     }
     public static List<BaubleTypeEx> computeSlots(EntityLivingBase entity) {
         AbstractAttributeMap map = entity.getAttributeMap();
@@ -54,13 +68,16 @@ public class AttributeManager {
     }
 
     private static IAttribute generate(BaubleTypeEx type) {
-        return new NonNegativeAttribute(null, type.getTranslateKey(), type.getAmount()).setShouldWatch(true);
+        return new NonNegativeAttribute(null, type.getTranslateKey(), type.getAmount());
     }
 
     public static void attachAttributes(EntityLivingBase entity, IBaublesItemHandler handler) {
         AbstractAttributeMap map = entity.getAttributeMap();
         for (IAttribute attribute : PLAYER_BAUBLES.values()) {
-            map.attributes.put(attribute, new AdvancedInstance(map, attribute).addListener(handler));
+            IAttributeInstance instance = new AdvancedInstance(map, attribute).addListener(handler);
+//            modifiers.forEach(instance::applyModifier);
+            map.attributesByName.put(attribute.getName(), instance);
+            map.attributes.put(attribute, instance);
         }
     }
 

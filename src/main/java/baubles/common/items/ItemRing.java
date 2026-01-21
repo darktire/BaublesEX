@@ -19,7 +19,7 @@ import java.util.Set;
 
 public class ItemRing extends Item implements IBauble {
 
-	private final Set<IModule> module = Collections.singleton(new ModulePotion(MobEffects.HASTE, Config.ModItems.maxLevel));
+	private final IModule module = new ModulePotion(MobEffects.HASTE, Config.ModItems.maxLevel);
 
 	public ItemRing() {
 		super();
@@ -96,7 +96,7 @@ public class ItemRing extends Item implements IBauble {
 
 	@Override
 	public Set<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
-		return this.module;
+		return Collections.singleton(module);
 	}
 
 //	public static void updatePotionStatus(EntityLivingBase entity) {

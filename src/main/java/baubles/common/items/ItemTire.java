@@ -1,13 +1,15 @@
 package baubles.common.items;
 
 import baubles.api.BaubleTypeEx;
-import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.cap.IBaublesItemHandler;
+import baubles.api.attribute.AttributeManager;
 import baubles.api.model.ModelBauble;
+import baubles.api.module.IModule;
 import baubles.api.registries.TypesData;
 import baubles.api.render.IRenderBauble;
 import baubles.client.model.ModelTire;
+import baubles.common.module.ModuleAttribute;
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.creativetab.CreativeTabs;
@@ -24,13 +26,17 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 public class ItemTire extends Item implements IBauble, IRenderBauble {
 	private final List<BaubleTypeEx> types = ImmutableList.of(TypesData.Preset.HEAD, TypesData.Preset.BODY, TypesData.Preset.BELT, TypesData.Preset.CHARM);
+	private final Supplier<Set<IModule>> module;
 
 	public ItemTire() {
-		super();
 		this.setMaxStackSize(1);
 		this.setHasSubtypes(true);
 		this.setMaxDamage(0);
@@ -48,6 +54,7 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 				} else return 0;
 			}
 		});
+		this.module = Suppliers.memoize(this::build);
 	}
 
 	@Override
@@ -75,9 +82,6 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 		if (entity.world.isRemote) {
 			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 0.9f);
 		}
-		IBaublesItemHandler handler = BaublesApi.getBaublesHandler(entity);
-//		handler.modifySlot("trinket", 2);
-//		handler.updateContainer();
 	}
 
 	@Override
@@ -85,9 +89,15 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 		if (entity.world.isRemote) {
 			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 0.9f);
 		}
-		IBaublesItemHandler handler = BaublesApi.getBaublesHandler(entity);
-//		handler.modifySlot("trinket", -2);
-//		handler.updateContainer();
+	}
+
+	@Override
+	public Set<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
+		return this.module.get();
+	}
+
+	private Set<IModule> build() {
+		return Collections.singleton(new ModuleAttribute(UUID.fromString("9f115a20-7ddd-4339-89bf-f9964b7258c9"), AttributeManager.getAttribute(TypesData.Preset.TRINKET), 2F, 0));
 	}
 
 	@Override

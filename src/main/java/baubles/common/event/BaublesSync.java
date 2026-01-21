@@ -5,7 +5,7 @@ import baubles.api.attribute.AttributeManager;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
 import baubles.common.network.PacketHandler;
-import baubles.common.network.PacketModifySlots;
+import baubles.common.network.PacketModifier;
 import baubles.common.network.PacketSync;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,9 +19,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.Collection;
-import java.util.Collections;
-
 @Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
 public class BaublesSync {
 
@@ -29,6 +26,13 @@ public class BaublesSync {
     public static void syncBaubles(TickEvent.PlayerTickEvent event) {
         if (event.phase == TickEvent.Phase.START) return;
         if (!event.player.world.isRemote) {
+//            if (event.player.openContainer instanceof ContainerExpansion) {
+//                ((ContainerExpansion) event.player.openContainer).syncBaubles();
+//            }
+//            else if (event.player.openContainer != event.player.inventoryContainer && ExpansionManager.getInstance().isExpanded(event.player)) {
+//                ExpansionManager.getInstance().getExpansion(event.player).syncBaubles();
+//            }
+            syncModifier((EntityPlayerMP) event.player);
             syncBaubles(event.player);
         }
     }
@@ -38,9 +42,7 @@ public class BaublesSync {
         Entity entity = event.getEntity();
         if (entity instanceof EntityPlayer) {
             if (entity instanceof EntityPlayerMP) {
-                EntityPlayerMP player = (EntityPlayerMP) entity;
-                syncModifier(player, Collections.singletonList(player));
-                syncAllSlots(player, Collections.singletonList(player));
+                syncAnonymousModifier((EntityPlayerMP) entity);
             }
         }
     }
@@ -52,29 +54,31 @@ public class BaublesSync {
     public static void onStartTracking(PlayerEvent.StartTracking event) {
         Entity target = event.getTarget();
         if (target instanceof EntityPlayerMP) {
-            syncAllSlots((EntityPlayer) target, Collections.singletonList(event.getEntityPlayer()));
+            syncAllSlots((EntityPlayer) target, (EntityPlayerMP) event.getEntityPlayer());
         }
     }
 
-    private static void syncAllSlots(EntityLivingBase entity, Collection<? extends EntityPlayer> receivers) {
+    private static void syncAllSlots(EntityLivingBase entity, EntityPlayerMP player) {
         BaublesApi.applyByIndex(entity, (baubles, i) -> {
             PacketSync pkt = PacketSync.S2CPack(entity, i, baubles.getStackInSlot(i), baubles.getVisible(i) ? 1 : 0);
-            for (EntityPlayer receiver : receivers) {
-                PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) receiver);
-            }
+            PacketHandler.INSTANCE.sendTo(pkt, player);
         });
     }
 
-    private static void syncModifier(EntityLivingBase entity, Collection<? extends EntityPlayerMP> receivers) {
-        AbstractAttributeMap map = entity.getAttributeMap();
+    private static void syncModifier(EntityPlayerMP player) {
+        AttributeManager.getModified(player).forEach((type, instance) -> {
+            PacketHandler.INSTANCE.sendTo(new PacketModifier(player, type, instance.getModifiers()), player);
+            instance.isModified = false;
+        });
+    }
+
+    private static void syncAnonymousModifier(EntityPlayerMP player) {
+        AbstractAttributeMap map = player.getAttributeMap();
         TypesData.applyToTypes(type -> {
-            String typeName = type.getName();
             for (int i = 0; i < 3; i++) {
                 int modifier = (int) AttributeManager.getInstance(map, type).getAnonymousModifier(i);
                 if (modifier != 0) {
-                    for (EntityPlayerMP receiver : receivers) {
-                        PacketHandler.INSTANCE.sendTo(new PacketModifySlots(entity, typeName, modifier, i), receiver);
-                    }
+                    PacketHandler.INSTANCE.sendTo(new PacketModifier(player, type, modifier, i), player);
                 }
             }
         });
@@ -86,6 +90,7 @@ public class BaublesSync {
             baubles.stx.stream().forEach(i -> {
                 ItemStack stack = baubles.getStackInSlot(i);
                 PacketSync pkt = PacketSync.S2CPack(entity, i, stack, -1);
+                PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) entity);
                 PacketHandler.INSTANCE.sendToAllTracking(pkt, entity);
             });
             baubles.stx.clear();
@@ -93,6 +98,7 @@ public class BaublesSync {
         if (baubles.vis.isDirty()) {
             baubles.vis.stream().forEach(i -> {
                 PacketSync pkt = PacketSync.S2CPack(entity, i, null, baubles.getVisible(i) ? 1 : 0);
+                PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) entity);
                 PacketHandler.INSTANCE.sendToAllTracking(pkt, entity);
             });
             baubles.vis.clear();
