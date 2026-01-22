@@ -125,7 +125,7 @@ public class ItemDataAdapter extends CustomAdapter<List<IBaubleKey>> {
                 else {
                     try {
                         set.add(ItemParser.parse(name));
-                    } catch (Throwable e) {
+                    } catch (Exception e) {
                         BaublesApi.log.error("items loading error: " + e.getMessage());
                     }
                 }

@@ -91,7 +91,7 @@ public class HookHelper {
                     }
                 }
                 ConversionHelper.typeToJson(types, false);
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 BaublesApi.log.error(e);
             }
         }

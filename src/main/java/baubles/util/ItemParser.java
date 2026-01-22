@@ -9,8 +9,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class ItemParser {
 
-    public static IBaubleKey parse(String input) throws Throwable {
-        if (input == null || input.trim().isEmpty()) throw new Throwable(input);
+    public static IBaubleKey parse(String input) throws Exception {
+        if (input == null || input.trim().isEmpty()) throw new Exception(input);
 
         String rawInput = input.trim();
         int nbtSplitIndex = rawInput.lastIndexOf(":{");
@@ -50,11 +50,11 @@ public class ItemParser {
                 break;
 
             default:
-                throw new Throwable(baseSegments[4]);
+                throw new Exception(baseSegments[4]);
         }
 
         Item item = Item.getByNameOrId(itemName);
-        if (item == null) throw new Throwable(itemName);
+        if (item == null) throw new Exception(itemName);
 
         if (baseSegments.length == 1) return IBaubleKey.BaubleKey.wrap(item);
 
@@ -63,8 +63,8 @@ public class ItemParser {
             if (nbtRaw != null) {
                 stack.setTagCompound(JsonToNBT.getTagFromJson(nbtRaw));
             }
-        } catch (Throwable e) {
-            throw new Throwable(nbtRaw);
+        } catch (Exception e) {
+            throw new Exception(nbtRaw);
         }
 
         return IBaubleKey.BaubleKey.wrap(stack);

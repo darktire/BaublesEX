@@ -30,11 +30,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class ItemTire extends Item implements IBauble, IRenderBauble {
+	private final ModuleAttribute module = new ModuleAttribute(UUID.fromString("9f115a20-7ddd-4339-89bf-f9964b7258c9"), Suppliers.memoize(() -> AttributeManager.getAttribute(TypesData.Preset.TRINKET)), 2F, 0);
 	private final List<BaubleTypeEx> types = ImmutableList.of(TypesData.Preset.HEAD, TypesData.Preset.BODY, TypesData.Preset.BELT, TypesData.Preset.CHARM);
-	private final Supplier<Set<IModule>> module;
 
 	public ItemTire() {
 		this.setMaxStackSize(1);
@@ -54,7 +53,6 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 				} else return 0;
 			}
 		});
-		this.module = Suppliers.memoize(this::build);
 	}
 
 	@Override
@@ -93,11 +91,7 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 
 	@Override
 	public Set<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
-		return this.module.get();
-	}
-
-	private Set<IModule> build() {
-		return Collections.singleton(new ModuleAttribute(UUID.fromString("9f115a20-7ddd-4339-89bf-f9964b7258c9"), AttributeManager.getAttribute(TypesData.Preset.TRINKET), 2F, 0));
+		return Collections.singleton(module);
 	}
 
 	@Override

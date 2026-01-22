@@ -3,22 +3,20 @@ package baubles.common.network;
 import baubles.Baubles;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class PacketSync implements IMessage {
+public class PacketSync implements IPacket {
 
     private boolean toClient;
     private int entityId;
@@ -62,63 +60,61 @@ public class PacketSync implements IMessage {
     }
 
     @Override
-    public void toBytes(ByteBuf buffer) {
-        buffer.writeBoolean(this.toClient);
+    public void write(PacketBuffer buf) {
+        buf.writeBoolean(this.toClient);
         if (this.toClient) {
-            buffer.writeInt(this.entityId);
+            buf.writeInt(this.entityId);
         }
-        buffer.writeBoolean(this.hasStack);
+        buf.writeBoolean(this.hasStack);
         if (this.hasStack) {
-            ByteBufUtils.writeItemStack(buffer, this.stack);
+            buf.writeItemStack(stack);
         }
-        buffer.writeInt(this.slot);
-        buffer.writeInt(this.visible);
+        buf.writeInt(this.slot);
+        buf.writeInt(this.visible);
     }
 
     @Override
-    public void fromBytes(ByteBuf buffer) {
-        this.toClient = buffer.readBoolean();
+    public void read(PacketBuffer buf) throws Exception {
+        this.toClient = buf.readBoolean();
         if (this.toClient) {
-            this.entityId = buffer.readInt();
+            this.entityId = buf.readInt();
         }
-        this.hasStack = buffer.readBoolean();
+        this.hasStack = buf.readBoolean();
         if (this.hasStack) {
-            this.stack = ByteBufUtils.readItemStack(buffer);
+            this.stack = buf.readItemStack();
         }
-        this.slot = buffer.readInt();
-        this.visible = buffer.readInt();
+        this.slot = buf.readInt();
+        this.visible = buf.readInt();
     }
 
-    public static class Handler implements IMessageHandler<PacketSync, IMessage> {
-        @Override
-        public IMessage onMessage(PacketSync msg, MessageContext ctx) {
-            if (ctx.side == Side.CLIENT && msg.toClient) {
-                Minecraft.getMinecraft().addScheduledTask(() -> handleClient(msg));
-            }
-            else if (ctx.side == Side.SERVER && !msg.toClient) {
-                EntityPlayerMP player = ctx.getServerHandler().player;
-                ((WorldServer) player.world).addScheduledTask(() -> handleSever(msg, player));
-            }
-            return null;
+    @Override
+    public IMessage handlePacket(MessageContext ctx) {
+        if (ctx.side == Side.CLIENT && this.toClient) {
+            Minecraft.getMinecraft().addScheduledTask(this::handleClient);
         }
+        else if (ctx.side == Side.SERVER && !this.toClient) {
+            EntityPlayerMP player = ctx.getServerHandler().player;
+            ((WorldServer) player.world).addScheduledTask(() -> handleSever(player));
+        }
+        return null;
+    }
 
-        private void handleSever(PacketSync msg, EntityLivingBase player) {
-            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
-            if (msg.hasStack) baubles.setStackInSlot(msg.slot, msg.stack);
-            baubles.setVisible(msg.slot, msg.visible == 1);
-            PacketPool.release(msg);
-        }
+    private void handleSever(EntityLivingBase player) {
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
+        if (this.hasStack) baubles.setStackInSlot(this.slot, this.stack);
+        baubles.setVisible(this.slot, this.visible == 1);
+        PacketPool.release(this);
+    }
 
-        private void handleClient(PacketSync msg) {
-            World world = Baubles.proxy.getClientWorld();
-            if (world == null) return;
-            Entity entity = world.getEntityByID(msg.entityId);
-            if (entity instanceof EntityLivingBase) {
-                IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
-                if (msg.hasStack) baubles.setStackInSlot(msg.slot, msg.stack);
-                if (msg.visible != -1) baubles.setVisible(msg.slot, msg.visible == 1);
-            }
-            PacketPool.release(msg);
+    private void handleClient() {
+        World world = Baubles.proxy.getClientWorld();
+        if (world == null) return;
+        Entity entity = world.getEntityByID(this.entityId);
+        if (entity instanceof EntityLivingBase) {
+            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
+            if (this.hasStack) baubles.setStackInSlot(this.slot, this.stack);
+            if (this.visible != -1) baubles.setVisible(this.slot, this.visible == 1);
         }
+        PacketPool.release(this);
     }
 }

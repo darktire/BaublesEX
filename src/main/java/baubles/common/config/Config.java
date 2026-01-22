@@ -184,7 +184,7 @@ public class Config extends PartialConfig {
 
             try {
                 initCls();
-            } catch (Throwable ignored) {}
+            } catch (Exception ignored) {}
         }
 
         private void initCls() throws ClassNotFoundException {

@@ -17,6 +17,7 @@ public class ModuleCore {
     public void decrement(IModule module) {
         AtomicInteger count = levels.get(module);
         if (count == null) {
+            levels.put(module, new AtomicInteger(0));
             return;
         }
         count.decrementAndGet();

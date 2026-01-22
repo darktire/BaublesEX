@@ -59,7 +59,7 @@ public final class PacketPool {
 
 
     public static void warmup() {
-        int preset = (int) (1.5 * TypesData.getLazyList().size() + 45);
+        int preset = 2 * TypesData.getSum() + 45;
         if (preset > MAX_POOL_SIZE) preset = MAX_POOL_SIZE;
         for (int i = 0; i < preset; i++) POOL.offer(new PacketSync());
         SIZE.set(preset);

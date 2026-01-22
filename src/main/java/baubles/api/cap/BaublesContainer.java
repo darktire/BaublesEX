@@ -12,8 +12,7 @@ import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.*;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -239,26 +238,31 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
 
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setTag("Items", itemList);
-        nbt.setTag("Anonymous", modifier);
+        nbt.setTag("Modifier", modifier);
         nbt.setTag("Visibility", visibility);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        this.forwardCompat(nbt);
-
-        if (nbt.hasKey("Anonymous")) {
-            NBTTagCompound modifier = nbt.getCompoundTag("Anonymous");
+        if (nbt.hasKey("Modifier")) {
+            NBTTagCompound modifier = nbt.getCompoundTag("Modifier");
+            AbstractAttributeMap map = this.entity.getAttributeMap();
             for (String typeName : modifier.getKeySet()) {
                 BaubleTypeEx type = TypesData.getTypeByName(typeName);
                 if (type != null) {
-                    int[] input = modifier.getIntArray(typeName);
-                    AbstractAttributeMap map = this.entity.getAttributeMap();
-                    for (int i = 0; i < 3; i++) {
-                        if (input[i] != 0) {
-                            AttributeManager.getInstance(map, type).applyAnonymousModifier(i, input[i]);
+                    NBTBase base = modifier.getTag(typeName);
+                    if (base instanceof NBTTagIntArray) {
+                        int[] input = ((NBTTagIntArray) base).getIntArray();
+                        for (int i = 0; i < 3; i++) {
+                            if (input[i] != 0) {
+                                AttributeManager.getInstance(map, type).applyAnonymousModifier(i, input[i]);
+                            }
                         }
+                    }
+                    else if (base instanceof NBTPrimitive) {// forward compat
+                        int input = ((NBTPrimitive) base).getInt();
+                        AttributeManager.getInstance(map, type).applyAnonymousModifier(0, input);
                     }
                 }
             }
@@ -288,19 +292,6 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
             }
             else {
                 dropItem(this.entity, stack);
-            }
-        }
-    }
-
-    private void forwardCompat(NBTTagCompound nbt) {
-        if (nbt.hasKey("Modifier")) {
-            NBTTagCompound modifier = nbt.getCompoundTag("Modifier");
-            for (String typeName : modifier.getKeySet()) {
-                BaubleTypeEx type = TypesData.getTypeByName(typeName);
-                if (type != null) {
-                    int input = modifier.getInteger(typeName);
-                    AttributeManager.getInstance(this.entity.getAttributeMap(), type).applyAnonymousModifier(0, input);
-                }
             }
         }
     }

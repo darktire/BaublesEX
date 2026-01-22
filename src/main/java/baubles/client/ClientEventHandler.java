@@ -10,7 +10,7 @@ import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.config.Config;
 import baubles.common.config.KeyBindings;
 import baubles.common.network.PacketHandler;
-import baubles.common.network.PacketOpenBaublesInventory;
+import baubles.common.network.PacketOpen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -79,7 +79,7 @@ public class ClientEventHandler {
                             .map(BaubleTypeEx::getTranslateKey)
                             .map(I18n::format)
                             .collect(Collectors.joining(", "));
-                    event.getToolTip().add(TextFormatting.ITALIC + I18n.format("title.baubles.parents") + ": " + parents);
+                    event.getToolTip().add(TextFormatting.DARK_GRAY + I18n.format("title.baubles.parents") + ": " + parents);
                 }
             } catch (Exception e) {
                 throw new RuntimeException(String.format("baubles_cap for %s is outdated", stack.getItem().getRegistryName()));
@@ -99,7 +99,7 @@ public class ClientEventHandler {
         Minecraft mc = Minecraft.getMinecraft();
         if (KeyBindings.KEY_BAUBLES.isKeyDown()) {
             mc.displayGuiScreen(new GuiPlayerExpanded(player, player));
-            PacketHandler.INSTANCE.sendToServer(new PacketOpenBaublesInventory());
+            PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.EXPANSION));
         }
     }
 }

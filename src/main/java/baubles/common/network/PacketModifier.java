@@ -7,7 +7,6 @@ import baubles.api.attribute.AdvancedInstance;
 import baubles.api.attribute.AttributeManager;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypesData;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,14 +14,13 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
-public class PacketModifier implements IMessage {
+public class PacketModifier implements IPacket {
 
     private int entityId;
     private int typeId;
@@ -50,69 +48,65 @@ public class PacketModifier implements IMessage {
     }
 
     @Override
-    public void toBytes(ByteBuf buffer) {
-        PacketBuffer buff = new PacketBuffer(buffer);
-        buff.writeInt(entityId);
-        buff.writeInt(typeId);
+    public void write(PacketBuffer buf) {
+        buf.writeInt(entityId);
+        buf.writeInt(typeId);
         if (snapshots == null) {
-            buff.writeBoolean(true);
-            buff.writeInt(modifier);
-            buff.writeByte(operation);
+            buf.writeBoolean(true);
+            buf.writeInt(modifier);
+            buf.writeByte(operation);
         }
         else {
-            buff.writeBoolean(false);
-            buff.writeInt(snapshots.size());
+            buf.writeBoolean(false);
+            buf.writeInt(snapshots.size());
             for (AttributeModifier attributemodifier : snapshots) {
-                buff.writeUniqueId(attributemodifier.getID());
-                buff.writeDouble(attributemodifier.getAmount());
-                buff.writeByte(attributemodifier.getOperation());
+                buf.writeUniqueId(attributemodifier.getID());
+                buf.writeDouble(attributemodifier.getAmount());
+                buf.writeByte(attributemodifier.getOperation());
             }
         }
     }
 
     @Override
-    public void fromBytes(ByteBuf buffer) {
-        PacketBuffer buff = new PacketBuffer(buffer);
-        entityId = buff.readInt();
-        typeId = buff.readInt();
-        boolean flag = buff.readBoolean();
+    public void read(PacketBuffer buf) {
+        entityId = buf.readInt();
+        typeId = buf.readInt();
+        boolean flag = buf.readBoolean();
         if (flag) {
-            modifier = buff.readInt();
-            operation = buff.readByte();
+            modifier = buf.readInt();
+            operation = buf.readByte();
         }
         else {
-            int size = buff.readInt();
+            int size = buf.readInt();
             snapshots = new ArrayList<>(size);
             for (int i = 0; i < size; ++i) {
-                UUID uuid = buff.readUniqueId();
-                snapshots.add(new AttributeModifier(uuid, "Unknown", buff.readDouble(), buff.readByte()));
+                UUID uuid = buf.readUniqueId();
+                snapshots.add(new AttributeModifier(uuid, "Unknown", buf.readDouble(), buf.readByte()));
             }
         }
     }
 
-    public static class Handler implements IMessageHandler<PacketModifier, IMessage> {
-        @Override
-        public IMessage onMessage(PacketModifier message, MessageContext ctx) {
-            Minecraft.getMinecraft().addScheduledTask(() -> execute(message));
-            return null;
-        }
+    @Override
+    public IMessage handlePacket(MessageContext ctx) {
+        Minecraft.getMinecraft().addScheduledTask(this::execute);
+        return null;
+    }
 
-        private void execute(PacketModifier message) {
-            World world = Baubles.proxy.getClientWorld();
-            if (world == null) return;
-            Entity entity = world.getEntityByID(message.entityId);
-            if (entity instanceof EntityLivingBase) {
-                IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
-                AdvancedInstance instance = AttributeManager.getInstance(((EntityLivingBase) entity).getAttributeMap(), TypesData.getTypeById(message.typeId));
-                if (message.snapshots == null) {
-                    instance.applyAnonymousModifier(message.operation, message.modifier);
-                }
-                else {
-                    instance.removeAllModifiers();
-                    message.snapshots.forEach(instance::applyModifier);
-                }
-                baubles.updateContainer();
+    private void execute() {
+        World world = Baubles.proxy.getClientWorld();
+        if (world == null) return;
+        Entity entity = world.getEntityByID(this.entityId);
+        if (entity instanceof EntityLivingBase) {
+            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
+            AdvancedInstance instance = AttributeManager.getInstance(((EntityLivingBase) entity).getAttributeMap(), TypesData.getTypeById(this.typeId));
+            if (this.snapshots == null) {
+                instance.applyAnonymousModifier(this.operation, this.modifier);
             }
+            else {
+                instance.removeAllModifiers();
+                this.snapshots.forEach(instance::applyModifier);
+            }
+            baubles.updateContainer();
         }
     }
 }

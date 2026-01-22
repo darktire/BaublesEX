@@ -68,7 +68,6 @@ public class BaublesRegister {
 
     public static void loadValidSlots() {
         TypesData.initOrderList();
-        TypesData.initLazyList();
         AttributeManager.loadAttributes();
     }
 

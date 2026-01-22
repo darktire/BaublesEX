@@ -2,7 +2,6 @@ package baubles.api.registries;
 
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
@@ -19,7 +18,7 @@ public class TypesData {
     private static ForgeRegistry<BaubleTypeEx> REGISTRY;
     private static boolean REGISTERED = false;
 
-    private static int sum = 7;
+    private static int sum = 0;
     private static final List<BaubleTypeEx> BAUBLE_SLOTS = new ArrayList<>();
 
     public static void create() {
@@ -68,22 +67,6 @@ public class TypesData {
         return sum;
     }
 
-    public static void initLazyList() {
-        BAUBLE_SLOTS.clear();
-        int pointer = 0;
-        for (BaubleTypeEx type : getOrder()) {
-            int amount = type.getAmount();
-            for (int i = 0; i < amount; i++) {
-                BAUBLE_SLOTS.add(type);
-            }
-            pointer += amount;
-        }
-        sum = pointer;
-    }
-    public static List<BaubleTypeEx> getLazyList() {
-        return ImmutableList.copyOf(BAUBLE_SLOTS);
-    }
-
     public static BaubleTypeEx getTypeByName(String typeName) {
         if (REGISTERED) {
             BaubleTypeEx type = REGISTRY.getValue(getLoc(typeName, false));
@@ -111,6 +94,7 @@ public class TypesData {
     public static void initOrderList() {
         ORDER = new ArrayList<>(REGISTRY.getValuesCollection());
         ORDER.sort(Collections.reverseOrder());
+        sum = ORDER.stream().mapToInt(BaubleTypeEx::getAmount).sum();
     }
     public static List<BaubleTypeEx> getOrder() {
         return Collections.unmodifiableList(ORDER);
