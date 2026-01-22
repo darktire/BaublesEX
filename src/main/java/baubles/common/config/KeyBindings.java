@@ -6,8 +6,8 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.input.Keyboard;
 
 public class KeyBindings {
-    private static final String category = "key.baubles";
-    public static final KeyBinding KEY_BAUBLES = new KeyBinding(I18n.format("key.baubles.inventory"), Keyboard.KEY_B, category);
+    private static final String category = "title.baubles";
+    public static final KeyBinding KEY_BAUBLES = new KeyBinding(I18n.format("title.baubles.inventory"), Keyboard.KEY_B, category);
 
     public static void register() {
         ClientRegistry.registerKeyBinding(KEY_BAUBLES);

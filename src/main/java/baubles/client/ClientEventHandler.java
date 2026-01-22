@@ -65,7 +65,7 @@ public class ClientEventHandler {
         if (!stack.isEmpty() && BaublesApi.isBauble(stack)) {
             try {
                 AbstractWrapper bauble = BaublesApi.toBauble(stack);
-                String base = TextFormatting.GOLD + I18n.format("key.baubles") + ": " +
+                String base = TextFormatting.GOLD + I18n.format("title.baubles") + ": " +
                         bauble.getTypes(stack).stream()
                             .map(BaubleTypeEx::getTranslateKey)
                             .map(I18n::format)
@@ -79,7 +79,7 @@ public class ClientEventHandler {
                             .map(BaubleTypeEx::getTranslateKey)
                             .map(I18n::format)
                             .collect(Collectors.joining(", "));
-                    event.getToolTip().add(TextFormatting.ITALIC + I18n.format("key.baubles.parents") + ": " + parents);
+                    event.getToolTip().add(TextFormatting.ITALIC + I18n.format("title.baubles.parents") + ": " + parents);
                 }
             } catch (Exception e) {
                 throw new RuntimeException(String.format("baubles_cap for %s is outdated", stack.getItem().getRegistryName()));

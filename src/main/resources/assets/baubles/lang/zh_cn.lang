@@ -7,20 +7,20 @@ button.baubles=饰品
 button.normal=普通
 #
 # DESCRIPTION
-key.baubles=饰品
-key.baubles.inventory=打开饰品侧栏
-key.baubles.parents=能被放入以下种类的槽位
+title.baubles=饰品
+title.baubles.inventory=打开饰品侧栏
+title.baubles.parents=能被放入以下种类的槽位
 #
 # BAUBLES
-baubles.name.bauble=饰品
-baubles.name.amulet=项链
-baubles.name.ring=指环
-baubles.name.belt=腰带
-baubles.name.trinket=小玩意
-baubles.name.head=头部
-baubles.name.body=身体
-baubles.name.charm=护身符
-baubles.name.elytra=鞘翅
+property.baubles.bauble=饰品
+property.baubles.amulet=项链
+property.baubles.ring=指环
+property.baubles.belt=腰带
+property.baubles.trinket=小玩意
+property.baubles.head=头部
+property.baubles.body=身体
+property.baubles.charm=护身符
+property.baubles.elytra=鞘翅
 #
 # COMMAND
 commands.baubles.error=§c错误的命令
@@ -41,8 +41,8 @@ commands.baubles.dump=文件被导出至:
 commands.baubles.dump.tip=点击以打开文件夹
 #
 # COMPAT
-baubles.name.glove=手套
-baubles.name.pendant=坠饰
-baubles.name.cape=披风
-baubles.name.misc=杂项
-baubles.name.shield=盾徽
+property.baubles.glove=手套
+property.baubles.pendant=坠饰
+property.baubles.cape=披风
+property.baubles.misc=杂项
+property.baubles.shield=盾徽

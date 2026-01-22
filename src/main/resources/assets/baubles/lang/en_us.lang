@@ -7,20 +7,20 @@ button.baubles=Baubles
 button.normal=Normal
 #
 # DESCRIPTION
-key.baubles=Baubles
-key.baubles.inventory=Open Baubles' Sidebar
-key.baubles.parents=can be placed in the following types of slots
+title.baubles=Baubles
+title.baubles.inventory=Open Baubles' Sidebar
+title.baubles.parents=can be placed in the following types of slots
 #
 # BAUBLES
-baubles.name.bauble=Bauble
-baubles.name.amulet=Amulet
-baubles.name.ring=Ring
-baubles.name.belt=Belt
-baubles.name.trinket=Trinket
-baubles.name.head=Head
-baubles.name.body=Body
-baubles.name.charm=Charm
-baubles.name.elytra=Elytra
+property.baubles.bauble=Bauble
+property.baubles.amulet=Amulet
+property.baubles.ring=Ring
+property.baubles.belt=Belt
+property.baubles.trinket=Trinket
+property.baubles.head=Head
+property.baubles.body=Body
+property.baubles.charm=Charm
+property.baubles.elytra=Elytra
 #
 # COMMAND
 commands.baubles.error=§cError command
@@ -41,8 +41,8 @@ commands.baubles.dump=The file was dumped to:
 commands.baubles.dump.tip=Click to open the folder
 #
 # COMPAT
-baubles.name.glove=Glove
-baubles.name.pendant=Pendant
-baubles.name.cape=Cape
-baubles.name.misc=Misc
-baubles.name.shield=Shield
+property.baubles.glove=Glove
+property.baubles.pendant=Pendant
+property.baubles.cape=Cape
+property.baubles.misc=Misc
+property.baubles.shield=Shield

@@ -79,7 +79,7 @@ public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> impleme
         return "baubles:gui/slots/" + name;
     }
     public String getTranslateKey() {
-        return "baubles.name." + name;
+        return "property.baubles." + name;
     }
 
     public void addParent(BaubleTypeEx parent) {
