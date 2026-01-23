@@ -81,6 +81,9 @@ public class ClientEventHandler {
                             .collect(Collectors.joining(", "));
                     event.getToolTip().add(TextFormatting.DARK_GRAY + I18n.format("title.baubles.parents") + ": " + parents);
                 }
+                event.getToolTip().add("");
+                event.getToolTip().add(I18n.format("title.baubles.tooltip"));
+                bauble.getModules(stack, event.getEntityLiving()).forEach(module -> event.getToolTip().add(module.getDescription()));
             } catch (Exception e) {
                 throw new RuntimeException(String.format("baubles_cap for %s is outdated", stack.getItem().getRegistryName()));
             }

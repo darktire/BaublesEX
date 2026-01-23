@@ -19,7 +19,7 @@ import java.util.Set;
 
 public class ItemRing extends Item implements IBauble {
 
-	private final IModule module = new ModulePotion(MobEffects.HASTE, Config.ModItems.maxLevel);
+	private final IModule module = new ModulePotion(MobEffects.HASTE, 1, Config.ModItems.maxLevel);
 
 	public ItemRing() {
 		super();

@@ -9,7 +9,8 @@ button.normal=Normal
 # DESCRIPTION
 title.baubles=Baubles
 title.baubles.inventory=Open Baubles' Sidebar
-title.baubles.parents=can be placed in the following types of slots
+title.baubles.parents=can be placed in the slots
+title.baubles.tooltip=When in the corresponding slot:
 #
 # BAUBLES
 property.baubles.bauble=Bauble
@@ -21,6 +22,12 @@ property.baubles.head=Head
 property.baubles.body=Body
 property.baubles.charm=Charm
 property.baubles.elytra=Elytra
+#
+# MODULE
+property.module.potion=%s level %s
+property.module.attribute.0=+
+property.module.attribute.1=+%s%
+property.module.attribute.2=%s level %s
 #
 # COMMAND
 commands.baubles.error=§cError command

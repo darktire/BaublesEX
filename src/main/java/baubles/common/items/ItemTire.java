@@ -32,7 +32,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class ItemTire extends Item implements IBauble, IRenderBauble {
-	private final ModuleAttribute module = new ModuleAttribute(UUID.fromString("9f115a20-7ddd-4339-89bf-f9964b7258c9"), Suppliers.memoize(() -> AttributeManager.getAttribute(TypesData.Preset.TRINKET)), 2F, 0);
+	private final ModuleAttribute module = new ModuleAttribute(UUID.fromString("9f115a20-7ddd-4339-89bf-f9964b7258c9"), Suppliers.memoize(() -> AttributeManager.getAttribute(TypesData.Preset.TRINKET)), 2F, ModuleAttribute.Opt.ADDITION);
 	private final List<BaubleTypeEx> types = ImmutableList.of(TypesData.Preset.HEAD, TypesData.Preset.BODY, TypesData.Preset.BELT, TypesData.Preset.CHARM);
 
 	public ItemTire() {
