@@ -5,7 +5,7 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.model.ModelBauble;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.TypeData;
 import baubles.api.render.IRenderBauble;
 import baubles.client.model.ModelElytra;
 import baubles.common.config.Config;
@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BaubleElytra implements IBauble, IRenderBauble {
     private static final Map<EntityLivingBase, Boolean> EQUIPPED = new ConcurrentHashMap<>();
     private static final Map<Map.Entry<EntityLivingBase, Boolean>, ItemStack> WEARING = new ConcurrentHashMap<>();
-    private static final List<BaubleTypeEx> TYPE = Collections.singletonList(TypesData.getTypeByName(Config.ModItems.elytraSlot));
+    private static final List<BaubleTypeEx> TYPE = Collections.singletonList(TypeData.getTypeByName(Config.ModItems.elytraSlot));
 
     @Override
     public List<BaubleTypeEx> getTypes(ItemStack stack) {

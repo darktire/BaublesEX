@@ -1,7 +1,9 @@
 package baubles.common.config.json;
 
 import baubles.api.BaubleTypeEx;
-import baubles.api.registries.TypesData;
+import baubles.util.JsonUtils;
+import com.google.gson.JsonElement;
+import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
@@ -9,7 +11,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TypeDataAdapter extends CustomAdapter<List<BaubleTypeEx>> {
+public class TypeDataAdapter extends TypeAdapter<List<BaubleTypeEx>> {
+    static TypeDataAdapter INSTANCE = new TypeDataAdapter();
+
     @Override
     public void write(JsonWriter out, List<BaubleTypeEx> value) throws IOException {
         out.beginObject();
@@ -37,42 +41,11 @@ public class TypeDataAdapter extends CustomAdapter<List<BaubleTypeEx>> {
     @Override
     public List<BaubleTypeEx> read(JsonReader in) throws IOException {
         List<BaubleTypeEx> list = new ArrayList<>();
-
-        parseObject(in, (reader, key) -> {
-            list.add(parseType(reader));
+        JsonUtils.parseObject(in, (reader, name) -> {
+            JsonElement json = ConversionHelper.GSON.fromJson(reader, JsonElement.class);
+            TypeHelper.Temp temp = ConversionHelper.GSON.fromJson(json, TypeHelper.Temp.class);
+            list.add(temp.apply());
         });
-        
         return list;
-    }
-
-    private BaubleTypeEx parseType(JsonReader in) throws IOException {
-        Temp temp = new Temp();
-        parseObject(in, (unused, key) -> {
-            switch (key) {
-                case "name": temp.name = in.nextString().toLowerCase(); break;
-                case "amount": temp.amount = in.nextInt(); break;
-                case "priority": temp.priority = in.nextInt(); break;
-                case "parent":
-                    List<BaubleTypeEx> parents = new ArrayList<>();
-                    parseArray(in, typeName -> {
-                        BaubleTypeEx parent = TypesData.getTypeByName(typeName);
-                        if (parent != null) parents.add(parent);
-                    });
-                    temp.parents = parents;
-                    break;
-                default: in.skipValue(); break;
-            }
-        });
-        return temp.apply();
-    }
-
-    static final class Temp {
-        String name;
-        int amount, priority;
-        List<BaubleTypeEx> parents;
-
-        BaubleTypeEx apply() {
-            return TypesData.registerType(name, amount, priority, parents);
-        }
     }
 }

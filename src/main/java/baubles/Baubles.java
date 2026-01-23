@@ -7,7 +7,7 @@ import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
 import baubles.api.cap.BaublesCapabilities.CapabilityItemBaubleStorage;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.TypeData;
 import baubles.common.command.BaublesCommand;
 import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
@@ -39,7 +39,7 @@ public class Baubles {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        TypesData.Preset.init();
+        TypeData.Preset.init();
         Config.loadConfig();
         BaublesRegister.setTypes();
 

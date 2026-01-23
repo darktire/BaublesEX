@@ -7,20 +7,33 @@ button.baubles=饰品
 button.normal=普通
 #
 # DESCRIPTION
-title.baubles=饰品
-title.baubles.inventory=打开饰品侧栏
-title.baubles.parents=能被放入以下种类的槽位
+info.baubles=饰品
+info.baubles.inventory=打开饰品侧栏
+info.baubles.parents=能被放入以下种类的槽位
+info.baubles.tooltip=在对应的槽位时:
+info.module.potion=%s %s 药水等级
 #
 # BAUBLES
-property.baubles.bauble=饰品
-property.baubles.amulet=项链
-property.baubles.ring=指环
-property.baubles.belt=腰带
-property.baubles.trinket=小玩意
-property.baubles.head=头部
-property.baubles.body=身体
-property.baubles.charm=护身符
-property.baubles.elytra=鞘翅
+baubles.bauble=饰品
+baubles.amulet=项链
+baubles.ring=指环
+baubles.belt=腰带
+baubles.trinket=小玩意
+baubles.head=头部
+baubles.body=身体
+baubles.charm=护身符
+baubles.elytra=鞘翅
+#
+# ATTRIBUTE
+attribute.name.baubles.bauble=饰品槽位
+attribute.name.baubles.amulet=项链槽位
+attribute.name.baubles.ring=戒指槽位
+attribute.name.baubles.belt=腰带槽位
+attribute.name.baubles.trinket=小玩意槽位
+attribute.name.baubles.head=头部槽位
+attribute.name.baubles.body=身体槽位
+attribute.name.baubles.charm=护身符槽位
+attribute.name.baubles.elytra=鞘翅槽位
 #
 # COMMAND
 commands.baubles.error=§c错误的命令
@@ -41,8 +54,8 @@ commands.baubles.dump=文件被导出至:
 commands.baubles.dump.tip=点击以打开文件夹
 #
 # COMPAT
-property.baubles.glove=手套
-property.baubles.pendant=坠饰
-property.baubles.cape=披风
-property.baubles.misc=杂项
-property.baubles.shield=盾徽
+baubles.glove=手套
+baubles.pendant=坠饰
+baubles.cape=披风
+baubles.misc=杂项
+baubles.shield=盾徽

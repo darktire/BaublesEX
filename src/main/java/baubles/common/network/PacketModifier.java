@@ -6,7 +6,7 @@ import baubles.api.BaublesApi;
 import baubles.api.attribute.AdvancedInstance;
 import baubles.api.attribute.AttributeManager;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.TypeData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -32,18 +32,18 @@ public class PacketModifier implements IPacket {
 
     public PacketModifier(EntityLivingBase entity, BaubleTypeEx type, int modifier, int operation) {
         this.entityId = entity.getEntityId();
-        this.typeId = TypesData.getId(type);
+        this.typeId = TypeData.getId(type);
         this.modifier = modifier;
         this.operation = operation;
     }
 
     public PacketModifier(EntityLivingBase entity, String typeName, int modifier, int operation) {
-        this(entity, TypesData.getTypeByName(typeName), modifier, operation);
+        this(entity, TypeData.getTypeByName(typeName), modifier, operation);
     }
 
     public PacketModifier(EntityLivingBase entity, BaubleTypeEx type, Collection<AttributeModifier> modifiers) {
         this.entityId = entity.getEntityId();
-        this.typeId = TypesData.getId(type);
+        this.typeId = TypeData.getId(type);
         this.snapshots = modifiers;
     }
 
@@ -98,7 +98,7 @@ public class PacketModifier implements IPacket {
         Entity entity = world.getEntityByID(this.entityId);
         if (entity instanceof EntityLivingBase) {
             IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
-            AdvancedInstance instance = AttributeManager.getInstance(((EntityLivingBase) entity).getAttributeMap(), TypesData.getTypeById(this.typeId));
+            AdvancedInstance instance = AttributeManager.getInstance(((EntityLivingBase) entity).getAttributeMap(), TypeData.getTypeById(this.typeId));
             if (this.snapshots == null) {
                 instance.applyAnonymousModifier(this.operation, this.modifier);
             }

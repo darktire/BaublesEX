@@ -1,8 +1,8 @@
 package baubles.compat.wings;
 
 import baubles.api.BaubleTypeEx;
-import baubles.api.registries.ItemsData;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.ItemData;
+import baubles.api.registries.TypeData;
 import baubles.compat.ModOnly;
 import me.paulf.wings.server.item.ItemWings;
 import net.minecraftforge.event.RegistryEvent;
@@ -17,6 +17,6 @@ public class EventHandler {
     public static void itemBaubleWrap(RegistryEvent.Register<BaubleTypeEx> event) {
         ForgeRegistries.ITEMS.getValuesCollection().stream()
                 .filter(ItemWings.class::isInstance)
-                .forEach(i -> ItemsData.registerBauble(i, TypesData.Preset.BODY));
+                .forEach(i -> ItemData.registerBauble(i, TypeData.Preset.BODY));
     }
 }

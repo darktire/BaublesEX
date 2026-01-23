@@ -5,7 +5,7 @@ import baubles.api.IBauble;
 import baubles.api.attribute.AttributeManager;
 import baubles.api.model.ModelBauble;
 import baubles.api.module.IModule;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.TypeData;
 import baubles.api.render.IRenderBauble;
 import baubles.client.model.ModelTire;
 import baubles.common.module.ModuleAttribute;
@@ -28,12 +28,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public class ItemTire extends Item implements IBauble, IRenderBauble {
-	private final ModuleAttribute module = new ModuleAttribute(UUID.fromString("9f115a20-7ddd-4339-89bf-f9964b7258c9"), Suppliers.memoize(() -> AttributeManager.getAttribute(TypesData.Preset.TRINKET)), 2F, ModuleAttribute.Opt.ADDITION);
-	private final List<BaubleTypeEx> types = ImmutableList.of(TypesData.Preset.HEAD, TypesData.Preset.BODY, TypesData.Preset.BELT, TypesData.Preset.CHARM);
+	private final ModuleAttribute module = new ModuleAttribute(UUID.fromString("9f115a20-7ddd-4339-89bf-f9964b7258c9"), Suppliers.memoize(() -> AttributeManager.getAttribute(TypeData.Preset.TRINKET)), 2F, ModuleAttribute.Opt.ADDITION);
+	private final List<BaubleTypeEx> types = ImmutableList.of(TypeData.Preset.HEAD, TypeData.Preset.BODY, TypeData.Preset.BELT, TypeData.Preset.CHARM);
 
 	public ItemTire() {
 		this.setMaxStackSize(1);
@@ -90,8 +89,8 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 	}
 
 	@Override
-	public Set<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
-		return Collections.singleton(module);
+	public List<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
+		return Collections.singletonList(module);
 	}
 
 	@Override

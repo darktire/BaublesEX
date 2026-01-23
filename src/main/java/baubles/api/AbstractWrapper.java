@@ -7,7 +7,6 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
@@ -45,7 +44,7 @@ public abstract class AbstractWrapper implements IBauble, IRenderBauble {
         IBauble bauble;
         IRenderBauble render;
         List<BaubleTypeEx> types;
-        Set<IModule> module;
+        List<IModule> modules;
 
         public void bauble(IBauble bauble) {
             this.bauble = bauble;
@@ -63,8 +62,8 @@ public abstract class AbstractWrapper implements IBauble, IRenderBauble {
             this.remove = remove;
         }
 
-        public void module(Set<IModule> module) {
-            this.module = module;
+        public void modules(List<IModule> modules) {
+            this.modules = modules;
         }
 
         public static boolean isRemoved(ItemStack stack) {

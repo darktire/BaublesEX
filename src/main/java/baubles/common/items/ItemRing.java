@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
 import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 
 public class ItemRing extends Item implements IBauble {
 
@@ -95,8 +95,8 @@ public class ItemRing extends Item implements IBauble {
 	}
 
 	@Override
-	public Set<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
-		return Collections.singleton(module);
+	public List<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
+		return Collections.singletonList(module);
 	}
 
 //	public static void updatePotionStatus(EntityLivingBase entity) {
@@ -104,7 +104,7 @@ public class ItemRing extends Item implements IBauble {
 //		IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
 //		Potion potion = Potion.REGISTRY.getObject(new ResourceLocation("haste"));
 //
-//		BaubleTypeEx target = TypesData.Preset.RING;
+//		BaubleTypeEx target = TypeData.Preset.RING;
 //		for (int i = 0; i < baubles.getSlots(); i++) {
 //			if (baubles.getTypeInSlot(i) != target) continue;
 //			ItemStack ring1 = baubles.getStackInSlot(i);

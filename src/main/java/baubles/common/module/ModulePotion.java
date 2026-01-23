@@ -7,7 +7,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.TextFormatting;
 
-public class ModulePotion extends AbstractModule{
+public class ModulePotion extends AbstractModule {
     protected final Potion potion;
     protected int perLevel;
 
@@ -17,13 +17,19 @@ public class ModulePotion extends AbstractModule{
         this.potion = potion;
     }
 
-    public void updateStatus(EntityLivingBase entity, int level) {
-        level -= 1;
+    public static ModulePotion of(String name, int perLevel, int limit) {
+        Potion potion = Potion.getPotionFromResourceLocation(name);
+        if (potion == null) return null;
+        return new ModulePotion(potion, perLevel, limit);
+    }
 
-        if (level > this.max) level = this.max;
+    public void updateStatus(EntityLivingBase entity, int level) {
+        level = getAmountIn(level) - 1;
+
+        if (this.max != -1 && level > this.max) level = this.max;
         if (level == -1) {
             PotionEffect currentEffect = entity.getActivePotionEffect(this.potion);
-            if (currentEffect != null && currentEffect.getAmplifier() <= this.max) {
+            if (this.max == -1 || currentEffect != null && currentEffect.getAmplifier() <= this.max) {
                 entity.removePotionEffect(this.potion);
             }
         }
@@ -32,9 +38,13 @@ public class ModulePotion extends AbstractModule{
         }
     }
 
+    protected int getAmountIn(int level) {
+        return this.perLevel * level;
+    }
+
     @Override
     public String getDescription() {
-        return TextFormatting.BLUE + " " + I18n.format("property.module.potion", String.format("%+d", this.perLevel), I18n.format(this.potion.getName()));
+        return TextFormatting.BLUE + " " + I18n.format("info.module.potion", String.format("%+d", this.perLevel), I18n.format(this.potion.getName()));
     }
 
     @Override

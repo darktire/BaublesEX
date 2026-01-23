@@ -1,7 +1,7 @@
 package baubles.compat.nvg;
 
 import baubles.api.BaubleTypeEx;
-import baubles.api.registries.ItemsData;
+import baubles.api.registries.ItemData;
 import baubles.compat.ModOnly;
 import com.noobanidus.nvg.compat.baubles.BaubleGoggles;
 import com.noobanidus.nvg.init.Items;
@@ -14,6 +14,6 @@ public class EventHandler {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void itemBaubleWrap(RegistryEvent.Register<BaubleTypeEx> event) {
-        ItemsData.registerBauble(Items.goggles, new BaubleGoggles());
+        ItemData.registerBauble(Items.goggles, new BaubleGoggles());
     }
 }

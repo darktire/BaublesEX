@@ -3,6 +3,7 @@ package baubles.common.config;
 import baubles.BaublesRegister;
 import baubles.api.BaublesApi;
 import baubles.api.attribute.AttributeManager;
+import baubles.common.config.json.Category;
 import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.config.ConfigCategory;
@@ -37,6 +38,7 @@ public class Config extends PartialConfig {
     private static String[] clickBlacklist;
     private static String[] itemsJson;
     private static String[] typesJson;
+    private static String[] modulesJson;
 
     public final static String BAUBLES_SLOTS = "general.slots";
     public final static String CLIENT_GUI = "client.gui";
@@ -61,14 +63,18 @@ public class Config extends PartialConfig {
 //        armorStand = config.getBoolean("armorStand", CATEGORY_GENERAL, armorStand, "Whether armorStand has baubles container (need to place armorStand again)");
 
         clickBlacklist = config.getStringList("clickBlacklist", CATEGORY_GENERAL, new String[]{"wct:wct"}, "");
-        itemsJson = config.getStringList("itemsJson", CATEGORY_GENERAL, new String[]{"items_data.json"}, "");
-        typesJson = config.getStringList("typesJson", CATEGORY_GENERAL, new String[]{"types_data.json"}, "");
+        itemsJson = config.getStringList("itemsJson", CATEGORY_GENERAL, new String[]{"items.json"}, "");
+        typesJson = config.getStringList("typesJson", CATEGORY_GENERAL, new String[]{"types.json"}, "");
+        modulesJson = config.getStringList("modulesJson", CATEGORY_GENERAL, new String[]{}, "");
 
         PartialConfig.create(Slots.class, Gui.class, ModItems.class, Commands.class);
     }
 
-    public static List<File> getJson(int i) {
-        String[] names = i == 0 ? itemsJson : typesJson;
+    public static List<File> getJson(Category category) {
+        String[] names = new String[0];
+        if (category == Category.ITEM_DATA) names = itemsJson;
+        if (category == Category.TYPE_DATA) names = typesJson;
+        if (category == Category.MODULE_DATA) names = modulesJson;
         List<File> files = new ArrayList<>();
         for (String name : names) {
             files.add(new File(getModDir(), name));

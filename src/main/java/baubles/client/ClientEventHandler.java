@@ -5,7 +5,8 @@ import baubles.api.AbstractWrapper;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.event.BaublesRenderEvent;
-import baubles.api.registries.TypesData;
+import baubles.api.module.IModule;
+import baubles.api.registries.TypeData;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.config.Config;
 import baubles.common.config.KeyBindings;
@@ -32,6 +33,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID, value = Side.CLIENT)
@@ -63,14 +65,15 @@ public class ClientEventHandler {
     public static void tooltipEvent(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
         if (!stack.isEmpty() && BaublesApi.isBauble(stack)) {
+            List<String> toolTip = event.getToolTip();
             try {
                 AbstractWrapper bauble = BaublesApi.toBauble(stack);
-                String base = TextFormatting.GOLD + I18n.format("title.baubles") + ": " +
+                String base = TextFormatting.GOLD + I18n.format("info.baubles") + ": " +
                         bauble.getTypes(stack).stream()
                             .map(BaubleTypeEx::getTranslateKey)
                             .map(I18n::format)
                             .collect(Collectors.joining(", "));
-                event.getToolTip().add(base);
+                toolTip.add(base);
                 if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
                     String parents = bauble.getTypes(stack).stream()
                             .map(BaubleTypeEx::getParents)
@@ -79,13 +82,19 @@ public class ClientEventHandler {
                             .map(BaubleTypeEx::getTranslateKey)
                             .map(I18n::format)
                             .collect(Collectors.joining(", "));
-                    event.getToolTip().add(TextFormatting.DARK_GRAY + I18n.format("title.baubles.parents") + ": " + parents);
+                    toolTip.add(TextFormatting.DARK_GRAY + I18n.format("info.baubles.parents") + ": " + parents);
                 }
-                event.getToolTip().add("");
-                event.getToolTip().add(I18n.format("title.baubles.tooltip"));
-                bauble.getModules(stack, event.getEntityLiving()).forEach(module -> event.getToolTip().add(module.getDescription()));
+                List<IModule> modules = bauble.getModules(stack, event.getEntityLiving());
+                if (!modules.isEmpty()) {
+                    toolTip.add("");
+                    toolTip.add(I18n.format("info.baubles.tooltip"));
+                    modules.forEach(module -> {
+                        String description = module.getDescription();
+                        if (description != null) toolTip.add(description);
+                    });
+                }
             } catch (Exception e) {
-                throw new RuntimeException(String.format("baubles_cap for %s is outdated", stack.getItem().getRegistryName()));
+                throw new RuntimeException(String.format("baubles_cap for %s is outdated", stack.getItem().getRegistryName()), e);
             }
         }
     }
@@ -93,7 +102,7 @@ public class ClientEventHandler {
     @SubscribeEvent
     public static void registerTextures(TextureStitchEvent.Pre event) {
         TextureMap map = event.getMap();
-        TypesData.applyToTypes(type -> map.registerSprite(new ResourceLocation(type.getTexture())));
+        TypeData.applyToTypes(type -> map.registerSprite(new ResourceLocation(type.getTexture())));
     }
 
     @SubscribeEvent

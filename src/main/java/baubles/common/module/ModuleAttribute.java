@@ -21,6 +21,7 @@ public class ModuleAttribute extends AbstractModule {
     protected float perLevel;
     protected Opt operation;
     protected static Map<String, IAttribute> ATTRIBUTES = new HashMap<>();
+    protected static final String PREFIX = "attribute.name.";
     protected static DecimalFormat BASE = new DecimalFormat("+#.##");
     protected static DecimalFormat PERCENT = new DecimalFormat("+0%");
     protected static final Map<Opt, Function<Float, String>> FORMAT_MAP = ImmutableMap.of(
@@ -51,7 +52,11 @@ public class ModuleAttribute extends AbstractModule {
 
     @Override
     public String getDescription() {
-        return TextFormatting.BLUE + " " + FORMAT_MAP.get(this.operation).apply(this.perLevel) + " " + I18n.format(this.supplier.get().getName());
+        return TextFormatting.BLUE + " " + FORMAT_MAP.get(this.operation).apply(this.perLevel) + " " + I18n.format(getTranslateKey());
+    }
+
+    protected String getTranslateKey() {
+        return PREFIX + this.supplier.get().getName();
     }
 
     protected float getAmountIn(int level) {
@@ -81,9 +86,14 @@ public class ModuleAttribute extends AbstractModule {
                 return instance == null ? null : instance.getAttribute();
             });
         }
+
+        @Override
+        protected String getTranslateKey() {
+            return PREFIX + this.name;
+        }
     }
 
     public enum Opt {
-        ADDITION,MULTIPLY_BASE,MULTIPLY_TOTAL
+        ADDITION, MULTIPLY_BASE, MULTIPLY_TOTAL
     }
 }

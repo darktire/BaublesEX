@@ -5,11 +5,12 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.IBaubleKey;
 import baubles.api.attribute.AttributeManager;
-import baubles.api.registries.ItemsData;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.ItemData;
+import baubles.api.registries.TypeData;
 import baubles.api.render.IRenderBauble;
 import baubles.client.render.ArmorHelper;
 import baubles.common.config.Config;
+import baubles.common.config.json.Category;
 import baubles.common.config.json.ConversionHelper;
 import baubles.common.items.BaubleElytra;
 import baubles.common.items.ItemRing;
@@ -31,43 +32,43 @@ public class BaublesRegister {
     public static void registerItems() {
         ForgeRegistries.ITEMS.getValuesCollection().stream()
                 .filter(IBauble.class::isInstance)
-                .forEach(ItemsData::registerBauble);
+                .forEach(ItemData::registerBauble);
 
         if (Config.ModItems.elytraBauble) {
             BaubleElytra elytra = new BaubleElytra();
-            ItemsData.registerBauble(Items.ELYTRA, elytra);
-            ItemsData.registerRender(Items.ELYTRA, elytra);
+            ItemData.registerBauble(Items.ELYTRA, elytra);
+            ItemData.registerRender(Items.ELYTRA, elytra);
         }
 
         try {
-            ConversionHelper.jsonToItem();
+            ConversionHelper.fromJson(Category.ITEM_DATA);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static void setTypes() {
-        TypesData.Preset.AMULET.setAmount(Config.Slots.getCfgAmount("head"));
-        TypesData.Preset.RING.setAmount(Config.Slots.getCfgAmount("ring"));
-        TypesData.Preset.BELT.setAmount(Config.Slots.getCfgAmount("belt"));
-        TypesData.Preset.TRINKET.setAmount(Config.Slots.getCfgAmount("trinket"));
-        TypesData.Preset.HEAD.setAmount(Config.Slots.getCfgAmount("head"));
-        TypesData.Preset.BODY.setAmount(Config.Slots.getCfgAmount("body"));
-        TypesData.Preset.CHARM.setAmount(Config.Slots.getCfgAmount("charm"));
+        TypeData.Preset.AMULET.setAmount(Config.Slots.getCfgAmount("head"));
+        TypeData.Preset.RING.setAmount(Config.Slots.getCfgAmount("ring"));
+        TypeData.Preset.BELT.setAmount(Config.Slots.getCfgAmount("belt"));
+        TypeData.Preset.TRINKET.setAmount(Config.Slots.getCfgAmount("trinket"));
+        TypeData.Preset.HEAD.setAmount(Config.Slots.getCfgAmount("head"));
+        TypeData.Preset.BODY.setAmount(Config.Slots.getCfgAmount("body"));
+        TypeData.Preset.CHARM.setAmount(Config.Slots.getCfgAmount("charm"));
 
         if (Config.ModItems.elytraBauble && Config.ModItems.elytraSlot.equals("elytra")) {
-            TypesData.Preset.ELYTRA.setAmount(1);
+            TypeData.Preset.ELYTRA.setAmount(1);
         }
 
         try {
-            ConversionHelper.jsonToType(BaubleTypeEx.class);
+            ConversionHelper.fromJson(Category.TYPE_DATA);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static void loadValidSlots() {
-        TypesData.initOrderList();
+        TypeData.initOrderList();
         AttributeManager.loadAttributes();
     }
 
@@ -85,18 +86,18 @@ public class BaublesRegister {
 
     @SubscribeEvent
     public static void createRegistry(RegistryEvent.NewRegistry event) {
-        TypesData.create();
+        TypeData.create();
     }
 
     @SubscribeEvent
     public static void beforeRegistering(RegistryEvent.Register<BaubleTypeEx> event) {
         registerItems();
-        ItemsData.redirect(BaublesRegister::check, ArmorHelper.INSTANCE);
+        ItemData.redirect(BaublesRegister::check, ArmorHelper.INSTANCE);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onRegistering(RegistryEvent.Register<BaubleTypeEx> event) {
-        TypesData.registerTypes();
+        TypeData.registerTypes();
         loadValidSlots();
     }
 

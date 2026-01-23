@@ -2,7 +2,7 @@ package baubles.common.event;
 
 import baubles.api.BaublesApi;
 import baubles.api.cap.BaublesCapabilityProvider;
-import baubles.api.registries.ItemsData;
+import baubles.api.registries.ItemData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -23,7 +23,7 @@ public class EventHandlerItem {
 
         if (stack.isEmpty()) return;
 
-        if (!(ItemsData.isBauble(stack.getItem()))) return;
+        if (!(ItemData.isBauble(stack.getItem()))) return;
 
         event.addCapability(ITEM_CAP, new BaublesCapabilityProvider(stack, null));
     }

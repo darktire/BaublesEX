@@ -1,6 +1,6 @@
 package baubles.common.network;
 
-import baubles.api.registries.TypesData;
+import baubles.api.registries.TypeData;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
@@ -59,7 +59,7 @@ public final class PacketPool {
 
 
     public static void warmup() {
-        int preset = 2 * TypesData.getSum() + 45;
+        int preset = 2 * TypeData.getSum() + 45;
         if (preset > MAX_POOL_SIZE) preset = MAX_POOL_SIZE;
         for (int i = 0; i < preset; i++) POOL.offer(new PacketSync());
         SIZE.set(preset);

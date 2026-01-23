@@ -2,21 +2,25 @@ package baubles.common.config.json;
 
 import baubles.api.AbstractWrapper;
 import baubles.api.BaubleTypeEx;
-import baubles.api.BaublesApi;
 import baubles.api.IBaubleKey;
-import baubles.api.registries.ItemsData;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.ItemData;
 import baubles.util.ItemParser;
+import baubles.util.JsonUtils;
+import com.google.gson.JsonElement;
+import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class ItemDataAdapter extends CustomAdapter<List<IBaubleKey>> {
+public class ItemDataAdapter extends TypeAdapter<List<IBaubleKey>> {
+    static final ItemDataAdapter INSTANCE = new ItemDataAdapter();
 
     @Override
     public void write(JsonWriter out, List<IBaubleKey> value) throws IOException {
@@ -66,72 +70,15 @@ public class ItemDataAdapter extends CustomAdapter<List<IBaubleKey>> {
 
     @Override
     public List<IBaubleKey> read(JsonReader in) throws IOException {
-        parseObject(in, this::parseItem);
-        return null;
-    }
-
-    private void parseItem(JsonReader in, String name) throws IOException {
-        Temp temp = new Temp();
-        List<String> content = new ArrayList<>();
-        content.add(name);
-        parseObject(in, (reader, key) -> {
-            switch (key) {
-                case "content":
-                    content.clear();
-                    parseArray(in, content::add);
-                    break;
-                case "types":
-                    List<BaubleTypeEx> types = new ArrayList<>();
-                    parseArray(in, typeName -> {
-                        BaubleTypeEx type = TypesData.getTypeByName(typeName);
-                        if (type != null) types.add(type);
-                    });
-                    temp.types = types;
-                    break;
-                case "addition":
-                    parseArray(in, s -> {
-                        switch (s) {
-                            case "remove": temp.remove = true; break;
-                        }
-                    });
-                    break;
-                default:
-                    in.skipValue();
-                    break;
+        JsonUtils.parseObject(in, (reader, name) -> {
+            JsonElement json = ConversionHelper.GSON.fromJson(reader, JsonElement.class);
+            ItemHelper.Temp temp = ConversionHelper.GSON.fromJson(json, ItemHelper.Temp.class);
+            if (temp.content.isEmpty()) {
+                temp.content.add(name);
             }
+            temp.apply();
         });
-        temp.content = content;
-        temp.apply();
-    }
-
-    static final class Temp {
-        List<String> content;
-        List<BaubleTypeEx> types;
-        boolean remove;
-
-        void apply() {
-            for (IBaubleKey key : getContent(this.content)) {
-                ItemsData.registerBauble(key, types);
-                if (this.remove) AbstractWrapper.CSTMap.instance().update(key, AbstractWrapper.Addition::remove, true);
-            }
-        }
-
-        static Set<IBaubleKey> getContent(List<String> names) {
-            Set<IBaubleKey> set = new HashSet<>();
-            for (String name : names) {
-                if (OreDictionary.doesOreNameExist(name)) {
-                    set.addAll(OreDictionary.getOres(name).stream().map(IBaubleKey.BaubleKey::wrap).collect(Collectors.toList()));
-                }
-                else {
-                    try {
-                        set.add(ItemParser.parse(name));
-                    } catch (Exception e) {
-                        BaublesApi.log.error("items loading error: " + e.getMessage());
-                    }
-                }
-            }
-            return set;
-        }
+        return null;
     }
 
     static class GroupKey {
@@ -145,7 +92,7 @@ public class ItemDataAdapter extends CustomAdapter<List<IBaubleKey>> {
             }
             else {
                 this.removed = false;
-                this.types = ItemsData.toBauble(stack).getTypes(stack);
+                this.types = ItemData.toBauble(stack).getTypes(stack);
             }
         }
 

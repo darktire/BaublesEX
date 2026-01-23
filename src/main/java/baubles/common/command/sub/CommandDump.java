@@ -1,8 +1,9 @@
 package baubles.common.command.sub;
 
-import baubles.api.registries.ItemsData;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.ItemData;
+import baubles.api.registries.TypeData;
 import baubles.common.config.Config;
+import baubles.common.config.json.Category;
 import baubles.common.config.json.ConversionHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -32,8 +33,8 @@ public class CommandDump extends CommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         try {
-            ConversionHelper.typeToJson(TypesData.getOrder(), true);
-            ConversionHelper.itemToJson(ItemsData.getList(), true);
+            ConversionHelper.toJson(TypeData.getOrder(), Category.TYPE_DATA);
+            ConversionHelper.toJson(ItemData.getList(), Category.ITEM_DATA);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -20,7 +20,7 @@ public class CommandDebug extends CommandBase {
 //        Entity entity = sender.getCommandSenderEntity();
 //        if (args[0].equals("change")) {
 //            Item item = Item.getByNameOrId(args[1]);
-//            ItemsData.toBauble(item).setType(TypesData.getTypeByName(args[2]));
+//            ItemData.toBauble(item).setType(TypeData.getTypeByName(args[2]));
 //        }
 //        else {
 //            BaublesCommand.sendError(sender);

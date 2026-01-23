@@ -3,7 +3,7 @@ package baubles.common.command.sub;
 import baubles.api.BaubleTypeEx;
 import baubles.api.attribute.AdvancedInstance;
 import baubles.api.attribute.AttributeManager;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.TypeData;
 import baubles.common.command.BaublesCommand;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifier;
@@ -32,7 +32,7 @@ public class CommandSlots extends BaublesCommand {
     }
 
     private static boolean checkArgs(String[] args) {
-        return TypesData.hasType(args[1]) && args[2].matches("-?\\d+");
+        return TypeData.hasType(args[1]) && args[2].matches("-?\\d+");
     }
 
     public static class SubModify extends CmdBase {
@@ -56,7 +56,7 @@ public class CommandSlots extends BaublesCommand {
                 EntityPlayerMP player = BaublesCommand.checkPlayer(server, sender, args);
                 if (flag) {
                     int modifier = Integer.parseInt(args[2]);
-                    BaubleTypeEx type = TypesData.getTypeByName(args[1]);
+                    BaubleTypeEx type = TypeData.getTypeByName(args[1]);
                     if (type != null) {
                         AbstractAttributeMap map = player.getAttributeMap();
                         AdvancedInstance instance = AttributeManager.getInstance(map, type);
@@ -93,7 +93,7 @@ public class CommandSlots extends BaublesCommand {
                 EntityPlayerMP player = BaublesCommand.checkPlayer(server, sender, args);
                 if (checkArgs(args)) {
                     int modifier = Integer.parseInt(args[2]);
-                    BaubleTypeEx type = TypesData.getTypeByName(args[1]);
+                    BaubleTypeEx type = TypeData.getTypeByName(args[1]);
                     if (type != null) {
                         AbstractAttributeMap map = player.getAttributeMap();
                         AdvancedInstance instance = AttributeManager.getInstance(map, type);

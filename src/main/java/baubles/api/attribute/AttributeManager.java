@@ -3,7 +3,7 @@ package baubles.api.attribute;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.TypeData;
 import com.google.common.collect.Sets;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
@@ -18,7 +18,7 @@ public class AttributeManager {
     private static final Set<EntityLivingBase> LISTENER = Collections.newSetFromMap(new WeakHashMap<>());
 
     public static void loadAttributes() {
-        Set<BaubleTypeEx> get = new HashSet<>(TypesData.getOrder());
+        Set<BaubleTypeEx> get = new HashSet<>(TypeData.getOrder());
         Set<BaubleTypeEx> set = PLAYER_BAUBLES.keySet();
 
         for (BaubleTypeEx type : set) {
@@ -62,7 +62,7 @@ public class AttributeManager {
     }
     public static List<BaubleTypeEx> computeSlots(EntityLivingBase entity) {
         AbstractAttributeMap map = entity.getAttributeMap();
-        return TypesData.getOrder().stream()
+        return TypeData.getOrder().stream()
                 .flatMap(type -> Collections.nCopies(getValue(map, type), type).stream())
                 .collect(Collectors.toList());
     }

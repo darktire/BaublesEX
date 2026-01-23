@@ -17,8 +17,8 @@ import java.lang.reflect.Field;
 
 @ModOnly("moretcon")
 public class EventHandler extends Gauntlet {
-    private static final Field LAST_DMG_FIELD = HookHelper.getField("com.existingeevee.moretcon.tools.tooltypes.Gauntlet", "lastDMG");
-    private static float lastDMG = (float) HookHelper.getValue(LAST_DMG_FIELD, null);
+    private static final Field LAST_DMG_FIELD = HookHelper.getField(Gauntlet.class, "lastDMG");
+    private static float lastDMG = HookHelper.getValue(LAST_DMG_FIELD, null);
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingAttack(LivingKnockBackEvent e) {

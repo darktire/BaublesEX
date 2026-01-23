@@ -6,7 +6,6 @@ import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.config.Config;
-import baubles.common.config.json.ConversionHelper;
 import baubles.common.items.BaubleElytra;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketSync;
@@ -80,19 +79,19 @@ public class HookHelper {
     public static void configSlot(String typeName, int n, boolean modifying) {
         Property property = Config.Slots.getCategory().get(typeName + "Slot");
         if (property == null) {
-            try {
-                List<BaubleTypeEx> types = ConversionHelper.jsonToType(BaubleTypeEx.class);
-                for (BaubleTypeEx type : types) {
-                    if (type.getName().equals(typeName)) {
-                        if (modifying) {
-                            n += type.getAmount();
-                        }
-                        type.setAmount(n);
-                    }
-                }
-                ConversionHelper.typeToJson(types, false);
+            try {//todo
+//                List<BaubleTypeEx> types = ConversionHelper.fromJson(ConversionHelper.Category.TYPE_DATA);
+//                for (BaubleTypeEx type : types) {
+//                    if (type.getName().equals(typeName)) {
+//                        if (modifying) {
+//                            n += type.getAmount();
+//                        }
+//                        type.setAmount(n);
+//                    }
+//                }
+//                ConversionHelper.toJson(types, ConversionHelper.Category.TYPE_DATA, false);
             } catch (Exception e) {
-                BaublesApi.log.error(e);
+                throw new RuntimeException(e);
             }
         }
         else {
@@ -105,22 +104,23 @@ public class HookHelper {
         }
     }
 
-    public static Field getField(String className, String fieldName) {
+    public static Field getField(Class<?> clazz, String fieldName) {
         try {
-            Class<?> clazz = Class.forName(className, false, Loader.instance().getModClassLoader());
             Field f = clazz.getDeclaredField(fieldName);
             f.setAccessible(true);
             return f;
-        } catch (NoSuchFieldException | ClassNotFoundException e) {
-            throw new RuntimeException(String.format("%s.%s not found", className, fieldName), e);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(String.format("%s.%s not found", clazz.getName(), fieldName), e);
         }
     }
 
-    public static Object getValue(Field field, Object instance) {
+    @SuppressWarnings("unchecked")
+    public static <T> T getValue(Field field, Object instance) {
         try {
-            return field.getFloat(instance);
+            field.setAccessible(true);
+            return (T) field.get(instance);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(String.format("cannot get %s", field.getName()), e);
         }
     }
 

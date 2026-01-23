@@ -1,7 +1,7 @@
 package baubles.api.cap;
 
 import baubles.api.AbstractWrapper;
-import baubles.api.registries.ItemsData;
+import baubles.api.registries.ItemData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -38,12 +38,12 @@ public class BaublesCapabilityProvider implements ICapabilityProvider {
         if (this.initialized) return;
         this.initialized = true;
         ItemStack stack = this.ref.get();
-        this.wrapper = stack == null ? null : ItemsData.toBauble(stack);
+        this.wrapper = stack == null ? null : ItemData.toBauble(stack);
     }
 
     private boolean isDefined() {
         ItemStack stack = this.ref.get();
         if (stack == null) return false;
-        return ItemsData.isBauble(stack) && !AbstractWrapper.Addition.isRemoved(stack);
+        return ItemData.isBauble(stack) && !AbstractWrapper.Addition.isRemoved(stack);
     }
 }

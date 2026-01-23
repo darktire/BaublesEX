@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class TypesData {
+public class TypeData {
     private static final ResourceLocation BAUBLE_TYPE = getLoc("types", false);
     private static List<BaubleTypeEx> ORDER = new ArrayList<>();
     private static ForgeRegistry<BaubleTypeEx> REGISTRY;
@@ -29,8 +29,8 @@ public class TypesData {
         if (name == null) return null;
         BaubleTypeEx type = null;
         if (REGISTERED) {
-            if (TypesData.hasType(name)) {
-                type = TypesData.getTypeByName(name);
+            if (TypeData.hasType(name)) {
+                type = TypeData.getTypeByName(name);
             }
             else {
                 BaublesApi.log.error("{} is registered too late", name);

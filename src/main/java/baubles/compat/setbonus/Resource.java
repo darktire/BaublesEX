@@ -2,7 +2,7 @@ package baubles.compat.setbonus;
 
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.TypeData;
 import com.fantasticsource.setbonus.common.bonusrequirements.setrequirement.SlotData;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -18,7 +18,7 @@ public class Resource {
     }
 
     public static ArrayList<Integer> getSlots(String title, EntityPlayer player) {
-        BaubleTypeEx type = TypesData.getTypeByName(title.substring(7));
+        BaubleTypeEx type = TypeData.getTypeByName(title.substring(7));
         if (type != null) {
             ArrayList<Integer> list = new ArrayList<>();
             BaublesApi.applyByIndex(player, (instance, i) -> {

@@ -6,7 +6,7 @@ import baubles.api.IBauble;
 import baubles.api.attribute.AdvancedInstance;
 import baubles.api.attribute.AttributeManager;
 import baubles.api.module.ModuleCore;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.TypeData;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.item.EntityItem;
@@ -221,7 +221,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         }
         // modifier persistence
         NBTTagCompound modifier = new NBTTagCompound();
-        for (BaubleTypeEx type : TypesData.getOrder()) {
+        for (BaubleTypeEx type : TypeData.getOrder()) {
             AdvancedInstance instance = AttributeManager.getInstance(this.entity.getAttributeMap(), type);
             int[] intArr = {
                     (int) instance.getAnonymousModifier(0),
@@ -249,7 +249,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
             NBTTagCompound modifier = nbt.getCompoundTag("Modifier");
             AbstractAttributeMap map = this.entity.getAttributeMap();
             for (String typeName : modifier.getKeySet()) {
-                BaubleTypeEx type = TypesData.getTypeByName(typeName);
+                BaubleTypeEx type = TypeData.getTypeByName(typeName);
                 if (type != null) {
                     NBTBase base = modifier.getTag(typeName);
                     if (base instanceof NBTTagIntArray) {

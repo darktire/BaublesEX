@@ -3,7 +3,7 @@ package baubles.common.event;
 import baubles.api.BaublesApi;
 import baubles.api.attribute.AttributeManager;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.TypeData;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifier;
 import baubles.common.network.PacketSync;
@@ -74,7 +74,7 @@ public class BaublesSync {
 
     private static void syncAnonymousModifier(EntityPlayerMP player) {
         AbstractAttributeMap map = player.getAttributeMap();
-        TypesData.applyToTypes(type -> {
+        TypeData.applyToTypes(type -> {
             for (int i = 0; i < 3; i++) {
                 int modifier = (int) AttributeManager.getInstance(map, type).getAnonymousModifier(i);
                 if (modifier != 0) {

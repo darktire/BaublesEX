@@ -2,6 +2,7 @@ package baubles.api.registries;
 
 import baubles.api.*;
 import baubles.api.cap.BaubleItem;
+import baubles.api.module.IModule;
 import baubles.api.render.IRenderBauble;
 import com.google.common.base.Equivalence;
 import com.google.common.cache.Cache;
@@ -19,7 +20,7 @@ import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class ItemsData {
+public class ItemData {
     private static final Map<IBaubleKey, Function<ItemStack, AbstractWrapper>> BAUBLE_ITEMS = new ConcurrentHashMap<>();
     private static final Cache<Equivalence.Wrapper<ItemStack>, AbstractWrapper> CACHE = CacheBuilder.newBuilder()
             .maximumSize(1024)
@@ -47,6 +48,10 @@ public class ItemsData {
         else {
             registerBauble(key, new BaubleItem(types));
         }
+    }
+
+    public static void registerModules(IBaubleKey key, List<IModule> modules) {
+        CST_MAP.update(key, AbstractWrapper.Addition::modules, modules);
     }
 
     /**

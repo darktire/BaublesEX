@@ -3,7 +3,7 @@ package baubles.compat.rlartifacts;
 import artifacts.common.init.ModItems;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.TypeData;
 import baubles.client.model.ModelInherit;
 import baubles.client.model.ModelManager;
 import net.minecraft.client.model.ModelPlayer;
@@ -78,7 +78,7 @@ public class ModelGlove extends ModelInherit {
 
     private void renderGlove(EntityLivingBase entity, float scale) {
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
-        int j = baubles.indexOf(TypesData.Preset.RING, 0);
+        int j = baubles.indexOf(TypeData.Preset.RING, 0);
         int k = baubles.indexOf(this.item, 0);
         if (k != -1 && baubles.indexOf(this.item, k + 1) != -1) {
             ((ModelPlayer) this.model).bipedLeftArm.render(scale);

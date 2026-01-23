@@ -4,10 +4,9 @@ import baubles.api.module.IModule;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -76,7 +75,7 @@ public interface IBauble {
         return true;
     }
 
-    default Set<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
-        return new HashSet<>();
+    default List<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
+        return new ArrayList<>();
     }
 }

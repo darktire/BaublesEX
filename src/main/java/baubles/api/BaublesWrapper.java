@@ -14,7 +14,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
-import java.util.Set;
 import java.util.function.Supplier;
 
 public final class BaublesWrapper extends AbstractWrapper {
@@ -91,8 +90,8 @@ public final class BaublesWrapper extends AbstractWrapper {
     }
 
     @Override
-    public Set<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
-        return getValue(() -> this.addition.module,() -> getBauble().getModules(itemstack, entity));
+    public List<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
+        return getValue(() -> this.addition.modules,() -> getBauble().getModules(itemstack, entity));
     }
 
     @Override

@@ -7,27 +7,33 @@ button.baubles=Baubles
 button.normal=Normal
 #
 # DESCRIPTION
-title.baubles=Baubles
-title.baubles.inventory=Open Baubles' Sidebar
-title.baubles.parents=can be placed in the slots
-title.baubles.tooltip=When in the corresponding slot:
+info.baubles=Baubles
+info.baubles.inventory=Open Baubles' Sidebar
+info.baubles.parents=can be placed in the slots
+info.baubles.tooltip=When in the corresponding slot:
+info.module.potion=%s level %s
 #
 # BAUBLES
-property.baubles.bauble=Bauble
-property.baubles.amulet=Amulet
-property.baubles.ring=Ring
-property.baubles.belt=Belt
-property.baubles.trinket=Trinket
-property.baubles.head=Head
-property.baubles.body=Body
-property.baubles.charm=Charm
-property.baubles.elytra=Elytra
+baubles.bauble=Bauble
+baubles.amulet=Amulet
+baubles.ring=Ring
+baubles.belt=Belt
+baubles.trinket=Trinket
+baubles.head=Head
+baubles.body=Body
+baubles.charm=Charm
+baubles.elytra=Elytra
 #
-# MODULE
-property.module.potion=%s level %s
-property.module.attribute.0=+
-property.module.attribute.1=+%s%
-property.module.attribute.2=%s level %s
+# ATTRIBUTE
+attribute.name.baubles.bauble=Bauble Slot
+attribute.name.baubles.amulet=Amulet Slot
+attribute.name.baubles.ring=Ring Slot
+attribute.name.baubles.belt=Belt Slot
+attribute.name.baubles.trinket=Trinket Slot
+attribute.name.baubles.head=Head Slot
+attribute.name.baubles.body=Body Slot
+attribute.name.baubles.charm=Charm Slot
+attribute.name.baubles.elytra=Elytra Slot
 #
 # COMMAND
 commands.baubles.error=§cError command
@@ -48,8 +54,8 @@ commands.baubles.dump=The file was dumped to:
 commands.baubles.dump.tip=Click to open the folder
 #
 # COMPAT
-property.baubles.glove=Glove
-property.baubles.pendant=Pendant
-property.baubles.cape=Cape
-property.baubles.misc=Misc
-property.baubles.shield=Shield
+baubles.glove=Glove
+baubles.pendant=Pendant
+baubles.cape=Cape
+baubles.misc=Misc
+baubles.shield=Shield

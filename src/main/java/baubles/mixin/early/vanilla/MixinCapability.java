@@ -4,7 +4,7 @@ import baubles.api.BaublesWrapper;
 import baubles.api.IBauble;
 import baubles.api.cap.BaublesCapabilities;
 import baubles.api.cap.BaublesCapabilityProvider;
-import baubles.api.registries.ItemsData;
+import baubles.api.registries.ItemData;
 import baubles.util.ICapabilityModifiable;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.CapabilityDispatcher;
@@ -26,8 +26,8 @@ public abstract class MixinCapability {
             if (provider.hasCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null)) {
                 IBauble bauble = provider.getCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
                 if (bauble != null && !(bauble instanceof BaublesWrapper)) {
-                    if (!ItemsData.isBauble(stack)) {
-                        ItemsData.registerBauble(stack, bauble.getBaubleType(stack).getExpansion());
+                    if (!ItemData.isBauble(stack)) {
+                        ItemData.registerBauble(stack, bauble.getBaubleType(stack).getExpansion());
                     }
                     this.caps[i] = new BaublesCapabilityProvider(stack, provider);
                     break;

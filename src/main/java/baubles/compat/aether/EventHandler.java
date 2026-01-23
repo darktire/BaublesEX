@@ -2,8 +2,8 @@ package baubles.compat.aether;
 
 import baubles.api.BaubleTypeEx;
 import baubles.api.cap.BaublesCapabilityProvider;
-import baubles.api.registries.ItemsData;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.ItemData;
+import baubles.api.registries.TypeData;
 import baubles.common.event.EventHandlerItem;
 import baubles.compat.ModOnly;
 import com.gildedgames.the_aether.api.AetherAPI;
@@ -27,19 +27,19 @@ public class EventHandler {
 
     private static final Map<AccessoryType, BaubleTypeEx> map = new HashMap<>();
     private static final Map<AccessoryType, BaubleTypeEx> extension = ImmutableMap.<AccessoryType, BaubleTypeEx>builder()
-            .put(AccessoryType.GLOVE, TypesData.Preset.RING)
-            .put(AccessoryType.RING, TypesData.Preset.RING)
-            .put(AccessoryType.PENDANT, TypesData.Preset.AMULET)
-            .put(AccessoryType.CAPE, TypesData.Preset.BODY)
-            .put(AccessoryType.MISC, TypesData.Preset.CHARM)
-            .put(AccessoryType.SHIELD, TypesData.Preset.TRINKET)
+            .put(AccessoryType.GLOVE, TypeData.Preset.RING)
+            .put(AccessoryType.RING, TypeData.Preset.RING)
+            .put(AccessoryType.PENDANT, TypeData.Preset.AMULET)
+            .put(AccessoryType.CAPE, TypeData.Preset.BODY)
+            .put(AccessoryType.MISC, TypeData.Preset.CHARM)
+            .put(AccessoryType.SHIELD, TypeData.Preset.TRINKET)
             .build();
 
     private static void init() {}
     static {
         for (AccessoryType a : AccessoryType.values()) {
             String name = a.toString().toLowerCase();
-            map.put(a, TypesData.registerType(name, null, null, Collections.singleton(extension.get(a))));
+            map.put(a, TypeData.registerType(name, null, null, Collections.singleton(extension.get(a))));
         }
     }
 
@@ -53,11 +53,11 @@ public class EventHandler {
         ItemStack stack = event.getObject();
 
         if (stack.isEmpty()) return;
-        if (ItemsData.isBauble(stack)) return;
+        if (ItemData.isBauble(stack)) return;
         if (AETHER_API.isAccessory(stack)) {
-            if (!ItemsData.isBauble(stack)) {
-                ItemsData.registerBauble(stack, map.get(AETHER_API.getAccessory(stack).getAccessoryType()));
-                if (!ItemsData.isBauble(stack.getItem())) {
+            if (!ItemData.isBauble(stack)) {
+                ItemData.registerBauble(stack, map.get(AETHER_API.getAccessory(stack).getAccessoryType()));
+                if (!ItemData.isBauble(stack.getItem())) {
                     event.addCapability(EventHandlerItem.ITEM_CAP, new BaublesCapabilityProvider(stack, null));
                 }
             }

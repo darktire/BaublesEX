@@ -3,7 +3,7 @@ package baubles.compat.xat;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.model.ModelBauble;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.TypeData;
 import baubles.api.render.IRenderBauble;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -47,7 +47,7 @@ public class ClawsRender implements IRenderBauble {
             return BOTH;
         }
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
-        int j = baubles.indexOf(TypesData.Preset.RING, 0);
+        int j = baubles.indexOf(TypeData.Preset.RING, 0);
         int k = baubles.indexOf(ModItems.baubles.BaubleFaelisClaw, 0);
         if (k != -1 && baubles.indexOf(ModItems.baubles.BaubleFaelisClaw, k + 1) != -1) {
             return BOTH;

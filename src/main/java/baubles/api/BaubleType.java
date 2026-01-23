@@ -1,6 +1,6 @@
 package baubles.api;
 
-import baubles.api.registries.TypesData;
+import baubles.api.registries.TypeData;
 
 /**
  * Default bauble types
@@ -19,7 +19,7 @@ public enum BaubleType {
 	private final int[] idx;
 
 	BaubleType(int ... idx) {
-		this.baubleTypeEx = TypesData.Preset.enumRef(idx[0]);
+		this.baubleTypeEx = TypeData.Preset.enumRef(idx[0]);
 		this.idx = idx;
     }
 

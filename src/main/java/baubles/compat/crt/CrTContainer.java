@@ -5,7 +5,7 @@ import baubles.api.BaublesApi;
 import baubles.api.attribute.AdvancedInstance;
 import baubles.api.attribute.AttributeManager;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.registries.TypesData;
+import baubles.api.registries.TypeData;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifier;
 import baubles.util.HookHelper;
@@ -17,6 +17,7 @@ import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.items.ItemStackHandler;
 
 import java.lang.reflect.Field;
 import java.util.Iterator;
@@ -26,7 +27,7 @@ import java.util.WeakHashMap;
 public class CrTContainer implements IContainer {
     private static final Map<IBaublesItemHandler, CrTContainer> CACHE = new WeakHashMap<>();
     private final IBaublesItemHandler baubles;
-    private static final Field FIELD_STACKS = HookHelper.getField("net.minecraftforge.items.ItemStackHandler", "stacks");
+    private static final Field FIELD_STACKS = HookHelper.getField(ItemStackHandler.class, "stacks");
 
     private CrTContainer(IBaublesItemHandler baubles) {
         this.baubles = baubles;
@@ -51,7 +52,7 @@ public class CrTContainer implements IContainer {
 
     @Override
     public void modifySlot(String typeName, int modifier) {
-        BaubleTypeEx type = TypesData.getTypeByName(typeName);
+        BaubleTypeEx type = TypeData.getTypeByName(typeName);
         if (type != null) {
             EntityLivingBase owner = this.baubles.getOwner();
             AbstractAttributeMap map = owner.getAttributeMap();
@@ -100,6 +101,6 @@ public class CrTContainer implements IContainer {
     @Override
     @SuppressWarnings("unchecked")
     public Iterator<IItemStack> iterator() {
-        return ((NonNullList<ItemStack>) HookHelper.getValue(FIELD_STACKS, this.baubles)).stream().map(CraftTweakerMC::getIItemStack).iterator();
+        return HookHelper.<NonNullList<ItemStack>>getValue(FIELD_STACKS, this.baubles).stream().map(CraftTweakerMC::getIItemStack).iterator();
     }
 }
