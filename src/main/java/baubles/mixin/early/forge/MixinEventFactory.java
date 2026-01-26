@@ -1,4 +1,4 @@
-package baubles.mixin.early.vanilla;
+package baubles.mixin.early.forge;
 
 import baubles.util.ICapabilityModifiable;
 import net.minecraft.item.ItemStack;

@@ -12,39 +12,43 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
+
+    private static final int PRE = "mixins/late/mixins.baubles.".length();
+    private static final int SUF = ".json".length();
+
+    private final List<String> lateMixin = ImmutableList.of(
+            "mixins/late/mixins.baubles.aether_legacy.json",
+            "mixins/late/mixins.baubles.ancientspellcraft.json",
+            "mixins/late/mixins.baubles.artifacts.json",
+            "mixins/late/mixins.baubles.backpacked.json",
+            "mixins/late/mixins.baubles.botania.json",
+            "mixins/late/mixins.baubles.bountifulbaubles.json",
+            "mixins/late/mixins.baubles.ebwizardry.json",
+            "mixins/late/mixins.baubles.enigmaticlegacy.json",
+            "mixins/late/mixins.baubles.extrabotany.json",
+            "mixins/late/mixins.baubles.iceandfire.json",
+            "mixins/late/mixins.baubles.mobends.json",
+            "mixins/late/mixins.baubles.nvg.json",
+            "mixins/late/mixins.baubles.potionfingers.json",
+            "mixins/late/mixins.baubles.rlartifacts.json",
+            "mixins/late/mixins.baubles.setbonus.json",
+            "mixins/late/mixins.baubles.thaumcraft.json",
+            "mixins/late/mixins.baubles.thaumicperiphery.json",
+            "mixins/late/mixins.baubles.tombstone.json",
+            "mixins/late/mixins.baubles.wings.json",
+            "mixins/late/mixins.baubles.wizardryutils.json",
+            "mixins/late/mixins.baubles.xat.json"
+    );
+
     @Override
     public List<String> getMixinConfigs() {
         return lateMixin.stream().filter(this::fromJson).collect(Collectors.toList());
     }
 
     private boolean fromJson(String name) {
-        String modid = name.substring(20, name.length() - 5);
+        String modid = name.substring(PRE, name.length() - SUF);
         return HookHelper.isModLoaded(modid);
     }
-
-    private final ImmutableList<String> lateMixin = ImmutableList.of(
-            "mixins.baubles.late.aether_legacy.json",
-            "mixins.baubles.late.ancientspellcraft.json",
-            "mixins.baubles.late.artifacts.json",
-            "mixins.baubles.late.backpacked.json",
-            "mixins.baubles.late.botania.json",
-            "mixins.baubles.late.bountifulbaubles.json",
-            "mixins.baubles.late.ebwizardry.json",
-            "mixins.baubles.late.enigmaticlegacy.json",
-            "mixins.baubles.late.extrabotany.json",
-            "mixins.baubles.late.iceandfire.json",
-            "mixins.baubles.late.mobends.json",
-            "mixins.baubles.late.nvg.json",
-            "mixins.baubles.late.potionfingers.json",
-            "mixins.baubles.late.rlartifacts.json",
-            "mixins.baubles.late.setbonus.json",
-            "mixins.baubles.late.thaumcraft.json",
-            "mixins.baubles.late.thaumicperiphery.json",
-            "mixins.baubles.late.tombstone.json",
-            "mixins.baubles.late.wings.json",
-            "mixins.baubles.late.wizardryutils.json",
-            "mixins.baubles.late.xat.json"
-    );
 
     @Override
     public void onLoad(String mixinPackage) {

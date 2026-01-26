@@ -2,7 +2,7 @@ package baubles.mixin.early.vanilla;
 
 import baubles.api.BaublesApi;
 import baubles.common.config.Config;
-import baubles.util.HookHelper;
+import baubles.util.CommonHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -23,7 +23,7 @@ public abstract class MixinStack {
         if (cir.getReturnValue().getType() != EnumActionResult.SUCCESS) {
             ItemStack heldItem = (ItemStack) (Object) this;
             if (Config.getBlacklist().contains(heldItem.getItem()) || !BaublesApi.isBauble(heldItem)) return;
-            if (HookHelper.tryEquipping(playerIn, hand, heldItem)) {
+            if (CommonHelper.tryEquipping(playerIn, hand, heldItem)) {
                 cir.setReturnValue(new ActionResult<>(EnumActionResult.SUCCESS, heldItem));
             }
         }

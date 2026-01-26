@@ -1,0 +1,21 @@
+{
+  "package": "baubles.mixin.early.vanilla",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "refmap": "mixins.baubles.refmap.json",
+  "mixins": [
+    "MixinElytra$MixinEntityBase",
+    "MixinElytra$MixinNetHandler",
+    "MixinEnchantment",
+    "MixinStack"
+  ],
+  "client": [
+    "MixinCape",
+    "MixinElytra$MixinPlayerSP",
+    "MixinGuiScreen",
+    "MixinLayerArmorBase"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

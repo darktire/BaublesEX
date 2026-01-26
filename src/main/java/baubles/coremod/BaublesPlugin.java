@@ -47,5 +47,8 @@ public class BaublesPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
         return earlyMixin;
     }
 
-    private static final List<String> earlyMixin = ImmutableList.of("mixins.baubles.early.vanilla.json");
+    private static final List<String> earlyMixin = ImmutableList.of(
+            "mixins/early/mixins.baubles.forge.json",
+            "mixins/early/mixins.baubles.vanilla.json"
+    );
 }
