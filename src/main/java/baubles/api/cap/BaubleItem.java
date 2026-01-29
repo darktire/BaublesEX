@@ -41,7 +41,7 @@ public class BaubleItem implements IBauble {
 
 	@Override
 	public void onWornTick(ItemStack itemstack, EntityLivingBase entity) {
-		if (itemstack.getItem() instanceof ItemArmor && entity instanceof EntityPlayer) {
+		if (itemstack.getItem() instanceof ItemArmor && entity instanceof EntityPlayer) {//todo
 			itemstack.getItem().onArmorTick(entity.world, (EntityPlayer) entity, itemstack);
 		}
 	}

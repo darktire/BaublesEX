@@ -138,7 +138,7 @@ public class GuiOverlayHandler {
         if (gui instanceof GuiPlayerExpanded) {
             ((GuiPlayerExpanded) gui).displayNormalInventory();
             PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.NORMAL));
-        } else if (gui instanceof GuiInventory || gui instanceof GuiContainerCreative) {
+        } else if (gui instanceof GuiInventory) {
             PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.EXPANSION));
         }
 

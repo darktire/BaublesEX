@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 
 public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
 
-    private static final int PRE = "mixins/late/mixins.baubles.".length();
-    private static final int SUF = ".json".length();
+    private final int pre = "mixins/late/mixins.baubles.".length();
+    private final int suf = ".json".length();
 
     private final List<String> lateMixin = ImmutableList.of(
             "mixins/late/mixins.baubles.aether_legacy.json",
@@ -23,6 +23,7 @@ public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
             "mixins/late/mixins.baubles.backpacked.json",
             "mixins/late/mixins.baubles.botania.json",
             "mixins/late/mixins.baubles.bountifulbaubles.json",
+            "mixins/late/mixins.baubles.colytra.json",
             "mixins/late/mixins.baubles.ebwizardry.json",
             "mixins/late/mixins.baubles.enigmaticlegacy.json",
             "mixins/late/mixins.baubles.extrabotany.json",
@@ -46,7 +47,7 @@ public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
     }
 
     private boolean fromJson(String name) {
-        String modid = name.substring(PRE, name.length() - SUF);
+        String modid = name.substring(pre, name.length() - suf);
         return HookHelper.isModLoaded(modid);
     }
 

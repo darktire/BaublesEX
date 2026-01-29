@@ -39,7 +39,7 @@ public class ItemData {
     }
 
     public static void registerBauble(IBaubleKey key, List<BaubleTypeEx> types) {
-        if (BAUBLE_ITEMS.containsKey(key)) {
+        if (BAUBLE_ITEMS.containsKey(key) || BAUBLE_ITEMS.containsKey(key.fuzzier())) {
             CST_MAP.update(key, AbstractWrapper.Addition::types, types);
         }
         else {
