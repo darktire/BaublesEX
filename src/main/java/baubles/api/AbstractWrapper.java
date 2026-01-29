@@ -5,6 +5,7 @@ import baubles.api.render.IRenderBauble;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,6 +15,7 @@ public abstract class AbstractWrapper implements IBauble, IRenderBauble {
     public final static class CSTMap {
         static final CSTMap INSTANCE = new CSTMap();
         private final Map<IBaubleKey, BaublesWrapper.Addition> map = new ConcurrentHashMap<>();
+        private Map<IBaubleKey, BaublesWrapper.Addition> backup;
 
         public static CSTMap instance() {
             return INSTANCE;
@@ -36,6 +38,14 @@ public abstract class AbstractWrapper implements IBauble, IRenderBauble {
 
         public <T> void update(IBaubleKey key, BiConsumer<BaublesWrapper.Addition, T> editor, T param) {
             editor.accept(this.map.computeIfAbsent(key, i -> new BaublesWrapper.Addition()), param);
+        }
+
+        public void backup() {
+            this.backup = new HashMap<>(this.map);
+        }
+        public void restore() {
+            this.map.clear();
+            this.map.putAll(this.backup);
         }
     }
 

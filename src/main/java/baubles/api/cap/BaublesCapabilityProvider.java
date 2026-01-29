@@ -14,8 +14,6 @@ import static baubles.api.cap.BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 public class BaublesCapabilityProvider implements ICapabilityProvider {
     private final WeakReference<ItemStack> ref;
     private final ICapabilityProvider other;
-    private boolean initialized = false;
-    private AbstractWrapper wrapper;
 
     public BaublesCapabilityProvider(ItemStack stack, ICapabilityProvider other) {
         this.ref = new WeakReference<>(stack);
@@ -24,21 +22,12 @@ public class BaublesCapabilityProvider implements ICapabilityProvider {
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        this.initialize();
         return capability == CAPABILITY_ITEM_BAUBLE ? this.isDefined() : this.other != null && this.other.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        this.initialize();
-        return capability == CAPABILITY_ITEM_BAUBLE ? (this.isDefined() ? CAPABILITY_ITEM_BAUBLE.cast(wrapper) : null) : (this.other == null ? null : this.other.getCapability(capability, facing));
-    }
-
-    private void initialize() {
-        if (this.initialized) return;
-        this.initialized = true;
-        ItemStack stack = this.ref.get();
-        this.wrapper = stack == null ? null : ItemData.toBauble(stack);
+        return capability == CAPABILITY_ITEM_BAUBLE ? (this.isDefined() ? CAPABILITY_ITEM_BAUBLE.cast(ItemData.toBauble(this.ref.get())) : null) : (this.other == null ? null : this.other.getCapability(capability, facing));
     }
 
     private boolean isDefined() {

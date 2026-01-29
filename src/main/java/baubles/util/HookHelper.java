@@ -3,23 +3,16 @@ package baubles.util;
 import baubles.api.AbstractWrapper;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
-import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.config.Config;
 import baubles.common.items.BaubleElytra;
-import baubles.common.network.PacketHandler;
-import baubles.common.network.PacketSync;
 import baubles.compat.ModOnly;
 import baubles.compat.config.Compat;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModClassLoader;
@@ -27,7 +20,10 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class HookHelper {
 
@@ -42,66 +38,6 @@ public class HookHelper {
             return BaubleElytra.getWearing(entity, using);
         }
         return stack;
-    }
-
-    public static void tryEquipping(EntityPlayer playerIn, ItemStack stack) {
-        tryEquipping(playerIn, EnumHand.MAIN_HAND, stack);
-    }
-
-    public static boolean tryEquipping(EntityPlayer playerIn, EnumHand hand, ItemStack stack) {
-        IBauble bauble = BaublesApi.toBauble(stack);
-        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) playerIn);
-        List<BaubleTypeEx> types = bauble.getTypes(stack);
-        for (int i = 0, s = baubles.getSlots(); i < s; i++) {
-            boolean match = baubles.getTypeInSlot(i).contains(types);
-            if (match && baubles.getStackInSlot(i).isEmpty()) {
-                stack = stack.copy();
-                baubles.setStackInSlot(i, stack);
-                if (!playerIn.capabilities.isCreativeMode) {
-                    if (hand == EnumHand.MAIN_HAND) {
-                        playerIn.inventory.setInventorySlotContents(playerIn.inventory.currentItem, ItemStack.EMPTY);
-                    }
-                    else {
-                        playerIn.inventory.offHandInventory.set(0, ItemStack.EMPTY);
-                    }
-                }
-                bauble.onEquipped(stack, playerIn);
-                if (!playerIn.world.isRemote) {
-                    PacketSync pkt = PacketSync.S2CPack(playerIn, i, stack, -1);
-                    PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) playerIn);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static void configSlot(String typeName, int n, boolean modifying) {
-        Property property = Config.Slots.getCategory().get(typeName + "Slot");
-        if (property == null) {
-            try {//todo
-//                List<BaubleTypeEx> types = ConversionHelper.fromJson(ConversionHelper.Category.TYPE_DATA);
-//                for (BaubleTypeEx type : types) {
-//                    if (type.getName().equals(typeName)) {
-//                        if (modifying) {
-//                            n += type.getAmount();
-//                        }
-//                        type.setAmount(n);
-//                    }
-//                }
-//                ConversionHelper.toJson(types, ConversionHelper.Category.TYPE_DATA, false);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        else {
-            if (modifying) {
-                n += property.getInt();
-            }
-            property.set(n);
-            Config.saveConfig();
-            Config.syncToBaubles();
-        }
     }
 
     public static Field getField(Class<?> clazz, String fieldName) {

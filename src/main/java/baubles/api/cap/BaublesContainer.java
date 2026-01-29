@@ -221,7 +221,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         }
         // modifier persistence
         NBTTagCompound modifier = new NBTTagCompound();
-        for (BaubleTypeEx type : TypeData.getOrder()) {
+        for (BaubleTypeEx type : TypeData.sortedList()) {
             AdvancedInstance instance = AttributeManager.getInstance(this.entity.getAttributeMap(), type);
             int[] intArr = {
                     (int) instance.getAnonymousModifier(0),

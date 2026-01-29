@@ -8,7 +8,6 @@ import baubles.api.attribute.AttributeManager;
 import baubles.api.registries.ItemData;
 import baubles.api.registries.TypeData;
 import baubles.api.render.IRenderBauble;
-import baubles.client.render.ArmorHelper;
 import baubles.common.config.Config;
 import baubles.common.config.json.Category;
 import baubles.common.config.json.ConversionHelper;
@@ -40,11 +39,15 @@ public class BaublesRegister {
             ItemData.registerRender(Items.ELYTRA, elytra);
         }
 
+        ItemData.backup();
+
         try {
             ConversionHelper.fromJson(Category.ITEM_DATA);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+//        ItemData.redirect(BaublesRegister::check, ArmorHelper.INSTANCE);
     }
 
     public static void setTypes() {
@@ -87,12 +90,6 @@ public class BaublesRegister {
     @SubscribeEvent
     public static void createRegistry(RegistryEvent.NewRegistry event) {
         TypeData.create();
-    }
-
-    @SubscribeEvent
-    public static void beforeRegistering(RegistryEvent.Register<BaubleTypeEx> event) {
-        registerItems();
-        ItemData.redirect(BaublesRegister::check, ArmorHelper.INSTANCE);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

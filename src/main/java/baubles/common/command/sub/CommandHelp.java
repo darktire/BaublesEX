@@ -23,5 +23,6 @@ public class CommandHelp extends CommandBase {
         sender.sendMessage(new TextComponentTranslation("/baubles slots <option> <player> <type> <number>"));
         sender.sendMessage(new TextComponentTranslation("/baubles set <player> <slot> <item> <meta> {nbt}"));
         sender.sendMessage(new TextComponentTranslation("/baubles dump"));
+        sender.sendMessage(new TextComponentTranslation("/baubles reload"));
     }
 }

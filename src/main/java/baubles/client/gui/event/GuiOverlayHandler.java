@@ -2,6 +2,7 @@ package baubles.client.gui.event;
 
 import baubles.api.BaublesApi;
 import baubles.client.gui.GuiOverlay;
+import baubles.client.gui.GuiPlayerExpanded;
 import baubles.client.gui.element.ElementButton;
 import baubles.common.config.Config;
 import baubles.common.config.KeyBindings;
@@ -131,24 +132,29 @@ public class GuiOverlayHandler {
     @SubscribeEvent
     public static void onKeyDown(GuiScreenEvent.KeyboardInputEvent.Post e) {
         if (!Keyboard.getEventKeyState()) return;
+        if (Keyboard.getEventKey() != KeyBindings.KEY_BAUBLES.getKeyCode()) return;
 
         GuiScreen gui = e.getGui();
+        if (gui instanceof GuiPlayerExpanded) {
+            ((GuiPlayerExpanded) gui).displayNormalInventory();
+            PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.NORMAL));
+        } else if (gui instanceof GuiInventory || gui instanceof GuiContainerCreative) {
+            PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.EXPANSION));
+        }
+
         if (!Config.Gui.isTarget(gui)) return;
-        if (Keyboard.getEventKey() == KeyBindings.KEY_BAUBLES.getKeyCode()) {
-            if (isCovered(gui)) {
-                OVERLAY.remove(gui).onGuiClosed();
-                ((GuiContainer) gui).inventorySlots.inventorySlots.forEach(slot -> {
-                    if (slot instanceof SlotBaubleHandler) {
-                        ((SlotBaubleHandler) slot).setLocked(false);
-                    }
-                });
-            }
-            else {
-                GuiOverlay ex = new GuiOverlay(Minecraft.getMinecraft().player);
-                OVERLAY.put(gui, ex);
-                initExpansion(gui);
-                PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.ENHANCEMENT));
-            }
+        if (isCovered(gui)) {
+            OVERLAY.remove(gui).onGuiClosed();
+            ((GuiContainer) gui).inventorySlots.inventorySlots.forEach(slot -> {
+                if (slot instanceof SlotBaubleHandler) {
+                    ((SlotBaubleHandler) slot).setLocked(false);
+                }
+            });
+        } else {
+            GuiOverlay ex = new GuiOverlay(Minecraft.getMinecraft().player);
+            OVERLAY.put(gui, ex);
+            initExpansion(gui);
+            PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.ENHANCEMENT));
         }
     }
 

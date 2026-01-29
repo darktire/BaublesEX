@@ -18,7 +18,7 @@ public class AttributeManager {
     private static final Set<EntityLivingBase> LISTENER = Collections.newSetFromMap(new WeakHashMap<>());
 
     public static void loadAttributes() {
-        Set<BaubleTypeEx> get = new HashSet<>(TypeData.getOrder());
+        Set<BaubleTypeEx> get = new HashSet<>(TypeData.sortedList());
         Set<BaubleTypeEx> set = PLAYER_BAUBLES.keySet();
 
         for (BaubleTypeEx type : set) {
@@ -62,7 +62,7 @@ public class AttributeManager {
     }
     public static List<BaubleTypeEx> computeSlots(EntityLivingBase entity) {
         AbstractAttributeMap map = entity.getAttributeMap();
-        return TypeData.getOrder().stream()
+        return TypeData.sortedList().stream()
                 .flatMap(type -> Collections.nCopies(getValue(map, type), type).stream())
                 .collect(Collectors.toList());
     }

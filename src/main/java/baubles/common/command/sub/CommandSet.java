@@ -17,7 +17,7 @@ import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 
-public class CommandSet extends CmdBase {
+public class CommandSet extends Tabbable {
     @Override
     public String getName() {
         return "set";

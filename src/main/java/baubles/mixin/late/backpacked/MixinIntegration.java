@@ -1,6 +1,7 @@
 package baubles.mixin.late.backpacked;
 
 import baubles.api.cap.IBaublesItemHandler;
+import baubles.util.CommonHelper;
 import baubles.util.HookHelper;
 import com.mrcrayfish.backpacked.integration.Baubles;
 import com.mrcrayfish.backpacked.item.BaubleBackpackItem;
@@ -28,7 +29,7 @@ public class MixinIntegration {
 
     @Inject(method = "setBackpackStack", at = @At("HEAD"), cancellable = true)
     private static void inject(EntityPlayer player, ItemStack stack, CallbackInfo ci) {
-        HookHelper.tryEquipping(player, stack);
+        CommonHelper.tryEquipping(player, stack);
         ci.cancel();
     }
 }

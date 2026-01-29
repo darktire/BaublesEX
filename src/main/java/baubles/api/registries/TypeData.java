@@ -96,7 +96,7 @@ public class TypeData {
         ORDER.sort(Collections.reverseOrder());
         sum = ORDER.stream().mapToInt(BaubleTypeEx::getAmount).sum();
     }
-    public static List<BaubleTypeEx> getOrder() {
+    public static List<BaubleTypeEx> sortedList() {
         return Collections.unmodifiableList(ORDER);
     }
 

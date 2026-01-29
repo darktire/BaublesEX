@@ -2,6 +2,7 @@ package baubles.mixin.late.ancientspellcraft;
 
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.compat.wizardry.WizardryHelper;
+import baubles.util.CommonHelper;
 import baubles.util.HookHelper;
 import com.windanesz.ancientspellcraft.integration.baubles.ASBaublesIntegration;
 import electroblob.wizardry.item.ItemArtefact;
@@ -30,13 +31,13 @@ public class MixinBaubles {
 
     @Inject(method = "setArtefactToSlot(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/item/ItemStack;Lelectroblob/wizardry/item/ItemArtefact$Type;)V", at = @At("HEAD"), cancellable = true)
     private static void inject2(EntityPlayer player, ItemStack stack, ItemArtefact.Type type, CallbackInfo ci) {
-        HookHelper.tryEquipping(player, stack);
+        CommonHelper.tryEquipping(player, stack);
         ci.cancel();
     }
 
     @Inject(method = "setArtefactToSlot(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/item/ItemStack;Lelectroblob/wizardry/item/ItemArtefact$Type;I)V", at = @At("HEAD"), cancellable = true)
     private static void inject3(EntityPlayer player, ItemStack stack, ItemArtefact.Type type, int slotId, CallbackInfo ci) {
-        HookHelper.tryEquipping(player, stack);
+        CommonHelper.tryEquipping(player, stack);
         ci.cancel();
     }
 }

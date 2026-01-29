@@ -5,18 +5,18 @@ import baubles.api.attribute.AdvancedInstance;
 import baubles.api.attribute.AttributeManager;
 import baubles.api.registries.TypeData;
 import baubles.common.command.BaublesCommand;
+import baubles.common.command.CommandTree;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifier;
-import baubles.util.HookHelper;
+import baubles.util.CommonHelper;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
-public class CommandSlots extends BaublesCommand {
+public class CommandSlots extends CommandTree {
     public CommandSlots() {
-        super(null);
         this.addSubcommand(new SubModify());
         this.addSubcommand(new SubSet());
     }
@@ -35,7 +35,7 @@ public class CommandSlots extends BaublesCommand {
         return TypeData.hasType(args[1]) && args[2].matches("-?\\d+");
     }
 
-    public static class SubModify extends CmdBase {
+    public static class SubModify extends Tabbable {
         @Override
         public String getName() {
             return "modify";
@@ -43,14 +43,14 @@ public class CommandSlots extends BaublesCommand {
 
         @Override
         public String getUsage(ICommandSender sender) {
-            return "/baubles slots modify <player> <type> <modifier> or /baubles modify config <type> <number>";
+            return "/baubles slots modify <player/config> <type> <modifier>";
         }
 
         @Override
         public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
             boolean flag = checkArgs(args);
             if (args[0].equals("config") && flag) {
-                HookHelper.configSlot(args[1], Integer.parseInt(args[2]), true);
+                CommonHelper.configSlot(args[1], Integer.parseInt(args[2]), true);
             }
             else {
                 EntityPlayerMP player = BaublesCommand.checkPlayer(server, sender, args);
@@ -72,7 +72,7 @@ public class CommandSlots extends BaublesCommand {
         }
     }
 
-    public static class SubSet extends CmdBase {
+    public static class SubSet extends Tabbable {
         @Override
         public String getName() {
             return "set";
@@ -80,14 +80,14 @@ public class CommandSlots extends BaublesCommand {
 
         @Override
         public String getUsage(ICommandSender sender) {
-            return "/baubles slots set <player> <type> <number> or /baubles set config <type> <number>";
+            return "/baubles slots set <player/config> <type> <number>";
         }
 
         @Override
         public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
             boolean flag = checkArgs(args);
             if (args[0].equals("config") && flag) {
-                HookHelper.configSlot(args[1], Integer.parseInt(args[2]), false);
+                CommonHelper.configSlot(args[1], Integer.parseInt(args[2]), false);
             }
             else {
                 EntityPlayerMP player = BaublesCommand.checkPlayer(server, sender, args);
@@ -105,6 +105,32 @@ public class CommandSlots extends BaublesCommand {
             }
             if (!flag) {
                 sendError(sender);
+            }
+        }
+    }
+
+    public static class SubClear extends Tabbable {
+        @Override
+        public String getName() {
+            return "clear";
+        }
+
+        @Override
+        public String getUsage(ICommandSender sender) {
+            return "/baubles slots clear <player> or /baubles slots clear <player> <type>";
+        }
+
+        @Override
+        public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+            EntityPlayerMP player = BaublesCommand.checkPlayer(server, sender, args);
+            if (args.length == 1) {
+                TypeData.sortedList().forEach(t -> CommonHelper.setAnonymousModifier(player, t, 0));
+            }
+            else {
+                BaubleTypeEx type = TypeData.getTypeByName(args[1]);
+                if (type != null) {
+                    CommonHelper.setAnonymousModifier(player, type, 0);
+                }
             }
         }
     }

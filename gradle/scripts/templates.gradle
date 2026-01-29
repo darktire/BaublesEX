@@ -1,6 +1,7 @@
-tasks.register('copyResources', Copy) {
+tasks.register('copyResources', Sync) {
     group 'templates tasks'
     inputs.files sourceSets.main.resources.srcDirs, 'gradle.properties'
+    outputs.dir 'classes/java/main/mixins'
 
     from(sourceSets.main.resources.srcDirs) {
         exclude '**/*.bak', '**/*.psd', 'mcmod.info'

@@ -33,7 +33,7 @@ public class CommandDump extends CommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         try {
-            ConversionHelper.toJson(TypeData.getOrder(), Category.TYPE_DATA);
+            ConversionHelper.toJson(TypeData.sortedList(), Category.TYPE_DATA);
             ConversionHelper.toJson(ItemData.getList(), Category.ITEM_DATA);
         } catch (IOException e) {
             throw new RuntimeException(e);

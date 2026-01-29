@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 
-public class CommandClear extends CmdBase {
+public class CommandClear extends Tabbable {
     @Override
     public String getName() {
         return "clear";
@@ -41,14 +41,6 @@ public class CommandClear extends CmdBase {
                 player.sendMessage(new TextComponentTranslation("commands.baubles.clear.all.claim", sender.getName()));
             }
         }
-//        else if (args[1].equals("modifier")) {
-//            baubles.clearModifier();
-//            PacketHandler.INSTANCE.sendTo(new PacketModifier(player, null, 0, 0), player);
-//            baubles.updateContainer();
-//            if (Config.Commands.commandLogs) {
-//                player.sendMessage(new TextComponentTranslation("commands.baubles.success"));
-//            }
-//        }
         else if (args[1].matches("\\d+")) {
             clearOnce(sender, args[1], baubles, player);
             if (args.length > 2) {

@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class CmdBase extends CommandBase {
+public abstract class Tabbable extends CommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()) : Collections.emptyList();

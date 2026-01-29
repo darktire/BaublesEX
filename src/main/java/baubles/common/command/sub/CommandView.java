@@ -6,6 +6,7 @@ import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.ItemData;
 import baubles.common.command.BaublesCommand;
+import baubles.common.command.CommandTree;
 import baubles.common.network.PacketPool;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandException;
@@ -23,9 +24,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CommandView extends BaublesCommand {
+public class CommandView extends CommandTree {
     public CommandView() {
-        super(false);
         this.addSubcommand(new Hand());
         this.addSubcommand(new Cache());
     }
@@ -75,7 +75,7 @@ public class CommandView extends BaublesCommand {
         return strings;
     }
 
-    private static class Hand extends CmdBase {
+    private static class Hand extends Tabbable {
         @Override
         public String getName() {
             return "hand";
@@ -112,7 +112,7 @@ public class CommandView extends BaublesCommand {
     }
 
 
-    private static class Cache extends CmdBase {
+    private static class Cache extends Tabbable {
         @Override
         public String getName() {
             return "cache";

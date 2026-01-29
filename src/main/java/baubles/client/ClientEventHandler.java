@@ -63,6 +63,8 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public static void tooltipEvent(ItemTooltipEvent event) {
+//        if (event.getEntityLiving() == null) return;
+
         ItemStack stack = event.getItemStack();
         if (!stack.isEmpty() && BaublesApi.isBauble(stack)) {
             List<String> toolTip = event.getToolTip();
@@ -94,7 +96,7 @@ public class ClientEventHandler {
                     });
                 }
             } catch (Exception e) {
-                throw new RuntimeException(String.format("baubles_cap for %s is outdated", stack.getItem().getRegistryName()), e);
+                throw new RuntimeException(String.format("error on loading baubles' tooltips for %s", stack.getItem().getRegistryName()), e);
             }
         }
     }

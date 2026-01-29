@@ -10,10 +10,7 @@ import com.google.common.cache.CacheBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.LongAdder;
@@ -169,5 +166,17 @@ public class ItemData {
         BAUBLE_ITEMS.keySet().stream()
                 .filter(predicate)
                 .forEach(key -> CST_MAP.update(key, AbstractWrapper.Addition::render, render));
+    }
+
+    private static Map<IBaubleKey, Function<ItemStack, AbstractWrapper>> BACKUP;
+    public static void backup() {
+        BACKUP = new HashMap<>(BAUBLE_ITEMS);
+        CST_MAP.backup();
+    }
+    public static void restore() {
+        CACHE.invalidateAll();
+        BAUBLE_ITEMS.clear();
+        BAUBLE_ITEMS.putAll(BACKUP);
+        CST_MAP.restore();
     }
 }

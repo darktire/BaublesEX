@@ -66,6 +66,7 @@ public class Baubles {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         Config.setupBlacklist();
+        BaublesRegister.registerItems();
         proxy.postInit();
     }
 
