@@ -7,24 +7,26 @@ import baubles.api.IBaubleKey;
 import baubles.api.module.IModule;
 import baubles.api.registries.ItemData;
 import baubles.api.registries.TypeData;
+import baubles.api.render.IRenderBauble;
+import baubles.client.render.ArmorHelper;
 import baubles.common.config.ConfigRecord;
 import baubles.util.ItemParser;
 import baubles.util.JsonUtils;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class ItemHelper implements JsonSerializer<ItemHelper.Temp>, JsonDeserializer<ItemHelper.Temp> {
+public class ItemHelper implements JsonSerializer<IBaubleKey>, JsonDeserializer<ItemHelper.Temp> {
     static ItemHelper INSTANCE = new ItemHelper();
 
     @Override
-    public JsonElement serialize(Temp src, Type typeOfSrc, JsonSerializationContext context) {
+    public JsonElement serialize(IBaubleKey src, Type typeOfSrc, JsonSerializationContext context) {
         return null;
     }
 
@@ -56,26 +58,79 @@ public class ItemHelper implements JsonSerializer<ItemHelper.Temp>, JsonDeserial
         });
         temp.modules = modules;
 
+        List<Pair<IBaubleKey, AbstractWrapper.Sample>> samples = new ArrayList<>();
         JsonUtils.parseArray(in, "addition").forEach(e -> {
             String name = e.getAsString();
+
             if (name.equals("remove")) {
                 temp.remove = true;
             }
+
+            String[] args = name.split("#", 2);
+            String feature = args[0];
+            String itemName = args.length > 1 ? args[1] : null;
+
+            IBaubleKey key = Optional.ofNullable(itemName)
+                    .filter(s -> !s.isEmpty())
+                    .map(ItemHelper::parseItem)
+                    .orElse(null);
+
+            fromStr(feature).stream()
+                    .map(sample -> solvePair(temp, key, sample))
+                    .forEach(samples::add);
         });
+        temp.samples = samples;
         return temp;
     }
 
+    private static ImmutablePair<IBaubleKey, AbstractWrapper.Sample> solvePair(Temp temp, IBaubleKey key, AbstractWrapper.Sample sample) {
+        if (key == null && sample == AbstractWrapper.Sample.ARMOR) {
+            temp.render = ArmorHelper.INSTANCE;
+        }
+        return new ImmutablePair<>(key, sample);
+    }
+
+    private static IBaubleKey parseItem(String itemName) {
+        try {
+            return ItemParser.parse(itemName);
+        } catch (Exception e) {
+            BaublesApi.log.error("items loading error: " + e.getMessage());
+            return IBaubleKey.EMPTY;
+        }
+    }
+
+    private static final Map<Character, AbstractWrapper.Sample> CODE_MAP = ImmutableMap.of(
+            'A', AbstractWrapper.Sample.ARMOR,
+            'P', AbstractWrapper.Sample.PASSIVE,
+            'I', AbstractWrapper.Sample.IN_USE
+    );
+    private static AbstractWrapper.Sample fromCode(char code) {
+        return CODE_MAP.get(Character.toUpperCase(code));
+    }
+    private static List<AbstractWrapper.Sample> fromStr(String str) {
+        return str.chars()
+                .mapToObj(c -> fromCode((char) c))
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
     public static final class Temp {
+        private static final AbstractWrapper.CSTMap CST_MAP = AbstractWrapper.CSTMap.instance();
         List<String> content;
         List<BaubleTypeEx> types;
         List<IModule> modules;
         boolean remove;
+        List<Pair<IBaubleKey, AbstractWrapper.Sample>> samples;
+        IRenderBauble render;
 
         void apply() {
             for (IBaubleKey key : getContent(this.content)) {
                 ItemData.registerBauble(key, this.types);
-                if (!this.modules.isEmpty()) ItemData.registerModules(key, this.modules);
-                if (this.remove) AbstractWrapper.CSTMap.instance().update(key, AbstractWrapper.Addition::remove, true);
+                if (!this.modules.isEmpty()) CST_MAP.update(key, AbstractWrapper.Addition::modules, this.modules);
+                if (this.remove) CST_MAP.update(key, AbstractWrapper.Addition::remove, true);
+                if (!this.samples.isEmpty()) CST_MAP.update(key, AbstractWrapper.Addition::samples, this.samples);
+                if (this.render != null) CST_MAP.update(key, AbstractWrapper.Addition::render, this.render);
             }
         }
 
@@ -86,11 +141,7 @@ public class ItemHelper implements JsonSerializer<ItemHelper.Temp>, JsonDeserial
                     set.addAll(OreDictionary.getOres(name).stream().map(IBaubleKey.BaubleKey::wrap).collect(Collectors.toList()));
                 }
                 else {
-                    try {
-                        set.add(ItemParser.parse(name));
-                    } catch (Exception e) {
-                        BaublesApi.log.error("items loading error: " + e.getMessage());
-                    }
+                    set.add(parseItem(name));
                 }
             }
             return set;

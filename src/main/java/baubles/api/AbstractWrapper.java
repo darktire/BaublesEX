@@ -2,8 +2,11 @@ package baubles.api;
 
 import baubles.api.module.IModule;
 import baubles.api.render.IRenderBauble;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,8 +58,10 @@ public abstract class AbstractWrapper implements IBauble, IRenderBauble {
         IRenderBauble render;
         List<BaubleTypeEx> types;
         List<IModule> modules;
+        List<Pair<IBaubleKey, Sample>> samples;
 
         public void bauble(IBauble bauble) {
+
             this.bauble = bauble;
         }
 
@@ -81,5 +86,40 @@ public abstract class AbstractWrapper implements IBauble, IRenderBauble {
             if (addition == null) return false;
             return addition.remove;
         }
+
+        public void samples(List<Pair<IBaubleKey, Sample>> samples) {
+            this.samples = samples;
+        }
+
+        public void onAdditionTick(EntityLivingBase entity) {
+            for (Pair<IBaubleKey, Sample> pair : this.samples) {
+                pair.getRight().active(pair.getLeft().ref(), entity);
+            }
+        }
+    }
+
+    public enum Sample {
+        ARMOR {
+            @Override
+            void active(ItemStack stack, EntityLivingBase entity) {
+                if (entity instanceof EntityPlayer) {
+                    stack.getItem().onArmorTick(entity.world, (EntityPlayer) entity, stack);
+                }
+            }
+        },
+        PASSIVE {
+            @Override
+            void active(ItemStack stack, EntityLivingBase entity) {
+                stack.getItem().onUpdate(stack, entity.world, entity, 0, false);
+            }
+        },
+        IN_USE {
+            @Override
+            void active(ItemStack stack, EntityLivingBase entity) {
+                stack.getItem().onUsingTick(stack, entity, 0);
+            }
+        };
+
+        abstract void active(ItemStack stack, EntityLivingBase entity);
     }
 }

@@ -12,9 +12,12 @@ import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -77,7 +80,11 @@ public class Config extends PartialConfig {
         if (category == Category.MODULE_DATA) names = modulesJson;
         List<File> files = new ArrayList<>();
         for (String name : names) {
-            files.add(new File(getModDir(), name));
+            FileFilter filter = new WildcardFileFilter(name);
+            File[] matched = getModDir().listFiles(filter);
+            if (matched != null && matched.length > 0) {
+                files.addAll(Arrays.asList(matched));
+            }
         }
         return files;
     }

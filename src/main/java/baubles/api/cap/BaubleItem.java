@@ -3,9 +3,6 @@ package baubles.api.cap;
 import baubles.api.BaubleType;
 import baubles.api.BaubleTypeEx;
 import baubles.api.IBauble;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
@@ -37,12 +34,5 @@ public class BaubleItem implements IBauble {
 	@Override
 	public BaubleType getBaubleType(ItemStack itemStack) {
 		return this.types.get(0).getOldType();
-	}
-
-	@Override
-	public void onWornTick(ItemStack itemstack, EntityLivingBase entity) {
-		if (itemstack.getItem() instanceof ItemArmor && entity instanceof EntityPlayer) {//todo
-			itemstack.getItem().onArmorTick(entity.world, (EntityPlayer) entity, itemstack);
-		}
 	}
 }

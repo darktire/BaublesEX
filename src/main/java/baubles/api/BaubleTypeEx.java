@@ -10,7 +10,6 @@ public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> impleme
     private final String name;
     private int amount;
     private int priority;
-    private final List<Integer> oriSlots = new ArrayList<>();
     private final Set<BaubleTypeEx> parents = new HashSet<>();
 
     public static final Queue<BaubleTypeEx> REG_QUE = new ConcurrentLinkedQueue<>();

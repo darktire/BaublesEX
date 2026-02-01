@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public interface IBaubleKey {
+    IBaubleKey EMPTY = BaubleKey.wrap(ItemStack.EMPTY);
 
     ItemStack ref();
 
