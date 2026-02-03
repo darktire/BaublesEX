@@ -17,9 +17,7 @@ public class TypeData {
     private static List<BaubleTypeEx> ORDER = new ArrayList<>();
     private static ForgeRegistry<BaubleTypeEx> REGISTRY;
     private static boolean REGISTERED = false;
-
-    private static int sum = 0;
-    private static final List<BaubleTypeEx> BAUBLE_SLOTS = new ArrayList<>();
+    private static int sum = 7;
 
     public static void create() {
         REGISTRY = (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>().setType(BaubleTypeEx.class).setName(BAUBLE_TYPE).create();

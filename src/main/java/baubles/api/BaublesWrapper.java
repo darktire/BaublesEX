@@ -12,8 +12,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public final class BaublesWrapper extends AbstractWrapper {
@@ -50,6 +53,9 @@ public final class BaublesWrapper extends AbstractWrapper {
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled()) return;
         getBauble().onWornTick(itemstack, entity);
+        Supplier<List<Pair<IBaubleKey, Sample>>> edited = () -> this.addition.samples;
+        getValue(edited, Collections::emptyList)
+                .forEach(pair -> pair.getRight().active(pair.getLeft() == null ? itemstack : pair.getLeft().ref(), entity));
     }
 
     @Override
@@ -97,25 +103,25 @@ public final class BaublesWrapper extends AbstractWrapper {
     @Override
     @SideOnly(Side.CLIENT)
     public <T extends IRenderBauble> List<T> getSubRender(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        IRenderBauble render = getRender();
-        if (render == null) return null;
-        return this.render.getSubRender(stack, entity, renderPlayer);
+        return Optional.ofNullable(getRender())
+                .<List<T>>map(render -> render.getSubRender(stack, entity, renderPlayer))
+                .orElse(null);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        IRenderBauble render = getRender();
-        if (render == null) return null;
-        return render.getModel(stack, entity, renderPlayer);
+        return Optional.ofNullable(getRender())
+                .map(render -> render.getModel(stack, entity, renderPlayer))
+                .orElse(null);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public RenderType getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        IRenderBauble render = getRender();
-        if (render == null) return null;
-        return this.render.getRenderType(stack, entity, renderPlayer);
+        return Optional.ofNullable(getRender())
+                .map(render -> render.getRenderType(stack, entity, renderPlayer))
+                .orElse(null);
     }
 
     private <T> T getValue(Supplier<T> edited, Supplier<T> original) {

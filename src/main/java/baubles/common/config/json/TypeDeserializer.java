@@ -9,13 +9,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TypeHelper implements JsonSerializer<TypeHelper.Temp>, JsonDeserializer<TypeHelper.Temp> {
-    static TypeHelper INSTANCE = new TypeHelper();
-
-    @Override
-    public JsonElement serialize(TypeHelper.Temp src, Type typeOfSrc, JsonSerializationContext context) {
-        return null;
-    }
+public class TypeDeserializer implements JsonDeserializer<TypeDeserializer.Temp> {
+    static TypeDeserializer INSTANCE = new TypeDeserializer();
 
     @Override
     public Temp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

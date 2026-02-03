@@ -22,13 +22,8 @@ import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ItemHelper implements JsonSerializer<IBaubleKey>, JsonDeserializer<ItemHelper.Temp> {
-    static ItemHelper INSTANCE = new ItemHelper();
-
-    @Override
-    public JsonElement serialize(IBaubleKey src, Type typeOfSrc, JsonSerializationContext context) {
-        return null;
-    }
+public class ItemDeserializer implements JsonDeserializer<ItemDeserializer.Temp> {
+    static ItemDeserializer INSTANCE = new ItemDeserializer();
 
     @Override
     public Temp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
@@ -72,7 +67,7 @@ public class ItemHelper implements JsonSerializer<IBaubleKey>, JsonDeserializer<
 
             IBaubleKey key = Optional.ofNullable(itemName)
                     .filter(s -> !s.isEmpty())
-                    .map(ItemHelper::parseItem)
+                    .map(ItemDeserializer::parseItem)
                     .orElse(null);
 
             fromStr(feature).stream()

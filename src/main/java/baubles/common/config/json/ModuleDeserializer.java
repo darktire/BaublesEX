@@ -10,8 +10,8 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.UUID;
 
-public class ModuleHelper implements JsonDeserializer<IModule> {
-    static ModuleHelper INSTANCE = new ModuleHelper();
+public class ModuleDeserializer implements JsonDeserializer<IModule> {
+    static ModuleDeserializer INSTANCE = new ModuleDeserializer();
 
     @Override
     public IModule deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

@@ -72,7 +72,7 @@ public class ItemDataAdapter extends TypeAdapter<List<IBaubleKey>> {
     public List<IBaubleKey> read(JsonReader in) throws IOException {
         JsonUtils.parseObject(in, (reader, name) -> {
             JsonElement json = ConversionHelper.GSON.fromJson(reader, JsonElement.class);
-            ItemHelper.Temp temp = ConversionHelper.GSON.fromJson(json, ItemHelper.Temp.class);
+            ItemDeserializer.Temp temp = ConversionHelper.GSON.fromJson(json, Category.ITEM.type);
             if (temp.content.isEmpty()) {
                 temp.content.add(name);
             }

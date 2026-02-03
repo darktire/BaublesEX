@@ -5,11 +5,11 @@ import java.lang.reflect.Type;
 
 public enum Category {
     ITEM_DATA(ItemDataAdapter.INSTANCE),
-    ITEM(ItemHelper.INSTANCE),
+    ITEM(ItemDeserializer.INSTANCE),
     TYPE_DATA(TypeDataAdapter.INSTANCE),
-    TYPE(TypeHelper.INSTANCE),
+    TYPE(TypeDeserializer.INSTANCE),
     MODULE_DATA(ModuleDataAdapter.INSTANCE),
-    MODULE(ModuleHelper.INSTANCE);
+    MODULE(ModuleDeserializer.INSTANCE);
 
     final Type type;
     final Object adapter;

@@ -91,11 +91,6 @@ public abstract class AbstractWrapper implements IBauble, IRenderBauble {
             this.samples = samples;
         }
 
-        public void onAdditionTick(EntityLivingBase entity) {
-            for (Pair<IBaubleKey, Sample> pair : this.samples) {
-                pair.getRight().active(pair.getLeft().ref(), entity);
-            }
-        }
     }
 
     public enum Sample {

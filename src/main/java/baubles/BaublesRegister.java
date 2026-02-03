@@ -88,6 +88,15 @@ public class BaublesRegister {
     }
 
     @SubscribeEvent
+    public static void onMissingMappings(RegistryEvent.MissingMappings<BaubleTypeEx> event) {
+        for (RegistryEvent.MissingMappings.Mapping<BaubleTypeEx> mapping : event.getMappings()) {
+            if (mapping.key.getNamespace().equals("baubles")) {
+                mapping.ignore();
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void createRegistry(RegistryEvent.NewRegistry event) {
         TypeData.create();
     }

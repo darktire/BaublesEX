@@ -43,7 +43,7 @@ public class TypeDataAdapter extends TypeAdapter<List<BaubleTypeEx>> {
         List<BaubleTypeEx> list = new ArrayList<>();
         JsonUtils.parseObject(in, (reader, name) -> {
             JsonElement json = ConversionHelper.GSON.fromJson(reader, JsonElement.class);
-            TypeHelper.Temp temp = ConversionHelper.GSON.fromJson(json, TypeHelper.Temp.class);
+            TypeDeserializer.Temp temp = ConversionHelper.GSON.fromJson(json, Category.TYPE.type);
             list.add(temp.apply());
         });
         return list;
