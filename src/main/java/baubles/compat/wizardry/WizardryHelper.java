@@ -33,6 +33,7 @@ public class WizardryHelper {
             for (ItemArtefact.Type type1 : types) {
                 BaubleTypeEx type2 = ARTEFACT_TYPE_MAP.get(type1);
                 int idx = baubles.indexOf(type2, 0);
+                if (idx == -1) continue;
 
                 for (; idx < baubles.getSlots() && baubles.getTypeInSlot(idx) == type2; idx++) {
                     ItemStack stack = baubles.getStackInSlot(idx);

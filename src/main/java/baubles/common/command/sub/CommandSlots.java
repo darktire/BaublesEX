@@ -19,6 +19,7 @@ public class CommandSlots extends CommandTree {
     public CommandSlots() {
         this.addSubcommand(new SubModify());
         this.addSubcommand(new SubSet());
+        this.addSubcommand(new SubClear());
     }
 
     @Override
@@ -28,7 +29,7 @@ public class CommandSlots extends CommandTree {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/baubles slots <option> <player/config> <type> <number>, option: modify, set";
+        return "/baubles slots <option> <player/config> <type> <number>, option: modify, set, clear";
     }
 
     private static boolean checkArgs(String[] args) {
@@ -97,7 +98,7 @@ public class CommandSlots extends CommandTree {
                     if (type != null) {
                         AbstractAttributeMap map = player.getAttributeMap();
                         AdvancedInstance instance = AttributeManager.getInstance(map, type);
-                        double present = instance.getAttributeValue();
+                        double present = instance.getAttributeValue() - instance.getAnonymousModifier(0);
                         instance.applyAnonymousModifier(0, modifier - present);
                         PacketHandler.INSTANCE.sendTo(new PacketModifier(player, args[1], (int) (modifier - present), 0), player);
                     }
