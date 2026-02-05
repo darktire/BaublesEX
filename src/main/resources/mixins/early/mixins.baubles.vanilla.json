@@ -4,16 +4,16 @@
   "minVersion": "0.8",
   "refmap": "mixins.baubles.refmap.json",
   "mixins": [
-    "MixinElytra$MixinEntityBase",
-    "MixinElytra$MixinNetHandler",
     "MixinEnchantment",
+    "MixinEntityLiving",
+    "MixinNetHandler",
     "MixinStack"
   ],
   "client": [
     "MixinCape",
-    "MixinElytra$MixinPlayerSP",
     "MixinGuiScreen",
-    "MixinLayerArmorBase"
+    "MixinLayerArmorBase",
+    "MixinPlayerSP"
   ],
   "injectors": {
     "defaultRequire": 1

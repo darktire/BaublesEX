@@ -12,6 +12,7 @@ import baubles.common.config.Config;
 import baubles.common.config.json.Category;
 import baubles.common.config.json.ConversionHelper;
 import baubles.common.items.BaubleElytra;
+import baubles.common.items.BaubleTotem;
 import baubles.common.items.ItemRing;
 import baubles.common.items.ItemTire;
 import net.minecraft.init.Items;
@@ -34,9 +35,12 @@ public class BaublesRegister {
                 .forEach(ItemData::registerBauble);
 
         if (Config.ModItems.elytraBauble) {
-            BaubleElytra elytra = new BaubleElytra();
-            ItemData.registerBauble(Items.ELYTRA, elytra);
-            ItemData.registerRender(Items.ELYTRA, elytra);
+            ItemData.registerBauble(Items.ELYTRA, BaubleElytra.INSTANCE);
+            ItemData.registerRender(Items.ELYTRA, BaubleElytra.INSTANCE);
+        }
+        if (Config.ModItems.totemBauble) {
+            ItemData.registerBauble(Items.TOTEM_OF_UNDYING, BaubleTotem.INSTANCE);
+            ItemData.registerRender(Items.TOTEM_OF_UNDYING, BaubleTotem.INSTANCE);
         }
 
         ItemData.backup();

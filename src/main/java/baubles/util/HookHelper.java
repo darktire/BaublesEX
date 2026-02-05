@@ -34,7 +34,7 @@ public class HookHelper {
         boolean isElytra = stack.getItem() instanceof ItemElytra;
         boolean unusable = using && isElytra && !ItemElytra.isUsable(stack);
         boolean toFind = !isElytra || unusable;
-        if (Config.ModItems.elytraBauble && toFind && BaubleElytra.isWearing(entity, using)) {
+        if (Config.ModItems.elytraBauble && toFind && BaubleElytra.isWearing(entity)) {
             return BaubleElytra.getWearing(entity, using);
         }
         return stack;

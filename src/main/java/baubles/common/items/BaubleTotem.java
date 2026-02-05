@@ -2,16 +2,14 @@ package baubles.common.items;
 
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.model.ModelBauble;
 import baubles.api.registries.TypeData;
 import baubles.api.render.IRenderBauble;
-import baubles.client.model.ModelElytra;
+import baubles.client.model.ModelTotem;
 import baubles.common.config.Config;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 
 import java.util.Collections;
@@ -19,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public class BaubleElytra extends BaubleVanilla implements IRenderBauble {
-    public static BaubleElytra INSTANCE = new BaubleElytra();
+public class BaubleTotem extends BaubleVanilla implements IRenderBauble {
+    public static BaubleTotem INSTANCE = new BaubleTotem();
     private static final Map<EntityLivingBase, Integer> WEARING = new WeakHashMap<>();
-    private static final List<BaubleTypeEx> TYPE = Collections.singletonList(TypeData.getTypeByName(Config.ModItems.elytraSlot));
+    private static final List<BaubleTypeEx> TYPE = Collections.singletonList(TypeData.getTypeByName(Config.ModItems.totemSlot));
 
     @Override
     public List<BaubleTypeEx> getTypes(ItemStack stack) {
@@ -36,22 +34,19 @@ public class BaubleElytra extends BaubleVanilla implements IRenderBauble {
 
     @Override
     protected boolean check(ItemStack stack, boolean using) {
-        return stack.getItem() == Items.ELYTRA && (!using || ItemElytra.isUsable(stack));
+        return stack.getItem() == Items.TOTEM_OF_UNDYING;
     }
 
     @Override
     public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        return ModelElytra.INSTANCE;
+        return ModelTotem.INSTANCE;
     }
 
     public static boolean isWearing(EntityLivingBase entity) {
         return WEARING.computeIfAbsent(entity, INSTANCE::update) != -1;
     }
 
-    public static ItemStack getWearing(EntityLivingBase entity, boolean using) {
-        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
-        ItemStack stack = baubles.getStackInSlot(WEARING.get(entity));
-        if (using && !ItemElytra.isUsable(stack)) stack = baubles.getStackInSlot(INSTANCE.update(entity, true));
-        return stack;
+    public static ItemStack getWearing(EntityLivingBase entity) {
+        return BaublesApi.getBaublesHandler(entity).getStackInSlot(WEARING.get(entity));
     }
 }

@@ -217,7 +217,9 @@ public class Config extends PartialConfig {
         public static int maxLevel;
         public static boolean elytraBauble;
         public static String elytraSlot;
-        private final String[] elytraValidSlot = {"amulet", "ring", "belt", "trinket", "head", "body", "charm", "elytra"};
+        public static boolean totemBauble;
+        public static String totemSlot;
+        private final String[] presetSlots = {"amulet", "ring", "belt", "trinket", "head", "body", "charm", "elytra"};
 
         @Override
         public void loadData() {
@@ -225,7 +227,9 @@ public class Config extends PartialConfig {
             itemRing = config.getBoolean("itemRing", BAUBLES_ITEMS, true, "The ring added by original Baubles");
             maxLevel = config.getInt("maxLevel", BAUBLES_ITEMS, 1, 0, 255, "Max level of haste given by Miner's Ring");
             elytraBauble = config.getBoolean("elytraBauble", BAUBLES_ITEMS, false, "Set elytra as bauble");
-            elytraSlot = config.getString("elytraSlot", BAUBLES_ITEMS, "elytra", "Get a specific slot for elytra", elytraValidSlot);
+            elytraSlot = config.getString("elytraSlot", BAUBLES_ITEMS, "elytra", "Get a specific slot for elytra", presetSlots);
+            totemBauble = config.getBoolean("totemBauble", BAUBLES_ITEMS, false, "Set totem of undying as bauble");
+            totemSlot = config.getString("totemSlot", BAUBLES_ITEMS, "charm", "Get a specific slot for elytra", presetSlots);
             ConfigCategory category = config.getCategory(BAUBLES_ITEMS);
             category.setComment("Item modified by BaublesEX. (need to restart)");
             category.requiresMcRestart();
