@@ -2,7 +2,7 @@
   "package": "baubles.mixin.early.vanilla",
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.8",
-  "refmap": "mixins.baubles.refmap.json",
+  "refmap": "mixins/mixins.baubles.refmap.json",
   "mixins": [
     "MixinEnchantment",
     "MixinEntityLiving",

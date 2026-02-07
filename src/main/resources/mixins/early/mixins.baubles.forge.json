@@ -2,7 +2,6 @@
   "package": "baubles.mixin.early.forge",
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.8",
-  "refmap": "mixins.baubles.refmap.json",
   "mixins": [
     "MixinCapability",
     "MixinEventFactory"
