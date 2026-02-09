@@ -1,5 +1,6 @@
 package baubles.coremod;
 
+import baubles.compat.config.Compat;
 import baubles.util.HookHelper;
 import com.google.common.collect.ImmutableList;
 import org.objectweb.asm.tree.ClassNode;
@@ -64,7 +65,7 @@ public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         String modid = fromMixin(mixinClassName);
-        return HookHelper.getConfig(modid);
+        return Compat.getConfig(modid);
     }
 
     private String fromMixin(String mixinClassName) {

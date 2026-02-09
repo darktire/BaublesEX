@@ -77,7 +77,7 @@ public class HookHelper {
 
     public static boolean doApply(ArrayList<String> mods) {
         for (String mod : mods) {
-            if (!isModLoaded(mod) || !getConfig(mod)) return false;
+            if (!isModLoaded(mod) || !Compat.getConfig(mod)) return false;
         }
         return true;
     }
@@ -93,14 +93,6 @@ public class HookHelper {
             return false;
         }
         return true;
-    }
-
-    public static boolean getConfig(String modid) {
-        switch (modid) {
-            case "aether_legacy": return Compat.aether;
-            case "botania": return Compat.botania;
-            default: return true;
-        }
     }
 
     public static void patchModsEvents(ASMDataTable table) {
