@@ -1,10 +1,8 @@
 package baubles.compat.aether;
 
 import baubles.api.BaubleTypeEx;
-import baubles.api.cap.BaublesCapabilityProvider;
 import baubles.api.registries.ItemData;
 import baubles.api.registries.TypeData;
-import baubles.common.event.EventHandlerItem;
 import baubles.compat.ModOnly;
 import com.gildedgames.the_aether.api.AetherAPI;
 import com.gildedgames.the_aether.api.accessories.AccessoryType;
@@ -57,9 +55,9 @@ public class EventHandler {
         if (AETHER_API.isAccessory(stack)) {
             if (!ItemData.isBauble(stack)) {
                 ItemData.registerBauble(stack, map.get(AETHER_API.getAccessory(stack).getAccessoryType()));
-                if (!ItemData.isBauble(stack.getItem())) {
-                    event.addCapability(EventHandlerItem.ITEM_CAP, new BaublesCapabilityProvider(stack, null));
-                }
+//                if (!ItemData.isBauble(stack.getItem())) {
+//                    event.addCapability(EventHandlerItem.ITEM_CAP, new BaublesCapabilityProvider(stack, null));
+//                }
             }
         }
     }

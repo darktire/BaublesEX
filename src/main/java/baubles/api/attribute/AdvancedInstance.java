@@ -7,7 +7,6 @@ import net.minecraft.entity.ai.attributes.*;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.DoubleBinaryOperator;
 
 public class AdvancedInstance extends ModifiableAttributeInstance {
@@ -24,34 +23,7 @@ public class AdvancedInstance extends ModifiableAttributeInstance {
     }
 
     @Override
-    public void setBaseValue(double baseValue) {
-        super.setBaseValue(baseValue);
-        this.inform();
-    }
-
-    @Override
-    public void applyModifier(AttributeModifier modifier) {
-        super.applyModifier(modifier);
-        this.inform();
-    }
-
-    @Override
-    public void removeModifier(AttributeModifier modifier) {
-        super.removeModifier(modifier);
-        this.inform();
-    }
-
-    @Override
-    public void removeModifier(UUID p_188479_1_) {
-        super.removeModifier(p_188479_1_);
-        this.inform();
-    }
-
-    @Override
-    public void removeAllModifiers() {
-        super.removeAllModifiers();
-        this.inform();
-    }
+    public void setBaseValue(double ignore) {}
 
     @Override
     protected double computeValue() {
@@ -77,14 +49,22 @@ public class AdvancedInstance extends ModifiableAttributeInstance {
         return this.genericAttribute.clampValue(d1);
     }
 
+    /**
+     * needsUpdate -> cacheValue
+     * isModified -> sync
+     */
     @Override
     protected void flagForUpdate() {
         this.needsUpdate = true;
         this.isModified = true;
+        IBaublesItemHandler baubles = this.handler.get();
+        if (baubles != null) {
+            ((BaublesContainer) baubles).containerUpdated = false;
+        }
     }
 
-    public void correct() {
-        this.setBaseValue(this.getAttribute().getDefaultValue());
+    public void setBase(double value) {
+        super.setBaseValue(value);
     }
 
     public double getAnonymousModifier(int operation) {
@@ -93,19 +73,11 @@ public class AdvancedInstance extends ModifiableAttributeInstance {
 
     public void applyAnonymousModifier(int operation, double modifier) {
         this.anonymous.put(operation, modifier);
-        this.needsUpdate = true;
-        this.inform();
+        this.flagForUpdate();
     }
 
     public IAttributeInstance addListener(IBaublesItemHandler handler) {
         this.handler = new WeakReference<>(handler);
         return this;
-    }
-
-    private void inform() {
-        IBaublesItemHandler baubles = this.handler.get();
-        if (baubles != null) {
-            ((BaublesContainer) baubles).containerUpdated = false;
-        }
     }
 }

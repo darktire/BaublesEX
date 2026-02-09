@@ -51,8 +51,8 @@ public class AttributeManager {
                         attribute,
                         getInstance(map, attribute)
                 ))
-                .filter(wrapper -> {
-                    AdvancedInstance instance = wrapper.getValue();
+                .filter(entry -> {
+                    AdvancedInstance instance = entry.getValue();
                     return instance instanceof AdvancedInstance && instance.isModified;
                 })
                 .collect(Collectors.toMap(
@@ -84,7 +84,7 @@ public class AttributeManager {
     public static void correct(EntityLivingBase entity) {
         AbstractAttributeMap map = entity.getAttributeMap();
         for (IAttribute attribute : PLAYER_BAUBLES.values()) {
-            ((AdvancedInstance) map.getAttributeInstance(attribute)).correct();
+            ((AdvancedInstance) map.getAttributeInstance(attribute)).setBase(attribute.getDefaultValue());
         }
     }
 

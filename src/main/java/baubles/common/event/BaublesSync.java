@@ -67,7 +67,7 @@ public class BaublesSync {
 
     private static void syncModifier(EntityPlayerMP player) {
         AttributeManager.getModified(player).forEach((type, instance) -> {
-            PacketHandler.INSTANCE.sendTo(new PacketModifier(player, type, instance.getModifiers()), player);
+            PacketHandler.INSTANCE.sendTo(new PacketModifier(player, type, instance.getBaseValue(), instance.getModifiers()), player);
             instance.isModified = false;
         });
     }

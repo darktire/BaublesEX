@@ -7,16 +7,13 @@ import baubles.api.BaublesApi;
 import baubles.api.event.BaublesRenderEvent;
 import baubles.api.module.IModule;
 import baubles.api.registries.TypeData;
-import baubles.client.gui.GuiPlayerExpanded;
 import baubles.common.config.Config;
 import baubles.common.config.KeyBindings;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketOpen;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
@@ -109,10 +106,7 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public static void onKeyInput(InputEvent.KeyInputEvent event) {
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        Minecraft mc = Minecraft.getMinecraft();
         if (KeyBindings.KEY_BAUBLES.isKeyDown()) {
-            mc.displayGuiScreen(new GuiPlayerExpanded(player, player));
             PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.EXPANSION));
         }
     }

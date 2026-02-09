@@ -39,7 +39,7 @@ public class ItemData {
     }
 
     public static void registerBauble(IBaubleKey key, List<BaubleTypeEx> types) {
-        if (BAUBLE_ITEMS.containsKey(key) || BAUBLE_ITEMS.containsKey(key.fuzzier())) {
+        if (BAUBLE_ITEMS.containsKey(key) || BAUBLE_ITEMS.containsKey(key.simplify())) {
             CST_MAP.update(key, AbstractWrapper.Addition::types, types);
         }
         else {
@@ -147,7 +147,8 @@ public class ItemData {
     }
 
     public static boolean isBauble(ItemStack stack) {
-        return BAUBLE_ITEMS.containsKey(IBaubleKey.BaubleKey.wrap(stack.getItem())) || BAUBLE_ITEMS.containsKey(IBaubleKey.BaubleKey.wrap(stack));
+        IBaubleKey.BaubleKey key = IBaubleKey.BaubleKey.wrap(stack);
+        return BAUBLE_ITEMS.containsKey(key.simplify()) || BAUBLE_ITEMS.containsKey(key);
     }
 
     public static boolean isBauble(Item item) {

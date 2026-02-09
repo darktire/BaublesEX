@@ -13,6 +13,7 @@ public interface IBaubleKey {
 
     ItemStack ref();
 
+    IBaubleKey simplify();
     IBaubleKey fuzzier();
 
     class CacheKey extends Equivalence<ItemStack> {
@@ -111,6 +112,11 @@ public interface IBaubleKey {
         @Override
         public ItemStack ref() {
             return stack == null ? new ItemStack(item) : stack;
+        }
+
+        @Override
+        public IBaubleKey simplify() {
+            return new BaubleKey(item);
         }
 
         @Override
