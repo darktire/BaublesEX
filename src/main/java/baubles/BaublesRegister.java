@@ -3,11 +3,9 @@ package baubles;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.IBaubleKey;
 import baubles.api.attribute.AttributeManager;
 import baubles.api.registries.ItemData;
 import baubles.api.registries.TypeData;
-import baubles.api.render.IRenderBauble;
 import baubles.common.config.Config;
 import baubles.common.config.json.Category;
 import baubles.common.config.json.ConversionHelper;
@@ -17,7 +15,6 @@ import baubles.common.items.ItemRing;
 import baubles.common.items.ItemTire;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -50,8 +47,6 @@ public class BaublesRegister {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-//        ItemData.redirect(BaublesRegister::check, ArmorHelper.INSTANCE);
     }
 
     public static void setTypes() {
@@ -109,10 +104,5 @@ public class BaublesRegister {
     public static void onRegistering(RegistryEvent.Register<BaubleTypeEx> event) {
         TypeData.registerTypes();
         loadValidSlots();
-    }
-
-    private static boolean check(IBaubleKey key) {
-        Item item = key.ref().getItem();
-        return item instanceof ItemArmor && !(item instanceof IRenderBauble);
     }
 }

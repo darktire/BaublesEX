@@ -45,6 +45,11 @@ public class CrTContainer implements IContainer {
     }
 
     @Override
+    public boolean isEquipped(Object o) {
+        return indexOf(o, 0) != -1;
+    }
+
+    @Override
     public void modifySlot(String typeName, int modifier) {
         BaubleTypeEx type = TypeData.getTypeByName(typeName);
         if (type != null) {

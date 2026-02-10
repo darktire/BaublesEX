@@ -4,11 +4,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ExpansionManager {
     private static final ExpansionManager INSTANCE = new ExpansionManager();
-    private final Map<EntityPlayer, ContainerExpansion> map = new ConcurrentHashMap<>();
+    private final Map<UUID, ContainerExpansion> map = new ConcurrentHashMap<>();
     private Container marked;
 
     private ExpansionManager() {}
@@ -18,22 +19,22 @@ public class ExpansionManager {
     }
 
     public void openExpansion(EntityPlayer player, ContainerExpansion container) {
-        this.map.put(player, container);
+        this.map.put(player.getUniqueID(), container);
         this.mark(player.openContainer);
     }
 
     public void closeExpansion(EntityPlayer player) {
-        ContainerExpansion removed = map.remove(player);
+        ContainerExpansion removed = map.remove(player.getUniqueID());
         if (removed == null) return;
         removed.onContainerClosed(player);
     }
 
     public ContainerExpansion getExpansion(EntityPlayer player) {
-        return map.get(player);
+        return map.get(player.getUniqueID());
     }
 
     public boolean isExpanded(EntityPlayer player) {
-        return map.containsKey(player);
+        return map.containsKey(player.getUniqueID());
     }
 
     public void mark(Container container) {

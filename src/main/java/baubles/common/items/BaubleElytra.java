@@ -14,14 +14,11 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 public class BaubleElytra extends BaubleVanilla implements IRenderBauble {
     public static BaubleElytra INSTANCE = new BaubleElytra();
-    private static final Map<EntityLivingBase, Integer> WEARING = new WeakHashMap<>();
+    private static final Map<UUID, Integer> WEARING = new WeakHashMap<>();
     private static final List<BaubleTypeEx> TYPE = Collections.singletonList(TypeData.getTypeByName(Config.ModItems.elytraSlot));
 
     @Override
@@ -30,7 +27,7 @@ public class BaubleElytra extends BaubleVanilla implements IRenderBauble {
     }
 
     @Override
-    protected Map<EntityLivingBase, Integer> getEquipSlotMap() {
+    protected Map<UUID, Integer> getEquipSlotMap() {
         return WEARING;
     }
 
@@ -45,12 +42,12 @@ public class BaubleElytra extends BaubleVanilla implements IRenderBauble {
     }
 
     public static boolean isWearing(EntityLivingBase entity) {
-        return WEARING.computeIfAbsent(entity, INSTANCE::update) != -1;
+        return WEARING.computeIfAbsent(entity.getUniqueID(), id -> INSTANCE.update(entity)) != -1;
     }
 
     public static ItemStack getWearing(EntityLivingBase entity, boolean using) {
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
-        ItemStack stack = baubles.getStackInSlot(WEARING.get(entity));
+        ItemStack stack = baubles.getStackInSlot(WEARING.get(entity.getUniqueID()));
         if (using && !ItemElytra.isUsable(stack)) stack = baubles.getStackInSlot(INSTANCE.update(entity, true));
         return stack;
     }

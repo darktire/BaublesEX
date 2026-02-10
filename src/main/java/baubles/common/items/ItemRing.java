@@ -59,9 +59,9 @@ public class ItemRing extends Item implements IBauble {
 		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}*/
 
-	@Override
-	public void onWornTick(ItemStack itemstack, EntityLivingBase entity) {
-    }
+//	@Override
+//	public void onWornTick(ItemStack itemstack, EntityLivingBase entity) {
+//    }
 
 	@Override
 	public boolean hasEffect(ItemStack par1ItemStack) {

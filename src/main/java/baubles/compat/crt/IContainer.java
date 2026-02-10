@@ -15,6 +15,9 @@ public interface IContainer extends crafttweaker.api.container.IContainer {
     int indexOf(Object o, int start);
 
     @ZenMethod
+    boolean isEquipped(Object o);
+
+    @ZenMethod
     void modifySlot(String typeName, int modifier);
 
     @ZenMethod

@@ -50,10 +50,11 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     public ItemStack onTake(EntityPlayer playerIn, ItemStack stack) {
-        BaublesChangeEvent event = new BaublesChangeEvent(this.entity, this.getItemHandler().isEventBlocked(), this.index, stack, ItemStack.EMPTY);
+        BaublesChangeEvent event = new BaublesChangeEvent(this.entity, this.getItemHandler().isEventBlocked(), this.index, getStack(), stack);
         MinecraftForge.EVENT_BUS.post(event);
+        if (event.isBlocked()) return stack;
 
-        if (!stack.isEmpty() && !event.isBlocked()) {
+        if (!stack.isEmpty()) {
             IBauble bauble = BaublesApi.toBauble(stack);
             if (bauble != null) bauble.onUnequipped(stack, this.entity);
             this.onSlotChanged();
@@ -64,16 +65,16 @@ public class SlotBaubleHandler extends SlotItemHandler {
 
     @Override
     public void putStack(ItemStack stack) {
-        BaublesChangeEvent event = new BaublesChangeEvent(this.entity, this.getItemHandler().isEventBlocked(), this.index, getStack(), stack);
-        MinecraftForge.EVENT_BUS.post(event);
-        if (event.isBlocked()) return;
-
         ItemStack stack1 = getStack();
 
-        this.getItemHandler().setStackInSlot(index, stack.copy());
-        this.onSlotChanged();
-
         if (!ItemStack.areItemStacksEqual(stack, stack1)) {
+            BaublesChangeEvent event = new BaublesChangeEvent(this.entity, this.getItemHandler().isEventBlocked(), this.index, getStack(), stack);
+            MinecraftForge.EVENT_BUS.post(event);
+            if (event.isBlocked()) return;
+
+            this.getItemHandler().setStackInSlot(index, stack.copy());
+            this.onSlotChanged();
+
             if (BaublesApi.isBauble(stack1)) {
                 BaublesApi.toBauble(stack1).onUnequipped(stack1, this.entity);
             }

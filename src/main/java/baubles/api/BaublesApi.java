@@ -68,6 +68,10 @@ public final class BaublesApi {
         return getIndexInBaubles(player, bauble, 0);
     }
 
+    public static boolean isBaubleEquipped(EntityLivingBase entity, Object o) {
+        return getIndexInBaubles(entity, o, 0) != -1;
+    }
+
     public static boolean canEquipBaubles(EntityLivingBase entity) {
         return entity.hasCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
     }
