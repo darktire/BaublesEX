@@ -40,6 +40,8 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 	void addListener(IBaublesListener listener);
 	void removeListener(IBaublesListener listener);
 
+	boolean canSync();
+
 	/**
 	 * Update stacks in container
 	 */

@@ -2,6 +2,7 @@ package baubles.common.event;
 
 import baubles.api.BaublesApi;
 import baubles.api.attribute.AttributeManager;
+import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypeData;
 import baubles.common.network.PacketHandler;
@@ -42,6 +43,8 @@ public class BaublesSync {
         Entity entity = event.getEntity();
         if (entity instanceof EntityPlayer) {
             if (entity instanceof EntityPlayerMP) {
+                // todo incorrect sequence: sever -> attribute -> client
+                ((BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) entity)).onJoin();
                 syncAnonymousModifier((EntityPlayerMP) entity);
             }
         }
@@ -86,6 +89,7 @@ public class BaublesSync {
 
     private static void syncBaubles(EntityLivingBase entity) {
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
+        if (!baubles.canSync()) return;
         if (baubles.stx.isDirty()) {
             baubles.stx.stream().forEach(i -> {
                 ItemStack stack = baubles.getStackInSlot(i);
