@@ -2,7 +2,10 @@ package baubles.api.attribute;
 
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
-import net.minecraft.entity.ai.attributes.*;
+import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -76,8 +79,7 @@ public class AdvancedInstance extends ModifiableAttributeInstance {
         this.flagForUpdate();
     }
 
-    public IAttributeInstance addListener(IBaublesItemHandler handler) {
+    public void setListener(IBaublesItemHandler handler) {
         this.handler = new WeakReference<>(handler);
-        return this;
     }
 }

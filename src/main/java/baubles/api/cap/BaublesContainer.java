@@ -9,7 +9,6 @@ import baubles.api.module.ModuleCore;
 import baubles.api.registries.TypeData;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -34,9 +33,10 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     private BitSet visibility = new BitSet();
     private ModuleCore core = new ModuleCore();
 
-    private final Queue<NBTTagCompound> temp = new ArrayDeque<>();
+    private final Queue<ItemStack> dropQue = new ArrayDeque<>();
     private final Set<IBaublesListener> listeners = Collections.newSetFromMap(new WeakHashMap<>());
     public boolean containerUpdated = true;
+    private Runnable respawnTask;
     private boolean syncLock = false;
 
     public BaublesContainer() { super(0); }
@@ -56,6 +56,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         if (!this.containerUpdated) {
             this.syncSlots();
             this.onSlotChanged();
+            this.dropItems();
             this.listeners.forEach(IBaublesListener::syncChanges);
         }
     }
@@ -74,7 +75,6 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         List<ItemStack> temp = new ArrayList<>(this.stacks);
         this.visibility.clear();
         boolean drop;
-        List<ItemStack> dropList = new ArrayList<>();
         for (int i = 0; i < this.snapshot.size(); i++) {
             boolean flag = !visibility1.get(i);
             ItemStack stack = this.snapshot.get(i);
@@ -97,12 +97,12 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
                 else drop = true;
             }
 
-            if (drop) dropList.add(stack);
+            if (drop) dropQue.add(stack);
         }
         this.snapshot = temp;
         this.containerUpdated = true;
 
-        if (dropList.isEmpty()) {
+        if (dropQue.isEmpty()) {
             this.syncLock = false;
             if (!this.entity.world.isRemote) {
                 this.stx.status.clear();
@@ -110,14 +110,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
             }
             return;
         }
-        for (ItemStack stack : dropList) {
-            if (!this.entity.world.isRemote) {
-                this.entity.entityDropItem(stack, 0);
-                this.core.batchDecrement(BaublesApi.toBauble(stack).getModules(stack, entity));
-                this.core.apply(entity);
-            }
-            BaublesApi.toBauble(stack).onUnequipped(stack, this.entity);
-        }
+
         this.syncLock = true;
     }
 
@@ -152,7 +145,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     }
 
     @Override
-    protected void onContentsChanged(int slot) {
+    public void onContentsChanged(int slot) {
         if (!this.entity.world.isRemote) {
             ItemStack stack = this.snapshot.get(slot);
             ItemStack stack1 = this.stacks.get(slot);
@@ -301,46 +294,48 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
 
         NBTTagList itemList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < itemList.tagCount(); i++) {
-            this.temp.add(itemList.getCompoundTagAt(i));
-        }
-    }
-
-    public void onJoin() {
-        List<ItemStack> dropList = new ArrayList<>();
-        boolean flag = false;
-        NBTTagCompound itemTags;
-        while ((itemTags = temp.poll()) != null) {
+            NBTTagCompound itemTags = itemList.getCompoundTagAt(i);
             int slot = itemTags.getInteger("Slot");
             ItemStack stack = new ItemStack(itemTags);
             if (slot < this.stacks.size() && this.isItemValidForSlot(slot, stack, this.entity)) {
-                flag = true;
-            }
-            if (flag) {
                 this.stacks.set(slot, stack);
                 this.snapshot.set(slot, stack.copy());
             }
             else {
-                dropList.add(stack);
+                this.dropQue.add(stack);
             }
         }
-        dropList.forEach(s -> dropItem(this.entity, s));
-
     }
 
-    private static void dropItem(EntityLivingBase entity, ItemStack stack) {
-        EntityItem ei = entity.entityDropItem(stack, 0F);
-        if (ei != null) {
-            ei.setNoDespawn();
-            ei.setNoPickupDelay();
-//            boolean ok = entity.world.spawnEntity(ei);
-//            Baubles.log.warn("spawnEntity result = " + ok);
+    public void dropItems() {
+        while (!dropQue.isEmpty()) {
+            dropItem(dropQue.poll());
+        }
+    }
+
+    private void dropItem(ItemStack stack) {
+        if (!entity.world.isRemote) {
+            entity.entityDropItem(stack, 0F);
+            this.core.batchDecrement(BaublesApi.toBauble(stack).getModules(stack, entity));
+            this.core.apply(entity);
         }
         if (BaublesApi.isBauble(stack)) {
             BaublesApi.toBauble(stack).onUnequipped(stack, entity);
         }
     }
 
-    public void inherit(BaublesContainer that) {
+    public void onRespawn() {
+        if (this.respawnTask != null) {
+            this.respawnTask.run();
+            this.respawnTask = null;
+        }
+    }
+
+    public void setRespawnTask(Runnable task) {
+        this.respawnTask = task;
+    }
+
+    public void copyFrom(BaublesContainer that) {
         this.core = that.core;
         this.core.apply(this.entity);
 
@@ -361,7 +356,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
             }
         }
 
-        this.onSlotChanged();
-        this.containerUpdated = true;
+        onSlotChanged();
+        dropItems();
     }
 }

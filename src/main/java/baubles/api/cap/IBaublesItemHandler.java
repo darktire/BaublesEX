@@ -33,6 +33,8 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 	void setVisible(int slot, boolean v);
 	boolean getVisible(int slot);
 
+	void onContentsChanged(int slot);
+
 
 	//---------------------------Modifiable---------------------------//
 

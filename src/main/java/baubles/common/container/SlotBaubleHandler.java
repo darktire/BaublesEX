@@ -14,6 +14,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class SlotBaubleHandler extends SlotItemHandler {
 
     private final int index;
@@ -57,7 +59,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
         if (!stack.isEmpty()) {
             IBauble bauble = BaublesApi.toBauble(stack);
             if (bauble != null) bauble.onUnequipped(stack, this.entity);
-            this.onSlotChanged();
+//            this.onSlotChanged();
         }
 
         return stack;
@@ -73,7 +75,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
             if (event.isBlocked()) return;
 
             this.getItemHandler().setStackInSlot(index, stack.copy());
-            this.onSlotChanged();
+//            this.onSlotChanged();
 
             if (BaublesApi.isBauble(stack1)) {
                 BaublesApi.toBauble(stack1).onUnequipped(stack1, this.entity);
@@ -110,8 +112,15 @@ public class SlotBaubleHandler extends SlotItemHandler {
     }
 
     @Override
-    public void onSlotChange(ItemStack itemStack1, ItemStack itemStack2) {
-        super.onSlotChange(itemStack1, itemStack2);
+    public void onSlotChange(@Nonnull ItemStack oldStack, @Nonnull ItemStack newStack) {
+        int i = this.getItemHandler().indexOf(oldStack, 0);
+        this.getItemHandler().setStackInSlot(i, newStack);
+    }
+
+    @Override
+    public void onSlotChanged() {
+        this.getItemHandler().onContentsChanged(index);
+        this.getItemHandler().stx.markDirty(index);
     }
 
     @Override
@@ -123,7 +132,6 @@ public class SlotBaubleHandler extends SlotItemHandler {
     public ItemStack decrStackSize(int amount) {
         return super.decrStackSize(amount);
     }
-
 
     @Override
     public IBaublesItemHandler getItemHandler() {

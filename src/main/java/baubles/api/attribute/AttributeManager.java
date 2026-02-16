@@ -74,10 +74,9 @@ public class AttributeManager {
     public static void attachAttributes(EntityLivingBase entity, IBaublesItemHandler handler) {
         AbstractAttributeMap map = entity.getAttributeMap();
         for (IAttribute attribute : PLAYER_BAUBLES.values()) {
-            IAttributeInstance instance = new AdvancedInstance(map, attribute).addListener(handler);
-//            modifiers.forEach(instance::applyModifier);
-            map.attributesByName.put(attribute.getName(), instance);
-            map.attributes.put(attribute, instance);
+            IAttributeInstance instance = map.attributes.computeIfAbsent(attribute, a -> new AdvancedInstance(map, a));
+            map.attributesByName.putIfAbsent(attribute.getName(), instance);
+            ((AdvancedInstance) instance).setListener(handler);
         }
     }
 

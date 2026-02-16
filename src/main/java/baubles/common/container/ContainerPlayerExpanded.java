@@ -131,6 +131,7 @@ public class ContainerPlayerExpanded extends ContainerExpansion {
 
     /**
      * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
+     * @return any remaining
      */
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
@@ -199,8 +200,8 @@ public class ContainerPlayerExpanded extends ContainerExpansion {
             }
             else {
                 slot.putStack(oldStack);
-                slot.onSlotChanged();
             }
+            slot.onSlotChanged();
 
             if (oldStack.getCount() == newStack.getCount()) {
                 return ItemStack.EMPTY;
@@ -221,6 +222,9 @@ public class ContainerPlayerExpanded extends ContainerExpansion {
         return newStack;
     }
 
+    /**
+     * @return has left
+     */
     @Override
     public boolean canMergeSlot(ItemStack stack, Slot slot) {
         return slot.inventory != this.craftResult && super.canMergeSlot(stack, slot);
@@ -257,14 +261,12 @@ public class ContainerPlayerExpanded extends ContainerExpansion {
                         stack.setCount(0);
                         itemstack.setCount(j);
                         slot.onSlotChanged();
-                        if (slot instanceof SlotBaubleHandler) this.baubles.stx.markDirty(slot.getSlotIndex());
                         flag = true;
                     }
                     else if (itemstack.getCount() < maxSize) {
                         stack.shrink(maxSize - itemstack.getCount());
                         itemstack.setCount(maxSize);
                         slot.onSlotChanged();
-                        if (slot instanceof SlotBaubleHandler) this.baubles.stx.markDirty(slot.getSlotIndex());
                         flag = true;
                     }
                 }
@@ -308,7 +310,6 @@ public class ContainerPlayerExpanded extends ContainerExpansion {
                     }
 
                     slot1.onSlotChanged();
-                    if (slot1 instanceof SlotBaubleHandler) this.baubles.stx.markDirty(slot1.getSlotIndex());
                     flag = true;
                     break;
                 }

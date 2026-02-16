@@ -44,7 +44,7 @@ public class BaublesSync {
         if (entity instanceof EntityPlayer) {
             if (entity instanceof EntityPlayerMP) {
                 // todo incorrect sequence: sever -> attribute -> client
-                ((BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) entity)).onJoin();
+                ((BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) entity)).dropItems();
                 syncAnonymousModifier((EntityPlayerMP) entity);
             }
         }

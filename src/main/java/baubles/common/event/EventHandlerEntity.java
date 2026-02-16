@@ -21,6 +21,7 @@ import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -40,10 +41,16 @@ public class EventHandlerEntity {
         try {
             BaublesContainer bco = (BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) event.getOriginal());
             BaublesContainer bcn = (BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) event.getEntityPlayer());
-            bcn.inherit(bco);
+            bcn.setRespawnTask(() -> bcn.copyFrom(bco));
         } catch (Exception e) {
             BaublesApi.log.error("Could not clone player [" + event.getOriginal().getName() + "] baubles when changing dimensions");
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void onRespawnEvent(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent event) {
+        BaublesContainer bcn = (BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) event.player);
+        bcn.onRespawn();
     }
 
     @SubscribeEvent
