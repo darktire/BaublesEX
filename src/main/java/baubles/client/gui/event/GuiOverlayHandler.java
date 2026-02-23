@@ -3,13 +3,13 @@ package baubles.client.gui.event;
 import baubles.api.BaublesApi;
 import baubles.client.gui.GuiOverlay;
 import baubles.client.gui.GuiPlayerExpanded;
+import baubles.client.gui.OverlayManager;
 import baubles.client.gui.element.ElementButton;
 import baubles.common.config.Config;
 import baubles.common.config.KeyBindings;
 import baubles.common.container.SlotBaubleHandler;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketOpen;
-import baubles.compat.jei.IArea;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -27,22 +27,19 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.lang.reflect.Method;
-import java.util.WeakHashMap;
 
 @Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID, value = Side.CLIENT)
 @SideOnly(Side.CLIENT)
 public class GuiOverlayHandler {
-    private static final WeakHashMap<GuiScreen, GuiOverlay> OVERLAY = new WeakHashMap<>();
     private static final Method RENDER_TOOLTIP = ObfuscationReflectionHelper.findMethod(GuiContainer.class, "func_191948_b", void.class, int.class, int.class);
 
     @SubscribeEvent
     public static void onGuiOpen(GuiOpenEvent event) {
         GuiScreen gui = event.getGui();
-        if (!(Config.Gui.overlay && Config.Gui.isTarget(gui))) return;
-        GuiOverlay ex = OVERLAY.get(gui);
+        if (!(Config.Gui.overlay && OverlayManager.isTarget(gui))) return;
+        GuiOverlay ex = OverlayManager.getOverlay(gui);
         if (ex == null) {
-            ex = new GuiOverlay(Minecraft.getMinecraft().player);
-            OVERLAY.put(gui, ex);
+            OverlayManager.setOverlay(gui, new GuiOverlay(Minecraft.getMinecraft().player));
             PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.ENHANCEMENT));
         }
     }
@@ -70,9 +67,9 @@ public class GuiOverlayHandler {
     }
 
     private static void initExpansion(GuiScreen gui) {
-        if (!isCovered(gui)) return;
+        if (!OverlayManager.isCovered(gui)) return;
 
-        GuiOverlay ex = OVERLAY.get(gui);
+        GuiOverlay ex = OverlayManager.getOverlay(gui);
         if (ex != null) {
             ex.initScreen(gui.mc, gui.width, gui.height);
             GuiContainer guiContainer = (GuiContainer) gui;
@@ -83,9 +80,9 @@ public class GuiOverlayHandler {
     @SubscribeEvent
     public static void onGuiRender(GuiScreenEvent.DrawScreenEvent.Post e) throws Exception {
         GuiScreen gui = e.getGui();
-        if (!isCovered(gui)) return;
+        if (!OverlayManager.isCovered(gui)) return;
 
-        GuiOverlay ex = OVERLAY.get(gui);
+        GuiOverlay ex = OverlayManager.getOverlay(gui);
         if (ex != null) {
             int x = e.getMouseX();
             int y = e.getMouseY();
@@ -102,9 +99,9 @@ public class GuiOverlayHandler {
         if (mouseButton == -1) return;
 
         GuiScreen gui = e.getGui();
-        if (!isCovered(gui)) return;
+        if (!OverlayManager.isCovered(gui)) return;
 
-        GuiOverlay ex = OVERLAY.get(gui);
+        GuiOverlay ex = OverlayManager.getOverlay(gui);
         if (ex == null || ex.mc == null) return;
 
         int x = Mouse.getEventX();
@@ -121,9 +118,9 @@ public class GuiOverlayHandler {
     @SubscribeEvent
     public static void onGuiClose(GuiCloseEvent e) {
         GuiScreen gui = e.getGui();
-        if (!isCovered(gui)) return;
+        if (!OverlayManager.isCovered(gui)) return;
 
-        GuiOverlay ex = OVERLAY.remove(gui);
+        GuiOverlay ex = OverlayManager.remove(gui);
         if (ex != null) {
             ex.onGuiClosed();
         }
@@ -142,9 +139,9 @@ public class GuiOverlayHandler {
             PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.EXPANSION));
         }
 
-        if (!Config.Gui.isTarget(gui)) return;
-        if (isCovered(gui)) {
-            OVERLAY.remove(gui).onGuiClosed();
+        if (!OverlayManager.isTarget(gui)) return;
+        if (OverlayManager.isCovered(gui)) {
+            OverlayManager.remove(gui).onGuiClosed();
             ((GuiContainer) gui).inventorySlots.inventorySlots.forEach(slot -> {
                 if (slot instanceof SlotBaubleHandler) {
                     ((SlotBaubleHandler) slot).setLocked(false);
@@ -152,17 +149,10 @@ public class GuiOverlayHandler {
             });
         } else {
             GuiOverlay ex = new GuiOverlay(Minecraft.getMinecraft().player);
-            OVERLAY.put(gui, ex);
+            OverlayManager.setOverlay(gui, ex);
             initExpansion(gui);
             PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.ENHANCEMENT));
         }
     }
 
-    public static boolean isCovered(GuiScreen gui) {
-        return OVERLAY.containsKey(gui);
-    }
-
-    public static IArea getOverlay(GuiScreen gui) {
-        return OVERLAY.get(gui);
-    }
 }

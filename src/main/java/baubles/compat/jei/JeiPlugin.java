@@ -1,6 +1,6 @@
 package baubles.compat.jei;
 
-import baubles.client.gui.event.GuiOverlayHandler;
+import baubles.client.gui.OverlayManager;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
@@ -34,8 +34,8 @@ public class JeiPlugin implements IModPlugin {
             if (gui instanceof IArea) {
                 return ((IArea) gui).getExtraArea();
             }
-            else if (GuiOverlayHandler.isCovered(gui)) {
-                return GuiOverlayHandler.getOverlay(gui).getExtraArea();
+            else if (OverlayManager.isCovered(gui)) {
+                return OverlayManager.getOverlay(gui).getExtraArea();
             }
             else return Collections.emptyList();
         }

@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class BaublesTransformer implements IClassTransformer {
+public class TransformerRenderConfig implements IClassTransformer {
     private static final String TARGET_OWNER = "baubles/common/Config";
     private static final String TARGET_FIELD = "renderBaubles";
     private static final String FIELD_DESC = "Z";

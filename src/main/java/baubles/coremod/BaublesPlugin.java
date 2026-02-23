@@ -12,13 +12,12 @@ import java.util.Map;
 @IFMLLoadingPlugin.Name("Baubles_CoreMod")
 @IFMLLoadingPlugin.SortingIndex(2333)
 public class BaublesPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
-    public BaublesPlugin() {
-
-    }
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[]{BaublesTransformer.class.getName()};
+        return new String[]{
+                TransformerRenderConfig.class.getName()
+        };
     }
 
     @Override

@@ -34,6 +34,8 @@ dependencies {
 //    compileOnly fg.deobf("curse.maven:retro-sophisticated-backpacks-1197465:7589941")
 //    implementation fg.deobf("curse.maven:minerva-library-311561:2728693")
 //    implementation fg.deobf("curse.maven:extra-alchemy-247357:2937550")
+    compileOnly fg.deobf("curse.maven:unseens-dungeon-additions-1087823:7657077")
+    implementation fg.deobf("curse.maven:corpse-complex-271605:3176964")
     //quality tools
     runtimeOnly fg.deobf("curse.maven:potion-core-242872:2905184")
     implementation fg.deobf("curse.maven:quality-tools-264756:2732994")
