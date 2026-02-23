@@ -1,5 +1,6 @@
 package baubles.coremod;
 
+import baubles.compat.config.Compat;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.*;
 
@@ -13,16 +14,10 @@ public class BaublesTransformer implements IClassTransformer {
     private static final String TARGET_FIELD = "renderBaubles";
     private static final String FIELD_DESC = "Z";
 
-    private static final String[] TARGETS = new String[]{
-            "artifacts.client.model.layer.LayerBauble#doRenderLayer",
-            "keletu.enigmaticlegacy.client.LayerBauble#doRenderLayer",
-            "rlmixins.client.layer.LayerQuarkBaubleHat#doRenderLayer"
-    };
-
     private static final Map<String, Set<String>> MAP = new HashMap<>();
     static {
-        for (String raw : TARGETS) {
-            int separator = raw.indexOf("#");
+        for (String raw : Compat.getTargets()) {
+            int separator = raw.lastIndexOf(".");
             String className = raw.substring(0, separator);
             String methodKey = raw.substring(separator + 1);
 
