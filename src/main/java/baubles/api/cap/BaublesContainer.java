@@ -105,8 +105,8 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         if (dropQue.isEmpty()) {
             this.syncLock = false;
             if (!this.entity.world.isRemote) {
-                this.stx.status.clear();
-                this.stx.status.set(0, this.getSlots());
+                this.stx.clear();
+                this.stx.markDirty(0, this.getSlots());
             }
             return;
         }

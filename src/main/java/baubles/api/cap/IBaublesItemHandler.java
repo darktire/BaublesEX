@@ -60,6 +60,9 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 		public void markDirty(int slot) {
 			status.set(slot);
 		}
+		public void markDirty(int start, int end) {
+			status.set(start, end);
+		}
 		public boolean isDirty() {
 			return !status.isEmpty();
 		}

@@ -2,10 +2,13 @@ package baubles.common.event;
 
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
+import baubles.api.attribute.AttributeManager;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.BaublesContainerProvider;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.config.Config;
+import baubles.common.network.PacketHandler;
+import baubles.common.network.PacketModifier;
 import cofh.core.enchantment.EnchantmentSoulbound;
 import cofh.core.util.helpers.ItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -13,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -51,6 +55,16 @@ public class EventHandlerEntity {
     public static void onRespawnEvent(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent event) {
         BaublesContainer bcn = (BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) event.player);
         bcn.onRespawn();
+    }
+
+    @SubscribeEvent
+    public static void onChangedDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (event.player.world.isRemote) return;
+        EntityPlayerMP player = (EntityPlayerMP) event.player;
+        AttributeManager.getBaubles(player).forEach((type, instance) -> PacketHandler.INSTANCE.sendTo(new PacketModifier(player, type, instance.getBaseValue(), instance.getModifiers()), player));
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
+        baubles.stx.markDirty(0, baubles.getSlots());
+        baubles.vis.markDirty(0, baubles.getSlots());
     }
 
     @SubscribeEvent

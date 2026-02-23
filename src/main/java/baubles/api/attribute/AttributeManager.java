@@ -44,6 +44,23 @@ public class AttributeManager {
     public static IAttribute getAttribute(BaubleTypeEx type) {
         return PLAYER_BAUBLES.get(type);
     }
+    public static Map<BaubleTypeEx, AdvancedInstance> getBaubles(EntityLivingBase entity) {
+        AbstractAttributeMap map = entity.getAttributeMap();
+        return PLAYER_BAUBLES.keySet().stream()
+                .map(attribute -> new AbstractMap.SimpleEntry<>(
+                        attribute,
+                        getInstance(map, attribute)
+                ))
+                .filter(entry -> {
+                    AdvancedInstance instance = entry.getValue();
+                    return instance instanceof AdvancedInstance;
+                })
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                ));
+
+    }
     public static Map<BaubleTypeEx, AdvancedInstance> getModified(EntityLivingBase entity) {
         AbstractAttributeMap map = entity.getAttributeMap();
         return PLAYER_BAUBLES.keySet().stream()
