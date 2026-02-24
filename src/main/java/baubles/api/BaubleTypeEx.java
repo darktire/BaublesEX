@@ -134,4 +134,9 @@ public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> impleme
     public int compareTo(BaubleTypeEx to) {
         return Integer.compare(this.priority, to.getPriority());
     }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

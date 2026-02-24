@@ -6,6 +6,7 @@ import baubles.api.attribute.AttributeManager;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.BaublesContainerProvider;
 import baubles.api.cap.IBaublesItemHandler;
+import baubles.api.registries.TypeData;
 import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifier;
@@ -14,6 +15,7 @@ import cofh.core.util.helpers.ItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.Loader;
@@ -53,8 +56,10 @@ public class EventHandlerEntity {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onRespawnEvent(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent event) {
+        if (event.player.world.isRemote) return;
         BaublesContainer bcn = (BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) event.player);
         bcn.onRespawn();
+        syncAnonymousModifier((EntityPlayerMP) event.player);
     }
 
     @SubscribeEvent
@@ -138,5 +143,29 @@ public class EventHandlerEntity {
                 if(level > 1) ItemHelper.addEnchantment(stack, soulbound, level - 1);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void playerJoin(EntityJoinWorldEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof EntityPlayer) {
+            if (entity instanceof EntityPlayerMP) {
+                // todo incorrect sequence: sever -> attribute -> client
+                ((BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) entity)).dropItems();
+                syncAnonymousModifier((EntityPlayerMP) entity);
+            }
+        }
+    }
+
+    private static void syncAnonymousModifier(EntityPlayerMP player) {
+        AbstractAttributeMap map = player.getAttributeMap();
+        TypeData.applyToTypes(type -> {
+            for (int i = 0; i < 3; i++) {
+                int modifier = (int) AttributeManager.getInstance(map, type).getAnonymousModifier(i);
+                if (modifier != 0) {
+                    PacketHandler.INSTANCE.sendTo(new PacketModifier(player, type, modifier, i), player);
+                }
+            }
+        });
     }
 }

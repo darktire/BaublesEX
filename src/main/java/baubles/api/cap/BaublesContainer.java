@@ -336,6 +336,20 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     }
 
     public void copyFrom(BaublesContainer that) {
+        for (BaubleTypeEx type : TypeData.sortedList()) {
+            AdvancedInstance instance = AttributeManager.getInstance(that.entity.getAttributeMap(), type);
+            int[] intArr = {
+                    (int) instance.getAnonymousModifier(0),
+                    (int) instance.getAnonymousModifier(1),
+                    (int) instance.getAnonymousModifier(2)
+            };
+            instance = AttributeManager.getInstance(this.entity.getAttributeMap(), type);
+            for (int i = 0; i < 3; i++) {
+                int modifier = intArr[i];
+                if (modifier != 0) instance.applyAnonymousModifier(i, modifier);
+            }
+        }
+
         this.core = that.core;
         this.core.apply(this.entity);
 

@@ -95,6 +95,7 @@ public class AttributeManager {
             map.attributesByName.putIfAbsent(attribute.getName(), instance);
             ((AdvancedInstance) instance).setListener(handler);
         }
+        LISTENER.add(entity);
     }
 
     public static void correct(EntityLivingBase entity) {

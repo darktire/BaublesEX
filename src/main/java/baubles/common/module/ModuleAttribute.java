@@ -23,7 +23,7 @@ public class ModuleAttribute extends AbstractModule {
     protected static Map<String, IAttribute> ATTRIBUTES = new HashMap<>();
     protected static final String PREFIX = "attribute.name.";
     protected static DecimalFormat BASE = new DecimalFormat("+#.##");
-    protected static DecimalFormat PERCENT = new DecimalFormat("+0%");
+    protected static DecimalFormat PERCENT = new DecimalFormat("+0%;-0%");
     protected static final Map<Opt, Function<Float, String>> FORMAT_MAP = ImmutableMap.of(
             Opt.ADDITION, BASE::format,
             Opt.MULTIPLY_BASE, PERCENT::format,

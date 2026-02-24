@@ -20,10 +20,8 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class HookHelper {
 
@@ -138,5 +136,27 @@ public class HookHelper {
         AbstractWrapper bauble = BaublesApi.toBauble(stack);
         if (bauble == null) return null;
         return bauble.getTypes(stack).get(0);
+    }
+
+    public static <T> ItemStack repost(IBaublesItemHandler baubles, Consumer<T> c, T param, ItemStack curr) {
+        ThreadLocal<Stack<ItemStack>> stackHolder = ThreadLocal.withInitial(() -> {
+            Stack<ItemStack> callStack = new Stack<>();
+            for (int i = 0; i < baubles.getSlots(); i++) {
+                ItemStack stack = baubles.getStackInSlot(i);
+                if (stack.isEmpty()) continue;
+                callStack.push(stack);
+            }
+            if (!curr.isEmpty()) callStack.push(curr);
+            return callStack;
+        });
+        Stack<ItemStack> callStack = stackHolder.get();
+
+        ItemStack stack = callStack.pop();
+
+        if (!callStack.isEmpty()) {
+            c.accept(param);
+        }
+
+        return stack;
     }
 }

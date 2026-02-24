@@ -2,7 +2,6 @@ package baubles.common.config;
 
 import baubles.BaublesRegister;
 import baubles.api.BaublesApi;
-import baubles.api.attribute.AttributeManager;
 import baubles.common.config.json.Category;
 import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
@@ -257,7 +256,7 @@ public class Config extends PartialConfig {
                 PartialConfig.create(Config.class);
                 Config.saveConfig();
                 Config.setupBlacklist();
-                syncToBaubles();
+                Config.syncToBaubles();
             }
         }
     }
@@ -265,6 +264,5 @@ public class Config extends PartialConfig {
     public static void syncToBaubles() {
         BaublesRegister.setTypes();
         BaublesRegister.loadValidSlots();
-        AttributeManager.loadAttributes();
     }
 }
