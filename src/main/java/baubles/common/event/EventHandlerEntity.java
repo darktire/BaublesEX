@@ -10,6 +10,8 @@ import baubles.api.registries.TypeData;
 import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifier;
+import baubles.util.CommonHelper;
+import baubles.util.HookHelper;
 import cofh.core.enchantment.EnchantmentSoulbound;
 import cofh.core.util.helpers.ItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -19,19 +21,26 @@ import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
 
@@ -42,6 +51,7 @@ public class EventHandlerEntity {
     private static final ResourceLocation BAUBLES_CAP = new ResourceLocation(BaublesApi.MOD_ID, "container");
     private static final boolean CoFHLoaded = Loader.isModLoaded("cofhcore");
     private static final int PICKUP_DELAY = 40;
+    private static final Method RIGHT_CLICK = ObfuscationReflectionHelper.findMethod(Item.class, "func_77659_a", ActionResult.class, World.class, EntityPlayer.class, EnumHand.class);
 
     @SubscribeEvent
     public static void cloneCapabilitiesEvent(PlayerEvent.Clone event) {
@@ -54,13 +64,8 @@ public class EventHandlerEntity {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onRespawnEvent(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent event) {
-        if (event.player.world.isRemote) return;
-        BaublesContainer bcn = (BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) event.player);
-        bcn.onRespawn();
-        syncAnonymousModifier((EntityPlayerMP) event.player);
-    }
+//    @SubscribeEvent(priority = EventPriority.LOW)
+//    public static void onRespawnEvent(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent event) {}
 
     @SubscribeEvent
     public static void onChangedDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event) {
@@ -98,6 +103,21 @@ public class EventHandlerEntity {
     }
 
     @SubscribeEvent
+    public static void playerJoin(EntityJoinWorldEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof EntityPlayer) {
+            if (entity instanceof EntityPlayerMP) {
+                // todo incorrect sequence: sever -> attribute -> client
+                BaublesContainer baubles = (BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) entity);
+                baubles.onRespawn();
+                baubles.stx.markDirty(0, baubles.getSlots());
+                baubles.vis.markDirty(0, baubles.getSlots());
+                syncAnonymousModifier((EntityPlayerMP) entity);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void playerDeath(PlayerDropsEvent event) {
         if (event.getEntity().world.isRemote || event.getEntity().world.getGameRules().getBoolean("keepInventory") || Config.keepBaubles) return;
 
@@ -105,32 +125,47 @@ public class EventHandlerEntity {
         List<EntityItem> drops = event.getDrops();
 
         double posX = player.posX;
-        double posY = player.posY + player.getEyeHeight();
+        double posY = player.posY - 0.3 + player.getEyeHeight();
         double posZ = player.posZ;
         Random rand = player.world.rand;
 
         BaublesApi.applyByIndex(player, (baubles, i) -> dropItemsAt(player, drops, baubles, i, posX, posY, posZ, rand));
     }
 
-    private static void dropItemsAt(EntityPlayer player, List<EntityItem> drops, IBaublesItemHandler baubles, Integer i, double posX, double posY, double posZ, Random rand) {
+    private static void dropItemsAt(EntityPlayer player, List<EntityItem> drops, IBaublesItemHandler baubles, int i, double x, double y, double z, Random rand) {
         ItemStack stack = baubles.getStackInSlot(i);
-        if (!stack.isEmpty() && BaublesApi.toBauble(stack).canDrop(stack, player)) {
-            if (EnchantmentHelper.hasVanishingCurse(stack)) {
-                baubles.setStackInSlot(i, ItemStack.EMPTY);
-            }
-            else if (CoFHLoaded && EnchantmentHelper.getEnchantmentLevel(soulbound, stack) > 0) {
-                handleSoulbound(stack);
-            }
-            else {
-                EntityItem ei = new EntityItem(player.world, posX, posY, posZ, stack.copy());
-                ei.setPickupDelay(PICKUP_DELAY);
-                float f1 = rand.nextFloat() * 0.5F;
-                float f2 = rand.nextFloat() * (float) Math.PI * 2.0F;
-                ei.motionX = -MathHelper.sin(f2) * f1;
-                ei.motionZ = MathHelper.cos(f2) * f1;
-                ei.motionY = 0.20000000298023224D;
-                drops.add(ei);
-                baubles.setStackInSlot(i, ItemStack.EMPTY);
+        if (stack.isEmpty() || !BaublesApi.toBauble(stack).canDrop(stack, player)) return;
+
+        if (EnchantmentHelper.hasVanishingCurse(stack)) {
+            baubles.setStackInSlot(i, ItemStack.EMPTY);
+            return;
+        }
+
+        if (CoFHLoaded && EnchantmentHelper.getEnchantmentLevel(soulbound, stack) > 0) {
+            handleSoulbound(stack);
+            return;
+        }
+
+        float speed = rand.nextFloat() * 0.1F;
+        float angle = rand.nextFloat() * (float) Math.PI * 2.0F;
+        EntityItem ei = new EntityItem(player.world, x, y, z, stack.copy());
+        ei.setPickupDelay(PICKUP_DELAY);
+        ei.motionX = -MathHelper.sin(angle) * speed;
+        ei.motionZ = MathHelper.cos(angle) * speed;
+        ei.motionY = 0.2D;
+        drops.add(ei);
+        baubles.setStackInSlot(i, ItemStack.EMPTY);
+    }
+
+    @SubscribeEvent
+    public static void onItemRightClick(PlayerInteractEvent.RightClickItem event) {
+        if (!Config.rightClick) return;
+        if (event.getCancellationResult() != EnumActionResult.SUCCESS) {
+            ItemStack heldItem = event.getItemStack();
+            if (HookHelper.isOverridden(heldItem.getItem(), RIGHT_CLICK)) return;
+            if (Config.getBlacklist().contains(heldItem.getItem()) || !BaublesApi.isBauble(heldItem)) return;
+            if (CommonHelper.tryEquipping(event.getEntityPlayer(), event.getHand(), heldItem)) {
+                event.setCancellationResult(EnumActionResult.SUCCESS);
             }
         }
     }
@@ -141,18 +176,6 @@ public class EventHandlerEntity {
             if(cofh.core.util.helpers.MathHelper.RANDOM.nextInt(level + 1) == 0) {
                 ItemHelper.removeEnchantment(stack, soulbound);
                 if(level > 1) ItemHelper.addEnchantment(stack, soulbound, level - 1);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void playerJoin(EntityJoinWorldEvent event) {
-        Entity entity = event.getEntity();
-        if (entity instanceof EntityPlayer) {
-            if (entity instanceof EntityPlayerMP) {
-                // todo incorrect sequence: sever -> attribute -> client
-                ((BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) entity)).dropItems();
-                syncAnonymousModifier((EntityPlayerMP) entity);
             }
         }
     }

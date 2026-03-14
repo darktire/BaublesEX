@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface IRenderBauble {
 
-    default <T extends IRenderBauble> List<T> getSubRender(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+    default List<IRenderBauble> getSubRender(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return null;
     }
 

@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -93,6 +94,19 @@ public class HookHelper {
         return true;
     }
 
+    public static boolean isOverridden(Object instance, Method superMethod) {
+        try {
+            Method subMethod = instance.getClass().getMethod(
+                    superMethod.getName(),
+                    superMethod.getParameterTypes()
+            );
+
+            return !subMethod.getDeclaringClass().equals(superMethod.getDeclaringClass());
+        } catch (NoSuchMethodException e) {
+            return false;
+        }
+    }
+
     public static void patchModsEvents(ASMDataTable table) {
         Set<ASMDataTable.ASMData> list = table.getAll(ModOnly.class.getName());
         ModClassLoader mcl = Loader.instance().getModClassLoader();
@@ -130,6 +144,18 @@ public class HookHelper {
             idx = baubles.indexOf(symbol, idx);
             return baubles.getStackInSlot(idx);
         }
+    }
+
+    public static int[] getValidSlots(Object o, EntityLivingBase player) {
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
+        List<Integer> found = new ArrayList<>();
+        int pos = -1;
+        while (true) {
+            pos = baubles.indexOf(o, pos + 1);
+            if (pos == -1) break;
+            found.add(pos);
+        }
+        return found.stream().mapToInt(Integer::intValue).toArray();
     }
 
     public static BaubleTypeEx getMainType(ItemStack stack) {

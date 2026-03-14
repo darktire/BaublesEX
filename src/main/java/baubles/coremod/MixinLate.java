@@ -14,43 +14,42 @@ import java.util.stream.Collectors;
 
 public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
 
-    private final int pre = "mixins/late/mixins.baubles.".length();
-    private final int suf = ".json".length();
+    private final String format = "mixins/late/mixins.baubles.%s.json";
 
     private final List<String> lateMixin = ImmutableList.of(
-            "mixins/late/mixins.baubles.aether_legacy.json",
-            "mixins/late/mixins.baubles.ancientspellcraft.json",
-            "mixins/late/mixins.baubles.artifacts.json",
-            "mixins/late/mixins.baubles.backpacked.json",
-            "mixins/late/mixins.baubles.botania.json",
-            "mixins/late/mixins.baubles.bountifulbaubles.json",
-            "mixins/late/mixins.baubles.colytra.json",
-            "mixins/late/mixins.baubles.da.json",
-            "mixins/late/mixins.baubles.ebwizardry.json",
-            "mixins/late/mixins.baubles.enigmaticlegacy.json",
-            "mixins/late/mixins.baubles.extrabotany.json",
-            "mixins/late/mixins.baubles.iceandfire.json",
-            "mixins/late/mixins.baubles.mobends.json",
-            "mixins/late/mixins.baubles.nvg.json",
-            "mixins/late/mixins.baubles.potionfingers.json",
-            "mixins/late/mixins.baubles.rlartifacts.json",
-            "mixins/late/mixins.baubles.setbonus.json",
-            "mixins/late/mixins.baubles.thaumcraft.json",
-            "mixins/late/mixins.baubles.thaumicperiphery.json",
-            "mixins/late/mixins.baubles.tombstone.json",
-            "mixins/late/mixins.baubles.wings.json",
-            "mixins/late/mixins.baubles.wizardryutils.json",
-            "mixins/late/mixins.baubles.xat.json"
+            "aether_legacy",
+            "ancientspellcraft",
+            "artifacts",
+            "backpacked",
+            "botania",
+            "bountifulbaubles",
+            "colytra",
+            "da",
+            "ebwizardry",
+            "enigmaticlegacy",
+            "extrabotany",
+            "iceandfire",
+            "mobends",
+            "nvg",
+            "potionfingers",
+            "qualitytools",
+            "rlartifacts",
+            "setbonus",
+            "thaumcraft",
+            "thaumicperiphery",
+            "tombstone",
+            "wearablebackpacks",
+            "wings",
+            "wizardryutils",
+            "xat"
     );
 
     @Override
     public List<String> getMixinConfigs() {
-        return lateMixin.stream().filter(this::fromJson).collect(Collectors.toList());
-    }
-
-    private boolean fromJson(String name) {
-        String modid = name.substring(pre, name.length() - suf);
-        return HookHelper.isModLoaded(modid);
+        return lateMixin.stream()
+                .filter(HookHelper::isModLoaded)
+                .map(name -> String.format(format, name))
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -102,9 +102,9 @@ public final class BaublesWrapper extends AbstractWrapper {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public <T extends IRenderBauble> List<T> getSubRender(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+    public List<IRenderBauble> getSubRender(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return Optional.ofNullable(getRender())
-                .<List<T>>map(render -> render.getSubRender(stack, entity, renderPlayer))
+                .map(render -> render.getSubRender(stack, entity, renderPlayer))
                 .orElse(null);
     }
 

@@ -6,8 +6,7 @@
   "mixins": [
     "MixinEnchantment",
     "MixinEntityLiving",
-    "MixinNetHandler",
-    "MixinStack"
+    "MixinNetHandler"
   ],
   "client": [
     "MixinCape",

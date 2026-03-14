@@ -23,7 +23,7 @@ import java.util.List;
 public class CommonHelper {
 
     public static void tryEquipping(EntityPlayer playerIn, ItemStack stack) {
-        tryEquipping(playerIn, EnumHand.MAIN_HAND, stack);
+        tryEquipping(playerIn, null, stack);
     }
 
     public static boolean tryEquipping(EntityPlayer playerIn, EnumHand hand, ItemStack stack) {
@@ -39,7 +39,7 @@ public class CommonHelper {
                     if (hand == EnumHand.MAIN_HAND) {
                         playerIn.inventory.setInventorySlotContents(playerIn.inventory.currentItem, ItemStack.EMPTY);
                     }
-                    else {
+                    else if (hand == EnumHand.OFF_HAND) {
                         playerIn.inventory.offHandInventory.set(0, ItemStack.EMPTY);
                     }
                 }

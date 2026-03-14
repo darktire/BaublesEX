@@ -6,23 +6,19 @@ import baubles.compat.xat.ModelEnderTiara;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import xzeroair.trinkets.items.trinkets.TrinketEnderTiara;
 
 @Mixin(TrinketEnderTiara.class)
-@Implements(@Interface(iface = IRenderBauble.class, prefix = "brs$"))
-public class MixinTrinketEnderTiara {
+public class MixinTrinketEnderTiara implements IRenderBauble {
 
-    @Unique
-    public ModelBauble brs$getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+    @Override
+    public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return ModelEnderTiara.instance;
     }
 
-    @Unique
-    public IRenderBauble.RenderType brs$getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+    @Override
+    public IRenderBauble.RenderType getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return IRenderBauble.RenderType.HEAD;
     }
 }

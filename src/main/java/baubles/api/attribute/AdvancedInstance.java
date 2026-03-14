@@ -10,10 +10,8 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.DoubleBinaryOperator;
 
 public class AdvancedInstance extends ModifiableAttributeInstance {
-    private static final DoubleBinaryOperator MULTIPLICATION = (a, b) -> a * b;
     private WeakReference<IBaublesItemHandler> handler;
     private final Map<Integer, Double> anonymous = new HashMap<>();
     public boolean isModified = false;
@@ -46,7 +44,7 @@ public class AdvancedInstance extends ModifiableAttributeInstance {
 
         d1 = this.getAppliedModifiers(2).stream()
                 .mapToDouble(attributemodifier -> 1.0D + attributemodifier.getAmount())
-                .reduce(d1, MULTIPLICATION);
+                .reduce(d1, (a, b) -> a * b);
         d1 *= 1.0D + this.anonymous.get(2);
 
         return this.genericAttribute.clampValue(d1);

@@ -1,11 +1,10 @@
 {
-  "package": "baubles.mixin.late.artifacts",
+  "package": "baubles.mixin.late.wearablebackpacks",
   "plugin": "baubles.coremod.MixinLate",
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.8",
   "refmap": "mixins/mixins.baubles.refmap.json",
   "mixins": [
-    "MixinAttributeModifierBauble",
-    "MixinBaubleBottledCloud"
+    "MixinBackpackHelper"
   ]
 }

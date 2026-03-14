@@ -10,22 +10,18 @@ import keletu.enigmaticlegacy.item.ItemEnigmaticAmulet;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 
 @Mixin({ItemAscensionAmulet.class, ItemEldritchAmulet.class, ItemEnigmaticAmulet.class})
-@Implements(@Interface(iface = IRenderBauble.class, prefix = "brs$"))
-public class MixinAmulet {
+public class MixinAmulet implements IRenderBauble {
 
-    @Unique
-    public ModelBauble brs$getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+    @Override
+    public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return ModelManager.getInstance(stack, null, ModelAmulet::new);
     }
 
-    @Unique
-    public IRenderBauble.RenderType brs$getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+    @Override
+    public IRenderBauble.RenderType getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return IRenderBauble.RenderType.BODY;
     }
 }

@@ -29,7 +29,7 @@ public class MixinIntegration {
 
     @Inject(method = "setBackpackStack", at = @At("HEAD"), cancellable = true)
     private static void inject(EntityPlayer player, ItemStack stack, CallbackInfo ci) {
-        CommonHelper.tryEquipping(player, stack);
+        if (stack.getItem() instanceof BaubleBackpackItem) CommonHelper.tryEquipping(player, stack);
         ci.cancel();
     }
 }

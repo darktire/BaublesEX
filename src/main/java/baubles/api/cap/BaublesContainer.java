@@ -36,7 +36,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     private final Queue<ItemStack> dropQue = new ArrayDeque<>();
     private final Set<IBaublesListener> listeners = Collections.newSetFromMap(new WeakHashMap<>());
     public boolean containerUpdated = true;
-    private Runnable respawnTask;
+    private Runnable respawnTask = this::dropItems;
     private boolean syncLock = false;
 
     public BaublesContainer() { super(0); }
@@ -70,35 +70,44 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     }
 
     private void onSlotChanged() {
-        BitSet visibility1 = (BitSet) this.visibility.clone();
-        setSize(this.MODIFIED_SLOTS.size());
+        BitSet vis = (BitSet) this.visibility.clone();
+
+        int size = this.MODIFIED_SLOTS.size();
+        this.snapshot = this.stacks;
+        setSize(size);
+
         List<ItemStack> temp = new ArrayList<>(this.stacks);
         this.visibility.clear();
-        boolean drop;
+
         for (int i = 0; i < this.snapshot.size(); i++) {
-            boolean flag = !visibility1.get(i);
+            boolean inv = !vis.get(i);
             ItemStack stack = this.snapshot.get(i);
-            boolean empty = stack.isEmpty();
-            if (empty && flag) continue;
+
+            if (stack.isEmpty() && inv) continue;
+
             BaubleTypeEx type = this.PREVIOUS_SLOTS.get(i);
-            int start = this.MODIFIED_SLOTS.indexOf(type);
-            drop = false;
-            if (start == -1) drop = true;
-            else {
-                int move = start - this.PREVIOUS_SLOTS.indexOf(type);
-                int newIndex = i + move;
-                if (newIndex < this.MODIFIED_SLOTS.size() && this.MODIFIED_SLOTS.get(newIndex) == type) {
-                    if (!empty) {
-                        this.stacks.set(newIndex, stack);
-                        temp.set(newIndex, stack.copy());
-                    }
-                    if (!flag) this.visibility.set(newIndex);
-                }
-                else drop = true;
+            int oldPos = this.PREVIOUS_SLOTS.indexOf(type);
+            int newPos = this.MODIFIED_SLOTS.indexOf(type);
+
+            if (newPos == -1) {
+                dropQue.add(stack);
+                continue;
             }
 
-            if (drop) dropQue.add(stack);
+            int delta = newPos - oldPos;
+            int mappedIndex = i + delta;
+
+            if (mappedIndex < size && this.MODIFIED_SLOTS.get(mappedIndex) == type) {
+                if (!stack.isEmpty()) {
+                    this.stacks.set(mappedIndex, stack);
+                    temp.set(mappedIndex, stack.copy());
+                }
+                if (!inv) this.visibility.set(mappedIndex);
+            } else {
+                dropQue.add(stack);
+            }
         }
+
         this.snapshot = temp;
         this.containerUpdated = true;
 
@@ -108,10 +117,9 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
                 this.stx.clear();
                 this.stx.markDirty(0, this.getSlots());
             }
-            return;
+        } else {
+            this.syncLock = true;
         }
-
-        this.syncLock = true;
     }
 
     @Override
@@ -325,10 +333,8 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     }
 
     public void onRespawn() {
-        if (this.respawnTask != null) {
-            this.respawnTask.run();
-            this.respawnTask = null;
-        }
+        this.respawnTask.run();
+        this.respawnTask = this::dropItems;
     }
 
     public void setRespawnTask(Runnable task) {

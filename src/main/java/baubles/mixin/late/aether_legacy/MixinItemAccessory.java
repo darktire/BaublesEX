@@ -1,5 +1,6 @@
 package baubles.mixin.late.aether_legacy;
 
+import baubles.util.CommonHelper;
 import com.gildedgames.the_aether.items.accessories.ItemAccessory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -16,6 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinItemAccessory {
     @Inject(method = "onItemRightClick", at = @At("HEAD"), cancellable = true)
     public void injected(World worldIn, EntityPlayer player, EnumHand hand, CallbackInfoReturnable<ActionResult<ItemStack>> cir) {
-        cir.setReturnValue(new ActionResult<>(EnumActionResult.PASS, player.getHeldItem(hand)));
+        ItemStack heldItem = player.getHeldItem(hand);
+        CommonHelper.tryEquipping(player, hand, heldItem);
+        cir.setReturnValue(new ActionResult<>(EnumActionResult.PASS, heldItem));
     }
 }
