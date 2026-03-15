@@ -1,7 +1,7 @@
 package baubles.common.config.json;
 
 import baubles.api.module.IModule;
-import baubles.util.JsonUtils;
+import baubles.lib.util.JsonUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -22,9 +22,9 @@ public class ModuleDataAdapter extends TypeAdapter<Map<String, IModule>> {
     @Override
     public Map<String, IModule> read(JsonReader in) throws IOException {
         Map<String, IModule> map = new HashMap<>();
-        JsonUtils.parseObject(in, (reader, name) -> {
-            JsonElement effectJson = ConversionHelper.GSON.fromJson(reader, JsonElement.class);
-            IModule module = ConversionHelper.GSON.fromJson(effectJson, Category.MODULE.type);
+        JsonUtils.objectStream(in, name -> {
+            JsonElement effectJson = ConversionHelper.GSON.fromJson(in, JsonElement.class);
+            IModule module = ConversionHelper.GSON.fromJson(effectJson, ConversionHelper.Content.MODULE.type);
             map.put(name, module);
         });
         return map;

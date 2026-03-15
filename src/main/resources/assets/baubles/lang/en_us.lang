@@ -8,6 +8,7 @@ button.normal=Normal
 #
 # DESCRIPTION
 info.baubles=Baubles
+info.baubles.type=Bauble Type
 info.baubles.inventory=Open Baubles' Sidebar
 info.baubles.parents=can be placed in the slots
 info.baubles.tooltip=When in the corresponding slot:

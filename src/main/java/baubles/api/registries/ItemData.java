@@ -1,54 +1,82 @@
 package baubles.api.registries;
 
-import baubles.api.*;
+import baubles.api.AbstractWrapper;
+import baubles.api.BaubleTypeEx;
+import baubles.api.BaublesWrapper;
+import baubles.api.IBauble;
 import baubles.api.cap.BaubleItem;
 import baubles.api.module.IModule;
 import baubles.api.render.IRenderBauble;
+import baubles.lib.util.ItemQuery;
+import baubles.lib.util.TieredItemMatcher;
 import com.google.common.base.Equivalence;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class ItemData {
-    private static final Map<IBaubleKey, Function<ItemStack, AbstractWrapper>> BAUBLE_ITEMS = new ConcurrentHashMap<>();
+
+    private static final TieredItemMatcher<Function<ItemStack, AbstractWrapper>> MATCHER = new TieredItemMatcher<>();
     private static final Cache<Equivalence.Wrapper<ItemStack>, AbstractWrapper> CACHE = CacheBuilder.newBuilder()
             .maximumSize(1024)
             .expireAfterAccess(600, TimeUnit.SECONDS)
-            .concurrencyLevel(Runtime.getRuntime().availableProcessors())
             .build();
     private static final LongAdder HIT  = new LongAdder();
     private static final LongAdder MISS = new LongAdder();
     private static final BaublesWrapper.CSTMap CST_MAP = AbstractWrapper.CSTMap.instance();
     private static final Function<ItemStack, AbstractWrapper> DEFAULT = BaublesWrapper::new;
 
-    public static void registerBauble(IBaubleKey key) {
-        BAUBLE_ITEMS.put(key, DEFAULT);
+    private static final Equivalence<ItemStack> STACK_EQ = new Equivalence<ItemStack>() {
+        @Override
+        protected boolean doEquivalent(ItemStack a, ItemStack b) {
+            return a.getItem() == b.getItem()
+                    && a.getMetadata() == b.getMetadata()
+                    && Objects.equals(a.getTagCompound(), b.getTagCompound());
+        }
+        @Override
+        protected int doHash(ItemStack stack) {
+            NBTTagCompound nbt = stack.getTagCompound();
+            return 31 * (31 * System.identityHashCode(stack.getItem()) + stack.getMetadata()) + (nbt == null ? 0 : nbt.hashCode());
+        }
+    };
+
+    public static void registerBauble(ItemQuery query) {
+        MATCHER.register(query, DEFAULT);
     }
 
-    public static void registerBauble(IBaubleKey key, IBauble bauble) {
-        registerBauble(key);
-        CST_MAP.update(key, AbstractWrapper.Addition::bauble, bauble);
+    public static void registerBauble(ItemQuery query, IBauble bauble) {
+        registerBauble(query);
+        CST_MAP.update(query, AbstractWrapper.Addition::bauble, bauble);
     }
 
-    public static void registerBauble(IBaubleKey key, List<BaubleTypeEx> types) {
-        if (BAUBLE_ITEMS.containsKey(key) || BAUBLE_ITEMS.containsKey(key.simplify())) {
-            CST_MAP.update(key, AbstractWrapper.Addition::types, types);
+    public static void registerBauble(ItemQuery query, List<BaubleTypeEx> types) {
+        if (MATCHER.contains(query)) {
+            CST_MAP.update(query, AbstractWrapper.Addition::types, types);
         }
         else {
-            registerBauble(key, new BaubleItem(types));
+            registerBauble(query, new BaubleItem(types));
         }
     }
 
-    public static void registerModules(IBaubleKey key, List<IModule> modules) {
-        CST_MAP.update(key, AbstractWrapper.Addition::modules, modules);
+    public static void registerBauble(ItemQuery query, BaubleTypeEx... types) {
+        registerBauble(query, Arrays.asList(types));
+    }
+
+    public static void registerModules(ItemQuery query, List<IModule> modules) {
+        CST_MAP.update(query, AbstractWrapper.Addition::modules, modules);
+    }
+
+    public static void registerRender(ItemQuery query, IRenderBauble render) {
+        CST_MAP.update(query, AbstractWrapper.Addition::render, render);
     }
 
     /**
@@ -56,128 +84,53 @@ public class ItemData {
      * @param item target item
      */
     public static void registerBauble(Item item) {
-        registerBauble(IBaubleKey.BaubleKey.wrap(item));
-    }
-
-    /**
-     * Link items and the bauble which is an instance of IBauble.
-     * @param item target item
-     * @param bauble bauble instanceof IBauble
-     */
-    public static void registerBauble(Item item, IBauble bauble) {
-        registerBauble(IBaubleKey.BaubleKey.wrap(item), bauble);
-    }
-
-    /**
-     * Simply register item as a bauble. (only with types)
-     */
-    public static void registerBauble(Item item, List<BaubleTypeEx> types) {
-        registerBauble(IBaubleKey.BaubleKey.wrap(item), types);
-    }
-
-    /**
-     * Simply register item as a bauble. (only with types)
-     */
-    public static void registerBauble(Item item, BaubleTypeEx... types) {
-        registerBauble(item, Arrays.asList(types));
-    }
-
-    public static void registerRender(Item item, IRenderBauble render) {
-        CST_MAP.update(item, AbstractWrapper.Addition::render, render);
-    }
-
-    public static void registerBauble(ItemStack stack) {
-        registerBauble(IBaubleKey.BaubleKey.wrap(stack));
-    }
-
-    public static void registerBauble(ItemStack stack, IBauble bauble) {
-        registerBauble(IBaubleKey.BaubleKey.wrap(stack), bauble);
-    }
-
-    public static void registerBauble(ItemStack stack, List<BaubleTypeEx> types) {
-        registerBauble(IBaubleKey.BaubleKey.wrap(stack), types);
-    }
-
-    public static void registerBauble(ItemStack stack, BaubleTypeEx... types) {
-        registerBauble(stack, Arrays.asList(types));
-    }
-
-    public static void registerRender(ItemStack stack, IRenderBauble render) {
-        CST_MAP.update(stack, AbstractWrapper.Addition::render, render);
+        registerBauble(ItemQuery.of(item));
     }
 
     public static AbstractWrapper toBauble(ItemStack stack) {
-        Equivalence.Wrapper<ItemStack> cacheKey = IBaubleKey.CacheKey.getWrap(stack);
+        Equivalence.Wrapper<ItemStack> cacheKey = STACK_EQ.wrap(stack);
 
         AbstractWrapper wrapper = CACHE.getIfPresent(cacheKey);
-        if (wrapper == null) {
-            IBaubleKey.BaubleKey key = IBaubleKey.BaubleKey.wrap(stack);
-            Function<ItemStack, AbstractWrapper> func = BAUBLE_ITEMS.get(key);
-            if (func == null) {
-                func = BAUBLE_ITEMS.get(key.fuzzier());
-            }
-
-            wrapper = func.apply(stack);
-            CACHE.put(cacheKey, wrapper);
-            MISS.increment();
+        if (wrapper != null) {
+            HIT.increment();
+            return wrapper;
         }
-        else HIT.increment();
+
+        Function<ItemStack, AbstractWrapper> func = MATCHER.match(stack);
+        wrapper = (func != null ? func : DEFAULT).apply(stack);
+        CACHE.put(cacheKey, wrapper);
+        MISS.increment();
         return wrapper;
     }
 
-    public static IBaubleKey trueBaubleKey(Item item) {
-        return trueBaubleKey(IBaubleKey.BaubleKey.wrap(item), true);
-    }
-
-    public static IBaubleKey trueBaubleKey(IBaubleKey key, boolean isItem) {
-        if (isItem) {
-            return BAUBLE_ITEMS.keySet().stream()
-                    .filter(get -> get.equals(key))
-                    .findFirst()
-                    .orElse(null);
-        }
-        else {
-            IBaubleKey trueKey = BAUBLE_ITEMS.keySet().stream()
-                    .filter(get -> get.equals(key))
-                    .findFirst()
-                    .orElse(null);
-            if (trueKey == null) return trueBaubleKey(key.fuzzier(), true);
-        }
-        return null;
+    public static boolean isBauble(ItemQuery query) {
+        return MATCHER.contains(query);
     }
 
     public static boolean isBauble(ItemStack stack) {
-        IBaubleKey.BaubleKey key = IBaubleKey.BaubleKey.wrap(stack);
-        return BAUBLE_ITEMS.containsKey(key.simplify()) || BAUBLE_ITEMS.containsKey(key);
+        return isBauble(ItemQuery.of(stack));
     }
 
     public static boolean isBauble(Item item) {
-        return BAUBLE_ITEMS.containsKey(IBaubleKey.BaubleKey.wrap(item).fuzzier());
+        return isBauble(ItemQuery.of(item));
+    }
+
+    public static List<ItemQuery> getList() {
+        return MATCHER.getKeys();
     }
 
     public static String getStats() {
         return String.format("Baubles WrapperCache: hit=%d, miss=%d, content=%d", HIT.sum(), MISS.sum(), CACHE.size());
     }
 
-    public static List<IBaubleKey> getList() {
-        return new ArrayList<>(BAUBLE_ITEMS.keySet());
-    }
-
-    public static void redirect(Predicate<IBaubleKey> predicate, IRenderBauble render) {
-        BAUBLE_ITEMS.keySet().stream()
-                .filter(predicate)
-                .forEach(key -> CST_MAP.update(key, AbstractWrapper.Addition::render, render));
-    }
-
-    private static Map<IBaubleKey, Function<ItemStack, AbstractWrapper>> BACKUP;
     public static void backup() {
-        BACKUP = new HashMap<>(BAUBLE_ITEMS);
+        MATCHER.backup();
         CST_MAP.backup();
     }
+
     public static void restore() {
-        CACHE.invalidateAll();
-        BAUBLE_ITEMS.clear();
-        BAUBLE_ITEMS.putAll(BACKUP);
+        MATCHER.restore();
         CST_MAP.restore();
+        CACHE.invalidateAll();
     }
 }

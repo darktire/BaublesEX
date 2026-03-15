@@ -8,6 +8,7 @@ button.normal=普通
 #
 # DESCRIPTION
 info.baubles=饰品
+info.baubles.type=饰品类型
 info.baubles.inventory=打开饰品侧栏
 info.baubles.parents=能被放入以下种类的槽位
 info.baubles.tooltip=在对应的槽位时:
@@ -18,7 +19,7 @@ baubles.bauble=饰品
 baubles.amulet=项链
 baubles.ring=指环
 baubles.belt=腰带
-baubles.trinket=小玩意
+baubles.trinket=小饰品
 baubles.head=头部
 baubles.body=身体
 baubles.charm=护身符

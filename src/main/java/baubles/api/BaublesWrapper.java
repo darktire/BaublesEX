@@ -12,12 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 public final class BaublesWrapper extends AbstractWrapper {
     private IBauble bauble;
@@ -39,7 +35,8 @@ public final class BaublesWrapper extends AbstractWrapper {
 
     @Override
     public List<BaubleTypeEx> getTypes(ItemStack itemStack) {
-        return getValue(() -> this.addition.types,() -> getBauble().getTypes(itemStack));
+        if (this.addition != null && this.addition.types != null) return this.addition.types;
+        return getBauble().getTypes(itemStack);
     }
 
     @Override
@@ -53,9 +50,10 @@ public final class BaublesWrapper extends AbstractWrapper {
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled()) return;
         getBauble().onWornTick(itemstack, entity);
-        Supplier<List<Pair<IBaubleKey, Sample>>> edited = () -> this.addition.samples;
-        getValue(edited, Collections::emptyList)
-                .forEach(pair -> pair.getRight().active(pair.getLeft() == null ? itemstack : pair.getLeft().ref(), entity));
+        if (this.addition == null || this.addition.effects == null) return;
+        for (WornTickEffect effect : this.addition.effects) {
+            effect.tick(itemstack, entity);
+        }
     }
 
     @Override
@@ -97,44 +95,38 @@ public final class BaublesWrapper extends AbstractWrapper {
 
     @Override
     public List<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
-        return getValue(() -> this.addition.modules,() -> getBauble().getModules(itemstack, entity));
+        if (this.addition != null && this.addition.modules != null) return this.addition.modules;
+        return getBauble().getModules(itemstack, entity);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public List<IRenderBauble> getSubRender(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        return Optional.ofNullable(getRender())
-                .map(render -> render.getSubRender(stack, entity, renderPlayer))
-                .orElse(null);
+        IRenderBauble render = getRender();
+        return render != null ? render.getSubRender(stack, entity, renderPlayer) : null;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        return Optional.ofNullable(getRender())
-                .map(render -> render.getModel(stack, entity, renderPlayer))
-                .orElse(null);
+        IRenderBauble render = getRender();
+        return render != null ? render.getModel(stack, entity, renderPlayer) : null;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public RenderType getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        return Optional.ofNullable(getRender())
-                .map(render -> render.getRenderType(stack, entity, renderPlayer))
-                .orElse(null);
-    }
-
-    private <T> T getValue(Supplier<T> edited, Supplier<T> original) {
-        if (this.addition == null) return original.get();
-        T get = edited.get();
-        return get != null ? get : original.get();
+        IRenderBauble render = getRender();
+        return render != null ? render.getRenderType(stack, entity, renderPlayer) : null;
     }
 
     private IBauble getBauble() {
-        return getValue(() -> this.addition.bauble,() -> this.bauble);
+        if (this.addition != null && this.addition.bauble != null) return this.addition.bauble;
+        return this.bauble;
     }
 
     private IRenderBauble getRender() {
-        return getValue(() -> this.addition.render,() -> this.render);
+        if (this.addition != null && this.addition.render != null) return this.addition.render;
+        return this.render;
     }
 }

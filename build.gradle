@@ -9,7 +9,11 @@ version = "${version_major}.${version_minor}.${version_patch}"
 group = ''
 archivesBaseName = "${name}-${minecraft_version}"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of("17")
+    }
+}
 
 minecraft {
     mappings channel: "${mappings_channel}", version: "${mappings_version}"
@@ -39,6 +43,15 @@ minecraft {
 apply from: 'gradle/scripts/necessary_dependencies.gradle'
 apply from: 'gradle/scripts/dependencies.gradle'
 apply from: 'gradle/scripts/templates.gradle'
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    if (it.class.name.contains('HackyJavaCompile')) {
+        return
+    }
+    sourceCompatibility = '17'
+    options.release.set(8)
+}
 
 tasks.register('cleanLogs', Delete) {
     group("custom tasks")

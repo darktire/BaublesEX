@@ -2,54 +2,32 @@ package baubles.api;
 
 import baubles.api.module.IModule;
 import baubles.api.render.IRenderBauble;
+import baubles.lib.util.ItemQuery;
+import baubles.lib.util.TieredItemMatcher;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
 public abstract class AbstractWrapper implements IBauble, IRenderBauble {
     public final static class CSTMap {
         static final CSTMap INSTANCE = new CSTMap();
-        private final Map<IBaubleKey, BaublesWrapper.Addition> map = new ConcurrentHashMap<>();
-        private Map<IBaubleKey, BaublesWrapper.Addition> backup;
+        private final TieredItemMatcher<Addition> matcher = new TieredItemMatcher<>();
 
-        public static CSTMap instance() {
-            return INSTANCE;
-        }
+        public static CSTMap instance() { return INSTANCE; }
 
         public BaublesWrapper.Addition get(ItemStack stack) {
-            IBaubleKey key = IBaubleKey.BaubleKey.wrap(stack);
-            BaublesWrapper.Addition a = this.map.get(key);
-            if (a == null) a = this.map.get(key.fuzzier());
-            return a;
+            return matcher.match(stack);
         }
 
-        public <T> void update(ItemStack stack, BiConsumer<BaublesWrapper.Addition, T> editor, T param) {
-            update(IBaubleKey.BaubleKey.wrap(stack), editor, param);
+        public <T> void update(ItemQuery query, BiConsumer<BaublesWrapper.Addition, T> editor, T param) {
+            editor.accept(matcher.computeIfAbsent(query, BaublesWrapper.Addition::new), param);
         }
 
-        public <T> void update(Item item, BiConsumer<BaublesWrapper.Addition, T> editor, T param) {
-            update(IBaubleKey.BaubleKey.wrap(item), editor, param);
-        }
-
-        public <T> void update(IBaubleKey key, BiConsumer<BaublesWrapper.Addition, T> editor, T param) {
-            editor.accept(this.map.computeIfAbsent(key, i -> new BaublesWrapper.Addition()), param);
-        }
-
-        public void backup() {
-            this.backup = new HashMap<>(this.map);
-        }
-        public void restore() {
-            this.map.clear();
-            this.map.putAll(this.backup);
-        }
+        public void backup() { matcher.backup(); }
+        public void restore() { matcher.restore(); }
     }
 
     public final static class Addition {
@@ -58,7 +36,7 @@ public abstract class AbstractWrapper implements IBauble, IRenderBauble {
         IRenderBauble render;
         List<BaubleTypeEx> types;
         List<IModule> modules;
-        List<Pair<IBaubleKey, Sample>> samples;
+        List<WornTickEffect> effects;
 
         public void bauble(IBauble bauble) {
 
@@ -87,34 +65,36 @@ public abstract class AbstractWrapper implements IBauble, IRenderBauble {
             return addition.remove;
         }
 
-        public void samples(List<Pair<IBaubleKey, Sample>> samples) {
-            this.samples = samples;
+        public void effects(List<WornTickEffect> effects) {
+            this.effects = effects;
         }
 
     }
 
-    public enum Sample {
-        ARMOR {
-            @Override
-            void active(ItemStack stack, EntityLivingBase entity) {
-                if (entity instanceof EntityPlayer) {
-                    stack.getItem().onArmorTick(entity.world, (EntityPlayer) entity, stack);
-                }
-            }
-        },
-        PASSIVE {
-            @Override
-            void active(ItemStack stack, EntityLivingBase entity) {
-                stack.getItem().onUpdate(stack, entity.world, entity, 0, false);
-            }
-        },
-        IN_USE {
-            @Override
-            void active(ItemStack stack, EntityLivingBase entity) {
-                stack.getItem().onUsingTick(stack, entity, 0);
-            }
-        };
+    @FunctionalInterface
+    public interface WornTickEffect {
+        void tick(ItemStack worn, EntityLivingBase entity);
 
-        abstract void active(ItemStack stack, EntityLivingBase entity);
+        static WornTickEffect armor(ItemQuery query) {
+            return (worn, entity) -> {
+                if (!(entity instanceof EntityPlayer)) return;
+                ItemStack target = query != null ? query.ref() : worn;
+                target.getItem().onArmorTick(entity.world, (EntityPlayer) entity, target);
+            };
+        }
+
+        static WornTickEffect passive(ItemQuery query) {
+            return (worn, entity) -> {
+                ItemStack target = query != null ? query.ref() : worn;
+                target.getItem().onUpdate(target, entity.world, entity, 0, false);
+            };
+        }
+
+        static WornTickEffect inUse(ItemQuery query) {
+            return (worn, entity) -> {
+                ItemStack target = query != null ? query.ref() : worn;
+                target.getItem().onUsingTick(target, entity, 0);
+            };
+        }
     }
 }

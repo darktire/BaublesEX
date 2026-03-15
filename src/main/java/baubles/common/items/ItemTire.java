@@ -67,6 +67,7 @@ public class ItemTire extends Item implements IBauble, IRenderBauble {
 	@Override
 	public List<BaubleTypeEx> getTypes(ItemStack stack) {
 		int metadata = this.getMetadata(stack);
+		if (metadata > 3) metadata = 0;
 		return this.types.subList(metadata, metadata + 1);
 	}
 

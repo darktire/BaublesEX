@@ -2,7 +2,7 @@ package baubles.common.config;
 
 import baubles.BaublesRegister;
 import baubles.api.BaublesApi;
-import baubles.common.config.json.Category;
+import baubles.common.config.json.ConversionHelper;
 import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.config.ConfigCategory;
@@ -72,11 +72,11 @@ public class Config extends PartialConfig {
         PartialConfig.create(Slots.class, Gui.class, ModItems.class, Commands.class);
     }
 
-    public static List<File> getJson(Category category) {
+    public static List<File> getJson(ConversionHelper.Content content) {
         String[] names = new String[0];
-        if (category == Category.ITEM_DATA) names = itemsJson;
-        if (category == Category.TYPE_DATA) names = typesJson;
-        if (category == Category.MODULE_DATA) names = modulesJson;
+        if (content == ConversionHelper.Content.ITEMS) names = itemsJson;
+        if (content == ConversionHelper.Content.TYPES) names = typesJson;
+        if (content == ConversionHelper.Content.MODULES) names = modulesJson;
         List<File> files = new ArrayList<>();
         for (String name : names) {
             FileFilter filter = new WildcardFileFilter(name);

@@ -1,7 +1,7 @@
 package baubles.common.config.json;
 
 import baubles.api.BaubleTypeEx;
-import baubles.util.JsonUtils;
+import baubles.lib.util.JsonUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -41,10 +41,10 @@ public class TypeDataAdapter extends TypeAdapter<List<BaubleTypeEx>> {
     @Override
     public List<BaubleTypeEx> read(JsonReader in) throws IOException {
         List<BaubleTypeEx> list = new ArrayList<>();
-        JsonUtils.parseObject(in, (reader, name) -> {
-            JsonElement json = ConversionHelper.GSON.fromJson(reader, JsonElement.class);
-            TypeDeserializer.Temp temp = ConversionHelper.GSON.fromJson(json, Category.TYPE.type);
-            list.add(temp.apply());
+        JsonUtils.objectStream(in, name -> {
+            JsonElement json = ConversionHelper.GSON.fromJson(in, JsonElement.class);
+            BaubleTypeEx type = ConversionHelper.GSON.fromJson(json, ConversionHelper.Content.TYPE.type);
+            list.add(type);
         });
         return list;
     }

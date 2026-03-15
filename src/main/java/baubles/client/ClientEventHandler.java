@@ -67,7 +67,7 @@ public class ClientEventHandler {
             List<String> toolTip = event.getToolTip();
             try {
                 AbstractWrapper bauble = BaublesApi.toBauble(stack);
-                String base = TextFormatting.GOLD + I18n.format("info.baubles") + ": " +
+                String base = TextFormatting.GOLD + I18n.format("info.baubles.type") + ": " +
                         bauble.getTypes(stack).stream()
                             .map(BaubleTypeEx::getTranslateKey)
                             .map(I18n::format)

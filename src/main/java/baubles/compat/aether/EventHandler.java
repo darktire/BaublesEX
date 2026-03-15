@@ -4,6 +4,7 @@ import baubles.api.BaubleTypeEx;
 import baubles.api.registries.ItemData;
 import baubles.api.registries.TypeData;
 import baubles.compat.ModOnly;
+import baubles.lib.util.ItemQuery;
 import com.gildedgames.the_aether.api.AetherAPI;
 import com.gildedgames.the_aether.api.accessories.AccessoryType;
 import com.google.common.collect.ImmutableMap;
@@ -53,8 +54,9 @@ public class EventHandler {
         if (stack.isEmpty()) return;
         if (ItemData.isBauble(stack)) return;
         if (AETHER_API.isAccessory(stack)) {
-            if (!ItemData.isBauble(stack)) {
-                ItemData.registerBauble(stack, map.get(AETHER_API.getAccessory(stack).getAccessoryType()));
+            ItemQuery query = ItemQuery.of(stack);
+            if (!ItemData.isBauble(query)) {
+                ItemData.registerBauble(query, map.get(AETHER_API.getAccessory(stack).getAccessoryType()));
 //                if (!ItemData.isBauble(stack.getItem())) {
 //                    event.addCapability(EventHandlerItem.ITEM_CAP, new BaublesCapabilityProvider(stack, null));
 //                }

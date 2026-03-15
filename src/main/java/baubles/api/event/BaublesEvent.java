@@ -98,11 +98,11 @@ public class BaublesEvent extends LivingEvent {
         boolean getDefaultRet();
 
         default boolean getRet() {
-            switch (getResult()) {
-                case DENY:  return false;
-                case ALLOW: return true;
-                default:    return getDefaultRet();
-            }
+            return switch (getResult()) {
+                case DENY -> false;
+                case ALLOW -> true;
+                default -> getDefaultRet();
+            };
         }
     }
 }

@@ -15,7 +15,7 @@ public abstract class MixinEnchantment {
     private void canEnchantBaubles(Item itemIn, CallbackInfoReturnable<Boolean> cir) {
         boolean isPumpkin = itemIn instanceof ItemBlock && ((ItemBlock)itemIn).getBlock() instanceof BlockPumpkin;
         boolean flag = itemIn instanceof ItemArmor || itemIn instanceof ItemElytra || itemIn instanceof ItemSkull || isPumpkin;
-        boolean isBauble = ItemData.isBauble(itemIn);
+        boolean isBauble = ItemData.isBauble(itemIn);//todo
         cir.setReturnValue(flag || isBauble);
     }
 }

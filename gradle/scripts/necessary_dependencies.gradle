@@ -20,6 +20,17 @@ dependencies {
     annotationProcessor ('zone.rong:mixinbooter:10.6') {
         transitive = false
     }
+
+    annotationProcessor 'com.github.bsideup.jabel:jabel-javac-plugin:1.0.0'
+    annotationProcessor 'net.java.dev.jna:jna-platform:5.13.0'
+    compileOnly('com.github.bsideup.jabel:jabel-javac-plugin:1.0.0') {
+        transitive = false
+    }
+
+    testAnnotationProcessor 'com.github.bsideup.jabel:jabel-javac-plugin:1.0.0'
+    testCompileOnly('com.github.bsideup.jabel:jabel-javac-plugin:1.0.0') {
+        transitive = false
+    }
 }
 
 fancyGradle {

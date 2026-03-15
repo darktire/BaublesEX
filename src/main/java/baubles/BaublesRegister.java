@@ -7,12 +7,12 @@ import baubles.api.attribute.AttributeManager;
 import baubles.api.registries.ItemData;
 import baubles.api.registries.TypeData;
 import baubles.common.config.Config;
-import baubles.common.config.json.Category;
 import baubles.common.config.json.ConversionHelper;
 import baubles.common.items.BaubleElytra;
 import baubles.common.items.BaubleTotem;
 import baubles.common.items.ItemRing;
 import baubles.common.items.ItemTire;
+import baubles.lib.util.ItemQuery;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
@@ -32,18 +32,20 @@ public class BaublesRegister {
                 .forEach(ItemData::registerBauble);
 
         if (Config.ModItems.elytraBauble) {
-            ItemData.registerBauble(Items.ELYTRA, BaubleElytra.INSTANCE);
-            ItemData.registerRender(Items.ELYTRA, BaubleElytra.INSTANCE);
+            ItemQuery elytra = ItemQuery.of(Items.ELYTRA);
+            ItemData.registerBauble(elytra, BaubleElytra.INSTANCE);
+            ItemData.registerRender(elytra, BaubleElytra.INSTANCE);
         }
         if (Config.ModItems.totemBauble) {
-            ItemData.registerBauble(Items.TOTEM_OF_UNDYING, BaubleTotem.INSTANCE);
-            ItemData.registerRender(Items.TOTEM_OF_UNDYING, BaubleTotem.INSTANCE);
+            ItemQuery undying = ItemQuery.of(Items.TOTEM_OF_UNDYING);
+            ItemData.registerBauble(undying, BaubleTotem.INSTANCE);
+            ItemData.registerRender(undying, BaubleTotem.INSTANCE);
         }
 
         ItemData.backup();
 
         try {
-            ConversionHelper.fromJson(Category.ITEM_DATA);
+            ConversionHelper.fromJson(ConversionHelper.Content.ITEMS);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -63,7 +65,7 @@ public class BaublesRegister {
         }
 
         try {
-            ConversionHelper.fromJson(Category.TYPE_DATA);
+            ConversionHelper.fromJson(ConversionHelper.Content.TYPES);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

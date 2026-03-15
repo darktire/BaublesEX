@@ -5,6 +5,7 @@ import baubles.api.IBauble;
 import baubles.api.registries.ItemData;
 import baubles.api.registries.TypeData;
 import baubles.compat.ModOnly;
+import baubles.lib.util.ItemQuery;
 import com.supermartijn642.simplemagnets.MagnetItem;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -35,6 +36,6 @@ public class BaubleMagnet implements IBauble {
     public static void itemBaubleWrap(RegistryEvent.Register<BaubleTypeEx> event) {
         ForgeRegistries.ITEMS.getValuesCollection().stream()
                 .filter(MagnetItem.class::isInstance)
-                .forEach(i -> ItemData.registerBauble(i, MAGNET));
+                .forEach(i -> ItemData.registerBauble(ItemQuery.of(i), MAGNET));
     }
 }
