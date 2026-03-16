@@ -21,6 +21,6 @@ public class ModelCharm extends ModelItem {
         float s = 0.125F;
         GlStateManager.scale(s, s, s);
         GlStateManager.rotate(180, 1, 0, 0);
-        this.renderItem(stack);
+        super.render(renderPlayer, entity,stack, limbSwing, limbSwingAmount,partialTicks, ageInTicks, netHeadYaw, headPitch, scale, flag);
     }
 }

@@ -20,6 +20,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistry;
+import net.minecraftforge.registries.RegistryBuilder;
 
 import java.io.IOException;
 
@@ -99,12 +101,21 @@ public class BaublesRegister {
 
     @SubscribeEvent
     public static void createRegistry(RegistryEvent.NewRegistry event) {
-        TypeData.create();
+        create();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onRegistering(RegistryEvent.Register<BaubleTypeEx> event) {
-        TypeData.registerTypes();
+        TypeData.registerTypes((ForgeRegistry<BaubleTypeEx>) event.getRegistry());
         loadValidSlots();
+        registerItems();
+    }
+
+    public static ForgeRegistry<BaubleTypeEx> create() {
+        return (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>()
+                .setType(BaubleTypeEx.class)
+                .setName(BaublesApi.BAUBLE_TYPE)
+                .disableSaving()
+                .create();
     }
 }

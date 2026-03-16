@@ -28,6 +28,6 @@ public class ModelDamageShield extends ModelItem {
         }
         final float bS = 3f;
         GlStateManager.scale(scale * bS, scale * bS, scale * bS);
-        this.renderItem(stack);
+        super.render(renderPlayer, entity,stack, limbSwing, limbSwingAmount,partialTicks, ageInTicks, netHeadYaw, headPitch, scale, flag);
     }
 }

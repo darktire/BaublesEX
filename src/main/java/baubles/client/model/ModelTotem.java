@@ -19,6 +19,6 @@ public class ModelTotem extends ModelItem {
         GlStateManager.scale(0.25, 0.25, 0.25);
         GlStateManager.rotate(180, 0, 0, 1);
         GlStateManager.translate(0.0, -0.5, chest ? -0.8 : -0.5);
-        this.renderItem(stack);
+        super.render(renderPlayer, entity,stack, limbSwing, limbSwingAmount,partialTicks, ageInTicks, netHeadYaw, headPitch, scale, flag);
     }
 }

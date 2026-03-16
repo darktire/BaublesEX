@@ -7,7 +7,8 @@ import baubles.api.module.IModule;
 import baubles.api.registries.ItemData;
 import baubles.api.registries.TypeData;
 import baubles.api.render.IRenderBauble;
-import baubles.client.render.ArmorHelper;
+import baubles.client.model.Models;
+import baubles.client.render.JsonRender;
 import baubles.common.config.ConfigRecord;
 import baubles.lib.util.ItemQuery;
 import baubles.lib.util.JsonUtils;
@@ -17,6 +18,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,7 +40,6 @@ public final class ItemDeserializer implements JsonDeserializer<ItemQuery> {
                 .collect(Collectors.toList());
 
         boolean remove = false;
-        IRenderBauble render = null;
         List<AbstractWrapper.WornTickEffect> effects = new ArrayList<>();
 
         for (JsonElement e : JsonUtils.parseArray(in, "addition")) {
@@ -52,11 +53,27 @@ public final class ItemDeserializer implements JsonDeserializer<ItemQuery> {
             String feature = args[0];
             ItemQuery query = args.length > 1 ? parseItem(args[1]) : null;
 
-            List<AbstractWrapper.WornTickEffect> resolved = fromStr(feature, query);
-            effects.addAll(resolved);
-            if (query == null && feature.chars().anyMatch(c -> Character.toUpperCase(c) == 'A')) {
-                render = ArmorHelper.INSTANCE;
+            Function<ItemQuery, AbstractWrapper.WornTickEffect> factory = CODE_MAP.get(feature.toLowerCase());
+            if (factory != null) effects.add(factory.apply(query));
+        }
+
+        IRenderBauble render = null;
+        if (in.has("render")) {
+            Set<IRenderBauble> temp = new HashSet<>();
+            for (JsonElement e : JsonUtils.parseArray(in, "render")) {
+                if (e instanceof JsonObject obj) {
+                    String pos = JsonUtils.getString(obj, "pos", "");
+                    if (obj.has("model")) {
+                        String path = JsonUtils.getString(obj, "model");
+                        temp.add(new JsonRender(path, pos));
+                    } else if (obj.has("load")) {
+                        String path = JsonUtils.getString(obj, "load");
+                        Models.enqueue(path);
+                        temp.add(new JsonRender(path, pos));
+                    }
+                }
             }
+            render = JsonRender.of(temp);
         }
 
         AbstractWrapper.CSTMap cstMap = AbstractWrapper.CSTMap.instance();
@@ -107,19 +124,10 @@ public final class ItemDeserializer implements JsonDeserializer<ItemQuery> {
         }
     }
 
-    private static final Map<Character, java.util.function.Function<ItemQuery, AbstractWrapper.WornTickEffect>> CODE_MAP =
+    private static final Map<String, Function<ItemQuery, AbstractWrapper.WornTickEffect>> CODE_MAP =
             ImmutableMap.of(
-                    'A', AbstractWrapper.WornTickEffect::armor,
-                    'P', AbstractWrapper.WornTickEffect::passive,
-                    'I', AbstractWrapper.WornTickEffect::inUse
+                    "armor",   AbstractWrapper.WornTickEffect::armor,
+                    "passive", AbstractWrapper.WornTickEffect::passive,
+                    "inuse",   AbstractWrapper.WornTickEffect::inUse
             );
-
-    private static List<AbstractWrapper.WornTickEffect> fromStr(String str, ItemQuery query) {
-        return str.chars()
-                .mapToObj(c -> CODE_MAP.get(Character.toUpperCase((char) c)))
-                .filter(Objects::nonNull)
-                .distinct()
-                .map(factory -> factory.apply(query))
-                .collect(Collectors.toList());
-    }
 }

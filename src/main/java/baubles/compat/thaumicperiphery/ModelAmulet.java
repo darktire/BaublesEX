@@ -1,6 +1,7 @@
 package baubles.compat.thaumicperiphery;
 
 import baubles.client.model.ModelInherit;
+import baubles.client.model.Models;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
@@ -21,10 +22,10 @@ public class ModelAmulet extends ModelInherit {
     private final boolean flag;
     private final int width, height;
 
-    public ModelAmulet(ItemStack stack) {
-        super(new ModelBiped(), switchTex(stack.getItem(), stack.getMetadata()));
-        Item item = stack.getItem();
-        this.flag = item == ItemsTC.amuletVis && stack.getMetadata() == 1;
+    public ModelAmulet(Models.Key key) {
+        super(new ModelBiped(), switchTex(key.item(), key.meta()));
+        Item item = key.item();
+        this.flag = item == ItemsTC.amuletVis && key.meta() == 1;
         this.width = item == ItemsTC.baubles ? 5 : (flag ? 6 : 5);
         this.height = item == ItemsTC.baubles ? 5 : 6;
     }

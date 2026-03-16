@@ -15,6 +15,6 @@ public class ModelTire extends ModelItem {
         GlStateManager.translate(0, 0, 0.5);
         GlStateManager.rotate((entity.ticksExisted + partialTicks) / 2, 0, 0, 1);
         GlStateManager.scale(3, 3, 1);
-        this.renderItem(stack);
+        super.render(renderPlayer, entity,stack, limbSwing, limbSwingAmount,partialTicks, ageInTicks, netHeadYaw, headPitch, scale, flag);
     }
 }

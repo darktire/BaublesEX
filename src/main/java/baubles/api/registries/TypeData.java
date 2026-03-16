@@ -4,7 +4,6 @@ import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistry;
-import net.minecraftforge.registries.RegistryBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,15 +12,10 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class TypeData {
-    private static final ResourceLocation BAUBLE_TYPE = getLoc("types", false);
     private static List<BaubleTypeEx> ORDER = new ArrayList<>();
     private static ForgeRegistry<BaubleTypeEx> REGISTRY;
     private static boolean REGISTERED = false;
     private static int sum = 7;
-
-    public static void create() {
-        REGISTRY = (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>().setType(BaubleTypeEx.class).setName(BAUBLE_TYPE).create();
-    }
 
     public static BaubleTypeEx registerType(String name, Integer amount, Integer priority, Collection<BaubleTypeEx> parents) {
         if (name == null) return null;
@@ -52,11 +46,12 @@ public class TypeData {
         return type;
     }
 
-    public static void registerTypes() {
+    public static void registerTypes(ForgeRegistry<BaubleTypeEx> registry) {
+        REGISTRY = registry;
         BaubleTypeEx.REG_MAP.clear();
         while (!BaubleTypeEx.REG_QUE.isEmpty()) {
             BaubleTypeEx poll = BaubleTypeEx.REG_QUE.poll();
-            REGISTRY.register(poll);
+            registry.register(poll);
         }
         REGISTERED = true;
     }

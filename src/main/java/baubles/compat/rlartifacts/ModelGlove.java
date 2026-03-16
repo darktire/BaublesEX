@@ -3,9 +3,12 @@ package baubles.compat.rlartifacts;
 import artifacts.common.init.ModItems;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
+import baubles.api.model.ModelBauble;
 import baubles.api.registries.TypeData;
 import baubles.client.model.ModelInherit;
-import baubles.client.model.ModelManager;
+import baubles.client.model.Models;
+import com.github.bsideup.jabel.Desugar;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -15,44 +18,40 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Map;
+
 public class ModelGlove extends ModelInherit {
+
     private final Item item;
-    private final ResourceLocation texture;
     private final ResourceLocation emissive;
 
-    public static ModelGlove getInstance(ItemStack stack, RenderPlayer renderPlayer) {
-        return ModelManager.getInstance(stack, renderPlayer, s -> new ModelGlove(s.getItem(), renderPlayer));
+    private static final Map<Item, ResourceLocation> TEXTURE_MAP = ImmutableMap.<Item, ResourceLocation>builder()
+            .put(ModItems.POWER_GLOVE, Resources.POWER_GLOVE_TEXTURE)
+            .put(ModItems.FERAL_CLAWS, Resources.FERAL_CLAWS_TEXTURE)
+            .put(ModItems.MECHANICAL_GLOVE, Resources.MECHANICAL_GLOVE_TEXTURE)
+            .put(ModItems.FIRE_GAUNTLET, Resources.FIRE_GAUNTLET_TEXTURE)
+            .put(ModItems.POCKET_PISTON, Resources.POCKET_PISTON_TEXTURE)
+            .build();
+
+    private static final Map<Item, ResourceLocation> EMISSIVE_MAP = ImmutableMap.<Item, ResourceLocation>builder()
+            .put(ModItems.FIRE_GAUNTLET, Resources.FIRE_GAUNTLET_OVERLAY_TEXTURE)
+            .put(ModItems.MAGMA_STONE, Resources.FIRE_GAUNTLET_OVERLAY_TEXTURE)
+            .build();
+
+    public ModelGlove(Models.Key key) {
+        super(key.renderPlayer().getMainModel(), null);
+        this.item = key.item();
+        this.texture = resolveTexture(TEXTURE_MAP.get(item), key.renderPlayer().smallArms);
+        this.emissive = resolveTexture(EMISSIVE_MAP.get(item), key.renderPlayer().smallArms);
     }
 
-    public ModelGlove(Item item, RenderPlayer renderPlayer) {
-        super(renderPlayer.getMainModel(), null);
-        this.item = item;
-        this.texture = getResourceLocation(switchTex(item), renderPlayer.smallArms);
-        this.emissive = getResourceLocation(switchLum(item), renderPlayer.smallArms);
+    public static ModelBauble getInstance(ItemStack stack, RenderPlayer renderPlayer) {
+        return Models.getInstance(Models.wrap(stack.getItem(), stack.getMetadata(), renderPlayer), ModelGlove::new);
     }
 
-    private static ResourceLocation getResourceLocation(ResourceLocation texture, boolean slim) {
-        if (slim && texture != null) {
-            String resourceName = texture.toString().replace("normal", "slim");
-            return new ResourceLocation(resourceName);
-        }
-        else {
-            return texture;
-        }
-    }
-
-    private static ResourceLocation switchTex(Item item) {
-        if (item == ModItems.POWER_GLOVE) return Resources.POWER_GLOVE_TEXTURE;
-        else if(item == ModItems.FERAL_CLAWS) return Resources.FERAL_CLAWS_TEXTURE;
-        else if(item == ModItems.MECHANICAL_GLOVE) return Resources.MECHANICAL_GLOVE_TEXTURE;
-        else if(item == ModItems.FIRE_GAUNTLET) return Resources.FIRE_GAUNTLET_TEXTURE;
-        else if(item == ModItems.POCKET_PISTON) return Resources.POCKET_PISTON_TEXTURE;
-        return null;
-    }
-
-    private static ResourceLocation switchLum(Item item) {
-        if(item == ModItems.FIRE_GAUNTLET || item == ModItems.MAGMA_STONE) return Resources.FIRE_GAUNTLET_OVERLAY_TEXTURE;
-        return null;
+    private static ResourceLocation resolveTexture(ResourceLocation base, boolean slim) {
+        if (base == null || !slim) return base;
+        return new ResourceLocation(base.toString().replace("normal", "slim"));
     }
 
     @Override
@@ -72,23 +71,35 @@ public class ModelGlove extends ModelInherit {
 
     @Override
     public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
-        if (entity.isSneaking() && flag) GlStateManager.translate(0, 0.2F, 0);
+        if (entity.isSneaking() && flag) {
+            GlStateManager.translate(0, 0.2F, 0);
+        }
         renderGlove(entity, scale);
     }
 
     private void renderGlove(EntityLivingBase entity, float scale) {
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
+        ModelPlayer model = (ModelPlayer) this.model;
+
+        int i = baubles.indexOf(this.item, 0);
+        if (i == -1) return;
+
+        if (baubles.indexOf(this.item, i + 1) != -1) {
+            model.bipedLeftArm.render(scale);
+            model.bipedRightArm.render(scale);
+            return;
+        }
+
         int j = baubles.indexOf(TypeData.Preset.RING, 0);
-        int k = baubles.indexOf(this.item, 0);
-        if (k != -1 && baubles.indexOf(this.item, k + 1) != -1) {
-            ((ModelPlayer) this.model).bipedLeftArm.render(scale);
-            ((ModelPlayer) this.model).bipedRightArm.render(scale);
+        if (((i - j) & 1) == 0) {
+            model.bipedRightArm.render(scale);
+        } else {
+            model.bipedLeftArm.render(scale);
         }
-        if (((k - j) & 1) == 0) {
-            ((ModelPlayer) this.model).bipedRightArm.render(scale);
-        }
-        else {
-            ((ModelPlayer) this.model).bipedLeftArm.render(scale);
-        }
+    }
+
+    @Desugar
+    private record ModelKey(Item item, boolean slim) {
+
     }
 }

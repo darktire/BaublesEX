@@ -66,6 +66,10 @@ public class JsonUtils {
         return json.has(name) ? json.get(name).getAsBoolean() : fallback;
     }
 
+    public static JsonObject getObject(JsonObject json, String name) {
+        return json.getAsJsonObject(name);
+    }
+
     public static boolean hasFields(JsonObject json, String... members) {
         if (json == null) {
             return false;

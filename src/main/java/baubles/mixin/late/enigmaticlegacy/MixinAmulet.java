@@ -2,7 +2,7 @@ package baubles.mixin.late.enigmaticlegacy;
 
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.client.model.ModelManager;
+import baubles.client.model.Models;
 import baubles.compat.enigmaticlegacy.ModelAmulet;
 import keletu.enigmaticlegacy.item.ItemAscensionAmulet;
 import keletu.enigmaticlegacy.item.ItemEldritchAmulet;
@@ -17,7 +17,7 @@ public class MixinAmulet implements IRenderBauble {
 
     @Override
     public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        return ModelManager.getInstance(stack, null, ModelAmulet::new);
+        return Models.getInstance(Models.wrap(stack.getItem(), stack.getMetadata()), ModelAmulet::new);
     }
 
     @Override

@@ -6,53 +6,42 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-
-import java.lang.ref.WeakReference;
 
 public class ModelItem extends ModelBauble {
-    protected static final RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
-    protected WeakReference<ItemStack> ref;
-    protected IBakedModel model;
 
     @Override
     public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
-        this.renderItem(stack);
+        IBakedModel model = getModel(stack);
+        GlStateManager.pushMatrix();
+        model = handleCameraTransforms(model);
+        getItemRender().renderModel(model, -1, stack);
+        GlStateManager.popMatrix();
     }
 
     @Override
     public void renderEnchantedGlint(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, ModelBauble model, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        this.renderItemGlint(stack);
-    }
-
-    @Override
-    public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        return TextureMap.LOCATION_BLOCKS_TEXTURE;
-    }
-
-    protected void renderItem(ItemStack stack) {
-        itemRender.renderItem(stack, getModel(stack));
-    }
-
-    protected void renderItemGlint(ItemStack stack) {
-        GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+        IBakedModel bakedModel = getModel(stack);
+        if (bakedModel.isBuiltInRenderer()) return;
+        GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
-        itemRender.renderEffect(getModel(stack));
+        bakedModel = handleCameraTransforms(bakedModel);
+        getItemRender().renderEffect(bakedModel);
         GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+    }
+
+    protected static RenderItem getItemRender() {
+        return Minecraft.getMinecraft().getRenderItem();
     }
 
     protected IBakedModel getModel(ItemStack stack) {
-        if (this.ref == null || isDiff(stack, this.ref.get())) {
-            this.ref = new WeakReference<>(stack);
-            this.model = itemRender.getItemModelWithOverrides(stack, null, null);
-        }
-        return this.model;
+        return getItemRender().getItemModelWithOverrides(stack, null, null);
     }
 
-    private boolean isDiff(ItemStack stack, ItemStack stack1) {
-        return stack1 == null || !stack1.isItemEqual(stack);
+    public IBakedModel handleCameraTransforms(IBakedModel model) {
+        GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+        return model;
     }
 }

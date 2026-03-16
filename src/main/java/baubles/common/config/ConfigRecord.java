@@ -3,6 +3,7 @@ package baubles.common.config;
 import baubles.api.BaublesApi;
 import baubles.api.module.IModule;
 import baubles.api.registries.ItemData;
+import baubles.client.model.Models;
 import baubles.common.config.json.ConversionHelper;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraftforge.client.resource.IResourceType;
@@ -37,6 +38,7 @@ public class ConfigRecord implements ISelectiveResourceReloadListener {
             }
             ItemData.restore();
             ConversionHelper.fromJson(ConversionHelper.Content.ITEMS);
+            Models.loadModel();
         } catch (Exception e) {
             BaublesApi.log.error("error reloading", e);
         }

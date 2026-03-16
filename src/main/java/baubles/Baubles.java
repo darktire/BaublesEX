@@ -1,19 +1,8 @@
 package baubles;
 
-import baubles.api.AbstractWrapper;
 import baubles.api.BaublesApi;
-import baubles.api.BaublesWrapper;
-import baubles.api.cap.BaublesCapabilities.CapabilityBaubles;
-import baubles.api.cap.BaublesCapabilities.CapabilityItemBaubleStorage;
-import baubles.api.cap.BaublesContainer;
-import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.registries.TypeData;
 import baubles.common.command.BaublesCommand;
-import baubles.common.config.Config;
-import baubles.common.network.PacketHandler;
 import baubles.proxy.CommonProxy;
-import baubles.util.HookHelper;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -22,7 +11,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 @Mod(
         modid = BaublesApi.MOD_ID,
@@ -39,35 +27,17 @@ public class Baubles {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        TypeData.Preset.init();
-        Config.loadConfig();
-        BaublesRegister.setTypes();
-
-        CapabilityManager.INSTANCE.register(
-                IBaublesItemHandler.class,
-                new CapabilityBaubles(),
-                BaublesContainer::new);
-        CapabilityManager.INSTANCE.register(
-                AbstractWrapper.class,
-                new CapabilityItemBaubleStorage(),
-                BaublesWrapper::new);
-
-        proxy.preInit();
-        HookHelper.patchModsEvents(event.getAsmData());
-        PacketHandler.init();
+        proxy.preInit(event);
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
-        proxy.init();
+        proxy.init(event);
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        Config.setupBlacklist();
-        BaublesRegister.registerItems();
-        proxy.postInit();
+        proxy.postInit(event);
     }
 
     @EventHandler

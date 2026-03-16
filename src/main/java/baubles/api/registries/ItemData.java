@@ -14,7 +14,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,17 +34,19 @@ public class ItemData {
     private static final BaublesWrapper.CSTMap CST_MAP = AbstractWrapper.CSTMap.instance();
     private static final Function<ItemStack, AbstractWrapper> DEFAULT = BaublesWrapper::new;
 
-    private static final Equivalence<ItemStack> STACK_EQ = new Equivalence<ItemStack>() {
+    private static final Equivalence<ItemStack> STACK_EQ = new Equivalence<>() {
         @Override
         protected boolean doEquivalent(ItemStack a, ItemStack b) {
-            return a.getItem() == b.getItem()
-                    && a.getMetadata() == b.getMetadata()
-                    && Objects.equals(a.getTagCompound(), b.getTagCompound());
+            return a.getItem() == b.getItem() && meta(a) == meta(b) && Objects.equals(a.getTagCompound(), b.getTagCompound());
         }
+
         @Override
         protected int doHash(ItemStack stack) {
-            NBTTagCompound nbt = stack.getTagCompound();
-            return 31 * (31 * System.identityHashCode(stack.getItem()) + stack.getMetadata()) + (nbt == null ? 0 : nbt.hashCode());
+            return Objects.hash(stack.getItem(), meta(stack), stack.getTagCompound());
+        }
+
+        private static int meta(ItemStack stack) {
+            return stack.getHasSubtypes() ? stack.getMetadata() : 0;
         }
     };
 

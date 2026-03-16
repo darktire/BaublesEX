@@ -1,6 +1,7 @@
 package baubles.compat.enigmaticlegacy;
 
 import baubles.client.model.ModelInherit;
+import baubles.client.model.Models;
 import keletu.enigmaticlegacy.EnigmaticLegacy;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,9 +20,9 @@ public class ModelAmulet extends ModelInherit {
     private final ModelRenderer bipedBody;
     private final ModelRenderer gem;
 
-    public ModelAmulet(ItemStack stack) {
-        super(new Edited(stack), switchTex(stack));
-        this.flag = stack.getItem() == EnigmaticLegacy.eldritchAmulet;
+    public ModelAmulet(Models.Key key) {
+        super(new Edited(), switchTex(key));
+        this.flag = key.item() == EnigmaticLegacy.eldritchAmulet;
         this.bipedBody = ((Edited) this.model).getInner(true);
         this.gem = ((Edited) this.model).getInner(false);
     }
@@ -63,9 +64,9 @@ public class ModelAmulet extends ModelInherit {
         GlStateManager.popMatrix();
     }
 
-    private static ResourceLocation switchTex(ItemStack stack) {
-        Item item = stack.getItem();
-        int meta = stack.getMetadata();
+    private static ResourceLocation switchTex(Models.Key key) {
+        Item item = key.item();
+        int meta = key.meta();
         if (item == EnigmaticLegacy.enigmaticAmulet) {
             String path = DEFAULT_PATH;
             if (1 <= meta && meta < 8) {
@@ -85,13 +86,12 @@ public class ModelAmulet extends ModelInherit {
     }
 
     private static class Edited extends keletu.enigmaticlegacy.client.ModelAmulet {
-        public Edited(ItemStack stack) {
-            super(stack);
+        public Edited() {
+            super(ItemStack.EMPTY);
         }
 
-        public ModelRenderer getInner(boolean b) {
-            if (b) return this.bipedBody;
-            else return this.gem;
+        public ModelRenderer getInner(boolean flag) {
+            return flag ? this.bipedBody : this.gem;
         }
     }
 }

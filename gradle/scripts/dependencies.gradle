@@ -16,7 +16,7 @@ repositories {
     }
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://maven.cleanroommc.com' }
-    maven { url 'https://lss233.littleservice.cn/repositories/minecraft/' }
+//    maven { url 'https://lss233.littleservice.cn/repositories/minecraft/' }
     mavenLocal()
 }
 

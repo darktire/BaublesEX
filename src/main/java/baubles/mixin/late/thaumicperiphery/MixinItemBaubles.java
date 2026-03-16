@@ -2,7 +2,7 @@ package baubles.mixin.late.thaumicperiphery;
 
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.client.model.ModelManager;
+import baubles.client.model.Models;
 import baubles.compat.thaumicperiphery.ModelAmulet;
 import baubles.compat.thaumicperiphery.ModelBelt;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -22,7 +22,7 @@ public class MixinItemBaubles extends Item implements IRenderBauble {
     public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         int meta = stack.getMetadata();
         boolean flag = this == ItemsTC.focusPouch || (this == ItemsTC.baubles && (meta == 2 || meta == 6));
-        return ModelManager.getInstance(stack, null, flag ? ModelBelt::new : ModelAmulet::new);
+        return Models.getInstance(Models.wrap(stack.getItem(), meta), flag ? ModelBelt::new : ModelAmulet::new);
     }
 
     @Override

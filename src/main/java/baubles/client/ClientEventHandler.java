@@ -7,6 +7,7 @@ import baubles.api.BaublesApi;
 import baubles.api.event.BaublesRenderEvent;
 import baubles.api.module.IModule;
 import baubles.api.registries.TypeData;
+import baubles.client.model.Models;
 import baubles.common.config.Config;
 import baubles.common.config.KeyBindings;
 import baubles.common.network.PacketHandler;
@@ -19,6 +20,7 @@ import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -52,10 +54,16 @@ public class ClientEventHandler {
             registerModel(BaublesRegister.ModItems.tire, 2);
             registerModel(BaublesRegister.ModItems.tire, 3);
         }
+        Models.loadModel();
     }
 
     private static void registerModel(Item item, int meta) {
         ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(item.getRegistryName(), "inventory"));
+    }
+
+    @SubscribeEvent
+    public static void onModelBake(ModelBakeEvent event) {
+        Models.setModelManager(event.getModelManager());
     }
 
     @SubscribeEvent

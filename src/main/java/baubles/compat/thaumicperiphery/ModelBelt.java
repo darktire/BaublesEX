@@ -1,6 +1,7 @@
 package baubles.compat.thaumicperiphery;
 
 import baubles.api.model.ModelBauble;
+import baubles.client.model.Models;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -16,10 +17,10 @@ public class ModelBelt extends ModelBauble {
     private final ModelRenderer model;
     private final ResourceLocation res;
 
-    public ModelBelt(ItemStack stack) {
+    public ModelBelt(Models.Key key) {
         ModelBiped biped = new ModelBiped();
-        Item item = stack.getItem();
-        this.res = switchTex(item, stack.getMetadata());
+        Item item = key.item();
+        this.res = switchTex(item, key.meta());
         if (item == ItemsTC.focusPouch) {
             this.model = new ModelRenderer(biped, 0, 11);
             this.model.addBox(1.25F, 6.5F, -3.0F, 3, 3, 1);

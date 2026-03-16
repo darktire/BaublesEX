@@ -20,6 +20,6 @@ public class ModelShield extends ModelItem {
         GlStateManager.scale(0.6, 0.6, 0.6);
         GlStateManager.rotate(180, 0, 0, 1);
         GlStateManager.translate(0.5, -0.25, armor ? 0.7 : 0.75);
-        this.renderItem(stack);
+        super.render(renderPlayer, entity,stack, limbSwing, limbSwingAmount,partialTicks, ageInTicks, netHeadYaw, headPitch, scale, flag);
     }
 }

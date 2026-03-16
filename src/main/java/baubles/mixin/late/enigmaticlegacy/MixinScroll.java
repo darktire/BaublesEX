@@ -2,7 +2,7 @@ package baubles.mixin.late.enigmaticlegacy;
 
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.client.model.ModelManager;
+import baubles.client.model.Models;
 import baubles.compat.enigmaticlegacy.ModelScroll;
 import keletu.enigmaticlegacy.item.ItemBaseBauble;
 import keletu.enigmaticlegacy.item.ItemScrollBauble;
@@ -21,7 +21,7 @@ public abstract class MixinScroll extends ItemBaseBauble implements IRenderBaubl
 
     @Override
     public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        return ModelManager.getInstance(stack, null, k -> new ModelScroll());
+        return Models.getInstance(Models.wrap(stack.getItem()), k -> new ModelScroll());
     }
 
     @Override

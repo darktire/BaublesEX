@@ -1,6 +1,7 @@
 package baubles.compat.bountifulbaubles;
 
 import baubles.client.model.ModelInherit;
+import baubles.client.model.Models;
 import cursedflames.bountifulbaubles.item.ModItems;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
@@ -14,8 +15,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class ModelAmulet extends ModelInherit {
 
-    public ModelAmulet(ItemStack stack) {
-        super(new ModelBiped(), switchTex(stack.getItem()));
+    public ModelAmulet(Models.Key key) {
+        super(new ModelBiped(), switchTex(key.item()));
     }
 
     private static ResourceLocation switchTex(Item item) {

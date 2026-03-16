@@ -2,7 +2,7 @@ package baubles.mixin.late.bountifulbaubles;
 
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import baubles.client.model.ModelManager;
+import baubles.client.model.Models;
 import baubles.compat.bountifulbaubles.ModelAmulet;
 import cursedflames.bountifulbaubles.item.ItemAmuletCross;
 import cursedflames.bountifulbaubles.item.ItemAmuletSin;
@@ -16,6 +16,6 @@ import org.spongepowered.asm.mixin.Mixin;
 public abstract class MixinAmulet extends Item implements IRenderBauble {
     @Override
     public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        return ModelManager.getInstance(stack, null, ModelAmulet::new);
+        return Models.getInstance(Models.wrap(stack.getItem()), ModelAmulet::new);
     }
 }

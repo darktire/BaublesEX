@@ -16,6 +16,6 @@ public class ModelScroll extends ModelItem {
         GlStateManager.translate(0.0, 0.75, 0.0);
         GlStateManager.rotate(rotateAngleY * 57.295776F, 0.0F, 1.0F, 0.0F);
         GlStateManager.translate(0.0F, 0.0F, 2.5F);
-        this.renderItem(stack);
+        super.render(renderPlayer, entity,stack, limbSwing, limbSwingAmount,partialTicks, ageInTicks, netHeadYaw, headPitch, scale, flag);
     }
 }
