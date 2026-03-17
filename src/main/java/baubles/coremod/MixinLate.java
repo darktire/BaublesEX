@@ -29,6 +29,7 @@ public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
             "enigmaticlegacy",
             "extrabotany",
             "iceandfire",
+            "improvedbackpacks",
             "mobends",
             "nvg",
             "potionfingers",

@@ -1,0 +1,16 @@
+{
+    "package": "baubles.mixin.late.improvedbackpacks",
+    "plugin": "baubles.coremod.MixinLate",
+    "compatibilityLevel": "JAVA_8",
+    "minVersion": "0.8",
+    "refmap": "mixins/mixins.baubles.refmap.json",
+    "mixins": [
+        "MixinContainerBackpack",
+        "MixinModGui"
+    ],
+    "client": [
+        "MixinCMessageOpenBackpack",
+        "MixinEventListener",
+        "MixinLayerBackpack"
+    ]
+}

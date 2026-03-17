@@ -13,8 +13,5 @@
     "MixinGuiScreen",
     "MixinLayerArmorBase",
     "MixinPlayerSP"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+  ]
 }
