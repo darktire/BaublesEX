@@ -2,11 +2,11 @@ package baubles.common.network;
 
 import baubles.common.container.ContainerExpansion;
 import baubles.common.container.ExpansionManager;
+import baubles.lib.network.IPacket;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketFakeTransaction implements IPacket {
@@ -29,7 +29,7 @@ public class PacketFakeTransaction implements IPacket {
     }
 
     @Override
-    public IMessage handlePacket(MessageContext ctx) {
+    public IPacket handlePacket(MessageContext ctx) {
         ctx.getServerHandler().player.getServerWorld().addScheduledTask(() -> {
             EntityPlayerMP player = ctx.getServerHandler().player;
             ExpansionManager manager = ExpansionManager.getInstance();

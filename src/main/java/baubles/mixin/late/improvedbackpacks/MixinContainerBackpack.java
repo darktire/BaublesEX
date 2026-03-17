@@ -15,7 +15,7 @@ import ru.poopycoders.improvedbackpacks.inventory.InventoryBackpack;
 import ru.poopycoders.improvedbackpacks.inventory.containers.ContainerBackpack;
 import ru.poopycoders.improvedbackpacks.utils.NBTUtils;
 
-@Mixin(ContainerBackpack.class)
+@Mixin(value = ContainerBackpack.class, remap = false)
 public class MixinContainerBackpack {
     @Shadow @Final private InventoryBackpack backpackInventory;
 

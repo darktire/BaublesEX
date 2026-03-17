@@ -16,7 +16,7 @@ public class ModelSeaStone extends ModelItem {
     public ModelSeaStone() {}
 
     @Override
-    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (!TrinketsConfig.CLIENT.items.SEA_STONE.doRender) return;
         final float offsetY = 0.16F;
         final float offsetZ = 0.14F;
@@ -27,6 +27,6 @@ public class ModelSeaStone extends ModelItem {
         }
         final float bS = 3f;
         GlStateManager.scale(scale * bS, scale * bS, scale * bS);
-        super.render(renderPlayer, entity,stack, limbSwing, limbSwingAmount,partialTicks, ageInTicks, netHeadYaw, headPitch, scale, flag);
+        super.render(renderPlayer, entity,stack, limbSwing, limbSwingAmount,partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
     }
 }

@@ -7,7 +7,7 @@ import baubles.api.attribute.AdvancedInstance;
 import baubles.api.attribute.AttributeManager;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.config.Config;
-import baubles.common.network.PacketHandler;
+import baubles.common.network.NetworkHandler;
 import baubles.common.network.PacketModifier;
 import baubles.common.network.PacketSync;
 import net.minecraft.entity.EntityLivingBase;
@@ -46,7 +46,7 @@ public class CommonHelper {
                 bauble.onEquipped(stack, playerIn);
                 if (!playerIn.world.isRemote) {
                     PacketSync pkt = PacketSync.S2CPack(playerIn, i, stack, -1);
-                    PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) playerIn);
+                    NetworkHandler.CHANNEL.sendTo(pkt, (EntityPlayerMP) playerIn);
                 }
                 return true;
             }
@@ -87,13 +87,13 @@ public class CommonHelper {
         AdvancedInstance instance = AttributeManager.getInstance(map, type);
         double present = instance.getAnonymousModifier(0);
         instance.applyAnonymousModifier(0, present + modifier);
-        PacketHandler.INSTANCE.sendTo(new PacketModifier(entity, type, (int) (present + modifier), 0), (EntityPlayerMP) entity);
+        NetworkHandler.CHANNEL.sendTo(new PacketModifier(entity, type, (int) (present + modifier), 0), (EntityPlayerMP) entity);
     }
 
     public static void setAnonymousModifier(EntityLivingBase entity, BaubleTypeEx type, int modifier) {
         AbstractAttributeMap map = entity.getAttributeMap();
         AdvancedInstance instance = AttributeManager.getInstance(map, type);
         instance.applyAnonymousModifier(0, modifier);
-        PacketHandler.INSTANCE.sendTo(new PacketModifier(entity, type, modifier, 0), (EntityPlayerMP) entity);
+        NetworkHandler.CHANNEL.sendTo(new PacketModifier(entity, type, modifier, 0), (EntityPlayerMP) entity);
     }
 }

@@ -33,7 +33,7 @@ public class ModelPauldron extends ModelInherit {
         }
 
         @Override
-        public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+        public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             ((ModelBiped) this.model).bipedBody.render(scale);
         }
 
@@ -50,7 +50,7 @@ public class ModelPauldron extends ModelInherit {
         }
 
         @Override
-        public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+        public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             if (FLAG) {
                 if (entity.isSneaking()) GlStateManager.translate(0, 0.2F, 0);
                 PlayerData data = BenderHelper.getData((AbstractClientPlayer) entity, renderPlayer);

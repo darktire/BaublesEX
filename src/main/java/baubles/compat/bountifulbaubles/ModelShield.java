@@ -15,11 +15,11 @@ public class ModelShield extends ModelItem {
     private ModelShield() {}
 
     @Override
-    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         boolean armor = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty();
         GlStateManager.scale(0.6, 0.6, 0.6);
         GlStateManager.rotate(180, 0, 0, 1);
         GlStateManager.translate(0.5, -0.25, armor ? 0.7 : 0.75);
-        super.render(renderPlayer, entity,stack, limbSwing, limbSwingAmount,partialTicks, ageInTicks, netHeadYaw, headPitch, scale, flag);
+        super.render(renderPlayer, entity,stack, limbSwing, limbSwingAmount,partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
     }
 }

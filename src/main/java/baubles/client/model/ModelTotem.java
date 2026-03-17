@@ -14,11 +14,11 @@ public class ModelTotem extends ModelItem {
     private ModelTotem() {}
 
     @Override
-    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         boolean chest = !entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty();
         GlStateManager.scale(0.25, 0.25, 0.25);
         GlStateManager.rotate(180, 0, 0, 1);
         GlStateManager.translate(0.0, -0.5, chest ? -0.8 : -0.5);
-        super.render(renderPlayer, entity,stack, limbSwing, limbSwingAmount,partialTicks, ageInTicks, netHeadYaw, headPitch, scale, flag);
+        super.render(renderPlayer, entity,stack, limbSwing, limbSwingAmount,partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
     }
 }

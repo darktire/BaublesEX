@@ -9,6 +9,7 @@ import baubles.client.model.ModelInherit;
 import baubles.client.model.Models;
 import com.github.bsideup.jabel.Desugar;
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -55,13 +56,14 @@ public class ModelGlove extends ModelInherit {
     }
 
     @Override
-    public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        return this.texture;
-    }
-
-    @Override
-    public ResourceLocation getEmissiveMap(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        return this.emissive;
+    public void renderWithTexture(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        if (this.texture != null) {
+            super.renderWithTexture(renderPlayer, entity, stack, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+        }
+        if (this.emissive != null) {
+            Minecraft.getMinecraft().getTextureManager().bindTexture(this.emissive);
+            lightThis(() -> this.render(renderPlayer, entity, stack, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale));
+        }
     }
 
     @Override
@@ -70,8 +72,8 @@ public class ModelGlove extends ModelInherit {
     }
 
     @Override
-    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
-        if (entity.isSneaking() && flag) {
+    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        if (entity.isSneaking()) {
             GlStateManager.translate(0, 0.2F, 0);
         }
         renderGlove(entity, scale);

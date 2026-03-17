@@ -18,7 +18,7 @@ public class Resources extends CommonRcs {
 
     public static final ModelBauble GOGGLES = new ModelInherit(new ModelBiped(), getLoc("textures/entity/armor/goggles.png")) {
         @Override
-        public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+        public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             boolean armor = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty();
             float s = armor ? 1.25F : 1.2F;
             GlStateManager.scale(s, s, s);
@@ -36,7 +36,7 @@ public class Resources extends CommonRcs {
         private final ResourceLocation res = getLoc("textures/items/curiosity_band_worn.png");
 
         @Override
-        public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+        public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             boolean armor = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty();
             GlStateManager.rotate(180.0f, 0.0f, 0.0f, 1.0f);
             float s = 0.5F;

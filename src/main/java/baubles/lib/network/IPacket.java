@@ -1,4 +1,4 @@
-package baubles.common.network;
+package baubles.lib.network;
 
 import baubles.api.BaublesApi;
 import io.netty.buffer.ByteBuf;
@@ -29,5 +29,5 @@ public interface IPacket extends IMessage {
 
     default void read(PacketBuffer buf) throws Exception {}
 
-    IMessage handlePacket(MessageContext ctx);
+    IPacket handlePacket(MessageContext ctx);
 }

@@ -19,11 +19,10 @@ public class ModelElytra extends ModelInherit {
     }
 
     @Override
-    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (FLAG && entity instanceof AbstractClientPlayer) {
             PlayerData data = BenderHelper.getData((AbstractClientPlayer) entity, renderPlayer);
-            assert data != null;
-            data.body.applyCharacterTransform(0.0625F);
+            data.body.applyCharacterTransform(scale);
             GlStateManager.translate(0.0F, -12.0F * scale, 0.0F);
         }
         else {

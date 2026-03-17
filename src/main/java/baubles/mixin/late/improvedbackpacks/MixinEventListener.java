@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import ru.poopycoders.improvedbackpacks.init.ModItems;
 import ru.poopycoders.improvedbackpacks.listeners.EventListener;
 
-@Mixin(EventListener.class)
+@Mixin(value = EventListener.class, remap = false)
 public class MixinEventListener {
     @Redirect(
             method = "onClientTick",

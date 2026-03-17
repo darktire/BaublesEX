@@ -1,7 +1,7 @@
 package baubles.client.gui.element;
 
 import baubles.client.gui.GuiOverlay;
-import baubles.common.network.PacketHandler;
+import baubles.common.network.NetworkHandler;
 import baubles.common.network.PacketSync;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
@@ -25,7 +25,7 @@ public class ElementSwitcher extends ElementBase {
             if (pressed) {
                 this.on = !this.on;
                 this.parentGui.baubles.setVisible(id, this.on);
-                PacketHandler.INSTANCE.sendToServer(PacketSync.C2SPack(id, null, this.on ? 1 : 0));
+                NetworkHandler.CHANNEL.sendToServer(PacketSync.C2SPack(id, null, this.on ? 1 : 0));
             }
             return pressed;
         }

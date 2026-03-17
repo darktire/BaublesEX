@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import ru.poopycoders.improvedbackpacks.init.ModItems;
 import ru.poopycoders.improvedbackpacks.network.client.CMessageOpenBackpack;
 
-@Mixin(CMessageOpenBackpack.Handler.class)
+@Mixin(value = CMessageOpenBackpack.Handler.class, remap = false)
 public class MixinCMessageOpenBackpack {
     @Redirect(
             method = "lambda$onMessage$0",

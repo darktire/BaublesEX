@@ -17,7 +17,7 @@ public class ModelQuiver extends ModelInherit {
     }
 
     @Override
-    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         float fill = RechargeHelper.getChargePercentage(stack, (EntityPlayer) entity);
         ((Edit) this.model).render1(fill, scale, true);
     }

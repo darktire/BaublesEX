@@ -34,7 +34,7 @@ public class ModelAmulet extends ModelInherit {
     }
 
     @Override
-    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (entity.hasItemInSlot(EntityEquipmentSlot.CHEST)) {
             GlStateManager.translate(0.0F, -0.02F, -0.045F);
             GlStateManager.scale(1.1F, 1.1F, 1.1F);

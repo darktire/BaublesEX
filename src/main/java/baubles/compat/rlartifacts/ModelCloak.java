@@ -4,6 +4,7 @@ import artifacts.common.init.ModItems;
 import artifacts.common.util.RenderHelper;
 import baubles.api.BaublesApi;
 import baubles.client.model.ModelInherit;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -17,23 +18,19 @@ public class ModelCloak extends ModelInherit {
     public static final ResourceLocation CLOAK_OVERLAY = Resources.getLoc("star_cloak_overlay.png");
 
     public ModelCloak(boolean isUp) {
-        super(isUp ? new Up() : new Down(), null);
+        super(isUp ? new Up() : new Down(), CLOAK_NORMAL);
     }
 
     @Override
-    public ResourceLocation getEmissiveMap(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        return CLOAK_NORMAL;
-    }
-
-    @Override
-    public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        return CLOAK_OVERLAY;
+    public void renderWithTexture(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        super.renderWithTexture(renderPlayer, entity, stack, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(CLOAK_OVERLAY);
+        lightThis(() -> this.render(renderPlayer, entity, stack, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale));
     }
 
     private static class Up extends artifacts.client.model.ModelCloak {
         @Override
         public void render(Entity entity, float f1, float f2, float f3, float f4, float f5, float scale) {
-
             this.renderHood(entity, 0, 0, 0, 0, 0, scale, ModelCloak.renderHood(entity));
         }
     }

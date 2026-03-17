@@ -1,7 +1,7 @@
 package baubles.mixin.late.bountifulbaubles;
 
 import baubles.api.BaublesApi;
-import baubles.common.network.PacketHandler;
+import baubles.common.network.NetworkHandler;
 import baubles.common.network.PacketSync;
 import cursedflames.bountifulbaubles.baubleeffect.BaubleAttributeModifierHandler;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,7 +19,7 @@ public class MixinBaubleAttributeModifierHandler {
         if (!entity.world.isRemote) {
             int index = BaublesApi.getBaublesHandler(entity).indexOf(stack.getItem(), 0);
             PacketSync pkt = PacketSync.S2CPack(entity, index, stack, -1);
-            PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) entity);
+            NetworkHandler.CHANNEL.sendTo(pkt, (EntityPlayerMP) entity);
         }
     }
 }

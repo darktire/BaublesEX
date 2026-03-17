@@ -1,18 +1,18 @@
 package baubles.client.model;
 
 import baubles.api.model.ModelBauble;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelItem extends ModelBauble {
 
     @Override
-    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         IBakedModel model = getModel(stack);
         GlStateManager.pushMatrix();
         model = handleCameraTransforms(model);
@@ -21,7 +21,7 @@ public class ModelItem extends ModelBauble {
     }
 
     @Override
-    public void renderEnchantedGlint(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, ModelBauble model, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void renderEnchantedGlint(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         IBakedModel bakedModel = getModel(stack);
         if (bakedModel.isBuiltInRenderer()) return;
         GlStateManager.pushMatrix();
@@ -32,8 +32,9 @@ public class ModelItem extends ModelBauble {
         GlStateManager.popMatrix();
     }
 
-    protected static RenderItem getItemRender() {
-        return Minecraft.getMinecraft().getRenderItem();
+    @Override
+    public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+        return TextureMap.LOCATION_BLOCKS_TEXTURE;
     }
 
     protected IBakedModel getModel(ItemStack stack) {

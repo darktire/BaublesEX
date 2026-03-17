@@ -36,8 +36,8 @@ dependencies {
 //    implementation fg.deobf("curse.maven:extra-alchemy-247357:2937550")
 //    runtimeOnly fg.deobf("curse.maven:geckolib-388172:4020277")
     compileOnly fg.deobf("curse.maven:unseens-dungeon-additions-1087823:7657077")
-    implementation fg.deobf("curse.maven:corpse-complex-271605:3176964")
-    implementation fg.deobf("curse.maven:improvedbackpacks-270457:2918455")
+//    implementation fg.deobf("curse.maven:corpse-complex-271605:3176964")
+    compileOnly fg.deobf("curse.maven:improvedbackpacks-270457:2918455")
     //quality tools
     runtimeOnly fg.deobf("curse.maven:potion-core-242872:2905184")
     implementation fg.deobf("curse.maven:quality-tools-264756:2732994")

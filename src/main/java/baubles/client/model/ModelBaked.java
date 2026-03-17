@@ -1,9 +1,7 @@
 package baubles.client.model;
 
 import baubles.api.model.ModelBauble;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -26,7 +24,7 @@ public class ModelBaked extends ModelBauble {
     }
 
     @Override
-    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         IBakedModel model = Models.getBakedModel(this.mrl);
         GlStateManager.pushMatrix();
         model = handleCameraTransforms(model);
@@ -35,7 +33,7 @@ public class ModelBaked extends ModelBauble {
     }
 
     @Override
-    public void renderEnchantedGlint(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, ModelBauble model, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void renderEnchantedGlint(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         IBakedModel bakedModel = Models.getBakedModel(this.mrl);
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
@@ -48,10 +46,6 @@ public class ModelBaked extends ModelBauble {
     @Override
     public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return TextureMap.LOCATION_BLOCKS_TEXTURE;
-    }
-
-    protected static RenderItem getItemRender() {
-        return Minecraft.getMinecraft().getRenderItem();
     }
 
     public IBakedModel handleCameraTransforms(IBakedModel model) {

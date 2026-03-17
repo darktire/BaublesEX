@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import ru.poopycoders.improvedbackpacks.init.ModGui;
 import ru.poopycoders.improvedbackpacks.init.ModItems;
 
-@Mixin(ModGui.class)
+@Mixin(value = ModGui.class, remap = false)
 public class MixinModGui {
     @Redirect(
             method = "getClientGuiElement",

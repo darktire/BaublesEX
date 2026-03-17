@@ -10,7 +10,7 @@ import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypeData;
 import baubles.common.config.Config;
 import baubles.common.container.ContainerPlayerExpanded;
-import baubles.common.network.PacketHandler;
+import baubles.common.network.NetworkHandler;
 import baubles.common.network.PacketPool;
 import baubles.util.HookHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,7 +58,7 @@ public class CommonProxy implements IGuiHandler {
                 BaublesWrapper::new);
 
         HookHelper.patchModsEvents(event.getAsmData());
-        PacketHandler.init();
+        NetworkHandler.init();
     }
 
     public void init(FMLInitializationEvent event) {

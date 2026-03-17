@@ -15,12 +15,12 @@ public class ModelCharm extends ModelItem {
     private ModelCharm() {}
 
     @Override
-    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         boolean armor = !entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty();
         GlStateManager.translate(0.15, 0.3, armor ? -0.1875 : -0.125);
         float s = 0.125F;
         GlStateManager.scale(s, s, s);
         GlStateManager.rotate(180, 1, 0, 0);
-        super.render(renderPlayer, entity,stack, limbSwing, limbSwingAmount,partialTicks, ageInTicks, netHeadYaw, headPitch, scale, flag);
+        super.render(renderPlayer, entity,stack, limbSwing, limbSwingAmount,partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
     }
 }

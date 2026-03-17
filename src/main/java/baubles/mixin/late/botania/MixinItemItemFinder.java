@@ -1,7 +1,7 @@
 package baubles.mixin.late.botania;
 
 import baubles.api.BaublesApi;
-import baubles.common.network.PacketHandler;
+import baubles.common.network.NetworkHandler;
 import baubles.common.network.PacketSync;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,7 +18,7 @@ public class MixinItemItemFinder {
     void inject(ItemStack stack, EntityLivingBase entity, CallbackInfo ci) {
         if (!entity.world.isRemote && entity instanceof EntityPlayerMP) {
             PacketSync pkt = PacketSync.S2CPack(entity, BaublesApi.getIndexInBaubles(entity, stack, 0), stack, -1);
-            PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) entity);
+            NetworkHandler.CHANNEL.sendTo(pkt, (EntityPlayerMP) entity);
         }
     }
 }

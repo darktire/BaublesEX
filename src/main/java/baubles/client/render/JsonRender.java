@@ -35,7 +35,7 @@ public class JsonRender implements IRenderBauble {
             .collect(Collectors.toMap(e -> e.name().toLowerCase(), e -> e));
 
     private static RenderType getType(String name) {
-        return Optional.ofNullable(LOOKUP.get(name.toLowerCase())).orElse(RenderType.BODY);
+        return LOOKUP.get(name.toLowerCase());
     }
 
     public static class More implements IRenderBauble {

@@ -3,11 +3,11 @@ package baubles.common.network;
 import baubles.Baubles;
 import baubles.common.container.ContainerExpansion;
 import baubles.common.container.ExpansionManager;
+import baubles.lib.network.IPacket;
 import baubles.proxy.CommonProxy;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketOpen implements IPacket {
@@ -31,7 +31,7 @@ public class PacketOpen implements IPacket {
     }
 
     @Override
-    public IMessage handlePacket(MessageContext ctx) {
+    public IPacket handlePacket(MessageContext ctx) {
         EntityPlayerMP player = ctx.getServerHandler().player;
         ((WorldServer) player.world).addScheduledTask(() -> this.option.apply(player));
         return null;

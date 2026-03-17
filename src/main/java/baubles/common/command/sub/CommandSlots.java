@@ -6,7 +6,7 @@ import baubles.api.attribute.AttributeManager;
 import baubles.api.registries.TypeData;
 import baubles.common.command.BaublesCommand;
 import baubles.common.command.CommandTree;
-import baubles.common.network.PacketHandler;
+import baubles.common.network.NetworkHandler;
 import baubles.common.network.PacketModifier;
 import baubles.util.CommonHelper;
 import net.minecraft.command.CommandException;
@@ -63,7 +63,7 @@ public class CommandSlots extends CommandTree {
                         AdvancedInstance instance = AttributeManager.getInstance(map, type);
                         double present = instance.getAnonymousModifier(0);
                         instance.applyAnonymousModifier(0, present + modifier);
-                        PacketHandler.INSTANCE.sendTo(new PacketModifier(player, args[1], (int) (present + modifier), 0), player);
+                        NetworkHandler.CHANNEL.sendTo(new PacketModifier(player, args[1], (int) (present + modifier), 0), player);
                     }
                 }
             }
@@ -100,7 +100,7 @@ public class CommandSlots extends CommandTree {
                         AdvancedInstance instance = AttributeManager.getInstance(map, type);
                         double present = instance.getAttributeValue() - instance.getAnonymousModifier(0);
                         instance.applyAnonymousModifier(0, modifier - present);
-                        PacketHandler.INSTANCE.sendTo(new PacketModifier(player, args[1], (int) (modifier - present), 0), player);
+                        NetworkHandler.CHANNEL.sendTo(new PacketModifier(player, args[1], (int) (modifier - present), 0), player);
                     }
                 }
             }

@@ -3,6 +3,7 @@ package baubles.common.network;
 import baubles.Baubles;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
+import baubles.lib.network.IPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -12,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -88,7 +88,7 @@ public class PacketSync implements IPacket {
     }
 
     @Override
-    public IMessage handlePacket(MessageContext ctx) {
+    public IPacket handlePacket(MessageContext ctx) {
         if (ctx.side == Side.CLIENT && this.toClient) {
             Minecraft.getMinecraft().addScheduledTask(this::handleClient);
         }

@@ -8,12 +8,15 @@ import baubles.api.registries.ItemData;
 import baubles.api.registries.TypeData;
 import baubles.api.render.IRenderBauble;
 import baubles.client.model.Models;
+import baubles.client.render.ArmorRender;
 import baubles.client.render.JsonRender;
 import baubles.common.config.ConfigRecord;
 import baubles.lib.util.ItemQuery;
 import baubles.lib.util.JsonUtils;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.lang.reflect.Type;
@@ -63,13 +66,21 @@ public final class ItemDeserializer implements JsonDeserializer<ItemQuery> {
             for (JsonElement e : JsonUtils.parseArray(in, "render")) {
                 if (e instanceof JsonObject obj) {
                     String pos = JsonUtils.getString(obj, "pos", "");
-                    if (obj.has("model")) {
-                        String path = JsonUtils.getString(obj, "model");
-                        temp.add(new JsonRender(path, pos));
-                    } else if (obj.has("load")) {
-                        String path = JsonUtils.getString(obj, "load");
-                        Models.enqueue(path);
-                        temp.add(new JsonRender(path, pos));
+                    if (!obj.has("path")) continue;
+                    String from = JsonUtils.getString(obj, "from", "");
+                    String path = JsonUtils.getString(obj, "path");
+                    switch (from) {
+                        case "native":
+                            temp.add(new JsonRender(path, pos));
+                            break;
+                        case "load":
+                            Models.enqueue(path);
+                            temp.add(new JsonRender(path, pos));
+                            break;
+                        case "armor":
+                            if (Item.getByNameOrId(path) instanceof ItemArmor armor) {
+                                temp.add(new ArmorRender(armor, JsonUtils.getString(obj, "texture", null)));
+                            }
                     }
                 }
             }

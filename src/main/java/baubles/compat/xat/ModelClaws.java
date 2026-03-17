@@ -19,7 +19,7 @@ public class ModelClaws extends ModelBauble {
     }
 
     @Override
-    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, boolean flag) {
+    public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (!TrinketsConfig.CLIENT.items.FAELIS_CLAW.doRender) {
             return;
         }
@@ -30,13 +30,14 @@ public class ModelClaws extends ModelBauble {
         final float bS = 0.16f;
 
         GlStateManager.scale(scale * bS, scale * bS, scale * bS);
-        GlStateManager.translate((isLeft ? -1 : 1) * offsetX, offsetY, offsetZ);
+        GlStateManager.translate((isLeft ? 1 : -1) * offsetX, offsetY, offsetZ);
         GlStateManager.rotate(-90F, 0F, 1F, 0F);
         DrawingHelper.Draw(0, 0, 0, 0, 0, 32, 32, 32, 32, 32, 32);
 
     }
 
-    public static ResourceLocation getTexture() {
+    @Override
+    public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return TEXTURE;
     }
 }

@@ -3,7 +3,7 @@ package baubles.common.event;
 import baubles.api.BaublesApi;
 import baubles.api.attribute.AttributeManager;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.common.network.PacketHandler;
+import baubles.common.network.NetworkHandler;
 import baubles.common.network.PacketModifier;
 import baubles.common.network.PacketSync;
 import net.minecraft.entity.Entity;
@@ -48,13 +48,13 @@ public class BaublesSync {
     private static void syncAllSlots(EntityLivingBase entity, EntityPlayerMP player) {
         BaublesApi.applyByIndex(entity, (baubles, i) -> {
             PacketSync pkt = PacketSync.S2CPack(entity, i, baubles.getStackInSlot(i), baubles.getVisible(i) ? 1 : 0);
-            PacketHandler.INSTANCE.sendTo(pkt, player);
+            NetworkHandler.CHANNEL.sendTo(pkt, player);
         });
     }
 
     private static void syncModifier(EntityPlayerMP player) {
         AttributeManager.getModified(player).forEach((type, instance) -> {
-            PacketHandler.INSTANCE.sendTo(new PacketModifier(player, type, instance.getBaseValue(), instance.getModifiers()), player);
+            NetworkHandler.CHANNEL.sendTo(new PacketModifier(player, type, instance.getBaseValue(), instance.getModifiers()), player);
             instance.isModified = false;
         });
     }
@@ -66,16 +66,16 @@ public class BaublesSync {
             baubles.stx.stream().forEach(i -> {
                 ItemStack stack = baubles.getStackInSlot(i);
                 PacketSync pkt = PacketSync.S2CPack(entity, i, stack, -1);
-                PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) entity);
-                PacketHandler.INSTANCE.sendToAllTracking(pkt, entity);
+                NetworkHandler.CHANNEL.sendTo(pkt, (EntityPlayerMP) entity);
+                NetworkHandler.CHANNEL.sendToAllTracking(pkt, entity);
             });
             baubles.stx.clear();
         }
         if (baubles.vis.isDirty()) {
             baubles.vis.stream().forEach(i -> {
                 PacketSync pkt = PacketSync.S2CPack(entity, i, null, baubles.getVisible(i) ? 1 : 0);
-                PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) entity);
-                PacketHandler.INSTANCE.sendToAllTracking(pkt, entity);
+                NetworkHandler.CHANNEL.sendTo(pkt, (EntityPlayerMP) entity);
+                NetworkHandler.CHANNEL.sendToAllTracking(pkt, entity);
             });
             baubles.vis.clear();
         }

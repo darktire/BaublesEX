@@ -53,12 +53,6 @@ tasks.withType(JavaCompile).configureEach {
     options.release.set(8)
 }
 
-tasks.register('cleanLogs', Delete) {
-    group("custom tasks")
-    delete("run/crash-reports")
-    delete("run/logs")
-}
-
 jar {
     manifest {
         attributes(

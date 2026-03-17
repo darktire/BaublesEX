@@ -6,11 +6,10 @@ import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.event.BaublesRenderEvent;
 import baubles.api.model.ModelBauble;
 import baubles.api.render.IRenderBauble;
-import net.minecraft.client.Minecraft;
+import com.github.bsideup.jabel.Desugar;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,7 +17,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nonnull;
@@ -46,27 +44,26 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
             ItemStack stack = slot.getStack(ctx.entity);
             AbstractWrapper wrapper = BaublesApi.toBauble(stack);
             if (wrapper != null) {
-                ctx.setStack(stack);
                 BaublesRenderEvent event = BaublesRenderEvent.of(ctx.entity, this.renderPlayer, stack, slot.id);
                 MinecraftForge.EVENT_BUS.post(event);
                 if (!event.isCanceled()) {
-                    this.renderLayer(ctx, wrapper);
+                    this.renderLayer(ctx, stack, wrapper);
                 }
             }
         }
     }
 
-    private void renderLayer(QueryCtx ctx, IRenderBauble renderBauble) {
-        List<IRenderBauble> list = renderBauble.getSubRender(ctx.stack, ctx.entity, this.renderPlayer);
+    private void renderLayer(QueryCtx ctx, ItemStack stack, IRenderBauble renderBauble) {
+        List<IRenderBauble> list = renderBauble.getSubRender(stack, ctx.entity, this.renderPlayer);
         if (list != null) {
-            list.forEach(render -> renderLayer(ctx, render));
+            list.forEach(render -> renderLayer(ctx, stack, render));
         }
-        renderModelPart(ctx, renderBauble);
+        renderModelPart(ctx, stack, renderBauble);
     }
 
-    private void renderModelPart(QueryCtx ctx, IRenderBauble renderBauble) {
-        ModelBauble model = renderBauble.getModel(ctx.stack, ctx.entity, this.renderPlayer);
-        IRenderBauble.RenderType render = renderBauble.getRenderType(ctx.stack, ctx.entity, this.renderPlayer);
+    private void renderModelPart(QueryCtx ctx, ItemStack stack, IRenderBauble renderBauble) {
+        ModelBauble model = renderBauble.getModel(stack, ctx.entity, this.renderPlayer);
+        IRenderBauble.RenderType render = renderBauble.getRenderType(stack, ctx.entity, this.renderPlayer);
         if (model != null) {
             GlStateManager.pushMatrix();
             GlStateManager.enableRescaleNormal();
@@ -74,41 +71,14 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
             GlStateManager.enableLighting();
             if (ctx.entity.isSneaking() && render != null) GlStateManager.translate(0, 0.2F, 0);
 
-            ResourceLocation texture = model.getTexture(ctx.stack, ctx.entity, this.renderPlayer);
-            renderEachTexture(ctx, render, texture, model, true);
+            if (render != null) this.switchBip(render).postRender(ctx.scale);
+            model.renderWithTexture(this.renderPlayer, ctx.entity, stack, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale);
 
-            texture = model.getEmissiveMap(ctx.stack, ctx.entity, this.renderPlayer);
-            if (texture != null) {
-                float lastSky = OpenGlHelper.lastBrightnessX;
-                float lastBlock = OpenGlHelper.lastBrightnessY;
-
-                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
-                GlStateManager.disableLighting();
-                renderEachTexture(ctx, render, texture, model, false);
-                GlStateManager.enableLighting();
-                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastSky, lastBlock);
-            }
-
-            if (ctx.stack.hasEffect()) {
-                model.renderEnchantedGlint(this.renderPlayer, ctx.entity, ctx.stack, model, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale);
+            if (model.hasEffect(stack)) {
+                model.renderEnchantedGlint(this.renderPlayer, ctx.entity, stack, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale);
             }
 
             GlStateManager.popMatrix();
-        }
-    }
-
-    private void renderEachTexture(QueryCtx ctx, IRenderBauble.RenderType render, ResourceLocation texture, ModelBauble model, boolean ems) {
-        this.switchTex(ctx, texture, ems);
-        if (ems && render != null) this.switchBip(render).postRender(ctx.scale);
-        model.render(this.renderPlayer, ctx.entity, ctx.stack, ctx.limbSwing, ctx.limbSwingAmount, ctx.partialTicks, ctx.ageInTicks, ctx.netHeadYaw, ctx.headPitch, ctx.scale, ems);
-    }
-
-    private void switchTex(QueryCtx ctx, ResourceLocation texture, boolean ems) {
-        if (texture != null) {
-            BaublesRenderEvent.SwitchTexture event = new BaublesRenderEvent.SwitchTexture(ctx.entity, this.renderPlayer, ctx.stack, texture, ems);
-            MinecraftForge.EVENT_BUS.post(event);
-            if (event.isChanged()) texture = event.getTexture();
-            Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
         }
     }
 
@@ -142,26 +112,8 @@ public final class BaublesRenderLayer implements LayerRenderer<EntityPlayer> {
         return renderPlayer;
     }
 
-    private static final class QueryCtx {
-        private final EntityLivingBase entity;
-        private final float limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale;
-        private ItemStack stack;
-
-        private QueryCtx(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-            this.entity = entity;
-            this.limbSwing = limbSwing;
-            this.limbSwingAmount = limbSwingAmount;
-            this.partialTicks = partialTicks;
-            this.ageInTicks = ageInTicks;
-            this.netHeadYaw = netHeadYaw;
-            this.headPitch = headPitch;
-            this.scale = scale;
-        }
-
-        public void setStack(ItemStack stack) {
-            this.stack = stack;
-        }
-    }
+    @Desugar
+    private record QueryCtx(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {}
 
     private static abstract class SlotRef {
         private final Object id;

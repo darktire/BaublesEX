@@ -4,7 +4,7 @@ import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.command.BaublesCommand;
 import baubles.common.config.Config;
-import baubles.common.network.PacketHandler;
+import baubles.common.network.NetworkHandler;
 import baubles.common.network.PacketSync;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -56,7 +56,7 @@ public class CommandSet extends Tabbable {
             if (!ItemStack.areItemStacksEqual(stack, stack1)) {
                 baubles.setStackInSlot(slot, stack1);
                 PacketSync pkt = PacketSync.S2CPack(player, slot, stack1, -1);
-                PacketHandler.INSTANCE.sendTo(pkt, player);
+                NetworkHandler.CHANNEL.sendTo(pkt, player);
                 if (BaublesApi.isBauble(stack)) {
                     BaublesApi.toBauble(stack).onEquipped(stack, player);
                 }

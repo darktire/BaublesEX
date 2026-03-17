@@ -9,8 +9,8 @@ import baubles.client.gui.element.ElementSwitchers;
 import baubles.common.config.Config;
 import baubles.common.container.ContainerExpansion;
 import baubles.common.container.SlotBaubleHandler;
+import baubles.common.network.NetworkHandler;
 import baubles.common.network.PacketFakeTransaction;
-import baubles.common.network.PacketHandler;
 import baubles.compat.jei.IArea;
 import baubles.compat.jei.JeiPlugin;
 import baubles.util.HookHelper;
@@ -233,7 +233,7 @@ public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea 
     protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
         if (this.isOverlay) {
             ItemStack itemstack = this.containerEx.slotClick(slotIn.slotNumber, mouseButton, type, this.mc.player);
-            PacketHandler.INSTANCE.sendToServer(PacketFakeTransaction.C2SPack(slotId, mouseButton, type, itemstack));
+            NetworkHandler.CHANNEL.sendToServer(PacketFakeTransaction.C2SPack(slotId, mouseButton, type, itemstack));
         }
         else {
             super.handleMouseClick(slotIn, slotId, mouseButton, type);

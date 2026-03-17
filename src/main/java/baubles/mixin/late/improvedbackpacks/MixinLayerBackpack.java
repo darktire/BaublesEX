@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import ru.poopycoders.improvedbackpacks.client.LayerBackpack;
 import ru.poopycoders.improvedbackpacks.init.ModItems;
 
-@Mixin(LayerBackpack.class)
+@Mixin(value = LayerBackpack.class, remap = false)
 public class MixinLayerBackpack {
     @Redirect(
             method = "doRenderLayer(Lnet/minecraft/entity/player/EntityPlayer;FFFFFFF)V",

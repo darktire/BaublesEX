@@ -7,13 +7,13 @@ import baubles.api.attribute.AdvancedInstance;
 import baubles.api.attribute.AttributeManager;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypeData;
+import baubles.lib.network.IPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.util.*;
@@ -74,7 +74,7 @@ public class PacketModifier implements IPacket {
     }
 
     @Override
-    public IMessage handlePacket(MessageContext ctx) {
+    public IPacket handlePacket(MessageContext ctx) {
         Minecraft.getMinecraft().addScheduledTask(this::execute);
         return null;
     }

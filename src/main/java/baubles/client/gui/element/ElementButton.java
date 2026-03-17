@@ -2,7 +2,7 @@ package baubles.client.gui.element;
 
 import baubles.client.gui.GuiOverlay;
 import baubles.client.gui.GuiPlayerExpanded;
-import baubles.common.network.PacketHandler;
+import baubles.common.network.NetworkHandler;
 import baubles.common.network.PacketOpen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -37,9 +37,9 @@ public class ElementButton extends ElementBase {
         if (this.hovered && this.enabled) {
             if (this.parentGui instanceof GuiPlayerExpanded) {
                 ((GuiPlayerExpanded) this.parentGui).displayNormalInventory();
-                PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.NORMAL));
+                NetworkHandler.CHANNEL.sendToServer(new PacketOpen(PacketOpen.Option.NORMAL));
             } else{
-                PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.EXPANSION));
+                NetworkHandler.CHANNEL.sendToServer(new PacketOpen(PacketOpen.Option.EXPANSION));
             }
         }
     }

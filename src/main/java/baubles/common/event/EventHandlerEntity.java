@@ -8,7 +8,7 @@ import baubles.api.cap.BaublesContainerProvider;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypeData;
 import baubles.common.config.Config;
-import baubles.common.network.PacketHandler;
+import baubles.common.network.NetworkHandler;
 import baubles.common.network.PacketModifier;
 import baubles.util.CommonHelper;
 import baubles.util.HookHelper;
@@ -71,7 +71,7 @@ public class EventHandlerEntity {
     public static void onChangedDimension(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent event) {
         if (event.player.world.isRemote) return;
         EntityPlayerMP player = (EntityPlayerMP) event.player;
-        AttributeManager.getBaubles(player).forEach((type, instance) -> PacketHandler.INSTANCE.sendTo(new PacketModifier(player, type, instance.getBaseValue(), instance.getModifiers()), player));
+        AttributeManager.getBaubles(player).forEach((type, instance) -> NetworkHandler.CHANNEL.sendTo(new PacketModifier(player, type, instance.getBaseValue(), instance.getModifiers()), player));
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
         baubles.stx.markDirty(0, baubles.getSlots());
         baubles.vis.markDirty(0, baubles.getSlots());
@@ -186,7 +186,7 @@ public class EventHandlerEntity {
             for (int i = 0; i < 3; i++) {
                 int modifier = (int) AttributeManager.getInstance(map, type).getAnonymousModifier(i);
                 if (modifier != 0) {
-                    PacketHandler.INSTANCE.sendTo(new PacketModifier(player, type, modifier, i), player);
+                    NetworkHandler.CHANNEL.sendTo(new PacketModifier(player, type, modifier, i), player);
                 }
             }
         });

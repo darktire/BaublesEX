@@ -10,7 +10,7 @@ import baubles.api.registries.TypeData;
 import baubles.client.model.Models;
 import baubles.common.config.Config;
 import baubles.common.config.KeyBindings;
-import baubles.common.network.PacketHandler;
+import baubles.common.network.NetworkHandler;
 import baubles.common.network.PacketOpen;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -115,7 +115,7 @@ public class ClientEventHandler {
     @SubscribeEvent
     public static void onKeyInput(InputEvent.KeyInputEvent event) {
         if (KeyBindings.KEY_BAUBLES.isKeyDown()) {
-            PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.EXPANSION));
+            NetworkHandler.CHANNEL.sendToServer(new PacketOpen(PacketOpen.Option.EXPANSION));
         }
     }
 }
