@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import java.util.BitSet;
-import java.util.stream.IntStream;
+import java.util.function.IntConsumer;
 
 public interface IBaublesItemHandler extends IItemHandlerModifiable {
 
@@ -71,8 +71,8 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 			status.clear();
 		}
 
-		public IntStream stream() {
-			return status.stream();
+		public void forEach(IntConsumer c) {
+			status.stream().forEach(c);
 		}
 
 	}

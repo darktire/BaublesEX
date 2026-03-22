@@ -2,10 +2,8 @@ package baubles.common.network;
 
 import baubles.Baubles;
 import baubles.api.BaubleTypeEx;
-import baubles.api.BaublesApi;
 import baubles.api.attribute.AdvancedInstance;
 import baubles.api.attribute.AttributeManager;
-import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypeData;
 import baubles.lib.network.IPacket;
 import net.minecraft.client.Minecraft;
@@ -46,6 +44,11 @@ public class PacketModifier implements IPacket {
         this.modifiers = modifiers.stream().map(SimpleModifier::new).collect(Collectors.toList());
     }
 
+    public void append(PacketModifier packet) {
+        if (this.entityId != packet.entityId || this.typeId != packet.typeId) return;
+        this.modifiers.addAll(packet.modifiers);
+    }
+
     @Override
     public void write(PacketBuffer buf) {
         buf.writeInt(entityId);
@@ -84,14 +87,13 @@ public class PacketModifier implements IPacket {
         if (world == null) return;
         Entity entity = world.getEntityByID(this.entityId);
         if (entity instanceof EntityLivingBase) {
-            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
             AdvancedInstance instance = AttributeManager.getInstance(((EntityLivingBase) entity).getAttributeMap(), TypeData.getTypeById(this.typeId));
             if (baseValue >= 0) instance.setBase(baseValue);
             instance.removeAllModifiers();
             Map<Boolean, List<SimpleModifier>> collected = this.modifiers.stream().collect(Collectors.partitioningBy(SimpleModifier::hasId));
             collected.get(true).stream().map(m -> m.build("Network")).forEach(instance::applyModifier);
             collected.get(false).forEach(m -> instance.applyAnonymousModifier(m.operation, m.amount));
-            baubles.updateContainer();
+            instance.callback();
         }
     }
 

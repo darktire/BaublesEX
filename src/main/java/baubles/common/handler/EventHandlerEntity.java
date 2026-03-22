@@ -1,7 +1,9 @@
 package baubles.common.handler;
 
+import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
+import baubles.api.attribute.AdvancedInstance;
 import baubles.api.attribute.AttributeManager;
 import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.BaublesContainerProvider;
@@ -16,7 +18,6 @@ import baubles.util.HookHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -56,6 +57,20 @@ public class EventHandlerEntity {
             BaublesContainer bco = (BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) event.getOriginal());
             BaublesContainer bcn = (BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) event.getEntityPlayer());
             bcn.setRespawnTask(() -> bcn.copyFrom(bco));
+
+            for (BaubleTypeEx type : TypeData.sortedList()) {
+                AdvancedInstance instance = AttributeManager.getInstance(event.getOriginal().getAttributeMap(), type);
+                int[] intArr = {
+                        (int) instance.getAnonymousModifier(0),
+                        (int) instance.getAnonymousModifier(1),
+                        (int) instance.getAnonymousModifier(2)
+                };
+                instance = AttributeManager.getInstance(event.getEntityPlayer().getAttributeMap(), type);
+                for (int i = 0; i < 3; i++) {
+                    int modifier = intArr[i];
+                    if (modifier != 0) instance.applyAnonymousModifier(i, modifier);
+                }
+            }
         } catch (Exception e) {
             BaublesApi.log.error("Could not clone player [" + event.getOriginal().getName() + "] baubles when changing dimensions");
         }
@@ -102,15 +117,13 @@ public class EventHandlerEntity {
     @SubscribeEvent
     public static void playerJoin(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof EntityPlayer) {
-            if (entity instanceof EntityPlayerMP) {
-                // todo incorrect sequence: sever -> attribute -> client
-                BaublesContainer baubles = (BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) entity);
-                baubles.onRespawn();
-                syncAnonymousModifier((EntityPlayerMP) entity);
-                baubles.stx.markDirty(0, baubles.getSlots());
-                baubles.vis.markDirty(0, baubles.getSlots());
-            }
+        if (entity instanceof EntityPlayerMP) {
+            // incorrect sequence: sever -> attribute -> client
+            BaublesContainer baubles = (BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) entity);
+            BaublesSync.syncModifier((EntityPlayerMP) entity);
+            baubles.onRespawn();
+            baubles.stx.markDirty(0, baubles.getSlots());
+            baubles.vis.markDirty(0, baubles.getSlots());
         }
     }
 
@@ -176,17 +189,5 @@ public class EventHandlerEntity {
                 event.setCancellationResult(EnumActionResult.SUCCESS);
             }
         }
-    }
-
-    private static void syncAnonymousModifier(EntityPlayerMP player) {
-        AbstractAttributeMap map = player.getAttributeMap();
-        TypeData.applyToTypes(type -> {
-            for (int i = 0; i < 3; i++) {
-                int modifier = (int) AttributeManager.getInstance(map, type).getAnonymousModifier(i);
-                if (modifier != 0) {
-                    NetworkHandler.CHANNEL.sendTo(new PacketModifier(player, type, modifier, i), player);
-                }
-            }
-        });
     }
 }

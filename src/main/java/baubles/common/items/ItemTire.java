@@ -9,6 +9,7 @@ import baubles.api.registries.TypeData;
 import baubles.api.render.IRenderBauble;
 import baubles.client.model.ModelTire;
 import baubles.common.module.ModuleAttribute;
+import baubles.lib.util.AttrOpt;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -31,7 +32,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class ItemTire extends Item implements IBauble, IRenderBauble {
-	private final ModuleAttribute module = new ModuleAttribute(UUID.fromString("9f115a20-7ddd-4339-89bf-f9964b7258c9"), Suppliers.memoize(() -> AttributeManager.getAttribute(TypeData.Preset.TRINKET)), 2F, ModuleAttribute.Opt.ADDITION);
+	private final ModuleAttribute module = new ModuleAttribute(UUID.fromString("9f115a20-7ddd-4339-89bf-f9964b7258c9"), Suppliers.memoize(() -> AttributeManager.getAttribute(TypeData.Preset.TRINKET)), 2F, AttrOpt.ADDITION);
 	private final List<BaubleTypeEx> types = ImmutableList.of(TypeData.Preset.HEAD, TypeData.Preset.BODY, TypeData.Preset.BELT, TypeData.Preset.CHARM);
 
 	public ItemTire() {

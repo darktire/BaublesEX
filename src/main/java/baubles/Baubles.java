@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 @Mod(
         modid = BaublesApi.MOD_ID,
         name = BaublesApi.MOD_NAME,
+        useMetadata = true,
         guiFactory = "baubles.client.gui.config.BaublesGuiFactory"
 )
 public class Baubles {

@@ -7,7 +7,6 @@ import baubles.lib.network.IPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -26,9 +25,6 @@ public class PacketSync implements IPacket {
     private int visible;
 
     public PacketSync() {}
-
-    @SuppressWarnings("unused")
-    public PacketSync(EntityPlayer p, int slot, ItemStack bauble) {}
 
     public static PacketSync S2CPack(EntityLivingBase entity, int slot, ItemStack stack, int visible) {
         PacketSync pkt = PacketPool.borrow(entity, slot, stack, visible);

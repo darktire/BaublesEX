@@ -2,7 +2,7 @@ package baubles.api.attribute;
 
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesItemHandler;
+import baubles.api.cap.BaublesContainer;
 import baubles.api.registries.TypeData;
 import com.google.common.collect.Sets;
 import net.minecraft.entity.EntityLivingBase;
@@ -37,7 +37,7 @@ public class AttributeManager {
         }
         if (extra.isEmpty()) return;
         for (EntityLivingBase entity : LISTENER) {
-            attachAttributes(entity, BaublesApi.getBaublesHandler(entity));
+            attachAttributes(entity, (BaublesContainer) BaublesApi.getBaublesHandler(entity));
         }
     }
 
@@ -70,7 +70,7 @@ public class AttributeManager {
                 ))
                 .filter(entry -> {
                     AdvancedInstance instance = entry.getValue();
-                    return instance instanceof AdvancedInstance && instance.isModified;
+                    return instance instanceof AdvancedInstance && instance.needsUpdate;
                 })
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
@@ -88,7 +88,7 @@ public class AttributeManager {
         return new NonNegativeAttribute(null, type.getTranslateKey(), type.getAmount());
     }
 
-    public static void attachAttributes(EntityLivingBase entity, IBaublesItemHandler handler) {
+    public static void attachAttributes(EntityLivingBase entity, BaublesContainer handler) {
         AbstractAttributeMap map = entity.getAttributeMap();
         for (IAttribute attribute : PLAYER_BAUBLES.values()) {
             IAttributeInstance instance = map.attributes.computeIfAbsent(attribute, a -> new AdvancedInstance(map, a));

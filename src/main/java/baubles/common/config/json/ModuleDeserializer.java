@@ -3,6 +3,7 @@ package baubles.common.config.json;
 import baubles.api.module.IModule;
 import baubles.common.module.ModuleAttribute;
 import baubles.common.module.ModulePotion;
+import baubles.lib.util.AttrOpt;
 import baubles.lib.util.JsonUtils;
 import com.google.gson.*;
 
@@ -21,7 +22,7 @@ public class ModuleDeserializer implements JsonDeserializer<IModule> {
                     UUID.fromString(JsonUtils.getString(in, "uuid")),
                     JsonUtils.getString(in, "attrName"),
                     JsonUtils.getFloat(in, "perLevel"),
-                    ModuleAttribute.Opt.values()[JsonUtils.getInt(in, "operation")]
+                    AttrOpt.values()[JsonUtils.getInt(in, "operation")]
             );
         } else if (type.equals("potion") && JsonUtils.hasFields(in, "potionName", "perLevel", "limit")) {
             return ModulePotion.of(

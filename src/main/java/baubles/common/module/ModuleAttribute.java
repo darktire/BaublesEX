@@ -1,5 +1,6 @@
 package baubles.common.module;
 
+import baubles.lib.util.AttrOpt;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.resources.I18n;
@@ -19,25 +20,25 @@ import java.util.function.Supplier;
 public class ModuleAttribute extends AbstractModule {
     protected Supplier<IAttribute> supplier;
     protected float perLevel;
-    protected Opt operation;
+    protected AttrOpt operation;
     protected static Map<String, IAttribute> ATTRIBUTES = new HashMap<>();
     protected static final String PREFIX = "attribute.name.";
     protected static DecimalFormat BASE = new DecimalFormat("+#.##;-#.##");
     protected static DecimalFormat PERCENT = new DecimalFormat("+0%;-0%");
-    protected static final Map<Opt, Function<Float, String>> FORMAT_MAP = ImmutableMap.of(
-            Opt.ADDITION, BASE::format,
-            Opt.MULTIPLY_BASE, PERCENT::format,
-            Opt.MULTIPLY_TOTAL, f -> "*" + BASE.format(f + 1)
+    protected static final Map<AttrOpt, Function<Float, String>> FORMAT_MAP = ImmutableMap.of(
+            AttrOpt.ADDITION, BASE::format,
+            AttrOpt.MULTIPLY_BASE, PERCENT::format,
+            AttrOpt.MULTIPLY_TOTAL, f -> "*" + BASE.format(f + 1)
     );
 
-    public ModuleAttribute(UUID id, Supplier<IAttribute> supplier, float perLevel, Opt operation) {
+    public ModuleAttribute(UUID id, Supplier<IAttribute> supplier, float perLevel, AttrOpt operation) {
         super(id);
         this.supplier = supplier;
         this.perLevel = perLevel;
         this.operation = operation;
     }
 
-    public static ModuleAttribute ofName(UUID id, String attrName, float perLevel, Opt operation) {
+    public static ModuleAttribute ofName(UUID id, String attrName, float perLevel, AttrOpt operation) {
         return new NameBased(id, attrName, perLevel, operation);
     }
 
@@ -66,7 +67,7 @@ public class ModuleAttribute extends AbstractModule {
     private static class NameBased extends ModuleAttribute {
         private final String name;
 
-        public NameBased(UUID id, String name, float perLevel, Opt operation) {
+        public NameBased(UUID id, String name, float perLevel, AttrOpt operation) {
             super(id, null, perLevel, operation);
             this.name = name;
         }
@@ -91,9 +92,5 @@ public class ModuleAttribute extends AbstractModule {
         protected String getTranslateKey() {
             return PREFIX + this.name;
         }
-    }
-
-    public enum Opt {
-        ADDITION, MULTIPLY_BASE, MULTIPLY_TOTAL
     }
 }

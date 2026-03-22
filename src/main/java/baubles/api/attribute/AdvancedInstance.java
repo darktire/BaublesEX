@@ -1,25 +1,27 @@
 package baubles.api.attribute;
 
 import baubles.api.cap.BaublesContainer;
-import baubles.api.cap.IBaublesItemHandler;
+import baubles.lib.util.AttrOpt;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
 
 public class AdvancedInstance extends ModifiableAttributeInstance {
-    private WeakReference<IBaublesItemHandler> handler;
-    private final Map<Integer, Double> anonymous = new HashMap<>();
-    public boolean isModified = false;
+    private WeakReference<BaublesContainer> handler;
+    private final double[] anonymous = new double[3];
+    boolean needsUpdate = false;
+    protected int flags = 0;
+    protected final double[] modifierCache = new double[3];
 
     public AdvancedInstance(AbstractAttributeMap map, IAttribute attribute) {
         super(map, attribute);
         for (int i = 0; i < 3; i++) {
-            this.anonymous.put(i, 0D);
+            this.anonymous[i] = 0;
+            this.markDirty(AttrOpt.values()[i]);
         }
     }
 
@@ -27,41 +29,67 @@ public class AdvancedInstance extends ModifiableAttributeInstance {
     public void setBaseValue(double ignore) {}
 
     @Override
-    protected double computeValue() {
-        double d0 = this.getBaseValue();
-
-        d0 += this.getAppliedModifiers(0).stream()
-                .mapToDouble(AttributeModifier::getAmount)
-                .sum();
-        d0 += this.anonymous.get(0);
-
-        double d1 = d0;
-        double finalD = d0;
-        d1 += this.getAppliedModifiers(1).stream()
-                .mapToDouble(attributemodifier -> finalD * attributemodifier.getAmount())
-                .sum();
-        d1 += d0 * this.anonymous.get(1);
-
-        d1 = this.getAppliedModifiers(2).stream()
-                .mapToDouble(attributemodifier -> 1.0D + attributemodifier.getAmount())
-                .reduce(d1, (a, b) -> a * b);
-        d1 *= 1.0D + this.anonymous.get(2);
-
-        return this.genericAttribute.clampValue(d1);
+    public void applyModifier(AttributeModifier modifier) {
+        super.applyModifier(modifier);
+        this.markDirty(AttrOpt.getOpt(modifier));
     }
 
-    /**
-     * needsUpdate -> cacheValue
-     * isModified -> sync
-     */
     @Override
-    protected void flagForUpdate() {
-        this.needsUpdate = true;
-        this.isModified = true;
-        IBaublesItemHandler baubles = this.handler.get();
-        if (baubles != null) {
-            ((BaublesContainer) baubles).containerUpdated = false;
+    public void removeModifier(AttributeModifier modifier) {
+        super.removeModifier(modifier);
+        this.markDirty(AttrOpt.getOpt(modifier));
+    }
+
+    @Override
+    protected void flagForUpdate() {}
+
+    @Override
+    public double getAttributeValue() {
+        if (this.needsUpdate) {
+            this.cachedValue = this.computeValue(getBaseValue());
+            this.needsUpdate = false;
         }
+
+        return this.cachedValue;
+    }
+
+    public double computeValue(double base) {
+        base += getCachedModifierValue(AttrOpt.ADDITION);
+        base *= (1 + getCachedModifierValue(AttrOpt.MULTIPLY_BASE));
+        base *= getCachedModifierValue(AttrOpt.MULTIPLY_TOTAL);
+
+        return this.genericAttribute.clampValue(base);
+    }
+
+    public void markDirty(AttrOpt type) {
+        this.flags |= type.getMask();
+        this.needsUpdate = true;
+    }
+
+    public boolean isDirty(AttrOpt type) {
+        return (this.flags & type.getMask()) != 0;
+    }
+
+    protected double getCachedModifierValue(AttrOpt type) {
+        int typeId = type.get();
+
+        if (!isDirty(type)) return this.modifierCache[typeId];
+
+        Collection<AttributeModifier> modifiers = this.getAppliedModifiers(typeId);
+        double result = switch (typeId) {
+            case 0, 1 -> modifiers.stream()
+                    .mapToDouble(AttributeModifier::getAmount)
+                    .sum();
+            case 2 -> modifiers.stream()
+                    .mapToDouble(m -> 1.0D + m.getAmount())
+                    .reduce(1.0D, (a, b) -> a * b);
+            default -> 0.0D;
+        };
+
+        result += anonymous[typeId];
+        this.modifierCache[typeId] = result;
+        this.flags &= ~type.getMask();
+        return result;
     }
 
     public void setBase(double value) {
@@ -69,15 +97,23 @@ public class AdvancedInstance extends ModifiableAttributeInstance {
     }
 
     public double getAnonymousModifier(int operation) {
-        return this.anonymous.get(operation);
+        return this.anonymous[operation];
     }
 
     public void applyAnonymousModifier(int operation, double modifier) {
-        this.anonymous.put(operation, modifier);
-        this.flagForUpdate();
+        if (this.anonymous[operation] == modifier) return;
+        this.anonymous[operation] = modifier;
+        this.markDirty(AttrOpt.values()[operation]);
     }
 
-    public void setListener(IBaublesItemHandler handler) {
+    public void setListener(BaublesContainer handler) {
         this.handler = new WeakReference<>(handler);
+    }
+
+    public void callback() {
+        BaublesContainer baubles = this.handler.get();
+        if (baubles != null) {
+            baubles.containerUpdated = false;
+        }
     }
 }

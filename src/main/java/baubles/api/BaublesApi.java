@@ -27,9 +27,7 @@ public final class BaublesApi {
      * Retrieves the baubles inventory capability handler for the supplied player
      */
     public static IBaublesItemHandler getBaublesHandler(EntityLivingBase entity) {
-        IBaublesItemHandler handler = entity.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
-        if (handler != null) handler.updateContainer();
-        return handler;
+        return entity.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
     }
 
     /**
@@ -37,7 +35,7 @@ public final class BaublesApi {
      */
     @Deprecated
     public static IBaublesItemHandler getBaublesHandler(EntityPlayer player) {
-        return getBaublesHandler((EntityLivingBase) player);
+        return player.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
     }
 
     /**
@@ -46,7 +44,6 @@ public final class BaublesApi {
     @Deprecated
     public static IInventory getBaubles(EntityPlayer player) {
         IBaublesItemHandler handler = player.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, null);
-        if (handler != null) handler.updateContainer();
         return new BaublesInventoryWrapper(handler, player);
     }
 
@@ -63,7 +60,7 @@ public final class BaublesApi {
     }
 
     /**
-     * @deprecated prefer calling {@link BaublesApi#getIndexInBaubles(EntityLivingBase, Object, int)} wherever possible
+     * @deprecated prefer calling {@link BaublesApi#getIndexInBaubles(EntityLivingBase, Object, int)} or  {@link BaublesApi#isBaubleEquipped(EntityLivingBase, Object)} wherever possible
      */
     @Deprecated
     public static int isBaubleEquipped(EntityPlayer player, Item bauble) {

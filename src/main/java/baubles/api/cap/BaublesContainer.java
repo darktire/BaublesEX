@@ -3,17 +3,12 @@ package baubles.api.cap;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
-import baubles.api.attribute.AdvancedInstance;
 import baubles.api.attribute.AttributeManager;
 import baubles.api.module.ModuleCore;
-import baubles.api.registries.TypeData;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
@@ -42,22 +37,26 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     public BaublesContainer() { super(0); }
 
     public BaublesContainer(EntityLivingBase entity) {
-        this();
+        super(0);
         this.entity = entity;
-        AttributeManager.attachAttributes(entity, this);
-        // todo incorrect sequence: sever -> attribute -> client
-        this.MODIFIED_SLOTS.addAll(AttributeManager.computeSlots(this.entity));
-        this.setSize(MODIFIED_SLOTS.size());
-        this.snapshot = new ArrayList<>(this.stacks);
     }
 
     @Override
     public void updateContainer() {
-        if (!this.containerUpdated) {
+        while (!this.containerUpdated) {
             this.syncSlots();
             this.onSlotChanged();
             this.dropItems();
+        }
+        if (dropQue.isEmpty()) {
+            this.syncLock = false;
+            if (!this.entity.world.isRemote) {
+                this.stx.clear();
+                this.stx.markDirty(0, this.getSlots());
+            }
             this.listeners.forEach(IBaublesListener::syncChanges);
+        } else {
+            this.syncLock = true;
         }
     }
 
@@ -110,16 +109,6 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
 
         this.snapshot = temp;
         this.containerUpdated = true;
-
-        if (dropQue.isEmpty()) {
-            this.syncLock = false;
-            if (!this.entity.world.isRemote) {
-                this.stx.clear();
-                this.stx.markDirty(0, this.getSlots());
-            }
-        } else {
-            this.syncLock = true;
-        }
     }
 
     @Override
@@ -248,50 +237,20 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
 
 //            BaubleTypeEx type = this.MODIFIED_SLOTS.get(i);
         }
-        // modifier persistence
-        NBTTagCompound modifier = new NBTTagCompound();
-        for (BaubleTypeEx type : TypeData.sortedList()) {
-            AdvancedInstance instance = AttributeManager.getInstance(this.entity.getAttributeMap(), type);
-            int[] intArr = {
-                    (int) instance.getAnonymousModifier(0),
-                    (int) instance.getAnonymousModifier(1),
-                    (int) instance.getAnonymousModifier(2)
-            };
-            if (!Arrays.stream(intArr).allMatch(num -> num == 0)) {
-                modifier.setIntArray(type.getName(), intArr);
-            }
-        }
         NBTTagCompound visibility = new NBTTagCompound();
         this.visibility.stream().forEach(i -> visibility.setBoolean(String.valueOf(i), false));
 
-
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setTag("Items", itemList);
-        nbt.setTag("Anonymous", modifier);
         nbt.setTag("Visibility", visibility);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        if (nbt.hasKey("Anonymous")) {
-            NBTTagCompound modifier = nbt.getCompoundTag("Anonymous");
-            AbstractAttributeMap map = this.entity.getAttributeMap();
-            for (String typeName : modifier.getKeySet()) {
-                BaubleTypeEx type = TypeData.getTypeByName(typeName);
-                if (type != null) {
-                    NBTBase base = modifier.getTag(typeName);
-                    if (base instanceof NBTTagIntArray) {
-                        int[] input = ((NBTTagIntArray) base).getIntArray();
-                        for (int i = 0; i < 3; i++) {
-                            if (input[i] != 0) {
-                                AttributeManager.getInstance(map, type).applyAnonymousModifier(i, input[i]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        this.MODIFIED_SLOTS.addAll(AttributeManager.computeSlots(this.entity));
+        this.setSize(MODIFIED_SLOTS.size());
+        this.snapshot = new ArrayList<>(this.stacks);
 
         if (nbt.hasKey("Visibility")) {
             NBTTagCompound visibility = nbt.getCompoundTag("Visibility");
@@ -342,20 +301,6 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     }
 
     public void copyFrom(BaublesContainer that) {
-        for (BaubleTypeEx type : TypeData.sortedList()) {
-            AdvancedInstance instance = AttributeManager.getInstance(that.entity.getAttributeMap(), type);
-            int[] intArr = {
-                    (int) instance.getAnonymousModifier(0),
-                    (int) instance.getAnonymousModifier(1),
-                    (int) instance.getAnonymousModifier(2)
-            };
-            instance = AttributeManager.getInstance(this.entity.getAttributeMap(), type);
-            for (int i = 0; i < 3; i++) {
-                int modifier = intArr[i];
-                if (modifier != 0) instance.applyAnonymousModifier(i, modifier);
-            }
-        }
-
         this.core = that.core;
         this.core.apply(this.entity);
 
