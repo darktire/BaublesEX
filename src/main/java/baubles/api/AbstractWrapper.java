@@ -4,11 +4,13 @@ import baubles.api.module.IModule;
 import baubles.api.render.IRenderBauble;
 import baubles.lib.util.ItemQuery;
 import baubles.lib.util.TieredItemMatcher;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 public abstract class AbstractWrapper implements IBauble, IRenderBauble {
@@ -37,6 +39,7 @@ public abstract class AbstractWrapper implements IBauble, IRenderBauble {
         List<BaubleTypeEx> types;
         List<IModule> modules;
         List<WornTickEffect> effects;
+        Set<Enchantment> enchants;
 
         public void bauble(IBauble bauble) {
 
@@ -69,6 +72,9 @@ public abstract class AbstractWrapper implements IBauble, IRenderBauble {
             this.effects = effects;
         }
 
+        public void enchants(Set<Enchantment> enchants) {
+            this.enchants = enchants;
+        }
     }
 
     @FunctionalInterface

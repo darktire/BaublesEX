@@ -1,21 +1,36 @@
 package baubles.mixin.early.vanilla;
 
-import baubles.api.registries.ItemData;
-import net.minecraft.block.BlockPumpkin;
-import net.minecraft.item.*;
+import baubles.api.AbstractWrapper;
+import baubles.api.BaublesApi;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(targets = "net.minecraft.enchantment.EnumEnchantmentType$12")
+@Mixin(Enchantment.class)
 public abstract class MixinEnchantment {
 
-    @Inject(method = "canEnchantItem", at = @At("HEAD"), cancellable = true)
-    private void canEnchantBaubles(Item itemIn, CallbackInfoReturnable<Boolean> cir) {
-        boolean isPumpkin = itemIn instanceof ItemBlock && ((ItemBlock)itemIn).getBlock() instanceof BlockPumpkin;
-        boolean flag = itemIn instanceof ItemArmor || itemIn instanceof ItemElytra || itemIn instanceof ItemSkull || isPumpkin;
-        boolean isBauble = ItemData.isBauble(itemIn);//todo
-        cir.setReturnValue(flag || isBauble);
+    @Inject(method = "canApply", at = @At("RETURN"), cancellable = true)
+    private void canEnchantBaubles0(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+        boolean flag = cir.getReturnValue();
+        if (flag) return;
+
+        AbstractWrapper bauble = BaublesApi.toBauble(stack);
+        if (bauble == null) return;
+        flag = bauble.canApply(stack, (Enchantment) (Object) this);
+        cir.setReturnValue(flag);
+    }
+
+    @Inject(method = "canApplyAtEnchantingTable", at = @At("RETURN"), cancellable = true, remap = false)
+    private void canEnchantBaubles1(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+        boolean flag = cir.getReturnValue();
+        if (flag) return;
+
+        AbstractWrapper bauble = BaublesApi.toBauble(stack);
+        if (bauble == null) return;
+        flag = bauble.canApply(stack, (Enchantment) (Object) this);
+        cir.setReturnValue(flag);
     }
 }

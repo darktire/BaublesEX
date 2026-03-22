@@ -10,24 +10,20 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 
 @Mixin({ItemBlindfold.class, ItemEarplugs.class})
-@Implements(@Interface(iface = IRenderBauble.class, prefix = "brs$"))
-public abstract class MixinHeadWear extends Item {
+public abstract class MixinHeadWear extends Item implements IRenderBauble {
 
-    @Unique
-    public ModelBauble brs$getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+    @Override
+    public ModelBauble getModel(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         if (this == IafItemRegistry.blindfold) return Resources.BLINDFOLD;
         else if (this == IafItemRegistry.earplugs) return Resources.EAR_PLUGS;
         return null;
     }
 
-    @Unique
-    public IRenderBauble.RenderType brs$getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+    @Override
+    public IRenderBauble.RenderType getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
         return IRenderBauble.RenderType.HEAD;
     }
 }

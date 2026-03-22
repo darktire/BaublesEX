@@ -20,11 +20,11 @@ import net.minecraftforge.client.ForgeHooksClient;
 
 public class ModelArmor extends ModelBauble.NoTex {
 
-    private ModelBiped model;
-    private final ItemArmor armor;
-    private final ItemStack armorStack;
-    private boolean unready = true;
-    private ResourceLocation texture;
+    protected ModelBiped model;
+    protected final ItemArmor armor;
+    protected final ItemStack armorStack;
+    protected boolean unready = true;
+    protected ResourceLocation texture;
 
     public ModelArmor(ItemArmor armor, ItemStack stack) {
         this.armor = armor;
@@ -34,18 +34,7 @@ public class ModelArmor extends ModelBauble.NoTex {
     @Override
     public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
 
-        if (this.unready) {
-            EntityEquipmentSlot slot = armor.armorType;
-            this.model = (slot == EntityEquipmentSlot.LEGS) ? new ModelBiped(0.5F) : new ModelBiped(1.0F);
-            this.model = ForgeHooksClient.getArmorModel(entity, armorStack, slot, this.model);
-            if (ModelInherit.FLAG) {
-                EntityData<?> entityData = EntityDatabase.instance.get(entity);
-                boolean shouldBeMutated = !ModConfig.shouldKeepArmorAsVanilla(armor) && entityData instanceof BipedEntityData;
-                this.model = ArmorModelFactory.getArmorModel(model, shouldBeMutated);
-            }
-            setModelSlotVisible(this.model, slot);
-            this.unready = false;
-        }
+        initModel(entity);
 
         this.model.setModelAttributes(renderPlayer.getMainModel());
         this.model.setLivingAnimations(entity, limbSwing, limbSwingAmount, partialTicks);
@@ -69,7 +58,17 @@ public class ModelArmor extends ModelBauble.NoTex {
         this.model.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
     }
 
-    private void setModelSlotVisible(ModelBiped model, EntityEquipmentSlot slot) {
+    protected void initModel(EntityLivingBase entity) {
+        if (this.unready) {
+            EntityEquipmentSlot slot = armor.armorType;
+            this.model = (slot == EntityEquipmentSlot.LEGS) ? new ModelBiped(0.5F) : new ModelBiped(1.0F);
+            this.model = ForgeHooksClient.getArmorModel(entity, armorStack, slot, this.model);
+            setModelSlotVisible(this.model, slot);
+            this.unready = false;
+        }
+    }
+
+    protected void setModelSlotVisible(ModelBiped model, EntityEquipmentSlot slot) {
         model.setVisible(false);
 
         switch (slot) {
@@ -117,5 +116,26 @@ public class ModelArmor extends ModelBauble.NoTex {
     public void setTexture(String texture) {
         this.texture = new ResourceLocation(texture);
 //        this.overlay = new ResourceLocation(texture + "_overlay");
+    }
+
+    public static class WithBends extends ModelArmor {
+
+        public WithBends(ItemArmor armor, ItemStack stack) {
+            super(armor, stack);
+        }
+
+        @Override
+        protected void initModel(EntityLivingBase entity) {
+            if (this.unready) {
+                EntityEquipmentSlot slot = armor.armorType;
+                this.model = (slot == EntityEquipmentSlot.LEGS) ? new ModelBiped(0.5F) : new ModelBiped(1.0F);
+                this.model = ForgeHooksClient.getArmorModel(entity, armorStack, slot, this.model);
+                EntityData<?> entityData = EntityDatabase.instance.get(entity);
+                boolean shouldBeMutated = !ModConfig.shouldKeepArmorAsVanilla(armor) && entityData instanceof BipedEntityData;
+                this.model = ArmorModelFactory.getArmorModel(model, shouldBeMutated);
+                setModelSlotVisible(this.model, slot);
+                this.unready = false;
+            }
+        }
     }
 }

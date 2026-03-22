@@ -39,6 +39,8 @@ public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
             "thaumcraft",
             "thaumicperiphery",
             "tombstone",
+            "uniquee",
+            "uniqueeutil",
             "wearablebackpacks",
             "wings",
             "wizardryutils",

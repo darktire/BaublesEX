@@ -1,4 +1,4 @@
-package baubles.common.event;
+package baubles.common.handler;
 
 import baubles.api.BaublesApi;
 import baubles.api.attribute.AttributeManager;

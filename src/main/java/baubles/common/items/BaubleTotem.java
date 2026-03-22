@@ -39,6 +39,11 @@ public class BaubleTotem extends BaubleVanilla implements IRenderBauble {
         return ModelTotem.INSTANCE;
     }
 
+    @Override
+    public RenderType getRenderType(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
+        return RenderType.BODY;
+    }
+
     public static boolean isWearing(EntityLivingBase entity) {
         return WEARING.computeIfAbsent(entity.getUniqueID(), id -> INSTANCE.update(entity)) != -1;
     }

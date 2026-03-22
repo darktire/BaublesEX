@@ -36,8 +36,14 @@ dependencies {
 //    implementation fg.deobf("curse.maven:extra-alchemy-247357:2937550")
 //    runtimeOnly fg.deobf("curse.maven:geckolib-388172:4020277")
     compileOnly fg.deobf("curse.maven:unseens-dungeon-additions-1087823:7657077")
-//    implementation fg.deobf("curse.maven:corpse-complex-271605:3176964")
+    implementation fg.deobf("curse.maven:corpse-complex-271605:3176964")
     compileOnly fg.deobf("curse.maven:improvedbackpacks-270457:2918455")
+//    implementation fg.deobf("curse.maven:playerapi-449521:3212872")
+    implementation fg.deobf("curse.maven:unique-enchantments-base-515658:3855057")
+    implementation fg.deobf("curse.maven:unique-enchantments-348891:3703930")
+    implementation fg.deobf("curse.maven:unique-enchantments-utils-382138:3703936")
+    implementation fg.deobf("curse.maven:unique-enchantments-battle-491806:3855058")
+
     //quality tools
     runtimeOnly fg.deobf("curse.maven:potion-core-242872:2905184")
     implementation fg.deobf("curse.maven:quality-tools-264756:2732994")
@@ -80,7 +86,7 @@ dependencies {
 //    runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:2667280")
     //Mo' Bends
     compileOnly fg.deobf("curse.maven:mo-bends-231347:3573346")
-    runtimeOnly fg.deobf("curse.maven:mo-bends-231347:3573346")
+//    runtimeOnly fg.deobf("curse.maven:mo-bends-231347:3573346")
     //Test dummy
     runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:2503041")
     //Botania

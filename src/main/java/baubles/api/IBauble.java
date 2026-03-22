@@ -1,6 +1,9 @@
 package baubles.api;
 
 import baubles.api.module.IModule;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
@@ -58,7 +61,7 @@ public interface IBauble {
      * Can this bauble be removed from a bauble slot
      */
     default boolean canUnequip(ItemStack itemstack, EntityLivingBase entity) {
-        return true;
+        return !EnchantmentHelper.hasBindingCurse(itemstack);
     }
 
     /**
@@ -73,6 +76,10 @@ public interface IBauble {
 
     default boolean canDrop(ItemStack itemstack, EntityLivingBase entity) {
         return true;
+    }
+
+    default boolean canApply(ItemStack stack, Enchantment enchantment) {
+        return enchantment.type == EnumEnchantmentType.ALL || enchantment.type == EnumEnchantmentType.WEARABLE;
     }
 
     default List<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {

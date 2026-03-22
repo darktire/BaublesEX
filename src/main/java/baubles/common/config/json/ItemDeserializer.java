@@ -15,6 +15,7 @@ import baubles.lib.util.ItemQuery;
 import baubles.lib.util.JsonUtils;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraftforge.oredict.OreDictionary;
@@ -87,6 +88,14 @@ public final class ItemDeserializer implements JsonDeserializer<ItemQuery> {
             render = JsonRender.of(temp);
         }
 
+        Set<Enchantment> enchants = null;
+        if (in.has("enchantments")) {
+            enchants = JsonUtils.parseArray(in, "enchantments").stream()
+                    .map(ItemDeserializer::parseEnchants)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+        }
+
         AbstractWrapper.CSTMap cstMap = AbstractWrapper.CSTMap.instance();
         for (ItemQuery key : resolveContent(in)) {
             ItemData.registerBauble(key, types);
@@ -94,6 +103,7 @@ public final class ItemDeserializer implements JsonDeserializer<ItemQuery> {
             if (remove) cstMap.update(key, AbstractWrapper.Addition::remove, true);
             if (!effects.isEmpty()) cstMap.update(key, AbstractWrapper.Addition::effects, effects);
             if (render != null) cstMap.update(key, AbstractWrapper.Addition::render, render);
+            if (enchants != null) cstMap.update(key, AbstractWrapper.Addition::enchants, enchants);
         }
 
         return null;
@@ -122,6 +132,11 @@ public final class ItemDeserializer implements JsonDeserializer<ItemQuery> {
         } else if (e instanceof JsonPrimitive) {
             return ConfigRecord.getModule(e.getAsString());
         }
+        return null;
+    }
+
+    private static Enchantment parseEnchants(JsonElement e) {
+        if (e instanceof JsonPrimitive) return Enchantment.getEnchantmentByLocation(e.getAsString());
         return null;
     }
 

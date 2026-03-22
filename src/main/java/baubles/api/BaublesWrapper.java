@@ -5,7 +5,7 @@ import baubles.api.model.ModelBauble;
 import baubles.api.module.IModule;
 import baubles.api.render.IRenderBauble;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -82,8 +82,7 @@ public final class BaublesWrapper extends AbstractWrapper {
 
     @Override
     public boolean canUnequip(ItemStack itemstack, EntityLivingBase entity) {
-        boolean def = !EnchantmentHelper.hasBindingCurse(itemstack) && getBauble().canUnequip(itemstack, entity);
-        BaublesEvent.Unequip.Pre event = new BaublesEvent.Unequip.Pre(entity, itemstack, def);
+        BaublesEvent.Unequip.Pre event = new BaublesEvent.Unequip.Pre(entity, itemstack, getBauble().canUnequip(itemstack, entity));
         MinecraftForge.EVENT_BUS.post(event);
         return event.getRet();
     }
@@ -91,6 +90,11 @@ public final class BaublesWrapper extends AbstractWrapper {
     @Override
     public boolean canDrop(ItemStack itemstack, EntityLivingBase entity) {
         return getBauble().canDrop(itemstack, entity);
+    }
+
+    @Override
+    public boolean canApply(ItemStack stack, Enchantment enchantment) {
+        return this.addition != null && this.addition.enchants != null ? this.addition.enchants.contains(enchantment) : getBauble().canApply(stack, enchantment);
     }
 
     @Override

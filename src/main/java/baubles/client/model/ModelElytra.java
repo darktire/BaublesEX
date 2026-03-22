@@ -34,14 +34,13 @@ public class ModelElytra extends ModelInherit {
 
     @Override
     public ResourceLocation getTexture(ItemStack stack, EntityLivingBase entity, RenderPlayer renderPlayer) {
-        if (entity instanceof AbstractClientPlayer) {
-            AbstractClientPlayer abstractclientplayer = (AbstractClientPlayer)entity;
+        if (entity instanceof AbstractClientPlayer abstractclientplayer) {
 
             if (abstractclientplayer.isPlayerInfoSet() && abstractclientplayer.getLocationElytra() != null) {
                 return abstractclientplayer.getLocationElytra();
             }
             else if (abstractclientplayer.hasPlayerInfo() && abstractclientplayer.getLocationCape() != null && abstractclientplayer.isWearing(EnumPlayerModelParts.CAPE)) {
-                return abstractclientplayer.getLocationElytra();
+                return abstractclientplayer.getLocationCape();
             }
             else {
                 return TEXTURE_ELYTRA;
