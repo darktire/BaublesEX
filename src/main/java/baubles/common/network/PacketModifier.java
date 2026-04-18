@@ -44,9 +44,8 @@ public class PacketModifier implements IPacket {
         this.modifiers = modifiers.stream().map(SimpleModifier::new).collect(Collectors.toList());
     }
 
-    public void append(PacketModifier packet) {
-        if (this.entityId != packet.entityId || this.typeId != packet.typeId) return;
-        this.modifiers.addAll(packet.modifiers);
+    public void append(UUID id, int modifier, int operation) {
+        this.modifiers.add(new SimpleModifier(id, modifier, operation));
     }
 
     @Override

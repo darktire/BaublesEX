@@ -61,6 +61,7 @@ public class BaublesRegister {
         TypeData.Preset.HEAD.setAmount(Config.Slots.getCfgAmount("head"));
         TypeData.Preset.BODY.setAmount(Config.Slots.getCfgAmount("body"));
         TypeData.Preset.CHARM.setAmount(Config.Slots.getCfgAmount("charm"));
+        TypeData.Preset.BAUBLE.setAmount(Config.Slots.getCfgAmount("bauble"));
 
         if (Config.ModItems.elytraBauble && Config.ModItems.elytraSlot.equals("elytra")) {
             TypeData.Preset.ELYTRA.setAmount(1);

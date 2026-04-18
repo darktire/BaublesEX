@@ -8,7 +8,7 @@ import baubles.client.gui.element.ElementButton;
 import baubles.common.config.Config;
 import baubles.common.config.KeyBindings;
 import baubles.common.container.SlotBaubleHandler;
-import baubles.common.network.NetworkHandler;
+import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketOpen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -40,7 +40,7 @@ public class GuiOverlayHandler {
         GuiOverlay ex = OverlayManager.getOverlay(gui);
         if (ex == null) {
             OverlayManager.setOverlay(gui, new GuiOverlay(Minecraft.getMinecraft().player));
-            NetworkHandler.CHANNEL.sendToServer(new PacketOpen(PacketOpen.Option.ENHANCEMENT));
+            PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.ENHANCEMENT));
         }
     }
 
@@ -134,9 +134,9 @@ public class GuiOverlayHandler {
         GuiScreen gui = e.getGui();
         if (gui instanceof GuiPlayerExpanded) {
             ((GuiPlayerExpanded) gui).displayNormalInventory();
-            NetworkHandler.CHANNEL.sendToServer(new PacketOpen(PacketOpen.Option.NORMAL));
+            PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.NORMAL));
         } else if (gui instanceof GuiInventory) {
-            NetworkHandler.CHANNEL.sendToServer(new PacketOpen(PacketOpen.Option.EXPANSION));
+            PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.EXPANSION));
         }
 
         if (!OverlayManager.isTarget(gui)) return;
@@ -151,7 +151,7 @@ public class GuiOverlayHandler {
             GuiOverlay ex = new GuiOverlay(Minecraft.getMinecraft().player);
             OverlayManager.setOverlay(gui, ex);
             initExpansion(gui);
-            NetworkHandler.CHANNEL.sendToServer(new PacketOpen(PacketOpen.Option.ENHANCEMENT));
+            PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.ENHANCEMENT));
         }
     }
 

@@ -141,6 +141,7 @@ public class Config extends PartialConfig {
         public static int HEAD;
         public static int BODY;
         public static int CHARM;
+        public static int BAUBLE;
 
         @Override
         public void loadData() {
@@ -151,6 +152,7 @@ public class Config extends PartialConfig {
             HEAD = getCfgAmount("headSlot", 1);
             BODY = getCfgAmount("bodySlot", 1);
             CHARM = getCfgAmount("charmSlot", 1);
+            BAUBLE = getCfgAmount("baubleSlot", 0);
 
             getCategory().setComment("Modify the quantity of initial baubles.");
         }
@@ -228,7 +230,7 @@ public class Config extends PartialConfig {
             elytraBauble = config.getBoolean("elytraBauble", BAUBLES_ITEMS, false, "Set elytra as bauble");
             elytraSlot = config.getString("elytraSlot", BAUBLES_ITEMS, "elytra", "Get a specific slot for elytra", presetSlots);
             totemBauble = config.getBoolean("totemBauble", BAUBLES_ITEMS, false, "Set totem of undying as bauble");
-            totemSlot = config.getString("totemSlot", BAUBLES_ITEMS, "charm", "Get a specific slot for elytra", presetSlots);
+            totemSlot = config.getString("totemSlot", BAUBLES_ITEMS, "charm", "Get a specific slot for totem", presetSlots);
             ConfigCategory category = config.getCategory(BAUBLES_ITEMS);
             category.setComment("Item modified by BaublesEX. (need to restart)");
             category.requiresMcRestart();

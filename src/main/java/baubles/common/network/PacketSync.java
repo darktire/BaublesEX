@@ -4,6 +4,7 @@ import baubles.Baubles;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.lib.network.IPacket;
+import com.github.bsideup.jabel.Desugar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,44 +16,40 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PacketSync implements IPacket {
 
     private boolean toClient;
     private int entityId;
-    private int slot;
-    private boolean hasStack;
-    private ItemStack stack;
-    private int visible;
+    private final List<Entry> entries = new ArrayList<>();
 
     public PacketSync() {}
 
+    private PacketSync(EntityLivingBase entity) {
+        this.toClient = entity != null;
+        this.entityId = this.toClient ? entity.getEntityId() : -1;
+    }
+
+    @Desugar
+    record Entry(int slot, ItemStack stack, int visible) {}
+
+    public static PacketSync S2CPack(EntityLivingBase entity) {
+        return new PacketSync(entity);
+    }
+
     public static PacketSync S2CPack(EntityLivingBase entity, int slot, ItemStack stack, int visible) {
-        PacketSync pkt = PacketPool.borrow(entity, slot, stack, visible);
-        pkt.toClient = true;
-        return pkt;
+        return new PacketSync(entity).append(slot, stack, visible);
     }
 
     public static PacketSync C2SPack(int slot, ItemStack stack, int visible) {
-        PacketSync pkt = PacketPool.borrow(null, slot, stack, visible);
-        pkt.toClient = false;
-        return pkt;
+        return new PacketSync(null).append(slot, stack, visible);
     }
 
-    PacketSync set(int entityId, int slot, ItemStack stack, int visible) {
-        this.entityId = entityId;
-        this.slot = slot;
-        this.visible = visible;
-        this.hasStack = stack != null;
-        this.stack = stack;
+    public PacketSync append(int slot, ItemStack stack, int visible) {
+        entries.add(new Entry(slot, stack, visible));
         return this;
-    }
-
-    void reset() {
-        this.entityId = -1;
-        this.slot = -1;
-        this.hasStack = false;
-        this.stack = null;
-        this.visible = -1;
     }
 
     @Override
@@ -61,12 +58,13 @@ public class PacketSync implements IPacket {
         if (this.toClient) {
             buf.writeInt(this.entityId);
         }
-        buf.writeBoolean(this.hasStack);
-        if (this.hasStack) {
-            buf.writeItemStack(stack);
+        buf.writeInt(entries.size());
+        for (Entry e : entries) {
+            buf.writeInt(e.slot);
+            buf.writeBoolean(e.stack != null);
+            if (e.stack != null) buf.writeItemStack(e.stack);
+            buf.writeInt(e.visible);
         }
-        buf.writeInt(this.slot);
-        buf.writeInt(this.visible);
     }
 
     @Override
@@ -75,12 +73,14 @@ public class PacketSync implements IPacket {
         if (this.toClient) {
             this.entityId = buf.readInt();
         }
-        this.hasStack = buf.readBoolean();
-        if (this.hasStack) {
-            this.stack = buf.readItemStack();
+        int count = buf.readInt();
+        for (int i = 0; i < count; i++) {
+            int slot = buf.readInt();
+            boolean hasStack = buf.readBoolean();
+            ItemStack stack = hasStack ? buf.readItemStack() : null;
+            int visible = buf.readInt();
+            entries.add(new Entry(slot, stack, visible));
         }
-        this.slot = buf.readInt();
-        this.visible = buf.readInt();
     }
 
     @Override
@@ -97,20 +97,24 @@ public class PacketSync implements IPacket {
 
     private void handleSever(EntityLivingBase player) {
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
-        if (this.hasStack) baubles.setStackInSlot(this.slot, this.stack);
-        baubles.setVisible(this.slot, this.visible == 1);
-        PacketPool.release(this);
+        for (Entry e : entries) {
+            if (e.stack != null) baubles.setStackInSlot(e.slot, e.stack);
+            if (e.visible != -1) baubles.setVisible(e.slot, e.visible == 1);
+        }
     }
 
     private void handleClient() {
         World world = Baubles.proxy.getClientWorld();
-        if (world == null) return;
-        Entity entity = world.getEntityByID(this.entityId);
-        if (entity instanceof EntityLivingBase) {
-            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
-            if (this.hasStack) baubles.setStackInSlot(this.slot, this.stack);
-            if (this.visible != -1) baubles.setVisible(this.slot, this.visible == 1);
+        if (world != null) {
+            Entity entity = world.getEntityByID(this.entityId);
+            if (entity instanceof EntityLivingBase) {
+                IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) entity);
+                baubles.updateContainer();
+                for (Entry e : entries) {
+                    if (e.stack != null) baubles.setStackInSlot(e.slot, e.stack);
+                    if (e.visible != -1) baubles.setVisible(e.slot, e.visible == 1);
+                }
+            }
         }
-        PacketPool.release(this);
     }
 }

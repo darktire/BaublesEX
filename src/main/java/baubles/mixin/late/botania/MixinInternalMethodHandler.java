@@ -2,7 +2,7 @@ package baubles.mixin.late.botania;
 
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.common.network.NetworkHandler;
+import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketSync;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +20,7 @@ public abstract class MixinInternalMethodHandler extends DummyMethodHandler {
     void inject(EntityPlayer player, int slot, CallbackInfo ci) {
         if (player instanceof EntityPlayerMP) {
             IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
-            NetworkHandler.CHANNEL.sendTo(PacketSync.S2CPack(player, slot, baubles.getStackInSlot(slot), -1), (EntityPlayerMP) player);
+            PacketHandler.INSTANCE.sendTo(PacketSync.S2CPack(player, slot, baubles.getStackInSlot(slot), -1), (EntityPlayerMP) player);
         }
         ci.cancel();
     }

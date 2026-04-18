@@ -7,7 +7,6 @@ import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.ItemData;
 import baubles.common.command.BaublesCommand;
 import baubles.common.command.CommandTree;
-import baubles.common.network.PacketPool;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -125,10 +124,7 @@ public class CommandView extends CommandTree {
 
         @Override
         public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
-            if (args[0].equals("network")) {
-                sender.sendMessage(new TextComponentTranslation(PacketPool.getStats()));
-            }
-            else if (args[0].equals("wrapper")) {
+            if (args[0].equals("wrapper")) {
                 sender.sendMessage(new TextComponentTranslation(ItemData.getStats()));
             }
         }

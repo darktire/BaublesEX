@@ -1,15 +1,17 @@
 package baubles.common.handler;
 
+import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
+import baubles.api.attribute.AdvancedInstance;
 import baubles.api.attribute.AttributeManager;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.common.network.NetworkHandler;
+import baubles.common.network.PacketFullSync;
+import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifier;
 import baubles.common.network.PacketSync;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -23,58 +25,80 @@ public class BaublesSync {
         if (event.phase == TickEvent.Phase.START) return;
         BaublesApi.getBaublesHandler((EntityLivingBase) event.player).updateContainer();
         if (!event.player.world.isRemote) {
-            syncModifier((EntityPlayerMP) event.player);
-            syncBaubles(event.player);
+            syncBaubles((EntityPlayerMP) event.player);
         }
     }
 
     @SubscribeEvent
-    public static void onPlayerLoggedOut(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent event) {}
-
-    @SubscribeEvent
     public static void onStartTracking(PlayerEvent.StartTracking event) {
+        Entity player = event.getEntityPlayer();
         Entity target = event.getTarget();
-        if (target instanceof EntityPlayerMP player) {
-            BaublesApi.applyByIndex(player, (baubles, i) -> {
-                PacketSync pkt = PacketSync.S2CPack(player, i, baubles.getStackInSlot(i), baubles.getVisible(i) ? 1 : 0);
-                NetworkHandler.CHANNEL.sendTo(pkt, player);
+        if (player instanceof EntityPlayerMP playerMP && target instanceof EntityPlayerMP targetMP) {
+
+            PacketFullSync full = new PacketFullSync();
+
+            AttributeManager.getBaubles(targetMP).forEach((type, instance) -> {
+                full.addModifier(createModifierPkt(targetMP, type, instance));
+                instance.callback();
             });
+
+            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) targetMP);
+            PacketSync pkt = PacketSync.S2CPack(targetMP);
+            for (int i = 0; i < baubles.getSlots(); i++) {
+                pkt.append(i, baubles.getStackInSlot(i), baubles.getVisible(i) ? 1 : 0);
+            }
+
+            full.setBaubles(pkt);
+
+            PacketHandler.INSTANCE.sendTo(full, playerMP);
         }
     }
 
     public static void syncModifier(EntityPlayerMP player) {
         AttributeManager.getModified(player).forEach((type, instance) -> {
-            PacketModifier message = new PacketModifier(player, type, instance.getBaseValue(), instance.getModifiers());
-            for (int i = 0; i < 3; i++) {
-                int modifier = (int) instance.getAnonymousModifier(i);
-                if (modifier != 0) {
-                    message.append(new PacketModifier(player, type, modifier, i));
-                }
-            }
-            NetworkHandler.CHANNEL.sendTo(message, player);
+            PacketModifier pkt = createModifierPkt(player, type, instance);
+            PacketHandler.INSTANCE.sendTo(pkt, player);
+            PacketHandler.INSTANCE.sendToAllTracking(pkt, player);
             instance.callback();
         });
     }
 
-    public static void syncBaubles(EntityLivingBase entity) {
-        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
+    public static void syncBaubles(EntityPlayerMP player) {
+        PacketFullSync full = new PacketFullSync();
+
+        AttributeManager.getModified(player).forEach((type, instance) -> {
+            full.addModifier(createModifierPkt(player, type, instance));
+            instance.callback();
+        });
+
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
         if (!baubles.canSync()) return;
+        if (!baubles.stx.isDirty() && !baubles.vis.isDirty()) return;
+
+        PacketSync pkt = PacketSync.S2CPack(player);
         if (baubles.stx.isDirty()) {
-            baubles.stx.forEach(i -> {
-                ItemStack stack = baubles.getStackInSlot(i);
-                PacketSync pkt = PacketSync.S2CPack(entity, i, stack, -1);
-                NetworkHandler.CHANNEL.sendTo(pkt, (EntityPlayerMP) entity);
-                NetworkHandler.CHANNEL.sendToAllTracking(pkt, entity);
-            });
+            baubles.stx.forEach(i -> pkt.append(i, baubles.getStackInSlot(i), -1));
             baubles.stx.clear();
         }
         if (baubles.vis.isDirty()) {
-            baubles.vis.forEach(i -> {
-                PacketSync pkt = PacketSync.S2CPack(entity, i, null, baubles.getVisible(i) ? 1 : 0);
-                NetworkHandler.CHANNEL.sendTo(pkt, (EntityPlayerMP) entity);
-                NetworkHandler.CHANNEL.sendToAllTracking(pkt, entity);
-            });
+            baubles.vis.forEach(i -> pkt.append(i, null, baubles.getVisible(i) ? 1 : 0));
             baubles.vis.clear();
         }
+
+        full.setBaubles(pkt);
+
+        PacketHandler.INSTANCE.sendTo(full, player);
+        PacketHandler.INSTANCE.sendToAllTracking(full, player);
+    }
+
+    private static PacketModifier createModifierPkt(EntityPlayerMP player, BaubleTypeEx type, AdvancedInstance instance) {
+        PacketModifier message = new PacketModifier(player, type, instance.getBaseValue(), instance.getModifiers());
+        for (int i = 0; i < 3; i++) {
+            int modifier = (int) instance.getAnonymousModifier(i);
+            if (modifier != 0) {
+                message.append(null, modifier, i);
+            }
+        }
+        return message;
     }
 }

@@ -1,7 +1,7 @@
 plugins {
-    id 'net.minecraftforge.gradle' version "6.+"
+    id 'net.minecraftforge.gradle' version "6.0.52"
     id 'wtf.gofancy.fancygradle' version '1.1.+'
-    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'org.spongepowered.mixin' version '0.7.38'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 

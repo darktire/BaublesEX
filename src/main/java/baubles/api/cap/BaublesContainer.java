@@ -48,14 +48,15 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
             this.onSlotChanged();
             this.dropItems();
         }
-        if (dropQue.isEmpty()) {
+        boolean empty = dropQue.isEmpty();
+        if (empty && this.syncLock) {
             this.syncLock = false;
             if (!this.entity.world.isRemote) {
                 this.stx.clear();
                 this.stx.markDirty(0, this.getSlots());
             }
             this.listeners.forEach(IBaublesListener::syncChanges);
-        } else {
+        } else if (!empty && !this.syncLock) {
             this.syncLock = true;
         }
     }
@@ -204,7 +205,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
 
     @Override
     public void setVisible(int slot, boolean v) {
-        this.vis.markDirty(slot);
+        if (!this.entity.world.isRemote) this.vis.markDirty(slot);
         if (v) {
             this.visibility.clear(slot);
         }
