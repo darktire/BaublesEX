@@ -6,18 +6,23 @@ import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.config.Config;
 import baubles.common.items.BaubleElytra;
+import baubles.common.items.BaubleTotem;
 import baubles.compat.ModOnly;
 import baubles.compat.config.Compat;
+import baubles.lib.util.ASMScanner;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModClassLoader;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.relauncher.Side;
+import org.objectweb.asm.Type;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -36,6 +41,19 @@ public class HookHelper {
         if (Config.ModItems.elytraBauble && toFind && BaubleElytra.isWearing(entity)) {
             return BaubleElytra.getWearing(entity, using);
         }
+        return stack;
+    }
+
+    public static ItemStack getTotem(EntityLivingBase entity, EnumHand hand) {
+        ItemStack stack = entity.getHeldItem(hand);
+        if (!Config.ModItems.totemBauble || BaublesApi.getBaublesHandler(entity) == null) return stack;
+
+        if (hand == EnumHand.OFF_HAND) {
+            if (stack.getItem() != Items.TOTEM_OF_UNDYING && BaubleTotem.isWearing(entity)) {
+                return BaubleTotem.getWearing(entity);
+            }
+        }
+
         return stack;
     }
 
@@ -95,16 +113,9 @@ public class HookHelper {
     }
 
     public static boolean isOverridden(Object instance, Method superMethod) {
-        try {
-            Method subMethod = instance.getClass().getMethod(
-                    superMethod.getName(),
-                    superMethod.getParameterTypes()
-            );
-
-            return !subMethod.getDeclaringClass().equals(superMethod.getDeclaringClass());
-        } catch (NoSuchMethodException e) {
-            return false;
-        }
+        return ASMScanner.of(instance.getClass())
+                .getMethod(superMethod.getName(), Type.getMethodDescriptor(superMethod))
+                .isOverriddenFrom(superMethod.getDeclaringClass());
     }
 
     public static void patchModsEvents(ASMDataTable table) {

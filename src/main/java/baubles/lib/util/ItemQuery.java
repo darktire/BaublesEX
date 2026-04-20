@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ItemQuery {
@@ -74,6 +75,18 @@ public class ItemQuery {
 
         ItemKey key = ItemKey.parse(keyPart);
         return tag != null ? ItemQuery.of(key, NBTMatcher.contains(tag)) : ItemQuery.of(key);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.key, this.matcher);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ItemQuery other)) return false;
+        return this.key.equals(other.key) && this.matcher().equals(other.matcher);
     }
 
     @Override

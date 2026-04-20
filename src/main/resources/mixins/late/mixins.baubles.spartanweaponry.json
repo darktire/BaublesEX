@@ -1,0 +1,14 @@
+{
+  "package": "baubles.mixin.late.spartanweaponry",
+  "plugin": "baubles.coremod.MixinLate",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "refmap": "mixins/mixins.baubles.refmap.json",
+  "mixins": [
+    "MixinPacketKeyHandle",
+    "MixinQuiverHelper"
+  ],
+  "client": [
+    "MixinGuiHandler"
+  ]
+}

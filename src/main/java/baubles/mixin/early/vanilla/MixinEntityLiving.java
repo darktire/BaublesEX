@@ -1,9 +1,7 @@
 package baubles.mixin.early.vanilla;
 
-import baubles.common.items.BaubleTotem;
 import baubles.util.HookHelper;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -27,14 +25,7 @@ public abstract class MixinEntityLiving {
             )
     )
     private ItemStack redirect(EntityLivingBase entity, EnumHand hand) {
-        ItemStack stack = entity.getHeldItem(hand);
-
-        if (hand == EnumHand.OFF_HAND) {
-            if (stack.getItem() != Items.TOTEM_OF_UNDYING && BaubleTotem.isWearing(entity)) {
-                return BaubleTotem.getWearing(entity);
-            }
-        }
-
-        return stack;
+        return HookHelper.getTotem(entity, hand);
     }
+
 }

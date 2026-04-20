@@ -62,7 +62,7 @@ public class PacketSync implements IPacket {
         for (Entry e : entries) {
             buf.writeInt(e.slot);
             buf.writeBoolean(e.stack != null);
-            if (e.stack != null) buf.writeItemStack(e.stack);
+            if (e.stack != null) IPacket.writeItemStack(buf, e.stack);
             buf.writeInt(e.visible);
         }
     }
@@ -77,7 +77,7 @@ public class PacketSync implements IPacket {
         for (int i = 0; i < count; i++) {
             int slot = buf.readInt();
             boolean hasStack = buf.readBoolean();
-            ItemStack stack = hasStack ? buf.readItemStack() : null;
+            ItemStack stack = hasStack ? IPacket.readItemStack(buf) : null;
             int visible = buf.readInt();
             entries.add(new Entry(slot, stack, visible));
         }

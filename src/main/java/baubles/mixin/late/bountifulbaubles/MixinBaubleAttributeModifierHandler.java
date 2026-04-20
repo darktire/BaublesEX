@@ -1,11 +1,9 @@
 package baubles.mixin.late.bountifulbaubles;
 
 import baubles.api.BaublesApi;
-import baubles.common.network.PacketHandler;
-import baubles.common.network.PacketSync;
+import baubles.api.cap.IBaublesItemHandler;
 import cursedflames.bountifulbaubles.baubleeffect.BaubleAttributeModifierHandler;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,9 +15,9 @@ public class MixinBaubleAttributeModifierHandler {
     @Inject(method = "baubleModified", at = @At(value = "INVOKE", target = "Lcursedflames/bountifulbaubles/baubleeffect/EnumBaubleModifier;generateModifier(Lnet/minecraft/item/ItemStack;)V", shift = At.Shift.AFTER))
     private static void inject(ItemStack stack, EntityLivingBase entity, boolean equip, CallbackInfo ci) {
         if (!entity.world.isRemote) {
-            int index = BaublesApi.getBaublesHandler(entity).indexOf(stack.getItem(), 0);
-            PacketSync pkt = PacketSync.S2CPack(entity, index, stack, -1);
-            PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) entity);
+            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
+            int index = baubles.indexOf(stack.getItem(), 0);
+            baubles.stx.markDirty(index);
         }
     }
 }

@@ -5,16 +5,14 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import xzeroair.trinkets.init.ModItems;
 import xzeroair.trinkets.util.TrinketsConfig;
 
 public class ModelEnderTiara extends ModelXat {
     public static ModelEnderTiara instance = new ModelEnderTiara();
-    private static final ResourceLocation MODEL_LOCATION = new ResourceLocation(ModItems.baubles.BaubleEnderTiara.getRegistryName().toString() + "_model");
 
     public ModelEnderTiara() {
-        super(MODEL_LOCATION);
+        super(ModItems.baubles.BaubleEnderTiara.getRegistryName().toString() + "_model");
     }
 
     @Override

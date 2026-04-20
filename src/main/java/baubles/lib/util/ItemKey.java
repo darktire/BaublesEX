@@ -63,8 +63,7 @@ public class ItemKey {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ItemKey)) return false;
-        ItemKey other = (ItemKey) o;
+        if (!(o instanceof ItemKey other)) return false;
         return this.meta == other.meta && this.item == other.item;
     }
 

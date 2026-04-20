@@ -47,7 +47,7 @@ public class PacketFakeTransaction implements IPacket {
         buf.writeInt(this.slot);
         buf.writeInt(this.button);
         buf.writeEnumValue(this.type);
-        buf.writeItemStack(this.stack);
+        IPacket.writeItemStack(buf, this.stack);
     }
 
     @Override
@@ -55,6 +55,6 @@ public class PacketFakeTransaction implements IPacket {
         this.slot = buf.readInt();
         this.button = buf.readInt();
         this.type = buf.readEnumValue(ClickType.class);
-        this.stack = buf.readItemStack();
+        this.stack = IPacket.readItemStack(buf);
     }
 }

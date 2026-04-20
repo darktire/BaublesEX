@@ -9,7 +9,6 @@ import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.config.Config;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketModifier;
-import baubles.common.network.PacketSync;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.player.EntityPlayer;
@@ -44,10 +43,6 @@ public class CommonHelper {
                     }
                 }
                 bauble.onEquipped(stack, playerIn);
-                if (!playerIn.world.isRemote) {
-                    PacketSync pkt = PacketSync.S2CPack(playerIn, i, stack, -1);
-                    PacketHandler.INSTANCE.sendTo(pkt, (EntityPlayerMP) playerIn);
-                }
                 return true;
             }
         }

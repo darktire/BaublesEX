@@ -23,7 +23,7 @@ public abstract class ModelXat extends ModelBauble {
     private static final RenderItem renderer = Minecraft.getMinecraft().getRenderItem();
     private final IBakedModel model;
 
-    public ModelXat(ResourceLocation loc) {
+    public ModelXat(String loc) {
         ModelResourceLocation modelLoc = new ModelResourceLocation(loc, "inventory");
         this.model = renderer.getItemModelMesher().getModelManager().getModel(modelLoc);
     }
