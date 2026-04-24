@@ -14,6 +14,9 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 public abstract class AbstractWrapper implements IBauble, IRenderBauble {
+    public abstract IBauble getBauble();
+    public abstract IRenderBauble getRender();
+
     public final static class CSTMap {
         static final CSTMap INSTANCE = new CSTMap();
         private final TieredItemMatcher<Addition> matcher = new TieredItemMatcher<>();

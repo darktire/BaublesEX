@@ -5,7 +5,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
 public class BaublesChangeEvent extends LivingEvent {
-    private final EntityLivingBase target;
     private final int index;
     private final ItemStack stackOut;
     private final ItemStack stackIn;
@@ -13,15 +12,10 @@ public class BaublesChangeEvent extends LivingEvent {
 
     public BaublesChangeEvent(EntityLivingBase target, boolean isBlocked, int index, ItemStack out, ItemStack in) {
         super(target);
-        this.target = target;
         this.index = index;
         this.stackOut = out;
         this.stackIn = in;
         this.isBlocked = isBlocked;
-    }
-
-    public EntityLivingBase getTarget() {
-        return this.target;
     }
 
     public int getIndex() {

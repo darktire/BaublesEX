@@ -29,7 +29,7 @@ public abstract class MixinCapability implements ICapabilityModifiable {
                 if (bauble != null && !(bauble instanceof BaublesWrapper)) {
                     ItemQuery query = ItemQuery.of(stack);
                     if (!ItemData.isBauble(query)) {
-                        ItemData.registerBauble(query, bauble.getBaubleType(stack).getExpansion());
+                        ItemData.registerBauble(query, bauble);
                     }
                     this.caps[i] = new BaublesCapabilityProvider(stack, provider);
                     break;

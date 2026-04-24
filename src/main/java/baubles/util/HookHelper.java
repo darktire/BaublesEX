@@ -28,6 +28,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class HookHelper {
 
@@ -144,17 +145,25 @@ public class HookHelper {
 
     public static ItemStack getStack(IBaublesItemHandler baubles, Object symbol) {// todo cache
         int idx = 0;
-        if (symbol instanceof Class) {
+        if (symbol instanceof Class<?> cls) {
             while (idx < baubles.getSlots()) {
                 ItemStack get = baubles.getStackInSlot(idx++);
-                if (((Class<?>) symbol).isInstance(get.getItem())) return get;
+                if (cls.isInstance(get.getItem())) return get;
             }
             return ItemStack.EMPTY;
-        }
-        else {
+        } else {
             idx = baubles.indexOf(symbol, idx);
             return baubles.getStackInSlot(idx);
         }
+    }
+
+    public static ItemStack getStack(IBaublesItemHandler baubles, Predicate<ItemStack> predicate) {
+        int idx = 0;
+        while (idx < baubles.getSlots()) {
+            ItemStack get = baubles.getStackInSlot(idx++);
+            if (predicate.test(get)) return get;
+        }
+        return ItemStack.EMPTY;
     }
 
     public static int[] getValidSlots(Object o, EntityLivingBase player) {

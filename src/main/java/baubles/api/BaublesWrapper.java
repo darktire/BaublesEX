@@ -124,12 +124,12 @@ public final class BaublesWrapper extends AbstractWrapper {
         return render != null ? render.getRenderType(stack, entity, renderPlayer) : null;
     }
 
-    private IBauble getBauble() {
+    public IBauble getBauble() {
         if (this.addition != null && this.addition.bauble != null) return this.addition.bauble;
         return this.bauble;
     }
 
-    private IRenderBauble getRender() {
+    public IRenderBauble getRender() {
         if (this.addition != null && this.addition.render != null) return this.addition.render;
         return this.render;
     }

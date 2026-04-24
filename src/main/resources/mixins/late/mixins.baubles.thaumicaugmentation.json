@@ -1,0 +1,18 @@
+{
+  "package": "baubles.mixin.late.thaumicaugmentation",
+  "plugin": "baubles.coremod.MixinLate",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "refmap": "mixins/mixins.baubles.refmap.json",
+  "client": [
+    "MixinClientEventHandler",
+    "MixinRenderLayerHarness",
+    "MixinTAHooksClient"
+  ],
+  "mixins": [
+    "MixinItemElytraHarness",
+    "MixinItemThaumostaticHarness",
+    "MixinPlayerEventHandler",
+    "MixinTAHooksCommon"
+  ]
+}
