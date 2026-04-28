@@ -49,14 +49,16 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
             this.dropItems();
         }
         boolean empty = dropQue.isEmpty();
-        if (empty && this.syncLock) {
-            this.syncLock = false;
-            if (!this.entity.world.isRemote) {
-                this.stx.clear();
-                this.stx.markDirty(0, this.getSlots());
+        if (empty) {
+            if (this.syncLock) {
+                this.syncLock = false;
+                if (!this.entity.world.isRemote) {
+                    this.stx.clear();
+                    this.stx.markDirty(0, this.getSlots());
+                }
             }
             this.listeners.forEach(IBaublesListener::syncChanges);
-        } else if (!empty && !this.syncLock) {
+        } else if (!this.syncLock) {
             this.syncLock = true;
         }
     }
@@ -66,7 +68,6 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         this.PREVIOUS_SLOTS.addAll(this.MODIFIED_SLOTS);
         this.MODIFIED_SLOTS.clear();
         this.MODIFIED_SLOTS.addAll(AttributeManager.computeSlots(entity));
-
     }
 
     private void onSlotChanged() {

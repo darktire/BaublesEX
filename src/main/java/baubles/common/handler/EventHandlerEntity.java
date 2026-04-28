@@ -120,10 +120,8 @@ public class EventHandlerEntity {
         if (entity instanceof EntityPlayerMP) {
             // incorrect sequence: sever -> attribute -> client
             BaublesContainer baubles = (BaublesContainer) BaublesApi.getBaublesHandler((EntityLivingBase) entity);
-            BaublesSync.syncModifier((EntityPlayerMP) entity);
             baubles.onRespawn();
-            baubles.stx.markDirty(0, baubles.getSlots());
-            baubles.vis.markDirty(0, baubles.getSlots());
+            BaublesSync.syncAll((EntityPlayerMP) entity);
         }
     }
 

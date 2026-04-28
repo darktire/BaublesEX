@@ -25,7 +25,7 @@ public class BaublesSync {
         if (event.phase == TickEvent.Phase.START) return;
         BaublesApi.getBaublesHandler((EntityLivingBase) event.player).updateContainer();
         if (!event.player.world.isRemote) {
-            syncBaubles((EntityPlayerMP) event.player);
+            syncModified((EntityPlayerMP) event.player);
         }
     }
 
@@ -34,36 +34,36 @@ public class BaublesSync {
         Entity player = event.getEntityPlayer();
         Entity target = event.getTarget();
         if (player instanceof EntityPlayerMP playerMP && target instanceof EntityPlayerMP targetMP) {
-
-            PacketFullSync full = new PacketFullSync();
-
-            AttributeManager.getBaubles(targetMP).forEach((type, instance) -> {
-                full.addModifier(createModifierPkt(targetMP, type, instance));
-                instance.callback();
-            });
-
-            IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) targetMP);
-            PacketSync pkt = PacketSync.S2CPack(targetMP);
-            for (int i = 0; i < baubles.getSlots(); i++) {
-                pkt.append(i, baubles.getStackInSlot(i), baubles.getVisible(i) ? 1 : 0);
-            }
-
-            full.setBaubles(pkt);
-
+            PacketFullSync full = createFullPkt(targetMP);
             PacketHandler.INSTANCE.sendTo(full, playerMP);
         }
     }
 
-    public static void syncModifier(EntityPlayerMP player) {
-        AttributeManager.getModified(player).forEach((type, instance) -> {
-            PacketModifier pkt = createModifierPkt(player, type, instance);
-            PacketHandler.INSTANCE.sendTo(pkt, player);
-            PacketHandler.INSTANCE.sendToAllTracking(pkt, player);
-            instance.callback();
-        });
+    public static void syncAll(EntityPlayerMP player) {
+        PacketFullSync full = createFullPkt(player);
+        PacketHandler.INSTANCE.sendTo(full, player);
+        PacketHandler.INSTANCE.sendToAllTracking(full, player);
     }
 
-    public static void syncBaubles(EntityPlayerMP player) {
+    private static PacketFullSync createFullPkt(EntityPlayerMP player) {
+        PacketFullSync full = new PacketFullSync();
+
+        AttributeManager.getBaubles(player).forEach((type, instance) -> {
+            full.addModifier(createModifierPkt(player, type, instance));
+            instance.callback();
+        });
+
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
+        PacketSync pkt = PacketSync.S2CPack(player);
+        for (int i = 0; i < baubles.getSlots(); i++) {
+            pkt.append(i, baubles.getStackInSlot(i), baubles.getVisible(i) ? 1 : 0);
+        }
+
+        full.setBaubles(pkt);
+        return full;
+    }
+
+    public static void syncModified(EntityPlayerMP player) {
         PacketFullSync full = new PacketFullSync();
 
         AttributeManager.getModified(player).forEach((type, instance) -> {
