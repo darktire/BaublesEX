@@ -20,6 +20,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -93,25 +94,37 @@ public class GuiOverlayHandler {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onMouseClick(GuiScreenEvent.MouseInputEvent.Pre e) {
         int mouseButton = Mouse.getEventButton();
-        if (mouseButton == -1) return;
+        int dWheel = 0;
+        if (mouseButton == -1) {
+            dWheel = Mouse.getEventDWheel();
+            if (dWheel == 0) return;
+        }
 
         GuiScreen gui = e.getGui();
-        if (!OverlayManager.isCovered(gui)) return;
-
-        GuiOverlay ex = OverlayManager.getOverlay(gui);
-        if (ex == null || ex.mc == null) return;
+        GuiOverlay ex;
+        if (OverlayManager.isCovered(gui)) {
+            ex = OverlayManager.getOverlay(gui);
+            if (ex == null || ex.mc == null) return;
+        } else if (gui instanceof GuiOverlay) {
+            ex = (GuiOverlay) gui;
+        } else return;
 
         int x = Mouse.getEventX();
         int y = Mouse.getEventY();
 
-        if (ex.isPointed(x, y)) {
+        int mouseX = x * ex.width / ex.mc.displayWidth;
+        int mouseY = ex.height - y * ex.height / ex.mc.displayHeight - 1;
+
+        ex.handleMouseScroll(mouseX, mouseY, dWheel);
+        if (ex.isPointed(mouseX, mouseY)) {
             try {
                 ex.handleMouseInput();
                 e.setCanceled(true);
-            } catch (Exception ignore) {}
+            } catch (Exception ignore) {
+            }
         }
     }
 

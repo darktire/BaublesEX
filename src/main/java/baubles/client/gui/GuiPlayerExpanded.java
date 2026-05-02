@@ -122,4 +122,9 @@ public class GuiPlayerExpanded extends GuiOverlay {
         GuiInventory gui = new GuiInventory(this.mc.player);
         this.mc.displayGuiScreen(gui);
     }
+
+    @Override
+    public boolean isPointed(int mouseX, int mouseY) {
+        return false;
+    }
 }

@@ -12,7 +12,6 @@ import baubles.common.container.SlotBaubleHandler;
 import baubles.common.network.PacketFakeTransaction;
 import baubles.common.network.PacketHandler;
 import baubles.compat.jei.IArea;
-import baubles.compat.jei.JeiPlugin;
 import baubles.util.HookHelper;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
@@ -27,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Mouse;
 import yalter.mousetweaks.api.MouseTweaksDisableWheelTweak;
 
 import java.awt.*;
@@ -220,8 +218,6 @@ public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
         renderHoveredToolTip(mouseX, mouseY);
-        //jei compat
-        handleMouseInput(mouseX, mouseY);
     }
 
     @Override
@@ -240,14 +236,11 @@ public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea 
         }
     }
 
-    protected void handleMouseInput(int mouseX, int mouseY) {
+    public void handleMouseScroll(int mouseX, int mouseY, int dWheel) {
         int xLoc = this.guiLeft - 7;
         if (xLoc - 18 * this.col < mouseX && mouseX < xLoc) {
             int yLoc = this.guiTop + 15;
             if (mouseY >= yLoc && mouseY < yLoc + 18 * 8) {
-                int dWheel;
-                if (jeiLoaded) dWheel = JeiPlugin.JEI_COMPAT.getIngredientUnderMouse(this, mouseX, mouseY);
-                else dWheel = Mouse.getEventDWheel();
                 int value = dWheel / 120;
                 if (value != 0) {
                     this.moveSlots(value);
@@ -350,9 +343,7 @@ public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea 
     }
 
     public boolean isPointed(int mouseX, int mouseY) {
-        int i = mouseX * this.width / this.mc.displayWidth;
-        int j = this.height - mouseY * this.height / this.mc.displayHeight - 1;
-        return this.extraArea.stream().anyMatch(r -> r.contains(i,  j));
+        return this.extraArea.stream().anyMatch(r -> r.contains(mouseX,  mouseY));
     }
 
     @Override

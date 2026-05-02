@@ -6,7 +6,6 @@ import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.gui.IAdvancedGuiHandler;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import org.lwjgl.input.Mouse;
 
 import java.awt.*;
 import java.util.Collections;
@@ -38,11 +37,6 @@ public class JeiPlugin implements IModPlugin {
                 return OverlayManager.getOverlay(gui).getExtraArea();
             }
             else return Collections.emptyList();
-        }
-
-        @Override
-        public Integer getIngredientUnderMouse(GuiContainer gui, int mouseX, int mouseY) {
-            return Mouse.getDWheel();
         }
     }
 }
