@@ -17,7 +17,7 @@ public class ModelSeaStone extends ModelItem {
 
     @Override
     public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if (!TrinketsConfig.CLIENT.items.SEA_STONE.doRender) return;
+        if (!TrinketsConfig.CLIENT.ITEMS.SEA_STONE.RENDER) return;
         final float offsetY = 0.16F;
         final float offsetZ = 0.14F;
         GlStateManager.rotate(180F, 1F, 0F, 0F);

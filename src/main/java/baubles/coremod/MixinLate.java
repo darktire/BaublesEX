@@ -31,6 +31,7 @@ public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
             "iceandfire",
             "improvedbackpacks",
             "mobends",
+            "naturalpledge",
             "nvg",
             "potionfingers",
             "qualitytools",

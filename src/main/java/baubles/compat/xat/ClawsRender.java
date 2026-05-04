@@ -43,7 +43,7 @@ public class ClawsRender implements IRenderBauble {
     }
 
     public static List<IRenderBauble> get(EntityLivingBase entity) {
-        if (!TrinketsConfig.SERVER.Items.FAELIS_CLAW.compat.baubles.equip_multiple) {
+        if (!TrinketsConfig.SERVER.ITEMS.FAELIS_CLAW.COMPAT.BAUBLES.equip_multiple) {
             return BOTH;
         }
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);

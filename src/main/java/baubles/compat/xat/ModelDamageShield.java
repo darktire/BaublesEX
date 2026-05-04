@@ -17,7 +17,7 @@ public class ModelDamageShield extends ModelItem {
 
     @Override
     public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if (!TrinketsConfig.CLIENT.items.DAMAGE_SHIELD.doRender) return;
+        if (!TrinketsConfig.CLIENT.ITEMS.DAMAGE_SHIELD.RENDER) return;
         final float offsetX = 0.17F;
         final float offsetY = 0.22F;
         final float offsetZ = 0.16F;

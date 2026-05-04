@@ -17,7 +17,7 @@ public class ModelEnderTiara extends ModelXat {
 
     @Override
     public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if (!TrinketsConfig.CLIENT.items.ENDER_CROWN.doRender) return;
+        if (!TrinketsConfig.CLIENT.ITEMS.ENDER_CROWN.RENDER) return;
         boolean hasHelmet = entity.hasItemInSlot(EntityEquipmentSlot.HEAD);
         float hScale = hasHelmet ? 1.0F : 0.85F;
         double helmetOffsetY = hasHelmet ? 0.11 : 0;

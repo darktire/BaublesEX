@@ -20,7 +20,7 @@ public class ModelClaws extends ModelBauble {
 
     @Override
     public void render(RenderPlayer renderPlayer, EntityLivingBase entity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if (!TrinketsConfig.CLIENT.items.FAELIS_CLAW.doRender) {
+        if (!TrinketsConfig.CLIENT.ITEMS.FAELIS_CLAW.RENDER) {
             return;
         }
 

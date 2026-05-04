@@ -48,7 +48,10 @@ dependencies {
     compileOnly files("libs/SpartanWeaponry-1.12.2-1.6.1-dev.jar")
     compileOnly fg.deobf("curse.maven:atum-59621:3116599")
     compileOnly fg.deobf("curse.maven:thaumic-additions-232564:5394706")
-    implementation fg.deobf("curse.maven:thaumic-augmentation-319441:6047659")
+    compileOnly fg.deobf("curse.maven:thaumic-augmentation-319441:6047659")
+    compileOnly fg.deobf("curse.maven:natural-pledge-247704:2740703")
+    compileOnly fg.deobf("curse.maven:librarianlib-252910:3041340")
+    compileOnly fg.deobf("curse.maven:shadowfacts-forgelin-248453:2785465")
 
     //quality tools
     runtimeOnly fg.deobf("curse.maven:potion-core-242872:2905184")
@@ -106,7 +109,7 @@ dependencies {
     //BountifulBaubles
     implementation fg.deobf("curse.maven:bountifulbaubles-313536:3568240")
     //trinkets-and-baubles
-    implementation fg.deobf("curse.maven:trinkets-and-baubles-279900:5717039")
+    implementation fg.deobf("curse.maven:trinkets-and-baubles-279900:7997838")
     //enigmatic
     runtimeOnly 'com.cleanroommc:configanytime:3.0'
     runtimeOnly fg.deobf("curse.maven:fermiumbooter2mixinbooter-1163720:6552152")
