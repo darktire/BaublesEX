@@ -1,11 +1,11 @@
 package baubles.common.network;
 
-import baubles.api.BaublesApi;
+import baubles.Reference;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 public class PacketHandler {
-    public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(BaublesApi.MOD_ID);
+    public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
 
     public static void init() {
         baubles.lib.network.PacketHandler.on(INSTANCE)

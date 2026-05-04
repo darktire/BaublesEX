@@ -1,5 +1,6 @@
 package baubles.common.handler;
 
+import baubles.Reference;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.attribute.AdvancedInstance;
@@ -17,7 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-@Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class BaublesSync {
 
     @SubscribeEvent

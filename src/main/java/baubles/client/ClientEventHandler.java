@@ -1,6 +1,7 @@
 package baubles.client;
 
 import baubles.BaublesRegister;
+import baubles.Reference;
 import baubles.api.AbstractWrapper;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
@@ -35,7 +36,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID, value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Side.CLIENT)
 public class ClientEventHandler {
 
     @SubscribeEvent

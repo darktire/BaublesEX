@@ -1,7 +1,7 @@
 package baubles.common.config;
 
 import baubles.BaublesRegister;
-import baubles.api.BaublesApi;
+import baubles.Reference;
 import baubles.common.config.json.ConversionHelper;
 import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
@@ -28,11 +28,11 @@ public class Config extends PartialConfig {
 
     static {
         CONFIG_DIR = new File(Launch.minecraftHome, "config");
-        config = new Configuration(new File(CONFIG_DIR, BaublesApi.MOD_ID + ".cfg"));
+        config = new Configuration(new File(CONFIG_DIR, Reference.MOD_ID + ".cfg"));
         config.load();
     }
 
-    private static final File MOD_DIR = new File(CONFIG_DIR, BaublesApi.MOD_ID);
+    private static final File MOD_DIR = new File(CONFIG_DIR, Reference.MOD_ID);
 
     public static boolean keepBaubles;
     public static boolean rightClick;
@@ -53,7 +53,7 @@ public class Config extends PartialConfig {
         try {
             PartialConfig.create(Config.class);
         } catch (Exception e) {
-            BaublesApi.log.error("BAUBLES has a problem loading it's configuration");
+            Reference.LOG.error("BAUBLES has a problem loading it's configuration");
         }
         checkConfig(config);
         saveConfig();
@@ -250,11 +250,11 @@ public class Config extends PartialConfig {
         }
     }
 
-    @Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
+    @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
     public static class ConfigChangeListener {
         @SubscribeEvent
         public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-            if (eventArgs.getModID().equals(BaublesApi.MOD_ID)) {
+            if (eventArgs.getModID().equals(Reference.MOD_ID)) {
                 PartialConfig.create(Config.class);
                 Config.saveConfig();
                 Config.setupBlacklist();

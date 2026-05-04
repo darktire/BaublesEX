@@ -1,5 +1,6 @@
 package baubles.util;
 
+import baubles.Reference;
 import baubles.api.AbstractWrapper;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
@@ -136,7 +137,7 @@ public class HookHelper {
                 Class<?> clazz = Class.forName(className, false, mcl);
                 MinecraftForge.EVENT_BUS.register(clazz);
             } catch (ClassNotFoundException e) {
-                BaublesApi.log.warn("An error occurred trying to load the compat event {} for mod {}", data.getClassName(), data.getAnnotationInfo().get("value"));
+                Reference.LOG.warn("An error occurred trying to load the compat event {} for mod {}", data.getClassName(), data.getAnnotationInfo().get("value"));
             }
         }
     }

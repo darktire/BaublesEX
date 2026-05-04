@@ -1,6 +1,6 @@
 package baubles.client.gui.config;
 
-import baubles.api.BaublesApi;
+import baubles.Reference;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.DefaultGuiFactory;
 
@@ -8,7 +8,7 @@ import net.minecraftforge.fml.client.DefaultGuiFactory;
 public class BaublesGuiFactory extends DefaultGuiFactory {
 
     public BaublesGuiFactory() {
-        super(BaublesApi.MOD_ID, BaublesApi.MOD_NAME);
+        super(Reference.MOD_ID, Reference.MOD_NAME);
     }
 
     @Override

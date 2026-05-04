@@ -23,7 +23,7 @@ public class BaubleTypeEx extends IForgeRegistryEntry.Impl<BaubleTypeEx> impleme
 
     private BaubleTypeEx(String name, int amount, int priority) {
         this.name = name;
-        this.setRegistryName(BaublesApi.MOD_ID, name);
+        this.setRegistryName(BaublesApi.API_ID, name);
         this.amount = amount;
         this.priority = priority;
     }

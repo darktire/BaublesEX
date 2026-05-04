@@ -1,7 +1,6 @@
 package baubles;
 
 import baubles.api.BaubleTypeEx;
-import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.attribute.AttributeManager;
 import baubles.api.registries.ItemData;
@@ -15,6 +14,7 @@ import baubles.common.items.ItemTire;
 import baubles.lib.util.ItemQuery;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -25,7 +25,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 
 import java.io.IOException;
 
-@Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class BaublesRegister {
 
     public static void registerItems() {
@@ -79,7 +79,7 @@ public class BaublesRegister {
         AttributeManager.loadAttributes();
     }
 
-    @Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
+    @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
     public static class ModItems {
         public static final Item ring = new ItemRing().setRegistryName("ring");
         public static final Item tire = new ItemTire().setRegistryName("tire");
@@ -115,7 +115,7 @@ public class BaublesRegister {
     public static ForgeRegistry<BaubleTypeEx> create() {
         return (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>()
                 .setType(BaubleTypeEx.class)
-                .setName(BaublesApi.BAUBLE_TYPE)
+                .setName(new ResourceLocation(Reference.MOD_ID, "types"))
                 .disableSaving()
                 .create();
     }

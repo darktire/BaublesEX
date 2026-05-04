@@ -1,5 +1,6 @@
 package baubles.common.handler;
 
+import baubles.Reference;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
@@ -45,9 +46,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class EventHandlerEntity {
-    private static final ResourceLocation BAUBLES_CAP = new ResourceLocation(BaublesApi.MOD_ID, "container");
+    private static final ResourceLocation BAUBLES_CAP = new ResourceLocation(Reference.MOD_ID, "container");
     private static final int PICKUP_DELAY = 40;
     private static final Method RIGHT_CLICK = ObfuscationReflectionHelper.findMethod(Item.class, "func_77659_a", ActionResult.class, World.class, EntityPlayer.class, EnumHand.class);
 
@@ -72,7 +73,7 @@ public class EventHandlerEntity {
                 }
             }
         } catch (Exception e) {
-            BaublesApi.log.error("Could not clone player [" + event.getOriginal().getName() + "] baubles when changing dimensions");
+            Reference.LOG.error("Could not clone player [" + event.getOriginal().getName() + "] baubles when changing dimensions");
         }
     }
 

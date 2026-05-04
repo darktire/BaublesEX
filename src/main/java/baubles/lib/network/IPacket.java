@@ -1,6 +1,6 @@
 package baubles.lib.network;
 
-import baubles.api.BaublesApi;
+import baubles.Reference;
 import baubles.mixin.early.forge.AccessorItemStack;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.Item;
@@ -17,7 +17,7 @@ public interface IPacket extends IMessage {
         try {
             read(new PacketBuffer(buf));
         } catch (Exception e) {
-            BaublesApi.log.error("network error reading", e);
+            Reference.LOG.error("network error reading", e);
         }
     }
 
@@ -26,7 +26,7 @@ public interface IPacket extends IMessage {
         try {
             write(new PacketBuffer(buf));
         } catch (Exception e) {
-            BaublesApi.log.error("network error writing", e);
+            Reference.LOG.error("network error writing", e);
         }
     }
 

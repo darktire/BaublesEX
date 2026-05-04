@@ -1,7 +1,7 @@
 package baubles.compat.crt;
 
+import baubles.Reference;
 import baubles.api.BaubleTypeEx;
-import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.registries.TypeData;
 import baubles.util.CommonHelper;
@@ -79,7 +79,7 @@ public class CrTContainer implements IContainer {
 
     @Override
     public String asString() {
-        return BaublesApi.MOD_ID;
+        return Reference.MOD_ID;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package baubles.common.config;
 
-import baubles.api.BaublesApi;
+import baubles.Reference;
 import baubles.api.module.IModule;
 import baubles.api.registries.ItemData;
 import baubles.client.model.Models;
@@ -40,7 +40,7 @@ public class ConfigRecord implements ISelectiveResourceReloadListener {
             ConversionHelper.fromJson(ConversionHelper.Content.ITEMS);
             Models.loadModel();
         } catch (Exception e) {
-            BaublesApi.log.error("error reloading", e);
+            Reference.LOG.error("error reloading", e);
         }
     }
 

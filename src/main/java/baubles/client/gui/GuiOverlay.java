@@ -1,6 +1,6 @@
 package baubles.client.gui;
 
-import baubles.api.BaublesApi;
+import baubles.Reference;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.cap.IBaublesListener;
 import baubles.client.gui.element.ElementController;
@@ -37,7 +37,7 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 @MouseTweaksDisableWheelTweak
 public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea {
-    public static final ResourceLocation BAUBLES_TEX = new ResourceLocation(BaublesApi.MOD_ID, "textures/gui/baubles_container.png");
+    public static final ResourceLocation BAUBLES_TEX = new ResourceLocation(Reference.MOD_ID, "textures/gui/baubles_container.png");
     protected final static boolean jeiLoaded = HookHelper.isModLoaded("jei");
     protected final ContainerExpansion containerEx = (ContainerExpansion) this.inventorySlots;
     public IBaublesItemHandler baubles = (this.containerEx).baubles;

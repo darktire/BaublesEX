@@ -1,6 +1,5 @@
 package baubles;
 
-import baubles.api.BaublesApi;
 import baubles.common.command.BaublesCommand;
 import baubles.proxy.CommonProxy;
 import net.minecraftforge.fml.common.Mod;
@@ -13,8 +12,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 @Mod(
-        modid = BaublesApi.MOD_ID,
-        name = BaublesApi.MOD_NAME,
+        modid = Reference.MOD_ID,
+        name = Reference.MOD_NAME,
         useMetadata = true,
         guiFactory = "baubles.client.gui.config.BaublesGuiFactory"
 )
@@ -23,7 +22,7 @@ public class Baubles {
     @SidedProxy(clientSide = "baubles.proxy.ClientProxy", serverSide = "baubles.proxy.CommonProxy")
     public static CommonProxy proxy;
 
-    @Instance(value = BaublesApi.MOD_ID)
+    @Instance(value = Reference.MOD_ID)
     public static Baubles instance;
 
     @EventHandler

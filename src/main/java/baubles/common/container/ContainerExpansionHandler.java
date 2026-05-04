@@ -1,12 +1,12 @@
 package baubles.common.container;
 
-import baubles.api.BaublesApi;
+import baubles.Reference;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class ContainerExpansionHandler {
 //    @SubscribeEvent
 //    public static void onContainerOpen(PlayerContainerEvent.Open event) {

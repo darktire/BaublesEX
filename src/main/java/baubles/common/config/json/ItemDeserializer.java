@@ -1,8 +1,8 @@
 package baubles.common.config.json;
 
+import baubles.Reference;
 import baubles.api.AbstractWrapper;
 import baubles.api.BaubleTypeEx;
-import baubles.api.BaublesApi;
 import baubles.api.module.IModule;
 import baubles.api.registries.ItemData;
 import baubles.api.registries.TypeData;
@@ -119,7 +119,7 @@ public final class ItemDeserializer implements JsonDeserializer<ItemQuery> {
                     try {
                         return Stream.of(ItemQuery.parse(name));
                     } catch (Exception e) {
-                        BaublesApi.log.error(e);
+                        Reference.LOG.error(e);
                         return Stream.empty();
                     }
                 })
@@ -145,7 +145,7 @@ public final class ItemDeserializer implements JsonDeserializer<ItemQuery> {
         try {
             return ItemQuery.parse(itemName);
         } catch (Exception e) {
-            BaublesApi.log.error("items loading error: " + e.getMessage());
+            Reference.LOG.error("items loading error: " + e.getMessage());
             return ItemQuery.EMPTY;
         }
     }

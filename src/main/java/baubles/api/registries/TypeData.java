@@ -25,7 +25,7 @@ public class TypeData {
                 type = TypeData.getTypeByName(name);
             }
             else {
-                BaublesApi.log.error("{} is registered too late", name);
+                BaublesApi.LOG.error("{} is registered too late", name);
                 return null;
             }
         }
@@ -99,7 +99,7 @@ public class TypeData {
 
     private static ResourceLocation getLoc(String path, boolean withId) {
         if (withId) return new ResourceLocation(path);
-        return new ResourceLocation(BaublesApi.MOD_ID, path);
+        return new ResourceLocation(BaublesApi.API_ID, path);
     }
 
 

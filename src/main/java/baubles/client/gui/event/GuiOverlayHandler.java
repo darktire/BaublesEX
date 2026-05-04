@@ -1,6 +1,6 @@
 package baubles.client.gui.event;
 
-import baubles.api.BaublesApi;
+import baubles.Reference;
 import baubles.client.gui.GuiOverlay;
 import baubles.client.gui.GuiPlayerExpanded;
 import baubles.client.gui.OverlayManager;
@@ -29,7 +29,7 @@ import org.lwjgl.input.Mouse;
 
 import java.lang.reflect.Method;
 
-@Mod.EventBusSubscriber(modid = BaublesApi.MOD_ID, value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Side.CLIENT)
 @SideOnly(Side.CLIENT)
 public class GuiOverlayHandler {
     private static final Method RENDER_TOOLTIP = ObfuscationReflectionHelper.findMethod(GuiContainer.class, "func_191948_b", void.class, int.class, int.class);

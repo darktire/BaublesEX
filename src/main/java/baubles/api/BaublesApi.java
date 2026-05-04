@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,11 +16,8 @@ import java.util.function.Consumer;
 
 public final class BaublesApi {
 
-    public static final String MOD_ID = "baubles";
-    public static final String MOD_NAME = "BaublesEX";
-    public static final ResourceLocation BAUBLE_TYPE = new ResourceLocation(BaublesApi.MOD_ID, "types");
-
-    public static final Logger log = LogManager.getLogger(MOD_ID.toUpperCase());
+    public static final String API_ID = "baubles";
+    public static final Logger LOG = LogManager.getLogger("BAUBLES_API");
 
     /**
      * Retrieves the baubles inventory capability handler for the supplied player
