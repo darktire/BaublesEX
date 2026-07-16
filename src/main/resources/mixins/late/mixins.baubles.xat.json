@@ -4,11 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.8",
   "refmap": "mixins/mixins.baubles.refmap.json",
-  "client": [
-    "MixinTrinketDamageShield",
-    "MixinTrinketEnderTiara",
-    "MixinTrinketFaelisClaws",
-    "MixinTrinketSeaStone",
-    "MixinTrinketsRenderLayer"
+  "mixins": [
+    "MixinTrinketProperties"
   ]
 }

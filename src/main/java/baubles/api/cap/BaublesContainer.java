@@ -57,7 +57,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
                     this.stx.markDirty(0, this.getSlots());
                 }
             }
-            this.listeners.forEach(IBaublesListener::syncChanges);
+            this.listeners.forEach(IBaublesListener::syncChanges);//todo event
         } else if (!this.syncLock) {
             this.syncLock = true;
         }

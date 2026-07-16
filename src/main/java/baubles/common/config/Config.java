@@ -83,6 +83,8 @@ public class Config extends PartialConfig {
             File[] matched = getModDir().listFiles(filter);
             if (matched != null && matched.length > 0) {
                 files.addAll(Arrays.asList(matched));
+            } else {
+                files.add(new File(getModDir(), content.name().toLowerCase() + ".json"));
             }
         }
         return files;

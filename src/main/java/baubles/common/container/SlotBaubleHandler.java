@@ -74,7 +74,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
             MinecraftForge.EVENT_BUS.post(event);
             if (event.isBlocked()) return;
 
-            this.getItemHandler().setStackInSlot(index, stack.copy());
+            this.getItemHandler().setStackInSlot(index, stack);
 //            this.onSlotChanged();
 
             if (BaublesApi.isBauble(stack1)) {
