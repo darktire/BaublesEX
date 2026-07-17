@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -21,14 +22,14 @@ import net.minecraftforge.client.ForgeHooksClient;
 public class ModelArmor extends ModelBauble.NoTex {
 
     protected ModelBiped model;
-    protected final ItemArmor armor;
-    protected final ItemStack armorStack;
+    protected final Item item;
+    protected final ItemStack stack;
     protected boolean unready = true;
     protected ResourceLocation texture;
 
-    public ModelArmor(ItemArmor armor, ItemStack stack) {
-        this.armor = armor;
-        this.armorStack = stack;
+    public ModelArmor(Item item, ItemStack stack) {
+        this.item = item;
+        this.stack = stack;
     }
 
     @Override
@@ -41,17 +42,19 @@ public class ModelArmor extends ModelBauble.NoTex {
 
         if (this.texture != null) {
             renderPlayer.bindTexture(this.texture);
-        } else if (armor.hasOverlay(armorStack)) {
-            int color = armor.getColor(armorStack);
-            float r = (float)(color >> 16 & 255) / 255.0F;
-            float g = (float)(color >>  8 & 255) / 255.0F;
-            float b = (float)(color       & 255) / 255.0F;
-            GlStateManager.color(r, g, b, 1.0F);
-            renderPlayer.bindTexture(getArmorResource(entity, null));
-            this.model.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-            renderPlayer.bindTexture(getArmorResource(entity, "overlay"));
-        } else {
-            renderPlayer.bindTexture(getArmorResource(entity, null));
+        } else if (item instanceof ItemArmor armor) {
+            if (armor.hasOverlay(this.stack)) {
+                int color = armor.getColor(this.stack);
+                float r = (float) (color >> 16 & 255) / 255.0F;
+                float g = (float) (color >> 8 & 255) / 255.0F;
+                float b = (float) (color & 255) / 255.0F;
+                GlStateManager.color(r, g, b, 1.0F);
+                renderPlayer.bindTexture(getArmorResource(entity, null));
+                this.model.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+                renderPlayer.bindTexture(getArmorResource(entity, "overlay"));
+            } else {
+                renderPlayer.bindTexture(getArmorResource(entity, null));
+            }
         }
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -60,9 +63,9 @@ public class ModelArmor extends ModelBauble.NoTex {
 
     protected void initModel(EntityLivingBase entity) {
         if (this.unready) {
-            EntityEquipmentSlot slot = armor.armorType;
+            EntityEquipmentSlot slot = item.getEquipmentSlot(stack);
             this.model = (slot == EntityEquipmentSlot.LEGS) ? new ModelBiped(0.5F) : new ModelBiped(1.0F);
-            this.model = ForgeHooksClient.getArmorModel(entity, armorStack, slot, this.model);
+            this.model = ForgeHooksClient.getArmorModel(entity, stack, slot, this.model);
             setModelSlotVisible(this.model, slot);
             this.unready = false;
         }
@@ -96,16 +99,21 @@ public class ModelArmor extends ModelBauble.NoTex {
     }
 
     private ResourceLocation getArmorResource(Entity entity, String type) {
-        String texture = this.armor.getArmorMaterial().getName();
-        String domain  = "minecraft";
-        int idx = texture.indexOf(':');
-        if (idx != -1) {
-            domain  = texture.substring(0, idx);
-            texture = texture.substring(idx + 1);
-        }
-        String path = String.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, (this.armor.armorType == EntityEquipmentSlot.LEGS ? 2 : 1), type == null ? "" : "_" + type);
+        if (this.item instanceof ItemArmor armor) {
+            String texture = armor.getArmorMaterial().getName();
+            String domain  = "minecraft";
+            int idx = texture.indexOf(':');
+            if (idx != -1) {
+                domain  = texture.substring(0, idx);
+                texture = texture.substring(idx + 1);
+            }
+            String path = String.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, (armor.armorType == EntityEquipmentSlot.LEGS ? 2 : 1), type == null ? "" : "_" + type);
 
-        return new ResourceLocation(ForgeHooksClient.getArmorTexture(entity, this.armorStack, path, this.armor.armorType, type));
+            String resource = ForgeHooksClient.getArmorTexture(entity, this.stack, path, armor.armorType, type);
+            return new ResourceLocation(resource);
+        } else {
+            return new ResourceLocation(item.getArmorTexture(stack, entity, item.getEquipmentSlot(stack), type));
+        }
     }
 
     @Override
@@ -120,18 +128,18 @@ public class ModelArmor extends ModelBauble.NoTex {
 
     public static class WithBends extends ModelArmor {
 
-        public WithBends(ItemArmor armor, ItemStack stack) {
-            super(armor, stack);
+        public WithBends(Item item, ItemStack stack) {
+            super(item, stack);
         }
 
         @Override
         protected void initModel(EntityLivingBase entity) {
             if (this.unready) {
-                EntityEquipmentSlot slot = armor.armorType;
+                EntityEquipmentSlot slot = item.getEquipmentSlot(stack);
                 this.model = (slot == EntityEquipmentSlot.LEGS) ? new ModelBiped(0.5F) : new ModelBiped(1.0F);
-                this.model = ForgeHooksClient.getArmorModel(entity, armorStack, slot, this.model);
+                this.model = ForgeHooksClient.getArmorModel(entity, stack, slot, this.model);
                 EntityData<?> entityData = EntityDatabase.instance.get(entity);
-                boolean shouldBeMutated = !ModConfig.shouldKeepArmorAsVanilla(armor) && entityData instanceof BipedEntityData;
+                boolean shouldBeMutated = !ModConfig.shouldKeepArmorAsVanilla(item) && entityData instanceof BipedEntityData;
                 this.model = ArmorModelFactory.getArmorModel(model, shouldBeMutated);
                 setModelSlotVisible(this.model, slot);
                 this.unready = false;
