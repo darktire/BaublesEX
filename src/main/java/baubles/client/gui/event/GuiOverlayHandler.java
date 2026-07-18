@@ -120,9 +120,9 @@ public class GuiOverlayHandler {
 
         ex.handleMouseScroll(mouseX, mouseY, dWheel);
         if (ex.isPointed(mouseX, mouseY)) {
+            e.setCanceled(true);
             try {
                 ex.handleMouseInput();
-                e.setCanceled(true);
             } catch (Exception ignore) {}
         }
     }

@@ -241,7 +241,7 @@ public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea 
         if (xLoc - 18 * this.col < mouseX && mouseX < xLoc) {
             int yLoc = this.guiTop + 15;
             if (mouseY >= yLoc && mouseY < yLoc + 18 * 8) {
-                int value = dWheel / 120;
+                int value = Integer.signum(dWheel);
                 if (value != 0) {
                     this.moveSlots(value);
                     this.scroller.moveScrollerBar(value);
