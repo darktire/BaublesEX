@@ -24,7 +24,7 @@ public class MixinTotemEventHandler {
             IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) living);
             int index = baubles.indexOf(stack, 0);
             boolean result = ((ItemTotemBase)stack.getItem()).onActivate(living, stack, source);
-            if (index != -1) baubles.stx.markDirty(index);
+            if (index != -1) baubles.getStx().markDirty(index);
             cir.setReturnValue(result);
         }
     }

@@ -17,7 +17,7 @@ public class MixinBaubleAttributeModifierHandler {
         if (!entity.world.isRemote) {
             IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
             int index = baubles.indexOf(stack.getItem(), 0);
-            baubles.stx.markDirty(index);
+            baubles.getStx().markDirty(index);
         }
     }
 }

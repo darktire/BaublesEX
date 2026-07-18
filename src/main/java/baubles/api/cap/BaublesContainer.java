@@ -1,5 +1,6 @@
 package baubles.api.cap;
 
+import baubles.api.AbstractWrapper;
 import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
@@ -33,6 +34,8 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     public boolean containerUpdated = true;
     private Runnable respawnTask = this::dropItems;
     private boolean syncLock = false;
+    public Monitor stx = new Monitor();
+    public Monitor vis = new Monitor();
 
     public BaublesContainer() { super(0); }
 
@@ -224,6 +227,16 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     }
 
     @Override
+    public Monitor getStx() {
+        return stx;
+    }
+
+    @Override
+    public Monitor getVis() {
+        return vis;
+    }
+
+    @Override
     public NBTTagCompound serializeNBT() {
         // item persistence
         NBTTagList itemList = new NBTTagList();
@@ -283,13 +296,16 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     }
 
     private void dropItem(ItemStack stack) {
+        if (BaublesApi.isBauble(stack)) {
+            AbstractWrapper bauble = BaublesApi.toBauble(stack);
+            if (!entity.world.isRemote) {
+                this.core.batchDecrement(bauble.getModules(stack, entity));
+                this.core.apply(entity);
+            }
+            bauble.onUnequipped(stack, entity);
+        }
         if (!entity.world.isRemote) {
             entity.entityDropItem(stack, 0F);
-            this.core.batchDecrement(BaublesApi.toBauble(stack).getModules(stack, entity));
-            this.core.apply(entity);
-        }
-        if (BaublesApi.isBauble(stack)) {
-            BaublesApi.toBauble(stack).onUnequipped(stack, entity);
         }
     }
 

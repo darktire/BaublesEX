@@ -123,8 +123,7 @@ public class GuiOverlayHandler {
             try {
                 ex.handleMouseInput();
                 e.setCanceled(true);
-            } catch (Exception ignore) {
-            }
+            } catch (Exception ignore) {}
         }
     }
 

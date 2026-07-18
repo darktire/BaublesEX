@@ -51,8 +51,9 @@ dependencies {
     compileOnly fg.deobf("curse.maven:natural-pledge-247704:2740703")
     compileOnly fg.deobf("curse.maven:librarianlib-252910:3041340")
     compileOnly fg.deobf("curse.maven:shadowfacts-forgelin-248453:2785465")
+    compileOnly fg.deobf("curse.maven:quantum-things-1387363:8352165")
 
-    //
+    //sophisticated backpacks
 //    runtimeOnly fg.deobf("curse.maven:forgelin-continuous-456403:8248535")
 //    runtimeOnly fg.deobf("curse.maven:modularui-624243:7929464")
     compileOnly fg.deobf("curse.maven:retro-sophisticated-backpacks-1197465:8216833")

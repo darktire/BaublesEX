@@ -86,8 +86,8 @@ public class EventHandlerEntity {
         EntityPlayerMP player = (EntityPlayerMP) event.player;
         AttributeManager.getBaubles(player).forEach((type, instance) -> PacketHandler.INSTANCE.sendTo(new PacketModifier(player, type, instance.getBaseValue(), instance.getModifiers()), player));
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
-        baubles.stx.markDirty(0, baubles.getSlots());
-        baubles.vis.markDirty(0, baubles.getSlots());
+        baubles.getStx().markDirty(0, baubles.getSlots());
+        baubles.getVis().markDirty(0, baubles.getSlots());
     }
 
     @SubscribeEvent

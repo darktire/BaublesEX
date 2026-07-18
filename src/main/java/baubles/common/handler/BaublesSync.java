@@ -74,16 +74,16 @@ public class BaublesSync {
 
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
         if (!baubles.canSync()) return;
-        if (!baubles.stx.isDirty() && !baubles.vis.isDirty()) return;
+        if (!baubles.getStx().isDirty() && !baubles.getVis().isDirty()) return;
 
         PacketSync pkt = PacketSync.S2CPack(player);
-        if (baubles.stx.isDirty()) {
-            baubles.stx.forEach(i -> pkt.append(i, baubles.getStackInSlot(i), -1));
-            baubles.stx.clear();
+        if (baubles.getStx().isDirty()) {
+            baubles.getStx().forEach(i -> pkt.append(i, baubles.getStackInSlot(i), -1));
+            baubles.getStx().clear();
         }
-        if (baubles.vis.isDirty()) {
-            baubles.vis.forEach(i -> pkt.append(i, null, baubles.getVisible(i) ? 1 : 0));
-            baubles.vis.clear();
+        if (baubles.getVis().isDirty()) {
+            baubles.getVis().forEach(i -> pkt.append(i, null, baubles.getVisible(i) ? 1 : 0));
+            baubles.getVis().clear();
         }
 
         full.setBaubles(pkt);

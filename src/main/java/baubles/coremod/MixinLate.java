@@ -35,6 +35,7 @@ public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
             "nvg",
             "potionfingers",
             "qualitytools",
+            "randomthings",
             "rlartifacts",
             "setbonus",
             "spartanweaponry",

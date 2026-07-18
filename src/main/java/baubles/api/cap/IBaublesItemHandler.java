@@ -50,9 +50,8 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 	void updateContainer();
 
 	EntityLivingBase getOwner();
-	Monitor stx = new Monitor();
-	Monitor vis = new Monitor();
-
+	Monitor getStx();
+	Monitor getVis();
 
 	final class Monitor {
 		final BitSet status = new BitSet();

@@ -120,7 +120,7 @@ public class SlotBaubleHandler extends SlotItemHandler {
     @Override
     public void onSlotChanged() {
         this.getItemHandler().onContentsChanged(index);
-        this.getItemHandler().stx.markDirty(index);
+        this.getItemHandler().getStx().markDirty(index);
     }
 
     @Override
