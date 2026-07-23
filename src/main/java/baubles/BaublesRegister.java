@@ -54,7 +54,7 @@ public class BaublesRegister {
     }
 
     public static void setTypes() {
-        TypeData.Preset.AMULET.setAmount(Config.Slots.getCfgAmount("head"));
+        TypeData.Preset.AMULET.setAmount(Config.Slots.getCfgAmount("amulet"));
         TypeData.Preset.RING.setAmount(Config.Slots.getCfgAmount("ring"));
         TypeData.Preset.BELT.setAmount(Config.Slots.getCfgAmount("belt"));
         TypeData.Preset.TRINKET.setAmount(Config.Slots.getCfgAmount("trinket"));

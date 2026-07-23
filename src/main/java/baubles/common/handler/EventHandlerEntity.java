@@ -73,7 +73,7 @@ public class EventHandlerEntity {
                 }
             }
         } catch (Exception e) {
-            Reference.LOG.error("Could not clone player [" + event.getOriginal().getName() + "] baubles when changing dimensions");
+            Reference.LOG.error("Could not clone player [{}] baubles when changing dimensions", event.getOriginal().getName());
         }
     }
 

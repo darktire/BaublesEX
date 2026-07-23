@@ -18,6 +18,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.Map;
+
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class BaublesSync {
 
@@ -55,6 +57,8 @@ public class BaublesSync {
         });
 
         IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
+        baubles.updateContainer();
+
         PacketSync pkt = PacketSync.S2CPack(player);
         for (int i = 0; i < baubles.getSlots(); i++) {
             pkt.append(i, baubles.getStackInSlot(i), baubles.getVisible(i) ? 1 : 0);
@@ -65,17 +69,18 @@ public class BaublesSync {
     }
 
     public static void syncModified(EntityPlayerMP player) {
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
+        if (!baubles.canSync()) return;
+
         PacketFullSync full = new PacketFullSync();
 
-        AttributeManager.getModified(player).forEach((type, instance) -> {
+        Map<BaubleTypeEx, AdvancedInstance> modified = AttributeManager.getModified(player);
+        if (modified.isEmpty() && !baubles.getStx().isDirty() && !baubles.getVis().isDirty()) return;
+
+        modified.forEach((type, instance) -> {
             full.addModifier(createModifierPkt(player, type, instance));
             instance.callback();
         });
-
-        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityLivingBase) player);
-        if (!baubles.canSync()) return;
-        if (!baubles.getStx().isDirty() && !baubles.getVis().isDirty()) return;
-
         PacketSync pkt = PacketSync.S2CPack(player);
         if (baubles.getStx().isDirty()) {
             baubles.getStx().forEach(i -> pkt.append(i, baubles.getStackInSlot(i), -1));

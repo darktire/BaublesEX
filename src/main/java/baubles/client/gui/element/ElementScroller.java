@@ -11,11 +11,15 @@ import java.awt.*;
 @SideOnly(Side.CLIENT)
 public class ElementScroller extends ElementBase {
 
+    private static final int TRACK_TOP = 16;
+    private static final int TRACK_HEIGHT = 142;
+    private static final int BAR_HEIGHT = 89;
+    private static final int BAR_TRAVEL = TRACK_HEIGHT - BAR_HEIGHT;
+
     public Rectangle area;
 
     private int barPos, dragStartY, movement;
     private boolean dragging;
-    private final int rest = 142 - 89;
 
     public ElementScroller(int id, GuiOverlay parentGui, int x, int y, boolean visible) {
         super(id, x, y, 18, 166, "", parentGui);
@@ -32,8 +36,11 @@ public class ElementScroller extends ElementBase {
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
         if (visible) {
-            dragging = getHovered(mouseX, mouseY, x + 6, y + 16 + barPos, 6, 89);
-            if (dragging) dragStartY = mouseY;
+            dragging = getHovered(mouseX, mouseY, x + 6, y + TRACK_TOP + barPos, 6, BAR_HEIGHT);
+            if (dragging) {
+                dragStartY = mouseY;
+                movement = 0;
+            }
         }
         return super.mousePressed(mc, mouseX, mouseY);
     }
@@ -55,8 +62,8 @@ public class ElementScroller extends ElementBase {
             glPush();
             mc.getTextureManager().bindTexture(GuiOverlay.BAUBLES_TEX);
             drawTexturedModalRect(x, y, 0, 0, 18, 166);
-            drawTexturedModalRect(x + 6, y + 16 + barPos + movement, 0, 167, 6, 52 + 36);
-            drawTexturedModalRect(x + 6, y + 16 + 52 + 36 + barPos + movement, 0, 167 + 52 + 36, 6, 1);
+            drawTexturedModalRect(x + 6, y + TRACK_TOP + barPos + movement, 0, 167, 6, BAR_HEIGHT - 1);
+            drawTexturedModalRect(x + 6, y + TRACK_TOP + BAR_HEIGHT - 1 + barPos + movement, 0, 167 + BAR_HEIGHT - 1, 6, 1);
             glPop();
         }
     }
@@ -83,24 +90,18 @@ public class ElementScroller extends ElementBase {
 
     private void handleDrag(int mouseY) {
         if (dragging) {
-            if (this.parentGui.getRow() < 9) {
+            int row = this.parentGui.getRow();
+            if (row < 9) {
                 if (this.parentGui.getOffset() != 0) {
-                    this.parentGui.moveSlots(0);
-                    this.barPos = 0;
+                    this.parentGui.moveSlots(-this.parentGui.getOffset());
                 }
+                this.barPos = 0;
+                this.movement = 0;
                 return;
             }
-            movement = mouseY - dragStartY;
-            if (barPos + movement < 0) {
-                movement = -barPos;
-                if (y + 16 + barPos <= mouseY && mouseY < y + 16 + 89 + barPos) dragStartY = mouseY + barPos;
-            }
-            if (barPos + movement > rest) {
-                movement = rest - barPos;
-                if (y + 16 + barPos <= mouseY && mouseY < y + 16 + 89 + barPos) dragStartY = mouseY + barPos - rest;
-            }
-            float pixelPerSlot = (float) rest / (parentGui.baublesAmount - 8 * this.parentGui.getCol());
-            int offset = -Math.round((this.barPos + this.movement) / pixelPerSlot);
+
+            this.movement = Math.max(-this.barPos, Math.min(BAR_TRAVEL - this.barPos, mouseY - this.dragStartY));
+            int offset = -Math.round((this.barPos + this.movement) * (row - 8) / (float) BAR_TRAVEL);
             int value = offset - parentGui.getOffset();
             if (value != 0) {
                 this.parentGui.moveSlots(value);
@@ -109,17 +110,25 @@ public class ElementScroller extends ElementBase {
     }
 
     public void moveScrollerBar(int value) {
-        int i = this.parentGui.getRow();
-        if (i < 9) return;
-        barPos -= (int) (value * ((float) rest / (i - 8)));
-        if (barPos < 0) barPos = 0;
-        if (barPos > rest) barPos = rest;
+        int row = this.parentGui.getRow();
+        if (row < 9) {
+            this.barPos = 0;
+            return;
+        }
+
+        this.barPos = Math.max(0, Math.min(BAR_TRAVEL, this.barPos - (int) (value * (BAR_TRAVEL / (float) (row - 8)))));
     }
 
     public void setBarPos(int value) {
-        int i = this.parentGui.getRow();
-        if (i < 9) return;
-        barPos = (int) (-value * ((float) rest / (i - 8)));
+        if (this.dragging) return;
+
+        int row = this.parentGui.getRow();
+        if (row < 9) {
+            this.barPos = 0;
+            return;
+        }
+
+        this.barPos = Math.max(0, Math.min(BAR_TRAVEL, Math.round(-value * BAR_TRAVEL / (float) (row - 8))));
     }
 
     public boolean getDragging() {

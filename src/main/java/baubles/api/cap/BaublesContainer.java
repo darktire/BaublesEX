@@ -47,12 +47,12 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     @Override
     public void updateContainer() {
         while (!this.containerUpdated) {
+            if (!this.syncLock) this.syncLock = true;
             this.syncSlots();
             this.onSlotChanged();
             this.dropItems();
         }
-        boolean empty = dropQue.isEmpty();
-        if (empty) {
+        if (dropQue.isEmpty()) {
             if (this.syncLock) {
                 this.syncLock = false;
                 if (!this.entity.world.isRemote) {
@@ -61,8 +61,6 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
                 }
             }
             this.listeners.forEach(IBaublesListener::syncChanges);//todo event
-        } else if (!this.syncLock) {
-            this.syncLock = true;
         }
     }
 

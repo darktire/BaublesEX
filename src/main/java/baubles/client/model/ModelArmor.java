@@ -40,21 +40,18 @@ public class ModelArmor extends ModelBauble.NoTex {
         this.model.setModelAttributes(renderPlayer.getMainModel());
         this.model.setLivingAnimations(entity, limbSwing, limbSwingAmount, partialTicks);
 
-        if (this.texture != null) {
+        if (this.texture == null) this.texture = getArmorResource(entity, null);
+        if (item instanceof ItemArmor armor && armor.hasOverlay(this.stack)) {
+            int color = armor.getColor(this.stack);
+            float r = (float) (color >> 16 & 255) / 255.0F;
+            float g = (float) (color >> 8 & 255) / 255.0F;
+            float b = (float) (color & 255) / 255.0F;
+            GlStateManager.color(r, g, b, 1.0F);
             renderPlayer.bindTexture(this.texture);
-        } else if (item instanceof ItemArmor armor) {
-            if (armor.hasOverlay(this.stack)) {
-                int color = armor.getColor(this.stack);
-                float r = (float) (color >> 16 & 255) / 255.0F;
-                float g = (float) (color >> 8 & 255) / 255.0F;
-                float b = (float) (color & 255) / 255.0F;
-                GlStateManager.color(r, g, b, 1.0F);
-                renderPlayer.bindTexture(getArmorResource(entity, null));
-                this.model.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-                renderPlayer.bindTexture(getArmorResource(entity, "overlay"));
-            } else {
-                renderPlayer.bindTexture(getArmorResource(entity, null));
-            }
+            this.model.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+            renderPlayer.bindTexture(getArmorResource(entity, "overlay"));
+        } else {
+            renderPlayer.bindTexture(this.texture);
         }
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -63,7 +60,7 @@ public class ModelArmor extends ModelBauble.NoTex {
 
     protected void initModel(EntityLivingBase entity) {
         if (this.unready) {
-            EntityEquipmentSlot slot = item.getEquipmentSlot(stack);
+            EntityEquipmentSlot slot = item instanceof ItemArmor armor ? armor.armorType : item.getEquipmentSlot(stack);;
             this.model = (slot == EntityEquipmentSlot.LEGS) ? new ModelBiped(0.5F) : new ModelBiped(1.0F);
             this.model = ForgeHooksClient.getArmorModel(entity, stack, slot, this.model);
             setModelSlotVisible(this.model, slot);
@@ -74,6 +71,7 @@ public class ModelArmor extends ModelBauble.NoTex {
     protected void setModelSlotVisible(ModelBiped model, EntityEquipmentSlot slot) {
         model.setVisible(false);
 
+        if (slot == null) return;
         switch (slot) {
             case HEAD:
                 model.bipedHead.showModel = true;
@@ -99,6 +97,7 @@ public class ModelArmor extends ModelBauble.NoTex {
     }
 
     private ResourceLocation getArmorResource(Entity entity, String type) {
+        String resource;
         if (this.item instanceof ItemArmor armor) {
             String texture = armor.getArmorMaterial().getName();
             String domain  = "minecraft";
@@ -109,11 +108,11 @@ public class ModelArmor extends ModelBauble.NoTex {
             }
             String path = String.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, (armor.armorType == EntityEquipmentSlot.LEGS ? 2 : 1), type == null ? "" : "_" + type);
 
-            String resource = ForgeHooksClient.getArmorTexture(entity, this.stack, path, armor.armorType, type);
-            return new ResourceLocation(resource);
+            resource = ForgeHooksClient.getArmorTexture(entity, this.stack, path, armor.armorType, type);
         } else {
-            return new ResourceLocation(item.getArmorTexture(stack, entity, item.getEquipmentSlot(stack), type));
+            resource = item.getArmorTexture(stack, entity, item.getEquipmentSlot(stack), type);
         }
+        return new ResourceLocation(resource);
     }
 
     @Override
@@ -135,7 +134,7 @@ public class ModelArmor extends ModelBauble.NoTex {
         @Override
         protected void initModel(EntityLivingBase entity) {
             if (this.unready) {
-                EntityEquipmentSlot slot = item.getEquipmentSlot(stack);
+                EntityEquipmentSlot slot = item instanceof ItemArmor armor ? armor.armorType : item.getEquipmentSlot(stack);
                 this.model = (slot == EntityEquipmentSlot.LEGS) ? new ModelBiped(0.5F) : new ModelBiped(1.0F);
                 this.model = ForgeHooksClient.getArmorModel(entity, stack, slot, this.model);
                 EntityData<?> entityData = EntityDatabase.instance.get(entity);

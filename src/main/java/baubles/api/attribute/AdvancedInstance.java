@@ -12,17 +12,13 @@ import java.util.Collection;
 
 public class AdvancedInstance extends ModifiableAttributeInstance {
     private WeakReference<BaublesContainer> handler;
-    private final double[] anonymous = new double[3];
-    boolean needsUpdate = false;
+    private final double[] anonymous = new double[]{0, 0, 0};
+    boolean needsUpdate = true;
     protected int flags = 0;
     protected final double[] modifierCache = new double[3];
 
     public AdvancedInstance(AbstractAttributeMap map, IAttribute attribute) {
         super(map, attribute);
-        for (int i = 0; i < 3; i++) {
-            this.anonymous[i] = 0;
-            this.markDirty(AttrOpt.values()[i]);
-        }
     }
 
     @Override
@@ -62,12 +58,12 @@ public class AdvancedInstance extends ModifiableAttributeInstance {
     }
 
     public void markDirty(AttrOpt type) {
-        this.flags |= type.getMask();
+        this.flags &= ~type.getMask();
         this.needsUpdate = true;
     }
 
     public boolean isDirty(AttrOpt type) {
-        return (this.flags & type.getMask()) != 0;
+        return (this.flags & type.getMask()) == 0;
     }
 
     protected double getCachedModifierValue(AttrOpt type) {
@@ -88,12 +84,16 @@ public class AdvancedInstance extends ModifiableAttributeInstance {
 
         result += anonymous[typeId];
         this.modifierCache[typeId] = result;
-        this.flags &= ~type.getMask();
+        this.flags |= type.getMask();
         return result;
     }
 
     public void setBase(double value) {
-        super.setBaseValue(value);
+        if (value != this.getBaseValue()) {
+            super.setBaseValue(value);
+            this.flags = 0;
+            this.needsUpdate = true;
+        }
     }
 
     public double getAnonymousModifier(int operation) {

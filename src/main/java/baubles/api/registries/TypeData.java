@@ -108,14 +108,14 @@ public class TypeData {
         public static BaubleTypeEx[] ENUM_HELPER;
         static {
             BAUBLE = BaubleTypeEx.getGlobal(true);
-            HEAD = BaubleTypeEx.create("head", 1, 10);
-            AMULET = BaubleTypeEx.create("amulet", 1, 10);
-            BODY = BaubleTypeEx.create("body", 1, 10);
+            HEAD = BaubleTypeEx.create("head", 1, 100);
+            AMULET = BaubleTypeEx.create("amulet", 1, 90);
+            BODY = BaubleTypeEx.create("body", 1, 80);
             RING = BaubleTypeEx.create("ring", 2, 0);
             BELT = BaubleTypeEx.create("belt", 1, 0);
             CHARM = BaubleTypeEx.create("charm", 1, 0);
             TRINKET = BaubleTypeEx.getGlobal(false);
-            ELYTRA = BaubleTypeEx.create("elytra", 0, 5);
+            ELYTRA = BaubleTypeEx.create("elytra", 0, 50);
 
             ELYTRA.addParent(BODY);
 

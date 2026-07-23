@@ -150,7 +150,7 @@ public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea 
         this.containerEx.clearBaubles();
         this.containerEx.addBaubleSlots(this.wider);
         this.row = initRow();
-        this.scroller.setBarPos(this.offset);
+        if (this.row < 9) this.scroller.setBarPos(0);
         this.switchers.initSwitchers(true);
         this.setSlotsPos();
     }
@@ -186,6 +186,7 @@ public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea 
         this.addButton(new ElementController.e(56, this, this.guiLeft - 24, this.guiTop + 5, 1));
         this.addButton(new ElementController.h(57, this, this.guiLeft - 14, this.guiTop + 5, 2));
         this.scroller = this.addButton(new ElementScroller(58, this, this.guiLeft - 30 - 18 * this.col, this.guiTop, Config.Gui.scrollerBar));
+        this.scroller.setBarPos(this.offset);
         this.switchers = this.addButton(new ElementSwitchers(59, this, this.guiLeft - 10, this.guiTop + 14));
         this.extraArea.add(new Rectangle(this.guiLeft - 11 - 18 * this.col, this.guiTop, 10 + 18 * this.col, 166));
     }
@@ -243,8 +244,9 @@ public class GuiOverlay extends GuiContainer implements IBaublesListener, IArea 
             if (mouseY >= yLoc && mouseY < yLoc + 18 * 8) {
                 int value = Integer.signum(dWheel);
                 if (value != 0) {
+                    int previousOffset = this.offset;
                     this.moveSlots(value);
-                    this.scroller.moveScrollerBar(value);
+                    this.scroller.moveScrollerBar(this.offset - previousOffset);
                 }
             }
         }

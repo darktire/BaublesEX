@@ -9,6 +9,7 @@ import baubles.api.event.BaublesRenderEvent;
 import baubles.api.module.IModule;
 import baubles.api.registries.TypeData;
 import baubles.client.model.Models;
+import baubles.client.render.ArmorRender;
 import baubles.common.config.Config;
 import baubles.common.config.KeyBindings;
 import baubles.common.network.PacketHandler;
@@ -41,7 +42,8 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public static void equipmentRenderEvent(BaublesRenderEvent.InEquipments event) {
-        if (event.getStack().getItem() instanceof ItemElytra) {
+        ItemStack stack = event.getStack();
+        if (stack.getItem() instanceof ItemElytra || BaublesApi.toBauble(stack).getRender() instanceof ArmorRender) {
             event.cancel();
         }
     }

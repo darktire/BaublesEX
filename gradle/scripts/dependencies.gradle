@@ -53,15 +53,18 @@ dependencies {
     compileOnly fg.deobf("curse.maven:shadowfacts-forgelin-248453:2785465")
     compileOnly fg.deobf("curse.maven:quantum-things-1387363:8352165")
 
+    //quark
+    implementation fg.deobf("curse.maven:quark-243121:2924091")
     //sophisticated backpacks
-//    runtimeOnly fg.deobf("curse.maven:forgelin-continuous-456403:8248535")
-//    runtimeOnly fg.deobf("curse.maven:modularui-624243:7929464")
+    runtimeOnly fg.deobf("curse.maven:forgelin-continuous-456403:8248535")
+    runtimeOnly fg.deobf("curse.maven:modularui-624243:7929464")
+    runtimeOnly fg.deobf("curse.maven:retro-sophisticated-backpacks-1197465:8216833")
     compileOnly fg.deobf("curse.maven:retro-sophisticated-backpacks-1197465:8216833")
     //quality tools
     runtimeOnly fg.deobf("curse.maven:potion-core-242872:2905184")
     implementation fg.deobf("curse.maven:quality-tools-264756:2732994")
     //potion fingers
-//    runtimeOnly fg.deobf("curse.maven:autoreglib-250363:2746011")
+    runtimeOnly fg.deobf("curse.maven:autoreglib-250363:2746011")
     compileOnly fg.deobf("curse.maven:potion-fingers-redux-344696:2825356")
     //Set Bonus
 //    runtimeOnly fg.deobf("curse.maven:fantastic-lib-315773:6807019")
@@ -117,7 +120,7 @@ dependencies {
     //enigmatic
     runtimeOnly 'com.cleanroommc:configanytime:3.0'
     runtimeOnly fg.deobf("curse.maven:fermiumbooter2mixinbooter-1163720:6552152")
-    implementation fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:7173695")
+    implementation fg.deobf("curse.maven:enigmatic-legacy-legacy-1055212:7731798")
     //aether
     compileOnly fg.deobf("curse.maven:aether-255308:6316434")
 //    runtimeOnly fg.deobf("curse.maven:aether-255308:6316434")

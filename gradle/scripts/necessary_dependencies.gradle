@@ -4,11 +4,7 @@ repositories {
 }
 
 dependencies {
-    minecraft(
-            group  : "${forge_group}",
-            name   : "forge",
-            version: "${minecraft_version}-${forge_version}"
-    )
+    minecraft("$forge_group:forge:$minecraft_version-$forge_version")
 
     annotationProcessor 'org.ow2.asm:asm-debug-all:5.2'
     annotationProcessor 'com.google.guava:guava:32.1.2-jre'
