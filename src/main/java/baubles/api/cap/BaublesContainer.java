@@ -5,6 +5,7 @@ import baubles.api.BaubleTypeEx;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.attribute.AttributeManager;
+import baubles.api.module.IModule;
 import baubles.api.module.ModuleCore;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
@@ -273,10 +274,14 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
         }
 
         NBTTagList itemList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
+        List<IModule> modules = new ArrayList<>();
         for (int i = 0; i < itemList.tagCount(); i++) {
             NBTTagCompound itemTags = itemList.getCompoundTagAt(i);
             int slot = itemTags.getInteger("Slot");
             ItemStack stack = new ItemStack(itemTags);
+            if (BaublesApi.isBauble(stack)) {
+                modules.addAll(BaublesApi.toBauble(stack).getModules(stack, this.entity));
+            }
             if (slot < this.stacks.size() && this.isItemValidForSlot(slot, stack, this.entity)) {
                 this.stacks.set(slot, stack);
                 this.snapshot.set(slot, stack.copy());
@@ -285,6 +290,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
                 this.dropQue.add(stack);
             }
         }
+        this.core.restore(modules);
     }
 
     public void dropItems() {

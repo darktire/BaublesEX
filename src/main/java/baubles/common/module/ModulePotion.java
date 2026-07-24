@@ -32,12 +32,12 @@ public class ModulePotion extends AbstractModule {
 
         if (this.max != -1 && level > this.max) level = this.max;
         if (level == -1) {
+            entity.removePotionEffect(potion);
+        } else {
             PotionEffect currentEffect = entity.getActivePotionEffect(potion);
             if (this.max == -1 || currentEffect != null && currentEffect.getAmplifier() <= this.max) {
                 entity.removePotionEffect(potion);
             }
-        }
-        else {
             entity.addPotionEffect(new PotionEffect(potion, Integer.MAX_VALUE, level, true, true));
         }
     }

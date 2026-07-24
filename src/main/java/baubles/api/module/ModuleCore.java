@@ -34,6 +34,13 @@ public class ModuleCore {
         }
     }
 
+    public void restore(Collection<IModule> modules) {
+        this.levels.clear();
+        for (IModule module : modules) {
+            this.levels.computeIfAbsent(module, key -> new AtomicInteger(0)).incrementAndGet();
+        }
+    }
+
     public void apply(EntityLivingBase entity) {
         this.levels.forEach((key, value) -> key.updateStatus(entity, value.get()));
     }
