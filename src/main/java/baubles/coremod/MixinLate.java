@@ -57,6 +57,7 @@ public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
     public List<String> getMixinConfigs() {
         return lateMixin.stream()
                 .filter(HookHelper::isModLoaded)
+                .filter(Compat::getConfig)
                 .map(name -> String.format(format, name))
                 .collect(Collectors.toList());
     }
@@ -73,8 +74,7 @@ public class MixinLate implements IMixinConfigPlugin, ILateMixinLoader {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        String modid = fromMixin(mixinClassName);
-        return Compat.getConfig(modid);
+        return true;
     }
 
     private String fromMixin(String mixinClassName) {
