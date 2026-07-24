@@ -52,7 +52,7 @@ public class ModulePotion extends AbstractModule {
 
     @Override
     public String getDescription() {
-        return TextFormatting.BLUE + " " + I18n.format("info.module.potion", String.format("%+d", this.perLevel), I18n.format(getTranslateKey()));
+        return TextFormatting.BLUE + " " + I18n.format("info.baubles.module.potion", String.format("%+d", this.perLevel), I18n.format(getTranslateKey()));
     }
 
     protected String getTranslateKey() {

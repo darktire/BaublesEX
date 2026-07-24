@@ -188,7 +188,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
     @Override public void setEventBlock(boolean blockEvents) { this.blockEvents = blockEvents; }
     @Override public boolean isChanged(int slot) { return false; }
     @Override public void setChanged(int slot, boolean change) {}
-	@Override public void setPlayer(EntityLivingBase entity) { this.entity = entity; }
+    @Override public void setPlayer(EntityLivingBase entity) { this.entity = entity; }
 
     @Override
     public void addListener(IBaublesListener listener) {

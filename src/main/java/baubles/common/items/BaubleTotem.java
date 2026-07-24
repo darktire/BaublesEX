@@ -1,7 +1,6 @@
 package baubles.common.items;
 
 import baubles.api.BaubleTypeEx;
-import baubles.api.BaublesApi;
 import baubles.api.model.ModelBauble;
 import baubles.api.registries.TypeData;
 import baubles.api.render.IRenderBauble;
@@ -12,11 +11,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 public class BaubleTotem extends BaubleVanilla implements IRenderBauble {
     public static BaubleTotem INSTANCE = new BaubleTotem();
-    private static final Map<UUID, Integer> WEARING = new WeakHashMap<>();
+    private static final WearingState WEARING = new WearingState();
     private static final List<BaubleTypeEx> TYPE = Collections.singletonList(TypeData.getTypeByName(Config.ModItems.totemSlot));
 
     @Override
@@ -25,7 +25,7 @@ public class BaubleTotem extends BaubleVanilla implements IRenderBauble {
     }
 
     @Override
-    protected Map<UUID, Integer> getEquipSlotMap() {
+    protected WearingState getWearingState() {
         return WEARING;
     }
 
@@ -45,10 +45,10 @@ public class BaubleTotem extends BaubleVanilla implements IRenderBauble {
     }
 
     public static boolean isWearing(EntityLivingBase entity) {
-        return WEARING.computeIfAbsent(entity.getUniqueID(), id -> INSTANCE.update(entity)) != -1;
+        return INSTANCE.hasWearing(entity);
     }
 
-    public static ItemStack getWearing(EntityLivingBase entity) {
-        return BaublesApi.getBaublesHandler(entity).getStackInSlot(WEARING.get(entity.getUniqueID()));
+    public static ItemStack takeWearing(EntityLivingBase entity) {
+        return INSTANCE.take(entity, 1);
     }
 }

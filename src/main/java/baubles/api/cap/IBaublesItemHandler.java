@@ -12,67 +12,75 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 
     boolean isItemValidForSlot(int slot, ItemStack stack, EntityLivingBase entity);
 
-	/**
-	 * Used internally to prevent equip/unequip events from triggering when they shouldn't
-	 */
+    /**
+     * Used internally to prevent equip/unequip events from triggering when they shouldn't
+     */
     boolean isEventBlocked();
-	void setEventBlock(boolean blockEvents);
 
-	@Deprecated
-	boolean isChanged(int slot);
-	@Deprecated
-	void setChanged(int slot, boolean changed);
+    void setEventBlock(boolean blockEvents);
 
-	@Deprecated
+    @Deprecated
+    boolean isChanged(int slot);
+
+    @Deprecated
+    void setChanged(int slot, boolean changed);
+
+    @Deprecated
     void setPlayer(EntityLivingBase entity);
 
-	BaubleTypeEx getTypeInSlot(int index);
+    BaubleTypeEx getTypeInSlot(int index);
 
-	int indexOf(Object o, int start);
+    int indexOf(Object o, int start);
 
-	void setVisible(int slot, boolean v);
-	boolean getVisible(int slot);
+    void setVisible(int slot, boolean v);
 
-	void onContentsChanged(int slot);
+    boolean getVisible(int slot);
 
-
-	//---------------------------Modifiable---------------------------//
+    void onContentsChanged(int slot);
 
 
-	void addListener(IBaublesListener listener);
-	void removeListener(IBaublesListener listener);
+    //---------------------------Modifiable---------------------------//
 
-	boolean canSync();
 
-	/**
-	 * Update stacks in container
-	 */
-	void updateContainer();
+    void addListener(IBaublesListener listener);
 
-	EntityLivingBase getOwner();
-	Monitor getStx();
-	Monitor getVis();
+    void removeListener(IBaublesListener listener);
 
-	final class Monitor {
-		final BitSet status = new BitSet();
+    boolean canSync();
 
-		public void markDirty(int slot) {
-			status.set(slot);
-		}
-		public void markDirty(int start, int end) {
-			status.set(start, end);
-		}
-		public boolean isDirty() {
-			return !status.isEmpty();
-		}
+    /**
+     * Update stacks in container
+     */
+    void updateContainer();
 
-		public void clear() {
-			status.clear();
-		}
+    EntityLivingBase getOwner();
 
-		public void forEach(IntConsumer c) {
-			status.stream().forEach(c);
-		}
+    Monitor getStx();
 
-	}
+    Monitor getVis();
+
+    final class Monitor {
+        final BitSet status = new BitSet();
+
+        public void markDirty(int slot) {
+            status.set(slot);
+        }
+
+        public void markDirty(int start, int end) {
+            status.set(start, end);
+        }
+
+        public boolean isDirty() {
+            return !status.isEmpty();
+        }
+
+        public void clear() {
+            status.clear();
+        }
+
+        public void forEach(IntConsumer c) {
+            status.stream().forEach(c);
+        }
+
+    }
 }

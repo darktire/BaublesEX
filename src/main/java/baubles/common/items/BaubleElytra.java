@@ -1,8 +1,6 @@
 package baubles.common.items;
 
 import baubles.api.BaubleTypeEx;
-import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesItemHandler;
 import baubles.api.model.ModelBauble;
 import baubles.api.registries.TypeData;
 import baubles.api.render.IRenderBauble;
@@ -14,11 +12,12 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 public class BaubleElytra extends BaubleVanilla implements IRenderBauble {
     public static BaubleElytra INSTANCE = new BaubleElytra();
-    private static final Map<UUID, Integer> WEARING = new WeakHashMap<>();
+    private static final WearingState WEARING = new WearingState();
     private static final List<BaubleTypeEx> TYPE = Collections.singletonList(TypeData.getTypeByName(Config.ModItems.elytraSlot));
 
     @Override
@@ -27,7 +26,7 @@ public class BaubleElytra extends BaubleVanilla implements IRenderBauble {
     }
 
     @Override
-    protected Map<UUID, Integer> getEquipSlotMap() {
+    protected WearingState getWearingState() {
         return WEARING;
     }
 
@@ -42,13 +41,15 @@ public class BaubleElytra extends BaubleVanilla implements IRenderBauble {
     }
 
     public static boolean isWearing(EntityLivingBase entity) {
-        return WEARING.computeIfAbsent(entity.getUniqueID(), id -> INSTANCE.update(entity)) != -1;
+        return INSTANCE.hasWearing(entity);
     }
 
     public static ItemStack getWearing(EntityLivingBase entity, boolean using) {
-        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
-        ItemStack stack = baubles.getStackInSlot(WEARING.get(entity.getUniqueID()));
-        if (using && !ItemElytra.isUsable(stack)) stack = baubles.getStackInSlot(INSTANCE.update(entity, true));
+        ItemStack stack = INSTANCE.borrow(entity);
+        if (using && !ItemElytra.isUsable(stack)) {
+            INSTANCE.update(entity, true);
+            stack = INSTANCE.borrow(entity);
+        }
         return stack;
     }
 }

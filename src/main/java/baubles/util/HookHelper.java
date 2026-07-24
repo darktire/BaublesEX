@@ -52,7 +52,7 @@ public class HookHelper {
 
         if (hand == EnumHand.OFF_HAND) {
             if (stack.getItem() != Items.TOTEM_OF_UNDYING && BaubleTotem.isWearing(entity)) {
-                return BaubleTotem.getWearing(entity);
+                return BaubleTotem.takeWearing(entity);
             }
         }
 

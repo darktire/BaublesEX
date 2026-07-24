@@ -19,28 +19,28 @@ import java.util.List;
 
 public class ItemRing extends Item implements IBauble {
 
-	private final IModule module = new ModulePotion(MobEffects.HASTE, 1, Config.ModItems.maxLevel);
+    private final IModule module = new ModulePotion(MobEffects.HASTE, 1, Config.ModItems.maxLevel);
 
-	public ItemRing() {
-		super();
-		this.setMaxStackSize(1);
-		this.setHasSubtypes(true);
-		this.setMaxDamage(0);
-		this.setCreativeTab(CreativeTabs.TOOLS);
-		this.setTranslationKey("Ring");
-	}
+    public ItemRing() {
+        super();
+        this.setMaxStackSize(1);
+        this.setHasSubtypes(true);
+        this.setMaxDamage(0);
+        this.setCreativeTab(CreativeTabs.TOOLS);
+        this.setTranslationKey("Ring");
+    }
 
-	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
-		if (this.isInCreativeTab(tab)) {
-			list.add(new ItemStack(this, 1, 0));
-		}
-	}
+    @Override
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
+        if (this.isInCreativeTab(tab)) {
+            list.add(new ItemStack(this, 1, 0));
+        }
+    }
 
-	@Override
-	public BaubleType getBaubleType(ItemStack itemStack) {
-		return BaubleType.RING;
-	}
+    @Override
+    public BaubleType getBaubleType(ItemStack itemStack) {
+        return BaubleType.RING;
+    }
 
 /*	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
@@ -63,41 +63,41 @@ public class ItemRing extends Item implements IBauble {
 //	public void onWornTick(ItemStack itemstack, EntityLivingBase entity) {
 //    }
 
-	@Override
-	public boolean hasEffect(ItemStack par1ItemStack) {
-		return true;
-	}
+    @Override
+    public boolean hasEffect(ItemStack par1ItemStack) {
+        return true;
+    }
 
-	@Override
-	public EnumRarity getRarity(ItemStack par1ItemStack) {
-		return EnumRarity.RARE;
-	}
+    @Override
+    public EnumRarity getRarity(ItemStack par1ItemStack) {
+        return EnumRarity.RARE;
+    }
 
-	@Override
-	public String getTranslationKey(ItemStack par1ItemStack) {
-		return super.getTranslationKey() + "." + par1ItemStack.getItemDamage();
-	}
+    @Override
+    public String getTranslationKey(ItemStack par1ItemStack) {
+        return super.getTranslationKey() + "." + par1ItemStack.getItemDamage();
+    }
 
-	@Override
-	public void onEquipped(ItemStack itemstack, EntityLivingBase entity) {
-		if (entity.world.isRemote) {
-			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 1.9f);
-		}
+    @Override
+    public void onEquipped(ItemStack itemstack, EntityLivingBase entity) {
+        if (entity.world.isRemote) {
+            entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 1.9f);
+        }
 //		updatePotionStatus(entity);
-	}
+    }
 
-	@Override
-	public void onUnequipped(ItemStack itemstack, EntityLivingBase entity) {
-		if (entity.world.isRemote) {
-			entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 2f);
-		}
+    @Override
+    public void onUnequipped(ItemStack itemstack, EntityLivingBase entity) {
+        if (entity.world.isRemote) {
+            entity.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 2f);
+        }
 //		updatePotionStatus(entity);
-	}
+    }
 
-	@Override
-	public List<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
-		return Collections.singletonList(module);
-	}
+    @Override
+    public List<IModule> getModules(ItemStack itemstack, EntityLivingBase entity) {
+        return Collections.singletonList(module);
+    }
 
 //	public static void updatePotionStatus(EntityLivingBase entity) {
 //		int level = -1;

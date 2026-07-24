@@ -11,28 +11,28 @@ import java.util.Collection;
 import java.util.List;
 
 public class BaubleItem implements IBauble {
-	private final List<BaubleTypeEx> types = new ArrayList<>();
+    private final List<BaubleTypeEx> types = new ArrayList<>();
 
-	public BaubleItem(Collection<BaubleTypeEx> types) {
-		this.types.addAll(types);
-	}
+    public BaubleItem(Collection<BaubleTypeEx> types) {
+        this.types.addAll(types);
+    }
 
-	public BaubleItem(BaubleTypeEx... types) {
-		this(Arrays.asList(types));
-	}
+    public BaubleItem(BaubleTypeEx... types) {
+        this(Arrays.asList(types));
+    }
 
-	@SuppressWarnings("unused")// for old api
-	public BaubleItem(BaubleType type) {
+    @SuppressWarnings("unused")// for old api
+    public BaubleItem(BaubleType type) {
         this.types.add(type.getExpansion());
-	}
+    }
 
-	@Override
-	public List<BaubleTypeEx> getTypes(ItemStack itemStack) {
-		return this.types;
-	}
+    @Override
+    public List<BaubleTypeEx> getTypes(ItemStack itemStack) {
+        return this.types;
+    }
 
-	@Override
-	public BaubleType getBaubleType(ItemStack itemStack) {
-		return this.types.get(0).getOldType();
-	}
+    @Override
+    public BaubleType getBaubleType(ItemStack itemStack) {
+        return this.types.get(0).getOldType();
+    }
 }
