@@ -17,16 +17,18 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryBuilder;
 
 import java.io.IOException;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class BaublesRegister {
+    private static final ResourceLocation TYPES_ID = new ResourceLocation(Reference.MOD_ID, "types");
+    private static final ResourceLocation TYPES_FINALIZE_ID = new ResourceLocation(Reference.MOD_ID, "types_finalize");
 
     public static void registerItems() {
         ForgeRegistries.ITEMS.getValuesCollection().stream()
@@ -42,14 +44,6 @@ public class BaublesRegister {
             ItemQuery undying = ItemQuery.of(Items.TOTEM_OF_UNDYING);
             ItemData.registerBauble(undying, BaubleTotem.INSTANCE);
             ItemData.registerRender(undying, BaubleTotem.INSTANCE);
-        }
-
-        ItemData.backup();
-
-        try {
-            ConversionHelper.fromJson(ConversionHelper.Content.ITEMS);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -102,21 +96,35 @@ public class BaublesRegister {
 
     @SubscribeEvent
     public static void createRegistry(RegistryEvent.NewRegistry event) {
-        create();
+        create(BaubleTypeEx.class, TYPES_ID);
+        create(BaublesFinalized.class, TYPES_FINALIZE_ID);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onRegistering(RegistryEvent.Register<BaubleTypeEx> event) {
-        TypeData.registerTypes((ForgeRegistry<BaubleTypeEx>) event.getRegistry());
-        loadValidSlots();
-        registerItems();
-    }
-
-    public static ForgeRegistry<BaubleTypeEx> create() {
-        return (ForgeRegistry<BaubleTypeEx>) new RegistryBuilder<BaubleTypeEx>()
-                .setType(BaubleTypeEx.class)
-                .setName(new ResourceLocation(Reference.MOD_ID, "types"))
+    private static <T extends IForgeRegistryEntry<T>> void create(Class<T> clazz, ResourceLocation name) {
+        new RegistryBuilder<T>()
+                .setType(clazz)
+                .setName(name)
                 .disableSaving()
                 .create();
     }
+
+    @SubscribeEvent
+    public static void onRegistering(RegistryEvent.Register<BaubleTypeEx> event) {
+        TypeData.registerTypes((ForgeRegistry<BaubleTypeEx>) event.getRegistry());
+        registerItems();
+    }
+
+    @SubscribeEvent
+    public static void onFinishing(RegistryEvent.Register<BaublesFinalized> event) {
+        loadValidSlots();
+        ItemData.backup();
+
+        try {
+            ConversionHelper.fromJson(ConversionHelper.Content.ITEMS);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static final class BaublesFinalized extends IForgeRegistryEntry.Impl<BaublesFinalized> {}
 }
