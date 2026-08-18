@@ -1,0 +1,62 @@
+#
+# ITEMS
+item.Ring.0.name=Кольцо шахтёра
+#
+# GUI
+button.baubles=Брелки
+button.normal=Обычный вид
+#
+# DESCRIPTION
+info.baubles=Брелки
+info.baubles.type=Тип брелка
+info.baubles.inventory=Открыть боковую панель брелков
+info.baubles.parents=может размещаться в слотах
+info.baubles.tooltip=Когда в соответствующем слоте:
+info.baubles.module.potion=%s уровень %s
+#
+# BAUBLES
+baubles.bauble=Брелок
+baubles.amulet=Амулет
+baubles.ring=Кольцо
+baubles.belt=Пояс
+baubles.trinket=Безделушка
+baubles.head=Головной убор
+baubles.body=Нательное
+baubles.charm=Талисман
+baubles.elytra=Элитры
+#
+# ATTRIBUTE
+attribute.name.baubles.bauble=Слот для брелка
+attribute.name.baubles.amulet=Слот для амулета
+attribute.name.baubles.ring=Слот для кольца
+attribute.name.baubles.belt=Слот для пояса
+attribute.name.baubles.trinket=Слот для безделушки
+attribute.name.baubles.head=Слот для головного убора
+attribute.name.baubles.body=Нательный слот
+attribute.name.baubles.charm=Слот для талисмана
+attribute.name.baubles.elytra=Слот для элитр
+#
+# COMMAND
+commands.baubles.error=§cКоманда с ошибкой
+commands.baubles.success=Успешно выполнено
+commands.baubles.help.get=§cИспользуйте /baubles help для помощи
+commands.baubles.args.error=§cНеверный аргумент
+commands.baubles.index.out=Слот %s за пределами доступных слотов
+commands.baubles.player.none=Игрок не указан
+commands.baubles.view.info=§3Брелки у игрока %s
+commands.baubles.view=§3[Слот: %s§3] [брелок: %s§3] [тип: %s§3]
+commands.baubles.clear.all=§3Все слоты брелков игрока %s очищены
+commands.baubles.clear.all.claim=§4Все ваши слоты брелков были очищены администратором %s
+commands.baubles.clear=§3Очищен слот брелков %s §3у игрока %s
+commands.baubles.clear.claim=§4Ваш слот брелков %s §4был очищен администратором %s
+commands.baubles.hand=<%s%s> [тип: %s]
+commands.baubles.set=Предмет %s помещён в [слот: %s] игрока %s
+commands.baubles.dump=Дамп был выгружен по пути:
+commands.baubles.dump.tip=Нажмите, чтобы открыть папку
+#
+# COMPAT
+baubles.glove=Перчатка
+baubles.pendant=Кулон
+baubles.cape=Плащ
+baubles.misc=Разное
+baubles.shield=Щит
