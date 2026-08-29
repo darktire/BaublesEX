@@ -118,8 +118,10 @@ public class GuiPlayerExpanded extends GuiOverlay {
         super.onGuiClosed();
     }
 
-    public void displayNormalInventory() {
+    public void displayNormalInventory(int mouseX, int mouseY) {
         GuiInventory gui = new GuiInventory(this.mc.player);
+        gui.oldMouseX = mouseX;
+        gui.oldMouseY = mouseY;
         this.mc.displayGuiScreen(gui);
     }
 

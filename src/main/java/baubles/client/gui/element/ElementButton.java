@@ -36,7 +36,7 @@ public class ElementButton extends ElementBase {
     public void mouseReleased(int mouseX, int mouseY) {
         if (this.hovered && this.enabled) {
             if (this.parentGui instanceof GuiPlayerExpanded) {
-                ((GuiPlayerExpanded) this.parentGui).displayNormalInventory();
+                ((GuiPlayerExpanded) this.parentGui).displayNormalInventory(mouseX, mouseY);
                 PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.NORMAL));
             } else{
                 PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.EXPANSION));

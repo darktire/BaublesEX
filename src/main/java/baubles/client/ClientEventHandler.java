@@ -14,6 +14,7 @@ import baubles.common.config.Config;
 import baubles.common.config.KeyBindings;
 import baubles.common.network.PacketHandler;
 import baubles.common.network.PacketOpen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
@@ -117,7 +118,7 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public static void onKeyInput(InputEvent.KeyInputEvent event) {
-        if (KeyBindings.KEY_BAUBLES.isKeyDown()) {
+        if (Minecraft.getMinecraft().currentScreen == null && KeyBindings.KEY_BAUBLES.isKeyDown()) {
             PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.EXPANSION));
         }
     }

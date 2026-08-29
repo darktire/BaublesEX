@@ -141,11 +141,13 @@ public class GuiOverlayHandler {
     @SubscribeEvent
     public static void onKeyDown(GuiScreenEvent.KeyboardInputEvent.Post e) {
         if (!Keyboard.getEventKeyState()) return;
-        if (Keyboard.getEventKey() != KeyBindings.KEY_BAUBLES.getKeyCode()) return;
+        if (!KeyBindings.KEY_BAUBLES.isActiveAndMatches(Keyboard.getEventKey())) return;
 
         GuiScreen gui = e.getGui();
         if (gui instanceof GuiPlayerExpanded) {
-            ((GuiPlayerExpanded) gui).displayNormalInventory();
+            int mouseX = Mouse.getX() * gui.width / gui.mc.displayWidth;
+            int mouseY = gui.height - Mouse.getY() * gui.height / gui.mc.displayHeight - 1;
+            ((GuiPlayerExpanded) gui).displayNormalInventory(mouseX, mouseY);
             PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.NORMAL));
         } else if (gui instanceof GuiInventory) {
             PacketHandler.INSTANCE.sendToServer(new PacketOpen(PacketOpen.Option.EXPANSION));
