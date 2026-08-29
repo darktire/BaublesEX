@@ -57,6 +57,7 @@ public class CommonProxy implements IGuiHandler {
                 BaublesWrapper::new);
 
         HookHelper.patchModsEvents(event.getAsmData());
+        Config.saveConfig();
         PacketHandler.init();
     }
 

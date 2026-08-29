@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@ModOnly(value = "RLArtifacts", client = true)
+@ModOnly(value = "rlartifacts", client = true)
 public class ClientEventHandler {
     @SubscribeEvent
     public static void applyControl(BaublesRenderEvent.InBaubles event) {

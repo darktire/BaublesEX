@@ -56,7 +56,6 @@ public class Config extends PartialConfig {
             Reference.LOG.error("BAUBLES has a problem loading it's configuration");
         }
         checkConfig(config);
-        saveConfig();
     }
 
     public void loadData() {
